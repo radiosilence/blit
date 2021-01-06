@@ -6,6 +6,10 @@ import * as cdk from "@aws-cdk/core";
 const vpsHost = "149.91.89.243";
 const zoneName = "blit.cc";
 
+// We could make this in CDK but apparently this is not recommended.
+const certArn =
+  "arn:aws:acm:eu-west-2:339435723451:certificate/d04523c6-5bda-49e5-8b66-afa22eca5600";
+
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -48,14 +52,13 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
-    const certificate = new acm.Certificate(this, "Certificate", {
-      domainName: "blit.cc",
-      validation: acm.CertificateValidation.fromDns(zone),
-    });
+    const certificate = acm.Certificate.fromCertificateArn(
+      this,
+      "BlitWildcardCert",
+      certArn
+    );
 
-    const blitHttp = new apigw.HttpIntegration(`http://${vpsHost}`);
-
-    const gateway = new apigw.RestApi(this, "BlitAPI", {
+    const gateway = new apigw.RestApi(this, "BlitGateway", {
       domainName: {
         domainName: "blit.cc",
         certificate,
@@ -63,7 +66,7 @@ export class BlitStack extends cdk.Stack {
     });
 
     gateway.root.addProxy({
-      defaultIntegration: blitHttp,
+      defaultIntegration: new apigw.HttpIntegration(`http://${vpsHost}:10080`),
     });
   }
 }
