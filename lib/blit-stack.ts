@@ -10,6 +10,9 @@ const zoneName = "blit.cc";
 const certArn =
   "arn:aws:acm:eu-west-2:339435723451:certificate/d04523c6-5bda-49e5-8b66-afa22eca5600";
 
+const enableGateway = false;
+const createCert = false;
+
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -47,27 +50,33 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
-    const sharedCertificate = acm.Certificate.fromCertificateArn(
-      this,
-      "BlitWildcardCert",
-      certArn
-    );
+    if (enableGateway) {
+      let certificate = acm.Certificate.fromCertificateArn(
+        this,
+        "BlitWildcardCert",
+        certArn
+      );
 
-    const certificate = new acm.Certificate(this, "BlitCert", {
-      domainName: "blit.cc",
-      subjectAlternativeNames: ["*.blit.cc"],
-      validation: acm.CertificateValidation.fromDns(zone),
-    });
+      if (createCert) {
+        certificate = new acm.Certificate(this, "BlitCert", {
+          domainName: "blit.cc",
+          subjectAlternativeNames: ["*.blit.cc"],
+          validation: acm.CertificateValidation.fromDns(zone),
+        });
+      }
 
-    const gateway = new apigw.RestApi(this, "BlitGateway", {
-      domainName: {
-        domainName: "blit.cc",
-        certificate,
-      },
-    });
+      const gateway = new apigw.RestApi(this, "BlitGateway", {
+        domainName: {
+          domainName: "blit.cc",
+          certificate,
+        },
+      });
 
-    gateway.root.addProxy({
-      defaultIntegration: new apigw.HttpIntegration(`http://${vpsHost}:10080`),
-    });
+      gateway.root.addProxy({
+        defaultIntegration: new apigw.HttpIntegration(
+          `http://${vpsHost}:10080`
+        ),
+      });
+    }
   }
 }
