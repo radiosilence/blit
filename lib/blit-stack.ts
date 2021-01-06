@@ -12,25 +12,22 @@ export class BlitStack extends cdk.Stack {
       zoneName,
     });
 
-    new route53.ARecord(this, "ARecordRoot", {
+    const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
+
+    new route53.ARecord(this, "BlitRoot", {
       zone,
-      target: route53.RecordTarget.fromIpAddresses(vpsHost),
+      target: vpsTarget,
     });
 
-    // Fastmail
-    new route53.TxtRecord(this, "TXTDKIMRecord", {
+    new route53.ARecord(this, "BlitWildcard", {
       zone,
-      recordName: "_foo",
-      values: [
-        "v=DKIM1;",
-        "k=rsa;",
-        "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2NO/nGVUbJSNhqQMytu1tHoKNKOSV+HmgR8K9y0Q+/4TUgfwReBLeZYHsuWa697vY3qROU1KSxYQ0uuu0DamOitlKqJabqyuFcR85HDFoQjQM5+yTPoe+3K8Q1fmFk+W887YF1taZb1u70M4ZF6q8NxM+CQdoE/Mx+G+WEMefgwIDAQAB",
-      ],
+      recordName: "*",
+      target: vpsTarget,
     });
 
-    new route53.TxtRecord(this, "TXTSPFRecord", {
+    new route53.TxtRecord(this, "BlitSPF", {
       zone,
-      values: ["v=spf1", "include:spf.messagingengine.com", "?all"],
+      values: ["v=spf1 include:spf.messagingengine.com ?all"],
     });
 
     new route53.MxRecord(this, "MXRecord10", {
@@ -42,17 +39,11 @@ export class BlitStack extends cdk.Stack {
     });
 
     for (const n of [1, 2, 3]) {
-      new route53.CnameRecord(this, `CNameFM${n}`, {
+      new route53.CnameRecord(this, `BlitDKIM${n}`, {
         zone,
         recordName: `fm${n}.domainkey`,
         domainName: `fm${n}.blit.cc.dkim.fmhosted.com.`,
       });
     }
-
-    new route53.CnameRecord(this, "CNameMeSMTP", {
-      zone,
-      recordName: "mesmtp._domainkey",
-      domainName: "mesmtp.blit.cc.dkim.fmhosted.com.",
-    });
   }
 }
