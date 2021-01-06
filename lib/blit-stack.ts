@@ -52,11 +52,17 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
-    const certificate = acm.Certificate.fromCertificateArn(
+    const sharedCertificate = acm.Certificate.fromCertificateArn(
       this,
       "BlitWildcardCert",
       certArn
     );
+
+    const certificate = new acm.Certificate(this, "BlitCert", {
+      domainName: "blit.cc",
+      subjectAlternativeNames: ["*.blit.cc"],
+      validation: acm.CertificateValidation.fromDns(zone),
+    });
 
     const gateway = new apigw.RestApi(this, "BlitGateway", {
       domainName: {
