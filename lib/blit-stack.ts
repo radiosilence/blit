@@ -8,10 +8,10 @@ const zoneName = "blit.cc";
 
 // We could make this in CDK but apparently this is not recommended.
 const certArn =
-  "arn:aws:acm:eu-west-2:339435723451:certificate/d04523c6-5bda-49e5-8b66-afa22eca5600";
+  "arn:aws:acm:eu-west-2:339435723451:certificate/4a0beb44-1d59-494e-a8e1-f1f47c74b61e";
 
-const enableGateway = false;
-const createCert = true;
+const enableGateway = true;
+const createCert = false;
 
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
