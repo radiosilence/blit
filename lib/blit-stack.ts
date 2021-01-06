@@ -3,6 +3,7 @@ import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import { SecurityPolicyProtocol } from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as route53 from "@aws-cdk/aws-route53";
+import * as alias from "@aws-cdk/aws-route53-targets";
 import * as cdk from "@aws-cdk/core";
 
 const vpsHost = "149.91.89.243";
@@ -71,12 +72,12 @@ export class BlitStack extends cdk.Stack {
     }
 
     if (proxy) {
-      new cloudfront.Distribution(this, "BlitFront", {
+      const distribution = new cloudfront.Distribution(this, "BlitFront", {
         certificate: acm.Certificate.fromCertificateArn(
           this,
           "BlitCertUSEast",
           certArnUSEast
-        ) as any,
+        ),
         domainNames: ["blit.cc"],
         enableIpv6: true,
         httpVersion: cloudfront.HttpVersion.HTTP2,
@@ -87,6 +88,13 @@ export class BlitStack extends cdk.Stack {
             httpPort: internalPort,
           }),
         },
+      });
+
+      new route53.ARecord(this, "BlitFrontRecord", {
+        zone,
+        target: route53.RecordTarget.fromAlias(
+          new alias.CloudFrontTarget(distribution)
+        ),
       });
     }
   }
