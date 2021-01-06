@@ -11,10 +11,6 @@ const zoneName = "blit.cc";
 const internal = "xxpk4shiicfjldb50oiasudnas3nd";
 const internalPort = 10080;
 
-// We could make this in CDK but apparently this is not recommended.
-const certArnUSEast =
-  "arn:aws:acm:us-east-1:339435723451:certificate/424891c1-18a9-4579-a5df-faa6513a32e1";
-
 const useCloudFront = true;
 
 export class BlitStack extends cdk.Stack {
@@ -67,13 +63,15 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
+    const certificate = new acm.Certificate(this, "BlitCert", {
+      domainName: "blit.cc",
+      subjectAlternativeNames: ["*.blit.cc"],
+      validation: acm.CertificateValidation.fromEmail(),
+    });
+
     if (useCloudFront) {
       const distribution = new cloudfront.Distribution(this, "BlitFront", {
-        certificate: acm.Certificate.fromCertificateArn(
-          this,
-          "BlitCertUSEast",
-          certArnUSEast
-        ),
+        certificate,
         domainNames: ["blit.cc"],
         enableIpv6: true,
         httpVersion: cloudfront.HttpVersion.HTTP2,
