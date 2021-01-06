@@ -11,7 +11,7 @@ const certArn =
   "arn:aws:acm:eu-west-2:339435723451:certificate/d04523c6-5bda-49e5-8b66-afa22eca5600";
 
 const enableGateway = false;
-const createCert = false;
+const createCert = true;
 
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -28,6 +28,13 @@ export class BlitStack extends cdk.Stack {
       recordName: "*",
       target: vpsTarget,
     });
+
+    if (!enableGateway) {
+      new route53.ARecord(this, "BlitRoot", {
+        zone,
+        target: vpsTarget,
+      });
+    }
 
     new route53.TxtRecord(this, "BlitSPF", {
       zone,
@@ -50,21 +57,21 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
+    let certificate = acm.Certificate.fromCertificateArn(
+      this,
+      "BlitWildcardCert",
+      certArn
+    );
+
+    if (createCert) {
+      certificate = new acm.Certificate(this, "BlitCert", {
+        domainName: "blit.cc",
+        subjectAlternativeNames: ["*.blit.cc"],
+        validation: acm.CertificateValidation.fromDns(zone),
+      });
+    }
+
     if (enableGateway) {
-      let certificate = acm.Certificate.fromCertificateArn(
-        this,
-        "BlitWildcardCert",
-        certArn
-      );
-
-      if (createCert) {
-        certificate = new acm.Certificate(this, "BlitCert", {
-          domainName: "blit.cc",
-          subjectAlternativeNames: ["*.blit.cc"],
-          validation: acm.CertificateValidation.fromDns(zone),
-        });
-      }
-
       const gateway = new apigw.RestApi(this, "BlitGateway", {
         domainName: {
           domainName: "blit.cc",
