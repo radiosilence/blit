@@ -20,11 +20,6 @@ export class BlitStack extends cdk.Stack {
 
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
 
-    // new route53.ARecord(this, "BlitRoot", {
-    //   zone,
-    //   target: vpsTarget,
-    // });
-
     new route53.ARecord(this, "BlitWildcard", {
       zone,
       recordName: "*",
