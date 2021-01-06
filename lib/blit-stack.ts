@@ -12,14 +12,10 @@ const internal = "xxpk4shiicfjldb50oiasudnas3nd";
 const internalPort = 10080;
 
 // We could make this in CDK but apparently this is not recommended.
-const certArn =
-  "arn:aws:acm:eu-west-2:339435723451:certificate/4a0beb44-1d59-494e-a8e1-f1f47c74b61e";
-
 const certArnUSEast =
   "arn:aws:acm:us-east-1:339435723451:certificate/424891c1-18a9-4579-a5df-faa6513a32e1";
 
-const proxy = true;
-const createCert = false;
+const useCloudFront = true;
 
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -39,11 +35,11 @@ export class BlitStack extends cdk.Stack {
 
     new route53.ARecord(this, "BlitNavidrone", {
       zone,
-      recordName: "navidrome",
+      recordName: "nd",
       target: vpsTarget,
     });
 
-    if (!proxy) {
+    if (!useCloudFront) {
       new route53.ARecord(this, "BlitRoot", {
         zone,
         target: vpsTarget,
@@ -71,7 +67,7 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
-    if (proxy) {
+    if (useCloudFront) {
       const distribution = new cloudfront.Distribution(this, "BlitFront", {
         certificate: acm.Certificate.fromCertificateArn(
           this,
