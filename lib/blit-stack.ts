@@ -27,7 +27,7 @@ export class BlitStack extends cdk.Stack {
 
     new route53.TxtRecord(this, "BlitSPF", {
       zone,
-      values: ["v=spf1 include:spf.messagingengine.com ?all"],
+      values: ["v=spf1 include:spf.messagingengine.com ?all", "hi mum"],
     });
 
     new route53.MxRecord(this, "MXRecord10", {
