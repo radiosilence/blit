@@ -10,7 +10,7 @@ const vpsHost = "149.91.89.243";
 const zoneName = "blit.cc";
 const internal = "xxpk4shiicfjldb50oiasudnas3nd";
 const internalPort = 10080;
-
+const navidromePort = 4533;
 const useCloudFront = true;
 
 export class BlitStack extends cdk.Stack {
@@ -29,15 +29,15 @@ export class BlitStack extends cdk.Stack {
       target: vpsTarget,
     });
 
-    new route53.ARecord(this, "BlitNavidrone", {
-      zone,
-      recordName: "nd",
-      target: vpsTarget,
-    });
-
     if (!useCloudFront) {
       new route53.ARecord(this, "BlitRoot", {
         zone,
+        target: vpsTarget,
+      });
+
+      new route53.ARecord(this, "BlitNavidrome", {
+        zone,
+        recordName: "nd",
         target: vpsTarget,
       });
     }
@@ -88,6 +88,38 @@ export class BlitStack extends cdk.Stack {
         zone,
         target: route53.RecordTarget.fromAlias(
           new alias.CloudFrontTarget(distribution)
+        ),
+      });
+
+      const ndDistribution = new cloudfront.Distribution(
+        this,
+        "BlitFrontNavidrome",
+        {
+          certificate,
+          domainNames: ["nd.blit.cc"],
+          enableIpv6: true,
+          httpVersion: cloudfront.HttpVersion.HTTP2,
+          minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
+          priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+          defaultBehavior: {
+            origin: new origins.HttpOrigin(`${internal}.blit.cc`, {
+              protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
+              httpPort: navidromePort,
+            }),
+            cachePolicy: {
+              cachePolicyId: "Managed-CachingDisable",
+            },
+            originRequestPolicy: {
+              originRequestPolicyId: "Managed-AllViewer",
+            },
+          },
+        }
+      );
+
+      new route53.ARecord(this, "BlitFrontNavidromeRecord", {
+        zone,
+        target: route53.RecordTarget.fromAlias(
+          new alias.CloudFrontTarget(ndDistribution)
         ),
       });
     }
