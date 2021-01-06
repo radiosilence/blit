@@ -1,6 +1,5 @@
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import { SecurityPolicyProtocol } from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as alias from "@aws-cdk/aws-route53-targets";
@@ -73,20 +72,15 @@ export class BlitStack extends cdk.Stack {
       const distribution = new cloudfront.Distribution(this, "BlitFront", {
         certificate,
         domainNames: ["blit.cc"],
-        enableIpv6: true,
-        httpVersion: cloudfront.HttpVersion.HTTP2,
-        minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
         priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
         defaultBehavior: {
           origin: new origins.HttpOrigin(`${internal}.blit.cc`, {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
             httpPort: internalPort,
           }),
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           smoothStreaming: true,
-          compress: true,
         },
       });
 
@@ -103,20 +97,16 @@ export class BlitStack extends cdk.Stack {
         {
           certificate,
           domainNames: ["nd.blit.cc"],
-          enableIpv6: true,
-          httpVersion: cloudfront.HttpVersion.HTTP2,
-          minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
           priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
           defaultBehavior: {
             origin: new origins.HttpOrigin(`${internal}.blit.cc`, {
               protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
               httpPort: navidromePort,
             }),
-            cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+            cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
             originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
             allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
             smoothStreaming: true,
-            compress: true,
           },
         }
       );
