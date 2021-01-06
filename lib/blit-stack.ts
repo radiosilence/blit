@@ -76,6 +76,7 @@ export class BlitStack extends cdk.Stack {
         enableIpv6: true,
         httpVersion: cloudfront.HttpVersion.HTTP2,
         minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
+        priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
         defaultBehavior: {
           origin: new origins.HttpOrigin(`${internal}.blit.cc`, {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
