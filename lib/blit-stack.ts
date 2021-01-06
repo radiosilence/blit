@@ -35,7 +35,7 @@ export class BlitStack extends cdk.Stack {
         target: vpsTarget,
       });
 
-      new route53.ARecord(this, "BlitNavidrome", {
+      new route53.ARecord(this, "BlitNavidrone", {
         zone,
         recordName: "nd",
         target: vpsTarget,
@@ -81,6 +81,11 @@ export class BlitStack extends cdk.Stack {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
             httpPort: internalPort,
           }),
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+          smoothStreaming: true,
+          compress: true,
         },
       });
 
@@ -106,18 +111,18 @@ export class BlitStack extends cdk.Stack {
               protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
               httpPort: navidromePort,
             }),
-            cachePolicy: {
-              cachePolicyId: "Managed-CachingDisable",
-            },
-            originRequestPolicy: {
-              originRequestPolicyId: "Managed-AllViewer",
-            },
+            cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+            originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
+            allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+            smoothStreaming: true,
+            compress: true,
           },
         }
       );
 
       new route53.ARecord(this, "BlitFrontNavidromeRecord", {
         zone,
+        recordName: "nd",
         target: route53.RecordTarget.fromAlias(
           new alias.CloudFrontTarget(ndDistribution)
         ),
