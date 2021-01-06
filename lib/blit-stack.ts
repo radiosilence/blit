@@ -1,3 +1,5 @@
+import * as apigw from "@aws-cdk/aws-apigateway";
+import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
 
@@ -14,10 +16,10 @@ export class BlitStack extends cdk.Stack {
 
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
 
-    new route53.ARecord(this, "BlitRoot", {
-      zone,
-      target: vpsTarget,
-    });
+    // new route53.ARecord(this, "BlitRoot", {
+    //   zone,
+    //   target: vpsTarget,
+    // });
 
     new route53.ARecord(this, "BlitWildcard", {
       zone,
@@ -30,7 +32,7 @@ export class BlitStack extends cdk.Stack {
       values: ["v=spf1 include:spf.messagingengine.com ?all", "hi mum"],
     });
 
-    new route53.MxRecord(this, "MXRecord10", {
+    new route53.MxRecord(this, "BlitMX", {
       zone,
       values: [
         { priority: 10, hostName: "in1-smtp.messagingengine.com." },
@@ -45,5 +47,23 @@ export class BlitStack extends cdk.Stack {
         domainName: `fm${n}.blit.cc.dkim.fmhosted.com.`,
       });
     }
+
+    const certificate = new acm.Certificate(this, "Certificate", {
+      domainName: "blit.cc",
+      validation: acm.CertificateValidation.fromDns(zone),
+    });
+
+    const blitHttp = new apigw.HttpIntegration(`http://${vpsHost}`);
+
+    const gateway = new apigw.RestApi(this, "BlitAPI", {
+      domainName: {
+        domainName: "blit.cc",
+        certificate,
+      },
+    });
+
+    gateway.root.addProxy({
+      defaultIntegration: blitHttp,
+    });
   }
 }

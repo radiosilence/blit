@@ -22,6 +22,25 @@
     "@aws-cdk/cx-api" "1.82.0"
     constructs "^3.2.0"
 
+"@aws-cdk/aws-apigateway@^1.82.0":
+  version "1.82.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigateway/-/aws-apigateway-1.82.0.tgz#832dc6afaf6e89658a6c915e31b013ff6504fa07"
+  integrity sha512-FGIINpDaaGHCjoaopmI2tBbeSi36wA5ZFJofg5eOUPLRdTtEwY5GpsYwejkF06bjLbnvi6LcTXHfBkRB117IJg==
+  dependencies:
+    "@aws-cdk/assets" "1.82.0"
+    "@aws-cdk/aws-certificatemanager" "1.82.0"
+    "@aws-cdk/aws-cloudwatch" "1.82.0"
+    "@aws-cdk/aws-ec2" "1.82.0"
+    "@aws-cdk/aws-elasticloadbalancingv2" "1.82.0"
+    "@aws-cdk/aws-iam" "1.82.0"
+    "@aws-cdk/aws-lambda" "1.82.0"
+    "@aws-cdk/aws-logs" "1.82.0"
+    "@aws-cdk/aws-s3" "1.82.0"
+    "@aws-cdk/aws-s3-assets" "1.82.0"
+    "@aws-cdk/core" "1.82.0"
+    "@aws-cdk/cx-api" "1.82.0"
+    constructs "^3.2.0"
+
 "@aws-cdk/aws-applicationautoscaling@1.82.0":
   version "1.82.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-applicationautoscaling/-/aws-applicationautoscaling-1.82.0.tgz#27a94acaaafff06c52d3f38090c24a2114628d71"
@@ -39,6 +58,17 @@
   integrity sha512-meFpRmujLMFLq19uCwiBuIva1WfQrA5dTV3HmQK78iQDDSsoK9jQ6IWCQh7Fvs5NeRqr7Fscy97dTCn3chYwXQ==
   dependencies:
     "@aws-cdk/aws-iam" "1.82.0"
+    "@aws-cdk/core" "1.82.0"
+    constructs "^3.2.0"
+
+"@aws-cdk/aws-certificatemanager@1.82.0", "@aws-cdk/aws-certificatemanager@^1.82.0":
+  version "1.82.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-certificatemanager/-/aws-certificatemanager-1.82.0.tgz#64eecd94051704d708b561bebc53bb79b2a1e1ef"
+  integrity sha512-bXw3mkJX72X5z4iDeH1AyoGKuRS0KwA6EBZL3Ef4D738BYspHKgdhg3MKrlY+gbwMuSw9bAONGEeoRQO+Taufw==
+  dependencies:
+    "@aws-cdk/aws-iam" "1.82.0"
+    "@aws-cdk/aws-lambda" "1.82.0"
+    "@aws-cdk/aws-route53" "1.82.0"
     "@aws-cdk/core" "1.82.0"
     constructs "^3.2.0"
 
@@ -127,6 +157,23 @@
     "@aws-cdk/cx-api" "1.82.0"
     constructs "^3.2.0"
 
+"@aws-cdk/aws-elasticloadbalancingv2@1.82.0":
+  version "1.82.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-elasticloadbalancingv2/-/aws-elasticloadbalancingv2-1.82.0.tgz#0be8d15a96cfd61d1151c7a6864b26034388b768"
+  integrity sha512-pL8PDjDABgw6P2dfhrHIyp1UTxwSKmxrXcm8eOk5Ch9MbaTINQPNOHiAouVlkgWmnDgMvH2INGbFbwnNbgzu1w==
+  dependencies:
+    "@aws-cdk/aws-certificatemanager" "1.82.0"
+    "@aws-cdk/aws-cloudwatch" "1.82.0"
+    "@aws-cdk/aws-ec2" "1.82.0"
+    "@aws-cdk/aws-iam" "1.82.0"
+    "@aws-cdk/aws-lambda" "1.82.0"
+    "@aws-cdk/aws-s3" "1.82.0"
+    "@aws-cdk/cloud-assembly-schema" "1.82.0"
+    "@aws-cdk/core" "1.82.0"
+    "@aws-cdk/cx-api" "1.82.0"
+    "@aws-cdk/region-info" "1.82.0"
+    constructs "^3.2.0"
+
 "@aws-cdk/aws-events@1.82.0":
   version "1.82.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-events/-/aws-events-1.82.0.tgz#e4f7a36b5241bead3ba28adc4aace0be4ad2f5ff"
@@ -190,7 +237,7 @@
     "@aws-cdk/core" "1.82.0"
     constructs "^3.2.0"
 
-"@aws-cdk/aws-route53@^1.82.0":
+"@aws-cdk/aws-route53@1.82.0", "@aws-cdk/aws-route53@^1.82.0":
   version "1.82.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-route53/-/aws-route53-1.82.0.tgz#338486c04a078218590d3aa7363b57b923ce34e5"
   integrity sha512-Yu10jiwqnZNlYT6NhlI250wwkIWyMieDH7BAs00tpvFpT4AdjGH9Ac70uo6B6Rsvj3zkrIjzEJEmMX9SATdBYA==
