@@ -54,14 +54,14 @@ export class BlitStack extends cdk.Stack {
       new route53.CnameRecord(this, `BlitDKIM${n}`, {
         zone,
         recordName: `fm${n}.domainkey`,
-        domainName: `fm${n}.blit.cc.dkim.fmhosted.com.`,
+        domainName: `fm${n}.${zoneName}.dkim.fmhosted.com.`,
       });
     }
 
     const certificate = new acm.DnsValidatedCertificate(this, "BlitCert", {
       hostedZone: zone,
       domainName: zoneName,
-      subjectAlternativeNames: ["*.blit.cc"],
+      subjectAlternativeNames: [`*.${zoneName}`],
       region: "us-east-1",
     });
 
@@ -77,11 +77,9 @@ export class BlitStack extends cdk.Stack {
         origin: new origins.S3Origin(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
-      domainNames: ["blit.cc"],
+      domainNames: [zoneName],
       defaultRootObject: "index.html",
-      // errorResponses: [
-      //   { httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" },
-      // ],
+      // errorResponses: [{ httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" }],
       certificate,
     });
 
@@ -89,7 +87,6 @@ export class BlitStack extends cdk.Stack {
       sources: [s3deploy.Source.asset("./public")],
       destinationBucket: bucket,
       distribution,
-      distributionPaths: ["/*"],
     });
 
     new route53.ARecord(this, "BlitFrontRecord", {
@@ -100,10 +97,10 @@ export class BlitStack extends cdk.Stack {
     // navidrome
     const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {
       certificate,
-      domainNames: ["nd.blit.cc"],
+      domainNames: [`nd.${zoneName}`],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(`${internal}.blit.cc`, {
+        origin: new origins.HttpOrigin(`${internal}.${zoneName}`, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           httpPort: navidromePort,
         }),
