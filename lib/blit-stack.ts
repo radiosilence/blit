@@ -20,6 +20,10 @@ export class BlitStack extends cdk.Stack {
       zoneName,
     });
 
+    new cdk.CfnOutput(this, "BlitZone", {
+      value: zone.hostedZoneArn,
+    });
+
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
 
     new route53.ARecord(this, "BlitInternal", {
@@ -122,6 +126,14 @@ export class BlitStack extends cdk.Stack {
           new alias.CloudFrontTarget(ndDistribution)
         ),
       });
+
+      // Delegate to subdomain
+      if (ndZone.hostedZoneNameServers) {
+        new route53.ZoneDelegationRecord(this, "BlitFrontNdDelegations", {
+          zone,
+          nameServers: ndZone.hostedZoneNameServers,
+        });
+      }
     }
   }
 }
