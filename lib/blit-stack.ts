@@ -62,10 +62,11 @@ export class BlitStack extends cdk.Stack {
       });
     }
 
-    const certificate = new acm.Certificate(this, "BlitCert", {
-      domainName: "blit.cc",
+    const certificate = new acm.DnsValidatedCertificate(this, "BlitCert", {
+      hostedZone: zone,
+      domainName: zoneName,
       subjectAlternativeNames: ["*.blit.cc"],
-      validation: acm.CertificateValidation.fromEmail(),
+      region: "us-east-1",
     });
 
     if (useCloudFront) {
@@ -111,9 +112,12 @@ export class BlitStack extends cdk.Stack {
         }
       );
 
+      const ndZone = new route53.PublicHostedZone(this, "NDBlitCC", {
+        zoneName: `nd.${zoneName}`,
+      });
+
       new route53.ARecord(this, "BlitFrontNavidromeRecord", {
-        zone,
-        recordName: "nd",
+        zone: ndZone,
         target: route53.RecordTarget.fromAlias(
           new alias.CloudFrontTarget(ndDistribution)
         ),
