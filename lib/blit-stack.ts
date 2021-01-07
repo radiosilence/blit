@@ -69,10 +69,7 @@ export class BlitStack extends cdk.Stack {
       value: certificate.certificateArn,
     });
 
-    const bucket = new s3.Bucket(this, "BlitBucket", {
-      websiteIndexDocument: "index.html",
-      websiteErrorDocument: "index.html",
-    });
+    const bucket = new s3.Bucket(this, "BlitBucket");
 
     const distribution = new cloudfront.Distribution(this, "BlitFront", {
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
@@ -81,6 +78,10 @@ export class BlitStack extends cdk.Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       domainNames: ["blit.cc"],
+      defaultRootObject: "index.html",
+      // errorResponses: [
+      //   { httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" },
+      // ],
       certificate,
     });
 
