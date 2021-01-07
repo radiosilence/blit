@@ -9,7 +9,6 @@ new BlitStack(app, "BlitStack", {
   zoneName: "blit.cc",
   internal: "xxpk4shiicfjldb50oiasudnas3nd",
   navidromePort: 4533,
-  useCloudFront: true,
 
   env: {
     region: "us-east-1",
