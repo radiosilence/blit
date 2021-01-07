@@ -342,6 +342,21 @@
     "@aws-cdk/cx-api" "1.83.0"
     constructs "^3.2.0"
 
+"@aws-cdk/aws-s3-deployment@^1.83.0":
+  version "1.83.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-s3-deployment/-/aws-s3-deployment-1.83.0.tgz#b47db5e303bd78cd44475f5510abd419f7c3d71a"
+  integrity sha512-VYpV0Ep5m0+oIWJHpb4Pzp784QkEQMhAaT/Zo4Q66IO1nO0/TKcMz7fJGbGmHw0XAXorOI6cXEfBWnIe9g1+dw==
+  dependencies:
+    "@aws-cdk/aws-cloudfront" "1.83.0"
+    "@aws-cdk/aws-ec2" "1.83.0"
+    "@aws-cdk/aws-iam" "1.83.0"
+    "@aws-cdk/aws-lambda" "1.83.0"
+    "@aws-cdk/aws-s3" "1.83.0"
+    "@aws-cdk/aws-s3-assets" "1.83.0"
+    "@aws-cdk/core" "1.83.0"
+    "@aws-cdk/lambda-layer-awscli" "1.83.0"
+    constructs "^3.2.0"
+
 "@aws-cdk/aws-s3@1.83.0":
   version "1.83.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-s3/-/aws-s3-1.83.0.tgz#466f458e7140fc858fc4bcaa1a67756068cdcf64"
@@ -450,6 +465,15 @@
   dependencies:
     "@aws-cdk/cloud-assembly-schema" "1.83.0"
     semver "^7.3.2"
+
+"@aws-cdk/lambda-layer-awscli@1.83.0":
+  version "1.83.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/lambda-layer-awscli/-/lambda-layer-awscli-1.83.0.tgz#7add6be33ddbdb7b6d6600594a90cba1fcd008a0"
+  integrity sha512-2KWMMSxJoFB8zgpQBwymm3PFu9Ef3WvCbYMN6J1kcBT4KLCeGpjqmDBNDtKseTt7tOt4EFBZ/0foypIhqfG8gQ==
+  dependencies:
+    "@aws-cdk/aws-lambda" "1.83.0"
+    "@aws-cdk/core" "1.83.0"
+    constructs "^3.2.0"
 
 "@aws-cdk/region-info@1.83.0":
   version "1.83.0"
