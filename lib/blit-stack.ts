@@ -71,7 +71,7 @@ export class BlitStack extends cdk.Stack {
 
     const bucket = new s3.Bucket(this, "BlitBucket", {
       websiteIndexDocument: "index.html",
-      publicReadAccess: true,
+      websiteErrorDocument: "index.html",
     });
 
     const distribution = new cloudfront.Distribution(this, "BlitFront", {
