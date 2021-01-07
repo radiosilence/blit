@@ -22,6 +22,7 @@ export class BlitStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "BlitZone", {
       value: zone.hostedZoneArn,
+      exportName: "BlitZone",
     });
 
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
@@ -131,6 +132,7 @@ export class BlitStack extends cdk.Stack {
       if (ndZone.hostedZoneNameServers) {
         new route53.ZoneDelegationRecord(this, "BlitFrontNdDelegations", {
           zone,
+          recordName: "nd",
           nameServers: ndZone.hostedZoneNameServers,
         });
       }
