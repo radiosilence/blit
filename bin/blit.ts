@@ -10,9 +10,11 @@ const app = new cdk.App();
 const env = { account: "339435723451", region: "eu-west-2" };
 
 const domainName = "blit.cc";
+const certificateArn = "arn:aws:acm:us-east-1:339435723451:certificate/2ea6c658-2d0a-4717-9362-711dfdc4afe4";
 
 new BlitWebStack(app, "BlitWebStack", {
   domainName,
+  certificateArn,
   env,
 });
 
@@ -23,6 +25,7 @@ new BlitZoneStack(app, "BlitZoneStack", {
 
 new NavidromeStack(app, "NavidromeStack", {
   domainName,
+  certificateArn,
   vpsIp: "149.91.89.243",
   internalRecordName: "xxpk4shiicfjldb50oiasudnas3nd",
   navidromePort: 4533,

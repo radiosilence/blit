@@ -7,6 +7,7 @@ import * as cdk from "@aws-cdk/core";
 
 interface Props extends cdk.StackProps {
   domainName: string;
+  certificateArn: string;
   internalRecordName: string;
   navidromePort: number;
   vpsIp: string;
@@ -17,10 +18,10 @@ export class NavidromeStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { vpsIp, domainName: rootDomainName, internalRecordName, navidromePort, recordName = "ns" } = props;
+    const { vpsIp, domainName, certificateArn, internalRecordName, navidromePort, recordName = "ns" } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
-      domainName: rootDomainName,
+      domainName,
     });
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsIp);
 
@@ -30,19 +31,15 @@ export class NavidromeStack extends cdk.Stack {
       target: vpsTarget,
     });
 
-    const domainName = `${recordName}.${rootDomainName}`;
-
-    const certificate = new acm.DnsValidatedCertificate(this, "NavidromeCert", {
-      hostedZone: zone,
-      domainName,
-    });
+    const ndDomainName = `${recordName}.${domainName}`;
+    const certificate = acm.Certificate.fromCertificateArn(this, "BlitWebCert", certificateArn);
 
     const ndDistribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
       certificate,
-      domainNames: [domainName],
+      domainNames: [ndDomainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(`${internalRecordName}.${rootDomainName}`, {
+        origin: new origins.HttpOrigin(`${internalRecordName}.${domainName}`, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           httpPort: navidromePort,
         }),
