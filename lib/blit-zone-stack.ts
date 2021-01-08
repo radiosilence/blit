@@ -5,6 +5,10 @@ interface Props extends cdk.StackProps {
   domainName: string;
 }
 
+export enum BlitZoneOutput {
+  Zone = "BlitZone",
+}
+
 export class BlitZoneStack extends cdk.Stack {
   readonly zone: route53.PublicHostedZone;
 
@@ -14,6 +18,11 @@ export class BlitZoneStack extends cdk.Stack {
 
     this.zone = new route53.PublicHostedZone(this, "BlitZone", {
       zoneName: domainName,
+    });
+
+    new cdk.CfnOutput(this, "BlitZoneOutput", {
+      value: this.zone.hostedZoneId,
+      exportName: BlitZoneOutput.Zone,
     });
 
     this.setupEmail(domainName);
