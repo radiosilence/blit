@@ -7,14 +7,18 @@ import { NavidromeStack } from "../lib/navidrome-stack";
 
 const app = new cdk.App();
 
+const env = { account: "339435723451", region: "eu-west-2" };
+
 const domainName = "blit.cc";
 
 new BlitWebStack(app, "BlitWebStack", {
   domainName,
+  env,
 });
 
 new BlitZoneStack(app, "BlitZoneStack", {
   domainName,
+  env,
 });
 
 new NavidromeStack(app, "NavidromeStack", {
@@ -22,4 +26,5 @@ new NavidromeStack(app, "NavidromeStack", {
   vpsIp: "149.91.89.243",
   internalRecordName: "xxpk4shiicfjldb50oiasudnas3nd",
   navidromePort: 4533,
+  env,
 });
