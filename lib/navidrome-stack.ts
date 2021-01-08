@@ -18,7 +18,7 @@ export class NavidromeStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { vpsIp, domainName, certificateArn, internalRecordName, navidromePort, recordName = "ns" } = props;
+    const { vpsIp, domainName, certificateArn, internalRecordName, navidromePort, recordName = "nd" } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
       domainName,
