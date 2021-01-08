@@ -10,7 +10,7 @@ interface Props {
   internalRecordName: string;
   navidromePort: number;
   vpsIp: string;
-  zone: route53.PublicHostedZone;
+  zone: route53.IHostedZone;
   recordName?: string;
 }
 

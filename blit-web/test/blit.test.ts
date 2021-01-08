@@ -1,13 +1,18 @@
-import { expect as expectCDK, matchTemplate, MatchStyle } from '@aws-cdk/assert';
-import * as cdk from '@aws-cdk/core';
-import * as Blit from '../lib/blit-stack';
+import { expect as expectCDK, MatchStyle, matchTemplate } from "@aws-cdk/assert";
+import * as cdk from "@aws-cdk/core";
+import * as Blit from "../lib/blit-web-stack";
 
-test('Empty Stack', () => {
-    const app = new cdk.App();
-    // WHEN
-    const stack = new Blit.BlitStack(app, 'MyTestStack');
-    // THEN
-    expectCDK(stack).to(matchTemplate({
-      "Resources": {}
-    }, MatchStyle.EXACT))
+test("Empty Stack", () => {
+  const app = new cdk.App();
+  // WHEN
+  const stack = new Blit.BlitWebStack(app, "MyTestStack", {});
+  // THEN
+  expectCDK(stack).to(
+    matchTemplate(
+      {
+        Resources: {},
+      },
+      MatchStyle.EXACT
+    )
+  );
 });
