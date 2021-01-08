@@ -8,11 +8,10 @@ import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import * as cdk from "@aws-cdk/core";
 
 interface Props {
-  zoneName: string;
   staticPath: string;
-  isSPA?: boolean;
   zone?: route53.PublicHostedZone;
   certificate?: acm.Certificate;
+  isSPA?: boolean;
   bucket?: s3.Bucket;
   certificateArn?: string;
   bucketProps?: Partial<s3.BucketProps>;
@@ -26,46 +25,25 @@ export class StaticSite extends cdk.Construct {
   readonly bucket: s3.Bucket;
   readonly distribution: cloudfront.Distribution;
   readonly record?: route53.ARecord;
-  readonly zone: route53.PublicHostedZone;
-  readonly certificate: acm.Certificate;
   readonly deployment?: s3deploy.BucketDeployment;
 
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name);
-    this.zone = props.zone ?? this.createZone(props);
-
-    if (this.zone) {
-      this.certificate = props.certificate ?? this.createCertificate(props.zoneName, this.zone, props);
-    }
+    const { zone, certificate } = props;
 
     this.bucket = props.bucket ?? this.createBucket();
 
-    this.distribution = this.createDistribution(this.bucket, props.zoneName, this.certificate, props);
+    this.distribution = this.createDistribution(this.bucket, zone?.zoneName, certificate, props);
 
     this.deployment = this.createDeployment(this.bucket, this.distribution, props);
 
-    if (this.zone) {
-      this.record = this.createARecord(this.zone, this.distribution);
+    if (zone) {
+      this.record = this.createARecord(zone, this.distribution);
     }
-  }
-
-  createZone({ zoneName }: Props) {
-    return new route53.PublicHostedZone(this, `Zone`, {
-      zoneName,
-    });
   }
 
   createBucket() {
     return new s3.Bucket(this, `Bucket`);
-  }
-
-  createCertificate(zoneName: string, zone: route53.PublicHostedZone, { certificateProps }: Props) {
-    return new acm.DnsValidatedCertificate(this, `Cert`, {
-      hostedZone: zone,
-      domainName: zoneName,
-      region: "us-east-1",
-      ...certificateProps,
-    });
   }
 
   createDistribution(

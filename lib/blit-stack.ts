@@ -13,6 +13,8 @@ interface BlitStackProps extends cdk.StackProps {
   navidromePort: number;
 }
 
+const staticSite = true;
+
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: BlitStackProps) {
     super(scope, id, props);
@@ -23,23 +25,28 @@ export class BlitStack extends cdk.Stack {
       zoneName,
     });
 
-    const { certificate } = new StaticSite(this, "Blit", {
-      zoneName: "blit.cc",
-      zone,
-      staticPath: "./public",
-      certificateProps: {
-        subjectAlternativeNames: [`*.${zoneName}`],
-      },
-      distributionProps: {
-        priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-      },
+    const certificate = new acm.Certificate(this, `Cert`, {
+      domainName: zoneName,
+      validation: acm.CertificateValidation.fromEmail(),
     });
+
+    if (staticSite) {
+      const { certificate } = new StaticSite(this, "Blit", {
+        zoneName: "blit.cc",
+        zone,
+        staticPath: "./public",
+        distributionProps: {
+          priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+        },
+      });
+    }
+
     new cdk.CfnOutput(this, "BlitCertArn", {
       value: certificate.certificateArn,
     });
 
     this.setupEmail(zoneName, zone);
-    this.setupNavidrome(zone, certificate, props);
+    // this.setupNavidrome(zone, props);
   }
 
   setupEmail(zoneName: string, zone: route53.PublicHostedZone) {
@@ -67,8 +74,7 @@ export class BlitStack extends cdk.Stack {
 
   setupNavidrome(
     zone: route53.PublicHostedZone,
-    certificate: acm.Certificate,
-    { zoneName, internal, navidromePort, vpsHost }: BlitStackProps
+    { zoneName: rootZoneName, internal, navidromePort, vpsHost }: BlitStackProps
   ) {
     // navidrome
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
@@ -79,12 +85,19 @@ export class BlitStack extends cdk.Stack {
       target: vpsTarget,
     });
 
+    const zoneName = `nd.${rootZoneName}`;
+
+    const certificate = new acm.Certificate(this, "NDCert", {
+      domainName: zoneName,
+      validation: acm.CertificateValidation.fromEmail(), // Optional, this is the default
+    });
+
     const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {
       certificate,
-      domainNames: [`nd.${zoneName}`],
+      domainNames: [zoneName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(`${internal}.${zoneName}`, {
+        origin: new origins.HttpOrigin(`${internal}.${rootZoneName}`, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           httpPort: navidromePort,
         }),
@@ -96,7 +109,7 @@ export class BlitStack extends cdk.Stack {
     });
 
     const ndZone = new route53.PublicHostedZone(this, "NDBlitCC", {
-      zoneName: `nd.${zoneName}`,
+      zoneName,
     });
 
     new route53.ARecord(this, "BlitFrontNavidromeRecord", {
