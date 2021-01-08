@@ -32,12 +32,12 @@ export class NavidromeStack extends cdk.Stack {
 
     const domainName = `${recordName}.${rootDomainName}`;
 
-    const certificate = new acm.Certificate(this, "NDCert", {
-      domainName: domainName,
-      validation: acm.CertificateValidation.fromEmail(),
+    const certificate = new acm.DnsValidatedCertificate(this, "NavidromeCert", {
+      hostedZone: zone,
+      domainName,
     });
 
-    const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {
+    const ndDistribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
       certificate,
       domainNames: [domainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
@@ -53,7 +53,7 @@ export class NavidromeStack extends cdk.Stack {
       },
     });
 
-    new route53.ARecord(this, "BlitFrontNavidromeRecord", {
+    new route53.ARecord(this, "NavidromeRecord", {
       zone,
       recordName,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(ndDistribution)),

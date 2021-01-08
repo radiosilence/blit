@@ -16,10 +16,11 @@ export class BlitWebStack extends cdk.Stack {
       domainName,
     });
 
-    const certificate = new acm.Certificate(this, "Cert", {
+    const certificate = new acm.DnsValidatedCertificate(this, "Cert", {
+      hostedZone: zone,
       domainName,
-      validation: acm.CertificateValidation.fromEmail(),
     });
+
     new cdk.CfnOutput(this, "BlitCertArn", {
       value: certificate.certificateArn,
     });
