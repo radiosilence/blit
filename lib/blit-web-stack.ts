@@ -6,21 +6,19 @@ import { StaticSite } from "./static-site";
 
 interface Props extends cdk.StackProps {
   domainName: string;
+  certificateArn: string;
 }
 
 export class BlitWebStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
-    const { domainName } = props;
+    const { domainName, certificateArn } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
       domainName,
     });
 
-    const certificate = new acm.DnsValidatedCertificate(this, "Cert", {
-      hostedZone: zone,
-      domainName,
-    });
+    const certificate = acm.Certificate.fromCertificateArn(this, "BlitWebCert", certificateArn);
 
     new cdk.CfnOutput(this, "BlitCertArn", {
       value: certificate.certificateArn,

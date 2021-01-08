@@ -10,9 +10,9 @@ import * as cdk from "@aws-cdk/core";
 interface Props {
   staticPath: string;
   zone?: route53.IHostedZone;
-  certificate?: acm.Certificate;
+  certificate: acm.ICertificate;
   isSPA?: boolean;
-  bucket?: s3.Bucket;
+  bucket?: s3.IBucket;
   certificateArn?: string;
   bucketProps?: Partial<s3.BucketProps>;
   certificateProps?: Partial<acm.DnsValidatedCertificateProps>;
@@ -22,8 +22,8 @@ interface Props {
 }
 
 export class StaticSite extends cdk.Construct {
-  readonly bucket: s3.Bucket;
-  readonly distribution: cloudfront.Distribution;
+  readonly bucket: s3.IBucket;
+  readonly distribution: cloudfront.IDistribution;
   readonly record?: route53.ARecord;
   readonly deployment?: s3deploy.BucketDeployment;
 
@@ -45,9 +45,9 @@ export class StaticSite extends cdk.Construct {
   }
 
   createDistribution(
-    bucket: s3.Bucket,
+    bucket: s3.IBucket,
     zoneName: string | undefined,
-    certificate: acm.Certificate | undefined,
+    certificate: acm.ICertificate | undefined,
     { distributionProps, behaviourProps: behaviourOptions, isSPA }: Props
   ) {
     const errorResponses = [];
@@ -70,7 +70,7 @@ export class StaticSite extends cdk.Construct {
     });
   }
 
-  createDeployment(bucket: s3.Bucket, distribution: cloudfront.Distribution, { staticPath, deploymentProps }: Props) {
+  createDeployment(bucket: s3.IBucket, distribution: cloudfront.IDistribution, { staticPath, deploymentProps }: Props) {
     return new s3deploy.BucketDeployment(this, `Deployment`, {
       sources: [s3deploy.Source.asset(staticPath)],
       destinationBucket: bucket,
@@ -79,7 +79,7 @@ export class StaticSite extends cdk.Construct {
     });
   }
 
-  createARecord(zone: route53.IHostedZone, distribution: cloudfront.Distribution) {
+  createARecord(zone: route53.IHostedZone, distribution: cloudfront.IDistribution) {
     return new route53.ARecord(this, `ARecord`, {
       zone,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
