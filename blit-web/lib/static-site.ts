@@ -9,7 +9,7 @@ import * as cdk from "@aws-cdk/core";
 
 interface Props {
   staticPath: string;
-  zone?: route53.PublicHostedZone;
+  zone?: route53.IHostedZone;
   certificate?: acm.Certificate;
   isSPA?: boolean;
   bucket?: s3.Bucket;
@@ -79,7 +79,7 @@ export class StaticSite extends cdk.Construct {
     });
   }
 
-  createARecord(zone: route53.PublicHostedZone, distribution: cloudfront.Distribution) {
+  createARecord(zone: route53.IHostedZone, distribution: cloudfront.Distribution) {
     return new route53.ARecord(this, `ARecord`, {
       zone,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
