@@ -2,27 +2,22 @@ import * as acm from "@aws-cdk/aws-certificatemanager";
 import { PriceClass } from "@aws-cdk/aws-cloudfront";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
-import { Navidrome } from "./navidrome";
 import { StaticSite } from "./static-site";
 
 interface BlitStackProps extends cdk.StackProps {
-  vpsIp: string;
-  zoneName: string;
-  internal: string;
-  navidromePort: number;
+  domainName: string;
 }
 
 export class BlitWebStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: BlitStackProps) {
-    super(scope, id, props);
-    const { zoneName } = props;
+  constructor(scope: cdk.Construct, id: string, { domainName }: BlitStackProps) {
+    super(scope, id);
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
-      domainName: "blit.cc",
+      domainName,
     });
 
     const certificate = new acm.Certificate(this, "Cert", {
-      domainName: zone.zoneName,
+      domainName,
       validation: acm.CertificateValidation.fromEmail(),
     });
     new cdk.CfnOutput(this, "BlitCertArn", {
@@ -36,14 +31,6 @@ export class BlitWebStack extends cdk.Stack {
       distributionProps: {
         priceClass: PriceClass.PRICE_CLASS_100,
       },
-    });
-
-    new Navidrome(this, "Navidrome", {
-      rootZoneName: zoneName,
-      internalRecordName: props.internal,
-      navidromePort: props.navidromePort,
-      vpsIp: props.vpsIp,
-      zone,
     });
   }
 }
