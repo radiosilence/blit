@@ -6,7 +6,7 @@ interface Props extends cdk.StackProps {
   domainName: string;
 }
 
-export class TestCertStack extends cdk.Stack {
+export class BlitCertStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
     const { domainName } = props;
@@ -15,10 +15,10 @@ export class TestCertStack extends cdk.Stack {
       domainName,
     });
 
-    new acm.DnsValidatedCertificate(this, "TestBlitCert", {
+    new acm.DnsValidatedCertificate(this, "BlitWildcardCert", {
       hostedZone: zone,
       domainName: "blit.cc",
-      subjectAlternativeNames: ["poop.blit.cc", "butt.blit.cc"],
+      subjectAlternativeNames: ["*.blit.cc", "ass.blit.cc"],
     });
   }
 }

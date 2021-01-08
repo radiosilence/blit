@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from "@aws-cdk/core";
 import "source-map-support/register";
+import { BlitCertStack } from "../lib/blit-cert-stack";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
 import { NavidromeStack } from "../lib/navidrome-stack";
-import { TestCertStack } from "../lib/test-cert-stack";
 
 const app = new cdk.App();
 
@@ -33,7 +33,7 @@ new NavidromeStack(app, "NavidromeStack", {
   env,
 });
 
-new TestCertStack(app, "TestCertStack", {
+new BlitCertStack(app, "BlitCertStack", {
   domainName,
   env,
 });
