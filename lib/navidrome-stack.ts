@@ -5,7 +5,7 @@ import * as route53 from "@aws-cdk/aws-route53";
 import * as alias from "@aws-cdk/aws-route53-targets";
 import * as cdk from "@aws-cdk/core";
 
-interface Props {
+interface Props extends cdk.StackProps {
   domainName: string;
   internalRecordName: string;
   navidromePort: number;
@@ -15,7 +15,7 @@ interface Props {
 
 export class NavidromeStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
-    super(parent, name);
+    super(parent, name, props);
     // navidrome
     const { vpsIp, domainName: rootDomainName, internalRecordName, navidromePort, recordName = "ns" } = props;
 

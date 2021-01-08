@@ -1,15 +1,16 @@
 import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
 
-interface Props {
+interface Props extends cdk.StackProps {
   domainName: string;
 }
 
 export class BlitZoneStack extends cdk.Stack {
   readonly zone: route53.PublicHostedZone;
 
-  constructor(parent: cdk.Construct, name: string, { domainName }: Props) {
+  constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name);
+    const { domainName } = props;
 
     this.zone = new route53.PublicHostedZone(this, "BlitZone", {
       zoneName: domainName,
