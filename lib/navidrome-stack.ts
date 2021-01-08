@@ -31,12 +31,12 @@ export class NavidromeStack extends cdk.Stack {
       target: vpsTarget,
     });
 
-    const ndDomainName = `${recordName}.${domainName}`;
+    const fullDomainName = `${recordName}.${domainName}`;
     const certificate = acm.Certificate.fromCertificateArn(this, "BlitWebCert", certificateArn);
 
-    const ndDistribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
+    const distribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
       certificate,
-      domainNames: [ndDomainName],
+      domainNames: [fullDomainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
         origin: new origins.HttpOrigin(`${internalRecordName}.${domainName}`, {
@@ -53,7 +53,7 @@ export class NavidromeStack extends cdk.Stack {
     new route53.ARecord(this, "NavidromeRecord", {
       zone,
       recordName,
-      target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(ndDistribution)),
+      target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
     });
   }
 }
