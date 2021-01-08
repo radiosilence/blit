@@ -17,7 +17,7 @@ export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: BlitStackProps) {
     super(scope, id, props);
 
-    const { zoneName, internal, navidromePort } = props;
+    const { zoneName } = props;
 
     const { zone, certificate } = new StaticSite(this, "Blit", {
       zoneName: "blit.cc",

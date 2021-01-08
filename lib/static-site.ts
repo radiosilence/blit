@@ -32,35 +32,35 @@ export class StaticSite extends cdk.Construct {
 
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name);
-    this.zone = props.zone ?? this.createZone(name, props);
+    this.zone = props.zone ?? this.createZone(props);
 
     if (this.zone) {
-      this.certificate = props.certificate ?? this.createCertificate(name, props.zoneName, this.zone, props);
+      this.certificate = props.certificate ?? this.createCertificate(props.zoneName, this.zone, props);
     }
 
-    this.bucket = props.bucket ?? this.createBucket(name);
+    this.bucket = props.bucket ?? this.createBucket();
 
-    this.distribution = this.createDistribution(name, this.bucket, props.zoneName, this.certificate, props);
+    this.distribution = this.createDistribution(this.bucket, props.zoneName, this.certificate, props);
 
-    this.deployment = this.createDeployment(name, this.bucket, this.distribution, props);
+    this.deployment = this.createDeployment(this.bucket, this.distribution, props);
 
     if (this.zone) {
-      this.record = this.createARecord(name, this.zone, this.distribution);
+      this.record = this.createARecord(this.zone, this.distribution);
     }
   }
 
-  createZone(name: string, { zoneName }: Props) {
-    return new route53.PublicHostedZone(this, `${name}Zone`, {
+  createZone({ zoneName }: Props) {
+    return new route53.PublicHostedZone(this, `Zone`, {
       zoneName,
     });
   }
 
-  createBucket(name: string) {
-    return new s3.Bucket(this, `${name}Bucket`);
+  createBucket() {
+    return new s3.Bucket(this, `Bucket`);
   }
 
-  createCertificate(name: string, zoneName: string, zone: route53.PublicHostedZone, { certificateProps }: Props) {
-    return new acm.DnsValidatedCertificate(this, `${name}Cert`, {
+  createCertificate(zoneName: string, zone: route53.PublicHostedZone, { certificateProps }: Props) {
+    return new acm.DnsValidatedCertificate(this, `Cert`, {
       hostedZone: zone,
       domainName: zoneName,
       region: "us-east-1",
@@ -69,7 +69,6 @@ export class StaticSite extends cdk.Construct {
   }
 
   createDistribution(
-    name: string,
     bucket: s3.Bucket,
     zoneName: string | undefined,
     certificate: acm.Certificate | undefined,
@@ -80,7 +79,7 @@ export class StaticSite extends cdk.Construct {
       errorResponses.push({ httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" });
     }
 
-    return new cloudfront.Distribution(this, `${name}Distribution`, {
+    return new cloudfront.Distribution(this, `Distribution`, {
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
         origin: new origins.S3Origin(bucket),
@@ -95,13 +94,8 @@ export class StaticSite extends cdk.Construct {
     });
   }
 
-  createDeployment(
-    name: string,
-    bucket: s3.Bucket,
-    distribution: cloudfront.Distribution,
-    { staticPath, deploymentProps }: Props
-  ) {
-    return new s3deploy.BucketDeployment(this, `${name}Deployment`, {
+  createDeployment(bucket: s3.Bucket, distribution: cloudfront.Distribution, { staticPath, deploymentProps }: Props) {
+    return new s3deploy.BucketDeployment(this, `Deployment`, {
       sources: [s3deploy.Source.asset(staticPath)],
       destinationBucket: bucket,
       distribution,
@@ -109,8 +103,8 @@ export class StaticSite extends cdk.Construct {
     });
   }
 
-  createARecord(name: string, zone: route53.PublicHostedZone, distribution: cloudfront.Distribution) {
-    return new route53.ARecord(this, `${name}ARecord`, {
+  createARecord(zone: route53.PublicHostedZone, distribution: cloudfront.Distribution) {
+    return new route53.ARecord(this, `ARecord`, {
       zone,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
     });
