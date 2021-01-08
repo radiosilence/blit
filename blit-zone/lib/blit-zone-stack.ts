@@ -8,16 +8,19 @@ interface Props {
 export class BlitZoneStack extends cdk.Stack {
   readonly zone: route53.PublicHostedZone;
 
-  constructor(parent: cdk.Construct, name: string, props: Props) {
+  constructor(parent: cdk.Construct, name: string, { zoneName }: Props) {
     super(parent, name);
-    const { zoneName } = props;
 
     this.zone = new route53.PublicHostedZone(this, "BlitZone", {
       zoneName,
     });
+
+    this.setupEmail(zoneName);
   }
 
-  setupEmail(zoneName: string, zone: route53.PublicHostedZone) {
+  setupEmail(zoneName: string) {
+    const { zone } = this;
+
     new route53.TxtRecord(this, "BlitSPF", {
       zone,
       values: ["v=spf1 include:spf.messagingengine.com ?all", "hi mum"],
