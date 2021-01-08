@@ -19,12 +19,22 @@ export class BlitStack extends cdk.Stack {
 
     const { zoneName } = props;
 
-    const { zone, certificate } = new StaticSite(this, "Blit", {
+    const zone = new route53.PublicHostedZone(this, "BlitCC", {
+      zoneName,
+    });
+
+    const certificate = new acm.DnsValidatedCertificate(this, "BlitCert", {
+      hostedZone: zone,
+      domainName: zoneName,
+      subjectAlternativeNames: [`*.${zoneName}`],
+      region: "us-east-1",
+    });
+
+    new StaticSite(this, "Blit", {
       zoneName: "blit.cc",
       staticPath: "./public",
-      certificateProps: {
-        subjectAlternativeNames: [`*.${zoneName}`],
-      },
+      zone,
+      certificate,
       distributionProps: {
         priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       },
