@@ -31,7 +31,7 @@ export class Navidrome extends cdk.Construct {
 
     const certificate = new acm.Certificate(this, "NDCert", {
       domainName: zoneName,
-      validation: acm.CertificateValidation.fromEmail(), // Optional, this is the default
+      validation: acm.CertificateValidation.fromEmail(),
     });
 
     const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {

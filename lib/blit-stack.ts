@@ -10,7 +10,7 @@ interface BlitStackProps extends cdk.StackProps {
   navidromePort: number;
 }
 
-const dostuff = false;
+const zoneExists = false;
 
 export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: BlitStackProps) {
@@ -21,7 +21,7 @@ export class BlitStack extends cdk.Stack {
       zoneName,
     });
 
-    if (dostuff) {
+    if (zoneExists) {
       new BlitStatic(this, "Static", { zone });
 
       new Navidrome(this, "Navidrome", {
