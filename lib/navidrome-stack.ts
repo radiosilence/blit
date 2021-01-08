@@ -6,19 +6,22 @@ import * as alias from "@aws-cdk/aws-route53-targets";
 import * as cdk from "@aws-cdk/core";
 
 interface Props {
-  rootZoneName: string;
+  domainName: string;
   internalRecordName: string;
   navidromePort: number;
   vpsIp: string;
-  zone: route53.IHostedZone;
   recordName?: string;
 }
 
-export class Navidrome extends cdk.Construct {
+export class NavidromeStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name);
     // navidrome
-    const { vpsIp, rootZoneName, zone, internalRecordName, navidromePort, recordName = "ns" } = props;
+    const { vpsIp, domainName: rootDomainName, internalRecordName, navidromePort, recordName = "ns" } = props;
+
+    const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
+      domainName: rootDomainName,
+    });
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsIp);
 
     new route53.ARecord(this, "BlitInternal", {
@@ -27,19 +30,19 @@ export class Navidrome extends cdk.Construct {
       target: vpsTarget,
     });
 
-    const zoneName = `${recordName}.${rootZoneName}`;
+    const domainName = `${recordName}.${rootDomainName}`;
 
     const certificate = new acm.Certificate(this, "NDCert", {
-      domainName: zoneName,
+      domainName: domainName,
       validation: acm.CertificateValidation.fromEmail(),
     });
 
     const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {
       certificate,
-      domainNames: [zoneName],
+      domainNames: [domainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(`${internalRecordName}.${rootZoneName}`, {
+        origin: new origins.HttpOrigin(`${internalRecordName}.${rootDomainName}`, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           httpPort: navidromePort,
         }),
@@ -50,22 +53,10 @@ export class Navidrome extends cdk.Construct {
       },
     });
 
-    const ndZone = new route53.PublicHostedZone(this, "NDBlitCC", {
-      zoneName,
-    });
-
     new route53.ARecord(this, "BlitFrontNavidromeRecord", {
-      zone: ndZone,
+      zone,
+      recordName,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(ndDistribution)),
     });
-
-    // Delegate to subdomain
-    if (ndZone.hostedZoneNameServers) {
-      new route53.ZoneDelegationRecord(this, "BlitFrontNdDelegations", {
-        zone,
-        recordName,
-        nameServers: ndZone.hostedZoneNameServers,
-      });
-    }
   }
 }

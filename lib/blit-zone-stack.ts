@@ -2,23 +2,23 @@ import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
 
 interface Props {
-  zoneName: string;
+  domainName: string;
 }
 
 export class BlitZoneStack extends cdk.Stack {
   readonly zone: route53.PublicHostedZone;
 
-  constructor(parent: cdk.Construct, name: string, { zoneName }: Props) {
+  constructor(parent: cdk.Construct, name: string, { domainName }: Props) {
     super(parent, name);
 
     this.zone = new route53.PublicHostedZone(this, "BlitZone", {
-      zoneName,
+      zoneName: domainName,
     });
 
-    this.setupEmail(zoneName);
+    this.setupEmail(domainName);
   }
 
-  setupEmail(zoneName: string) {
+  setupEmail(domainName: string) {
     const { zone } = this;
 
     new route53.TxtRecord(this, "BlitSPF", {
@@ -38,7 +38,7 @@ export class BlitZoneStack extends cdk.Stack {
       new route53.CnameRecord(this, `BlitDKIM${n}`, {
         zone,
         recordName: `fm${n}.domainkey`,
-        domainName: `fm${n}.${zoneName}.dkim.fmhosted.com.`,
+        domainName: `fm${n}.${domainName}.dkim.fmhosted.com.`,
       });
     }
   }
