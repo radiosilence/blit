@@ -4,6 +4,7 @@ import "source-map-support/register";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
 import { NavidromeStack } from "../lib/navidrome-stack";
+import { TestCertStack } from "../lib/test-cert-stack";
 
 const app = new cdk.App();
 
@@ -29,5 +30,10 @@ new NavidromeStack(app, "NavidromeStack", {
   vpsIp: "149.91.89.243",
   internalRecordName: "xxpk4shiicfjldb50oiasudnas3nd",
   navidromePort: 4533,
+  env,
+});
+
+new TestCertStack(app, "TestCertStack", {
+  domainName,
   env,
 });
