@@ -7,7 +7,6 @@ import * as cdk from "@aws-cdk/core";
 
 interface Props extends cdk.StackProps {
   domainName: string;
-  certificateArn: string;
   internalRecordName: string;
   navidromePort: number;
   vpsIp: string;
@@ -18,11 +17,12 @@ export class NavidromeStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { vpsIp, domainName, certificateArn, internalRecordName, navidromePort, recordName = "nd" } = props;
+    const { vpsIp, domainName, internalRecordName, navidromePort, recordName = "nd" } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
       domainName,
     });
+
     const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsIp);
 
     new route53.ARecord(this, "BlitInternal", {
@@ -32,7 +32,12 @@ export class NavidromeStack extends cdk.Stack {
     });
 
     const fullDomainName = `${recordName}.${domainName}`;
-    const certificate = acm.Certificate.fromCertificateArn(this, "BlitWebCert", certificateArn);
+
+    const certificate = new acm.DnsValidatedCertificate(this, "NavidromeCert", {
+      domainName: fullDomainName,
+      hostedZone: zone,
+      region: "us-east-1",
+    });
 
     const distribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
       certificate,
