@@ -3,9 +3,8 @@ import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as alias from "@aws-cdk/aws-route53-targets";
-import * as s3 from "@aws-cdk/aws-s3";
-import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import * as cdk from "@aws-cdk/core";
+import { StaticSite } from "./static-site";
 
 interface BlitStackProps extends cdk.StackProps {
   vpsHost: string;
@@ -18,10 +17,17 @@ export class BlitStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: BlitStackProps) {
     super(scope, id, props);
 
-    const { vpsHost, zoneName, internal, navidromePort } = props;
+    const { zoneName, internal, navidromePort } = props;
 
-    const zone = new route53.PublicHostedZone(this, "BlitCC", {
-      zoneName,
+    const { zone, certificate } = new StaticSite(this, "Blit", {
+      zoneName: "blit.cc",
+      staticPath: "./public",
+      certificateProps: {
+        subjectAlternativeNames: [`*.${zoneName}`],
+      },
+      distributionProps: {
+        priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+      },
     });
 
     new cdk.CfnOutput(this, "BlitZone", {
@@ -29,14 +35,15 @@ export class BlitStack extends cdk.Stack {
       exportName: "BlitZone",
     });
 
-    const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
-
-    new route53.ARecord(this, "BlitInternal", {
-      zone,
-      recordName: internal,
-      target: vpsTarget,
+    new cdk.CfnOutput(this, "BlitCertArn", {
+      value: certificate.certificateArn,
     });
 
+    this.setupEmail(zoneName, zone);
+    this.setupNavidrome(zone, certificate, props);
+  }
+
+  setupEmail(zoneName: string, zone: route53.PublicHostedZone) {
     new route53.TxtRecord(this, "BlitSPF", {
       zone,
       values: ["v=spf1 include:spf.messagingengine.com ?all", "hi mum"],
@@ -57,44 +64,22 @@ export class BlitStack extends cdk.Stack {
         domainName: `fm${n}.${zoneName}.dkim.fmhosted.com.`,
       });
     }
+  }
 
-    const certificate = new acm.DnsValidatedCertificate(this, "BlitCert", {
-      hostedZone: zone,
-      domainName: zoneName,
-      subjectAlternativeNames: [`*.${zoneName}`],
-      region: "us-east-1",
-    });
-
-    new cdk.CfnOutput(this, "BlitCertArn", {
-      value: certificate.certificateArn,
-    });
-
-    const bucket = new s3.Bucket(this, "BlitBucket");
-
-    const distribution = new cloudfront.Distribution(this, "BlitFront", {
-      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-      defaultBehavior: {
-        origin: new origins.S3Origin(bucket),
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      },
-      domainNames: [zoneName],
-      defaultRootObject: "index.html",
-      // errorResponses: [{ httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" }],
-      certificate,
-    });
-
-    new s3deploy.BucketDeployment(this, "BlitDeployment", {
-      sources: [s3deploy.Source.asset("./public")],
-      destinationBucket: bucket,
-      distribution,
-    });
-
-    new route53.ARecord(this, "BlitFrontRecord", {
-      zone,
-      target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
-    });
-
+  setupNavidrome(
+    zone: route53.PublicHostedZone,
+    certificate: acm.Certificate,
+    { zoneName, internal, navidromePort, vpsHost }: BlitStackProps
+  ) {
     // navidrome
+    const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsHost);
+
+    new route53.ARecord(this, "BlitInternal", {
+      zone,
+      recordName: internal,
+      target: vpsTarget,
+    });
+
     const ndDistribution = new cloudfront.Distribution(this, "BlitFrontNavidrome", {
       certificate,
       domainNames: [`nd.${zoneName}`],
