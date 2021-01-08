@@ -48,6 +48,7 @@ export class StaticSite extends cdk.Construct {
     { distributionProps, behaviourProps, isSPA }: Props
   ) {
     const errorResponses = [];
+
     if (isSPA) {
       errorResponses.push({ httpStatus: 404, responseHttpStatus: 200, responsePagePath: "index.html" });
     }
