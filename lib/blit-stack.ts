@@ -31,8 +31,7 @@ export class BlitStack extends cdk.Stack {
     });
 
     if (staticSite) {
-      const { certificate } = new StaticSite(this, "Blit", {
-        zoneName: "blit.cc",
+      new StaticSite(this, "Blit", {
         zone,
         staticPath: "./public",
         distributionProps: {
