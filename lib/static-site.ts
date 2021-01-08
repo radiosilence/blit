@@ -32,9 +32,7 @@ export class StaticSite extends cdk.Construct {
     const { zone, certificate } = props;
 
     this.bucket = props.bucket ?? this.createBucket();
-
     this.distribution = this.createDistribution(this.bucket, zone?.zoneName, certificate, props);
-
     this.deployment = this.createDeployment(this.bucket, this.distribution, props);
 
     if (zone) {
