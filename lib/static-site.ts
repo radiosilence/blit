@@ -9,13 +9,10 @@ import * as cdk from "@aws-cdk/core";
 
 interface Props {
   staticPath: string;
-  zone?: route53.IHostedZone;
-  certificate: acm.ICertificate;
   isSPA?: boolean;
+  certificate?: acm.ICertificate;
+  zone?: route53.IHostedZone;
   bucket?: s3.IBucket;
-  certificateArn?: string;
-  bucketProps?: Partial<s3.BucketProps>;
-  certificateProps?: Partial<acm.DnsValidatedCertificateProps>;
   distributionProps?: Partial<cloudfront.DistributionProps>;
   deploymentProps?: Partial<s3deploy.BucketDeploymentProps>;
   behaviourProps?: Partial<cloudfront.BehaviorOptions>;
@@ -23,7 +20,7 @@ interface Props {
 
 export class StaticSite extends cdk.Construct {
   readonly bucket: s3.IBucket;
-  readonly distribution: cloudfront.IDistribution;
+  readonly distribution: cloudfront.Distribution;
   readonly record?: route53.ARecord;
   readonly deployment?: s3deploy.BucketDeployment;
 
@@ -48,7 +45,7 @@ export class StaticSite extends cdk.Construct {
     bucket: s3.IBucket,
     zoneName: string | undefined,
     certificate: acm.ICertificate | undefined,
-    { distributionProps, behaviourProps: behaviourOptions, isSPA }: Props
+    { distributionProps, behaviourProps, isSPA }: Props
   ) {
     const errorResponses = [];
     if (isSPA) {
@@ -60,7 +57,7 @@ export class StaticSite extends cdk.Construct {
       defaultBehavior: {
         origin: new origins.S3Origin(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        ...behaviourOptions,
+        ...behaviourProps,
       },
       domainNames: zoneName ? [zoneName] : undefined,
       defaultRootObject: "index.html",
