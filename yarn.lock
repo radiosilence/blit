@@ -1056,6 +1056,13 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.1.6.tgz#f4b1efa784e8db479cdb8b14403e2144b1e9ff03"
   integrity sha512-6gOkRe7OIioWAXfnO/2lFiv+SJichKVSys1mSsgyrYHSEjk8Ctv4tSR/Odvnu+HWlH2C8j53dahU03XmQdd5fA==
 
+"@types/source-map-support@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.5.3.tgz#acb6b3e499c20692552d16934c16162c84594e16"
+  integrity sha512-fvjMjVH8Rmokw2dWh1dkj90iX5R8FPjeZzjNH+6eFXReh0QnHFf1YBl3B0CF0RohIAA3SDRJsGeeUWKl6d7HqA==
+  dependencies:
+    source-map "^0.6.0"
+
 "@types/stack-utils@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
