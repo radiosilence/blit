@@ -2,7 +2,7 @@ import * as acm from "@aws-cdk/aws-certificatemanager";
 import { PriceClass } from "@aws-cdk/aws-cloudfront";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
-import { StaticSite } from "./static-site";
+import { StaticWeb } from "cdk-static-web";
 
 interface Props extends cdk.StackProps {
   domainName: string;
@@ -23,7 +23,7 @@ export class BlitWebStack extends cdk.Stack {
       region: "us-east-1",
     });
 
-    new StaticSite(this, "Blit", {
+    new StaticWeb(this, "Blit", {
       zone,
       certificate,
       staticPath: "./public",
