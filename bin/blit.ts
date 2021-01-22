@@ -2,6 +2,7 @@
 import * as cdk from "@aws-cdk/core";
 import "source-map-support/register";
 import { BlitCertStack } from "../lib/blit-cert-stack";
+import { BlitFilesStack } from "../lib/blit-files.stack";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
 import { NavidromeStack } from "../lib/navidrome-stack";
@@ -27,6 +28,12 @@ new NavidromeStack(app, "NavidromeStack", {
   vpsIp: "149.91.89.243",
   internalRecordName: "xxpk4shiicfjldb50oiasudnas3nd",
   navidromePort: 4533,
+  env,
+});
+
+new BlitFilesStack(app, "BlitFilesStack", {
+  domainName,
+  bucketArn: "arn:aws:s3:::blit-files",
   env,
 });
 
