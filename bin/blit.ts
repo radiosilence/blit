@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from "@aws-cdk/core";
 import "source-map-support/register";
-import { BlitCertStack } from "../lib/blit-cert-stack";
 import { BlitFilesStack } from "../lib/blit-files.stack";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
@@ -34,10 +33,5 @@ new NavidromeStack(app, "NavidromeStack", {
 new BlitFilesStack(app, "BlitFilesStack", {
   domainName,
   bucketArn: "arn:aws:s3:::blit-files",
-  env,
-});
-
-new BlitCertStack(app, "BlitCertStack", {
-  domainName,
   env,
 });
