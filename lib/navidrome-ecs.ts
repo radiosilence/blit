@@ -10,13 +10,14 @@ import * as cdk from "@aws-cdk/core";
 interface Props extends cdk.StackProps {
   domainName: string;
   recordName: string;
+  navidromePort?: number;
 }
 
 export class NavidromeECSStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { domainName, recordName = "nd" } = props;
+    const { domainName, recordName = "nd", navidromePort = 4_533 } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "ParentZone", {
       domainName,
@@ -42,16 +43,12 @@ export class NavidromeECSStack extends cdk.Stack {
 
     const dataFileSystem = new efs.FileSystem(this, "DataFileSystem", {
       vpc,
-      encrypted: true, // file system is not encrypted by default
-      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
-      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+      encrypted: true,
     });
 
     const musicFileSystem = new efs.FileSystem(this, "MusicFileSystem", {
       vpc,
-      encrypted: true, // file system is not encrypted by default
-      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
-      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+      encrypted: true,
     });
 
     const dataVolumeConfig: ecs.Volume = {
@@ -67,9 +64,9 @@ export class NavidromeECSStack extends cdk.Stack {
         fileSystemId: musicFileSystem.fileSystemId,
       },
     };
-
+    const enableVolumes = false;
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef", {
-      volumes: [dataVolumeConfig, musicVolumeConfig],
+      volumes: enableVolumes ? [dataVolumeConfig, musicVolumeConfig] : [],
     });
 
     const container = taskDefinition.addContainer("web", {
@@ -85,22 +82,24 @@ export class NavidromeECSStack extends cdk.Stack {
     });
 
     container.addPortMappings({
-      containerPort: 4533,
-      hostPort: 4533,
+      containerPort: navidromePort,
+      hostPort: navidromePort,
     });
 
-    container.addMountPoints(
-      {
-        readOnly: false,
-        containerPath: "/data",
-        sourceVolume: dataVolumeConfig.name,
-      },
-      {
-        readOnly: true,
-        containerPath: "/music",
-        sourceVolume: musicVolumeConfig.name,
-      }
-    );
+    if (enableVolumes) {
+      container.addMountPoints(
+        {
+          readOnly: false,
+          containerPath: "/data",
+          sourceVolume: dataVolumeConfig.name,
+        },
+        {
+          readOnly: true,
+          containerPath: "/music",
+          sourceVolume: musicVolumeConfig.name,
+        }
+      );
+    }
 
     const service = new ecs.Ec2Service(this, "Service", {
       cluster,
@@ -117,10 +116,14 @@ export class NavidromeECSStack extends cdk.Stack {
     listener.addTargets("ECS1", {
       port: 443,
       protocol: elbv2.ApplicationProtocol.HTTPS,
+      healthCheck: {
+        port: `HTTPS:${navidromePort}`,
+        healthyHttpCodes: "302,200",
+      },
       targets: [
         service.loadBalancerTarget({
-          containerPort: 4533,
-          containerName: "web",
+          containerPort: navidromePort,
+          containerName: container.containerName,
         }),
       ],
     });
