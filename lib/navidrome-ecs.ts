@@ -38,6 +38,7 @@ export class NavidromeECSStack extends cdk.Stack {
 
     cluster.addCapacity("DefaultAutoScalingGroupCapacity", {
       instanceType: new ec2.InstanceType("t2.micro"),
+      blockDevices: [],
       desiredCapacity: 1,
     });
 
@@ -72,6 +73,7 @@ export class NavidromeECSStack extends cdk.Stack {
     const container = taskDefinition.addContainer("web", {
       logging: new ecs.AwsLogDriver({ streamPrefix: "NavidromeWeb" }),
       image: ecs.ContainerImage.fromRegistry("deluan/navidrome"),
+
       memoryLimitMiB: 900,
       environment: {
         ND_SCANINTERVAL: "1m",
@@ -114,14 +116,16 @@ export class NavidromeECSStack extends cdk.Stack {
     });
 
     listener.addTargets("ECS1", {
-      port: 443,
-      protocol: elbv2.ApplicationProtocol.HTTPS,
+      port: 80,
+      protocol: elbv2.ApplicationProtocol.HTTP,
       healthCheck: {
-        port: `HTTPS:${navidromePort}`,
-        healthyHttpCodes: "302,200",
+        port: `${navidromePort}`,
+        protocol: elbv2.Protocol.HTTP,
+        healthyHttpCodes: "200,301,302",
       },
       targets: [
         service.loadBalancerTarget({
+          protocol: ecs.Protocol.TCP,
           containerPort: navidromePort,
           containerName: container.containerName,
         }),
