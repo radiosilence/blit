@@ -1,6 +1,7 @@
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as ecs from "@aws-cdk/aws-ecs";
+import * as efs from "@aws-cdk/aws-efs";
 import * as elbv2 from "@aws-cdk/aws-elasticloadbalancingv2";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as alias from "@aws-cdk/aws-route53-targets";
@@ -28,7 +29,7 @@ export class NavidromeECSStack extends cdk.Stack {
       hostedZone: zone,
     });
 
-    const vpc = new ec2.Vpc(this, "TheVPC");
+    const vpc = new ec2.Vpc(this, "TheVPC", {});
 
     const cluster = new ecs.Cluster(this, "Cluster", {
       vpc,
@@ -39,7 +40,7 @@ export class NavidromeECSStack extends cdk.Stack {
       desiredCapacity: 1,
     });
 
-    const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef");
+    const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef", {});
 
     const container = taskDefinition.addContainer("web", {
       logging: new ecs.AwsLogDriver({ streamPrefix: "NavidromeWeb" }),
@@ -53,6 +54,19 @@ export class NavidromeECSStack extends cdk.Stack {
       },
     });
 
+    const dataFileSystem = new efs.FileSystem(this, "DataFileSystem", {
+      vpc,
+      encrypted: true, // file system is not encrypted by default
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+    });
+    const musicFileSystem = new efs.FileSystem(this, "MusicFileSystem", {
+      vpc,
+      encrypted: true, // file system is not encrypted by default
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+    });
+
     container.addPortMappings({
       containerPort: 4533,
       hostPort: 4533,
@@ -61,7 +75,7 @@ export class NavidromeECSStack extends cdk.Stack {
     taskDefinition.addVolume({
       name: "data",
       efsVolumeConfiguration: {
-        fileSystemId: "EFS",
+        fileSystemId: dataFileSystem.fileSystemId,
       },
     });
 
@@ -74,7 +88,7 @@ export class NavidromeECSStack extends cdk.Stack {
     taskDefinition.addVolume({
       name: "music",
       efsVolumeConfiguration: {
-        fileSystemId: "EFS",
+        fileSystemId: musicFileSystem.fileSystemId,
       },
     });
 
