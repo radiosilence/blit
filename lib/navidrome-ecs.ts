@@ -26,7 +26,6 @@ export class NavidromeECSStack extends cdk.Stack {
     const certificate = new acm.DnsValidatedCertificate(this, "Cert", {
       domainName: fullDomainName,
       hostedZone: zone,
-      region: "us-east-1",
     });
 
     const vpc = new ec2.Vpc(this, "TheVPC");
@@ -43,6 +42,7 @@ export class NavidromeECSStack extends cdk.Stack {
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef");
 
     const container = taskDefinition.addContainer("web", {
+      logging: new ecs.AwsLogDriver({ streamPrefix: "NavidromeWeb" }),
       image: ecs.ContainerImage.fromRegistry("deluan/navidrome"),
       memoryLimitMiB: 900,
       environment: {
@@ -58,6 +58,32 @@ export class NavidromeECSStack extends cdk.Stack {
       hostPort: 4533,
     });
 
+    taskDefinition.addVolume({
+      name: "data",
+      efsVolumeConfiguration: {
+        fileSystemId: "EFS",
+      },
+    });
+
+    container.addMountPoints({
+      readOnly: false,
+      containerPath: "/data",
+      sourceVolume: "data",
+    });
+
+    taskDefinition.addVolume({
+      name: "music",
+      efsVolumeConfiguration: {
+        fileSystemId: "EFS",
+      },
+    });
+
+    container.addMountPoints({
+      readOnly: true,
+      containerPath: "/music",
+      sourceVolume: "music",
+    });
+
     const service = new ecs.Ec2Service(this, "Service", {
       cluster,
       taskDefinition,
@@ -66,7 +92,7 @@ export class NavidromeECSStack extends cdk.Stack {
     const lb = new elbv2.ApplicationLoadBalancer(this, "LB", { vpc, internetFacing: true });
     const listener = lb.addListener("Listener", {
       port: 443,
-      certificates: [certificate],
+      certificates: [elbv2.ListenerCertificate.fromCertificateManager(certificate)],
       sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
 
@@ -86,30 +112,5 @@ export class NavidromeECSStack extends cdk.Stack {
       recordName,
       target: route53.RecordTarget.fromAlias(new alias.LoadBalancerTarget(lb)),
     });
-
-    // const volume = ecs.Volume("Volume", {
-    //   efsVolumeConfiguration: ec2.EfsVolumeConfiguration({
-    //     fileSystemId: "EFS",
-    //     // ... other options here ...
-    //   }),
-    // });
-
-    // taskDefinition.addVolume(volume);
-
-    // const distribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
-    //   certificate,
-    //   domainNames: [fullDomainName],
-    //   priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-    //   defaultBehavior: {
-    //     origin: new origins.HttpOrigin(`${internalRecordName}.${domainName}`, {
-    //       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-    //       httpPort: navidromePort,
-    //     }),
-    //     cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-    //     originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
-    //     allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-    //     smoothStreaming: true,
-    //   },
-    // });
   }
 }
