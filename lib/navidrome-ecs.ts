@@ -40,7 +40,37 @@ export class NavidromeECSStack extends cdk.Stack {
       desiredCapacity: 1,
     });
 
-    const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef", {});
+    const dataFileSystem = new efs.FileSystem(this, "DataFileSystem", {
+      vpc,
+      encrypted: true, // file system is not encrypted by default
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+    });
+
+    const musicFileSystem = new efs.FileSystem(this, "MusicFileSystem", {
+      vpc,
+      encrypted: true, // file system is not encrypted by default
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
+    });
+
+    const dataVolumeConfig: ecs.Volume = {
+      name: "data",
+      efsVolumeConfiguration: {
+        fileSystemId: dataFileSystem.fileSystemId,
+      },
+    };
+
+    const musicVolumeConfig: ecs.Volume = {
+      name: "music",
+      efsVolumeConfiguration: {
+        fileSystemId: musicFileSystem.fileSystemId,
+      },
+    };
+
+    const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef", {
+      volumes: [dataVolumeConfig, musicVolumeConfig],
+    });
 
     const container = taskDefinition.addContainer("web", {
       logging: new ecs.AwsLogDriver({ streamPrefix: "NavidromeWeb" }),
@@ -54,49 +84,23 @@ export class NavidromeECSStack extends cdk.Stack {
       },
     });
 
-    const dataFileSystem = new efs.FileSystem(this, "DataFileSystem", {
-      vpc,
-      encrypted: true, // file system is not encrypted by default
-      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
-      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
-    });
-    const musicFileSystem = new efs.FileSystem(this, "MusicFileSystem", {
-      vpc,
-      encrypted: true, // file system is not encrypted by default
-      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // files are not transitioned to infrequent access (IA) storage by default
-      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE, // default
-    });
-
     container.addPortMappings({
       containerPort: 4533,
       hostPort: 4533,
     });
 
-    taskDefinition.addVolume({
-      name: "data",
-      efsVolumeConfiguration: {
-        fileSystemId: dataFileSystem.fileSystemId,
+    container.addMountPoints(
+      {
+        readOnly: false,
+        containerPath: "/data",
+        sourceVolume: dataVolumeConfig.name,
       },
-    });
-
-    container.addMountPoints({
-      readOnly: false,
-      containerPath: "/data",
-      sourceVolume: "data",
-    });
-
-    taskDefinition.addVolume({
-      name: "music",
-      efsVolumeConfiguration: {
-        fileSystemId: musicFileSystem.fileSystemId,
-      },
-    });
-
-    container.addMountPoints({
-      readOnly: true,
-      containerPath: "/music",
-      sourceVolume: "music",
-    });
+      {
+        readOnly: true,
+        containerPath: "/music",
+        sourceVolume: musicVolumeConfig.name,
+      }
+    );
 
     const service = new ecs.Ec2Service(this, "Service", {
       cluster,
