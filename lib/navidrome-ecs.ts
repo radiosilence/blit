@@ -42,7 +42,7 @@ export class NavidromeECSStack extends cdk.Stack {
 
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef");
 
-    const container = taskDefinition.addContainer("DefaultContainer", {
+    const container = taskDefinition.addContainer("web", {
       image: ecs.ContainerImage.fromRegistry("deluan/navidrome"),
       memoryLimitMiB: 900,
       environment: {
@@ -75,8 +75,8 @@ export class NavidromeECSStack extends cdk.Stack {
       protocol: elbv2.ApplicationProtocol.HTTPS,
       targets: [
         service.loadBalancerTarget({
-          containerName: "web",
           containerPort: 4533,
+          containerName: "web",
         }),
       ],
     });
