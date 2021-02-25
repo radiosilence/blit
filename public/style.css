@@ -1,13 +1,18 @@
 @font-face {
-  font-family: 'Consolas';
-  src: url('consolas.woff');
+  font-family: "Consolas";
+  src: url("consolas.woff");
+}
+
+body,
+html {
+  background-color: white;
 }
 
 body {
   margin: 3em;
   padding: 0;
 
-  font-family: 'Consolas', 'Space Mono', monospace;
+  font-family: "Consolas", "Space Mono", monospace;
   text-align: center;
 }
 
