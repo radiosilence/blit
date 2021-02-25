@@ -4,6 +4,7 @@ import "source-map-support/register";
 import { BlitFilesStack } from "../lib/blit-files.stack";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
+import { NavidromeECSStack } from "../lib/navidrome-ecs";
 import { NavidromeStack } from "../lib/navidrome-stack";
 
 const app = new cdk.App();
@@ -34,4 +35,10 @@ new BlitFilesStack(app, "BlitFilesStack", {
   domainName,
   bucketArn: "arn:aws:s3:::blit-files",
   env,
+});
+
+new NavidromeECSStack(app, "NavidromeECSStack", {
+  domainName,
+  env,
+  recordName: "nd-ecs",
 });
