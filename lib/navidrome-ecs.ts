@@ -48,6 +48,8 @@ export class NavidromeECSStack extends cdk.Stack {
     });
 
     const musicFileSystem = new efs.FileSystem(this, "MusicFileSystem", {
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_7_DAYS,
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE,
       vpc,
       encrypted: true,
     });
@@ -65,6 +67,7 @@ export class NavidromeECSStack extends cdk.Stack {
         fileSystemId: musicFileSystem.fileSystemId,
       },
     };
+
     const enableVolumes = false;
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef", {
       volumes: enableVolumes ? [dataVolumeConfig, musicVolumeConfig] : [],
@@ -111,6 +114,7 @@ export class NavidromeECSStack extends cdk.Stack {
     const lb = new elbv2.ApplicationLoadBalancer(this, "LB", { vpc, internetFacing: true });
     const listener = lb.addListener("Listener", {
       port: 443,
+      protocol: elbv2.ApplicationProtocol.HTTPS,
       certificates: [elbv2.ListenerCertificate.fromCertificateManager(certificate)],
       sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
