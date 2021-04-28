@@ -4,8 +4,8 @@ import "source-map-support/register";
 import { BlitFilesStack } from "../lib/blit-files.stack";
 import { BlitWebStack } from "../lib/blit-web-stack";
 import { BlitZoneStack } from "../lib/blit-zone-stack";
+import { HttpOriginStack } from "../lib/http-origin-stack";
 import { NavidromeECSStack } from "../lib/navidrome-ecs";
-import { NavidromeStack } from "../lib/navidrome-stack";
 
 const app = new cdk.App();
 
@@ -23,11 +23,12 @@ new BlitZoneStack(app, "BlitZoneStack", {
   env,
 });
 
-new NavidromeStack(app, "NavidromeStack", {
+new HttpOriginStack(app, "NavidromeStack", {
   domainName,
-  vpsIp: "149.91.89.243",
-  internalRecordName: "xxpk4shiicfjldb50oiasudnas3nd",
-  navidromePort: 4533,
+  ip: "149.91.89.243",
+  httpPort: 4533,
+  internalRecordName: "omo3iuy4mi2erhaskj",
+  recordName: "nd",
   env,
 });
 
