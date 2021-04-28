@@ -25,8 +25,10 @@ new BlitZoneStack(app, "BlitZoneStack", {
 
 new HttpOriginStack(app, "NavidromeStack", {
   domainName,
-  ip: "149.91.89.243",
-  httpPort: 4533,
+  upstream: {
+    addresses: ["149.91.89.243"],
+    port: 4533,
+  },
   recordName: "nd",
   env,
 });
