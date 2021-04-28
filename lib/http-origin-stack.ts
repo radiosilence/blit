@@ -10,14 +10,13 @@ interface Props extends cdk.StackProps {
    * The parent name to add the subdomain to
    */
   domainName: string;
-  /**
-   * Port HTTP server is running on
+  /** Upstream
+   *
    */
-  httpPort: number;
-  /**
-   * IP of the box to point to
-   */
-  ip: string;
+  upstream: {
+    addresses: string[];
+    port: number;
+  };
   /**
    * The subdomain that will point to the distribution
    */
@@ -28,16 +27,16 @@ export class HttpOriginStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { ip, domainName, httpPort, recordName } = props;
+    const { upstream, domainName, recordName } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "Zone", {
       domainName,
     });
 
-    const internalRecord = new route53.ARecord(this, "Internal", {
+    const upstreamRecord = new route53.ARecord(this, "Internal", {
       zone,
-      recordName: `${parent.node.addr}-internal`,
-      target: route53.RecordTarget.fromIpAddresses(ip),
+      recordName: `upstream.${parent.node.addr}`,
+      target: route53.RecordTarget.fromIpAddresses(...upstream.addresses),
     });
 
     const fullDomainName = `${recordName}.${domainName}`;
@@ -53,9 +52,9 @@ export class HttpOriginStack extends cdk.Stack {
       domainNames: [fullDomainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(internalRecord.domainName, {
+        origin: new origins.HttpOrigin(upstreamRecord.domainName, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-          httpPort: httpPort,
+          httpPort: upstream.port,
         }),
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
