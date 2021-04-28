@@ -6,10 +6,25 @@ import * as alias from "@aws-cdk/aws-route53-targets";
 import * as cdk from "@aws-cdk/core";
 
 interface Props extends cdk.StackProps {
+  /**
+   * The parent name to add the subdomain to
+   */
   domainName: string;
-  internalRecordName: string;
+  /**
+   * A random string that doesn't conflict with any other subdomains
+   */
+  internalRecordName?: string;
+  /**
+   * Port HTTP server is running on
+   */
   httpPort: number;
+  /**
+   * IP of the box to point to
+   */
   ip: string;
+  /**
+   * The subdomain that will point to the distribution
+   */
   recordName: string;
 }
 
