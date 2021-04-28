@@ -27,7 +27,6 @@ new HttpOriginStack(app, "NavidromeStack", {
   domainName,
   ip: "149.91.89.243",
   httpPort: 4533,
-  internalRecordName: "3817037a-0fc4-463f-a55c-28d6579eef18",
   recordName: "nd",
   env,
 });

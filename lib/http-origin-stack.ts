@@ -11,10 +11,6 @@ interface Props extends cdk.StackProps {
    */
   domainName: string;
   /**
-   * A random string that doesn't conflict with any other subdomains
-   */
-  internalRecordName?: string;
-  /**
    * Port HTTP server is running on
    */
   httpPort: number;
@@ -32,7 +28,9 @@ export class HttpOriginStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { ip: vpsIp, domainName, internalRecordName, httpPort, recordName } = props;
+    const { ip: vpsIp, domainName, httpPort, recordName } = props;
+
+    const internalRecordName = `${parent.node.addr}-internal`;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "Zone", {
       domainName,
