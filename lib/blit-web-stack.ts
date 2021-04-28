@@ -1,5 +1,5 @@
 import * as acm from "@aws-cdk/aws-certificatemanager";
-import { PriceClass } from "@aws-cdk/aws-cloudfront";
+import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as cdk from "@aws-cdk/core";
 import { StaticWeb } from "cdk-static-web";
@@ -28,7 +28,7 @@ export class BlitWebStack extends cdk.Stack {
       certificate,
       staticPath: "./public",
       distributionProps: {
-        priceClass: PriceClass.PRICE_CLASS_100,
+        priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       },
     });
   }
