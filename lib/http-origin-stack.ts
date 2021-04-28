@@ -28,20 +28,16 @@ export class HttpOriginStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { ip: vpsIp, domainName, httpPort, recordName } = props;
-
-    const internalRecordName = `${parent.node.addr}-internal`;
+    const { ip, domainName, httpPort, recordName } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "Zone", {
       domainName,
     });
 
-    const target = route53.RecordTarget.fromIpAddresses(vpsIp);
-
-    new route53.ARecord(this, "Internal", {
+    const internalRecord = new route53.ARecord(this, "Internal", {
       zone,
-      recordName: internalRecordName,
-      target: target,
+      recordName: `${parent.node.addr}-internal`,
+      target: route53.RecordTarget.fromIpAddresses(ip),
     });
 
     const fullDomainName = `${recordName}.${domainName}`;
@@ -57,7 +53,7 @@ export class HttpOriginStack extends cdk.Stack {
       domainNames: [fullDomainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
-        origin: new origins.HttpOrigin(`${internalRecordName}.${domainName}`, {
+        origin: new origins.HttpOrigin(internalRecord.domainName, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           httpPort: httpPort,
         }),
