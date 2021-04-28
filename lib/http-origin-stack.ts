@@ -8,45 +8,45 @@ import * as cdk from "@aws-cdk/core";
 interface Props extends cdk.StackProps {
   domainName: string;
   internalRecordName: string;
-  navidromePort: number;
-  vpsIp: string;
-  recordName?: string;
+  httpPort: number;
+  ip: string;
+  recordName: string;
 }
 
-export class NavidromeStack extends cdk.Stack {
+export class HttpOriginStack extends cdk.Stack {
   constructor(parent: cdk.Construct, name: string, props: Props) {
     super(parent, name, props);
     // navidrome
-    const { vpsIp, domainName, internalRecordName, navidromePort, recordName = "nd" } = props;
+    const { ip: vpsIp, domainName, internalRecordName, httpPort, recordName } = props;
 
-    const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
+    const zone = route53.PublicHostedZone.fromLookup(this, "Zone", {
       domainName,
     });
 
-    const vpsTarget = route53.RecordTarget.fromIpAddresses(vpsIp);
+    const target = route53.RecordTarget.fromIpAddresses(vpsIp);
 
-    new route53.ARecord(this, "BlitInternal", {
+    new route53.ARecord(this, "Internal", {
       zone,
       recordName: internalRecordName,
-      target: vpsTarget,
+      target: target,
     });
 
     const fullDomainName = `${recordName}.${domainName}`;
 
-    const certificate = new acm.DnsValidatedCertificate(this, "NavidromeCert", {
+    const certificate = new acm.DnsValidatedCertificate(this, "Certificate", {
       domainName: fullDomainName,
       hostedZone: zone,
       region: "us-east-1",
     });
 
-    const distribution = new cloudfront.Distribution(this, "NavidromeDistribution", {
+    const distribution = new cloudfront.Distribution(this, "Distribution", {
       certificate,
       domainNames: [fullDomainName],
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
         origin: new origins.HttpOrigin(`${internalRecordName}.${domainName}`, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-          httpPort: navidromePort,
+          httpPort: httpPort,
         }),
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
@@ -55,7 +55,7 @@ export class NavidromeStack extends cdk.Stack {
       },
     });
 
-    new route53.ARecord(this, "NavidromeRecord", {
+    new route53.ARecord(this, "Record", {
       zone,
       recordName,
       target: route53.RecordTarget.fromAlias(new alias.CloudFrontTarget(distribution)),
