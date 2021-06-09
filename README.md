@@ -1,14 +1,40 @@
-# Welcome to your CDK TypeScript project!
+# Welcome to [Astro](https://astro.build)
 
-This is a blank project for TypeScript development with CDK.
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## 🚀 Project Structure
 
-## Useful commands
+Inside of your Astro project, you'll see the following folders and files:
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+```
+/
+├── public/
+│   ├── robots.txt
+│   └── favicon.ico
+├── src/
+│   ├── components/
+│   │   └── Tour.astro
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command         | Action                                      |
+|:----------------|:--------------------------------------------|
+| `npm install`   | Installs dependencies                       |
+| `npm run start` | Starts local dev server at `localhost:3000` |
+| `npm run build` | Build your production site to `./dist/`     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://github.com/snowpackjs/astro) or jump into our [Discord server](https://astro.build/chat).
