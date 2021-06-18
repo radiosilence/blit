@@ -6,12 +6,13 @@ import { StaticWeb } from "cdk-static-web";
 
 interface Props extends cdk.StackProps {
   domainName: string;
+  staticPath: string;
 }
 
 export class BlitWebStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
-    const { domainName } = props;
+    const { domainName, staticPath } = props;
 
     const zone = route53.PublicHostedZone.fromLookup(this, "BlitZone", {
       domainName,
@@ -26,7 +27,7 @@ export class BlitWebStack extends cdk.Stack {
     new StaticWeb(this, "Blit", {
       zone,
       certificate,
-      staticPath: "./public",
+      staticPath,
       distributionProps: {
         priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       },
