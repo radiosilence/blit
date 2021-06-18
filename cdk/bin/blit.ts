@@ -16,6 +16,7 @@ const domainName = "blit.cc";
 new BlitWebStack(app, "BlitWebStack", {
   domainName,
   env,
+  staticPath: "../web/dist",
 });
 
 new BlitZoneStack(app, "BlitZoneStack", {
