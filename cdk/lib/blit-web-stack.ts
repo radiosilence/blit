@@ -28,6 +28,7 @@ export class BlitWebStack extends cdk.Stack {
       zone,
       certificate,
       staticPath,
+      defaultIndexes: true,
       distributionProps: {
         priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       },
