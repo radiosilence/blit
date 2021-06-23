@@ -32,6 +32,7 @@ export class BlitWebStack extends cdk.Stack {
       distributionProps: {
         priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       },
+      errorPagePath: "/{CODE}/index.html",
     });
   }
 }
