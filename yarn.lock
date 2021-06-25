@@ -2214,10 +2214,10 @@ cdk-assets@1.109.0:
     glob "^7.1.7"
     yargs "^16.2.0"
 
-cdk-static-web@1.109.0-7:
-  version "1.109.0-7"
-  resolved "https://registry.yarnpkg.com/cdk-static-web/-/cdk-static-web-1.109.0-7.tgz#22b2b434ec7145429c36237eb73e02da14c346ac"
-  integrity sha512-M/EDL4HrY5rgOgUbWjwDFKlCcWiJpqDdhroOlyRqulUhb57dJle1rnahqb5+OVB8ZzxQ2lYa2IvzCF3rj2L5ig==
+cdk-static-web@1.109.0-9:
+  version "1.109.0-9"
+  resolved "https://registry.yarnpkg.com/cdk-static-web/-/cdk-static-web-1.109.0-9.tgz#86c99d22cf14ce9267d28e3a84a8dfe30d073edc"
+  integrity sha512-YYuK+17mllQUE4AuFq0QwfFqcANQF+GJQmf9pnBodvqljMy3++Ywnnmt5AXri0gQCymJT2bMVuje/FWYzGOCaQ==
   dependencies:
     "@aws-cdk/aws-apigateway" "^1.109.0"
     "@aws-cdk/aws-certificatemanager" "^1.109.0"
@@ -2848,6 +2848,11 @@ esbuild@^0.10.1:
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.10.2.tgz#caa65a8f3096d547d89159918039df6c5c6c90be"
   integrity sha512-/5vsZD7wTJJHC3yNXLUjXNvUDwqwNoIMvFvLd9tcDQ9el5l13pspYm3yufavjIeYvNtAbo+6N/6uoWx9dGA6ug==
+
+esbuild@^0.12.9:
+  version "0.12.9"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.9.tgz#bed4e7087c286cd81d975631f77d47feb1660070"
+  integrity sha512-MWRhAbMOJ9RJygCrt778rz/qNYgA4ZVj6aXnNPxFjs7PmIpb0fuB9Gmg5uWrr6n++XKwwm/RmSz6RR5JL2Ocsw==
 
 esbuild@^0.9.3:
   version "0.9.7"
