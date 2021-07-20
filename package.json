@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "(cd web && astro build)",
-    "deploy:web": "(cd cdk && cdk deploy BlitCCStack)"
+    "deploy:web": "(cd cdk && cdk deploy BlitWebStack)"
   },
   "workspaces": [
     "cdk",
