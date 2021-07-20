@@ -13,12 +13,9 @@ const env = { account: "339435723451", region: "eu-west-2" };
 
 const domainName = "blit.cc";
 
-new BlitWebStack(app, "BlitCCStack", {
+new BlitWebStack(app, "BlitWebStack", {
   domainName,
-  env: {
-    ...env,
-    region: "us-east-1",
-  },
+  env,
   staticPath: "../web/dist",
 });
 

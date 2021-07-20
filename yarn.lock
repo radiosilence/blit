@@ -2253,10 +2253,10 @@ cdk-assets@1.114.0:
     mime "^2.5.2"
     yargs "^16.2.0"
 
-cdk-static-web@1.114.0:
-  version "1.114.0"
-  resolved "https://registry.yarnpkg.com/cdk-static-web/-/cdk-static-web-1.114.0.tgz#b620b2c737dd8ef29d8db877e69fe5b7f8ff0863"
-  integrity sha512-/qbK/JJk3nZvgnNc/nmBwfmJUC5eLV76rbgRU5yyo3K1IOVwXFZg0iWb9wxfntxyGwbEzVBkHm/gPU04/vDlYQ==
+cdk-static-web@1.114.0-edge2:
+  version "1.114.0-edge2"
+  resolved "https://registry.yarnpkg.com/cdk-static-web/-/cdk-static-web-1.114.0-edge2.tgz#cd490bfaeb661b66d1a729943eb6cdb9fd375c5b"
+  integrity sha512-OU0mtXwni5EYguUwNZhXAx4+/Nmps9ujVZEfHroEh4vxX5ip/a8kJlfNDagcf+i5VYvDUZLFL0By4kwYZltXgg==
   dependencies:
     "@aws-cdk/aws-apigateway" "^1.114.0"
     "@aws-cdk/aws-certificatemanager" "^1.114.0"
