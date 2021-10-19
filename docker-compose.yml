@@ -1,0 +1,4 @@
+web:
+  image: antihero/blitcc
+  ports:
+    - "80:80"
