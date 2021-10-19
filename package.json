@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "(cd web && astro build) && docker build -t antihero/blitcc",
+    "build": "(cd web && astro build && docker build -t antihero/blitcc .)",
     "push": "yarn build && docker push antihero/blitcc"
   },
   "workspaces": [
