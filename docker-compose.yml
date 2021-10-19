@@ -23,6 +23,8 @@ services:
   web:
     image: antihero/blitcc-web:latest
     container_name: web
+    ports:
+      - "1337:80"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`blit.cc`, `blit.docker.localhost`)"
