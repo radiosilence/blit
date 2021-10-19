@@ -4,3 +4,4 @@ services:
     image: antihero/blitcc:latest
     ports:
       - "80:80"
+    restart: always
