@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "(cd web && astro build && docker build -t antihero/blitcc .)",
+    "build": "(cd web && astro build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
+    "build:nd": "(cd navidrome && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-navidrome .)",
     "push": "yarn build && docker push antihero/blitcc"
   },
   "workspaces": [
