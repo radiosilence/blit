@@ -1,10 +1,8 @@
 {
   "scripts": {
-    "build": "(cd web && astro build)",
-    "deploy:web": "(cd cdk && cdk deploy BlitWebStack)"
+    "build": "(cd web && astro build) && docker build -t antihero/blitcc"
   },
   "workspaces": [
-    "cdk",
     "web"
   ],
   "private": true
