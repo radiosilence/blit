@@ -25,8 +25,8 @@ services:
     container_name: web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.webserver.rule=Host(`blit.cc`, `blit.docker.localhost`)"
-      - "traefik.port=80"
+      - "traefik.http.routers.web.rule=Host(`blit.cc`, `blit.docker.localhost`)"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
     networks:
       - blit
 
@@ -47,7 +47,7 @@ services:
       - "/var/music:/music:ro"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.webserver.rule=Host(`nd.blit.cc`, `navidrome.docker.localhost`)"
-      - "traefik.port=4533"
+      - "traefik.http.routers.navidrome.rule=Host(`nd.blit.cc`, `navidrome.docker.localhost`)"
+      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
     networks:
       - blit
