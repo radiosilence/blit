@@ -1,4 +1,6 @@
-web:
-  image: antihero/blitcc
-  ports:
-    - "80:80"
+version: "3"
+services:
+  web:
+    image: antihero/blitcc:latest
+    ports:
+      - "80:80"
