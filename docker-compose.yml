@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 networks:
   blit:
 services:
@@ -7,13 +7,13 @@ services:
     image: traefik:v2.5
     # Enables the web UI and tells Traefik to listen to docker
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
+      - '--api.insecure=true'
+      - '--providers.docker=true'
     ports:
       # The HTTP port
-      - "80:80"
+      - '80:80'
       # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -24,10 +24,10 @@ services:
     image: antihero/blitcc-web:latest
     container_name: web
     ports:
-      - "1337:80"
+      - '1337:80'
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`blit.cc`, `blit.docker.localhost`)"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.web.rule=Host(`blit.cc`, `blit.docker.localhost`)'
     networks:
       - blit
 
@@ -36,18 +36,18 @@ services:
     container_name: navidrome
     user: 1000:1000 # should be owner of volumes
     ports:
-      - "4533:4533"
+      - '4533:4533'
     environment:
       # Optional: put your config options customization here. Examples:
       ND_SCANINTERVAL: 1m
       ND_LOGLEVEL: info
       ND_SESSIONTIMEOUT: 24h
-      ND_BASEURL: ""
+      ND_BASEURL: ''
     volumes:
-      - "/var/navidrome:/data"
-      - "/var/music:/music:ro"
+      - '/var/navidrome:/data'
+      - '/var/music:/music:ro'
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.navidrome.rule=Host(`nd.blit.cc`, `navidrome.docker.localhost`)"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.navidrome.rule=Host(`nd.blit.cc`, `navidrome.docker.localhost`)'
     networks:
       - blit
