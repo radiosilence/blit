@@ -3,7 +3,7 @@
     "build": "(cd web && astro build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
     "build:nd": "(cd navidrome && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-navidrome .)",
     "push": "yarn build && docker push antihero/blitcc",
-    "local:upgrade": "ssh root@soul 'cd blit && docker-compose pull && docker-compose up --detach --build'",
+    "local:upgrade": "ssh root@soul 'cd blit && git pull && docker-compose pull && docker-compose up --detach --build'",
     "server:upgrade": "docker-compose pull && docker-compose up --detach --build"
   },
   "workspaces": [
