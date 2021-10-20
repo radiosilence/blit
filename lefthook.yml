@@ -4,12 +4,12 @@ pre-commit:
     pretty-quick:
       run: npx pretty-quick {staged_files} && git add {staged_files}
     eslint:
-      glob: '*.{tsx,ts}'
+      glob: "*.{tsx,ts}"
       run: npx eslint {staged_files}
 
 fixer:
   parallel: true
   commands:
     fix:
-      glob: '*.{tsx,ts}'
+      glob: "*.{tsx,ts}"
       run: npx eslint --fix {all_files}
