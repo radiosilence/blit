@@ -1,3 +1,3 @@
 export default {
-  exclude: ['**/node_modules/**/*', './cdk/**/*'],
+  exclude: ["**/node_modules/**/*", "./cdk/**/*"],
 };
