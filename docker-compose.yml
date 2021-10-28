@@ -6,6 +6,7 @@ services:
     # The official v2 Traefik docker image
     image: traefik:v2.5
     # Enables the web UI and tells Traefik to listen to docker
+    restart: "always"
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -23,6 +24,7 @@ services:
   web:
     image: antihero/blitcc-web:latest
     container_name: web
+    restart: "always"
     ports:
       - "1337:80"
     labels:
@@ -35,6 +37,7 @@ services:
     image: deluan/navidrome:latest
     container_name: navidrome
     user: 1000:1000 # should be owner of volumes
+    restart: "always"
     ports:
       - "4533:4533"
     environment:
