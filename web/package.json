@@ -7,9 +7,13 @@
     "build": "astro build"
   },
   "devDependencies": {
-    "@snowpack/plugin-postcss": "^1.4.3",
-    "astro": "^0.20.12",
-    "autoprefixer": "^10.4.0",
-    "tailwindcss": "^2.2.17"
+    "@astrojs/react": "^0.1.0",
+    "@astrojs/tailwind": "^0.2.0",
+    "astro": "1.0.0-beta.14",
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "react": "^17.0.2 || ^18.0.0",
+    "react-dom": "^17.0.2 || ^18.0.0",
+    "tailwindcss": "^3.0.24"
   }
 }
