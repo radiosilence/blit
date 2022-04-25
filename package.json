@@ -2,7 +2,7 @@
   "scripts": {
     "build-web": "(cd web && astro build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
     "push": "yarn build && docker push antihero/blitcc",
-    "upgrade": "kubectl rollout restart deployment blit-web"
+    "deploy": "kubectl rollout restart deployment blit-web"
   },
   "workspaces": [
     "web"
