@@ -1,7 +1,16 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: blit
+  labels:
+    name: blit
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blit-web
+  namespace: blit
 spec:
   replicas: 1
   selector:
@@ -22,6 +31,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: music-vol
+  namespace: blit
+  labels:
+    storageName: music
 spec:
   capacity:
     storage: 400Gi
@@ -45,6 +57,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: navidrome-vol
+  namespace: blit
+  labels:
+    storageName: navidrome
 spec:
   capacity:
     storage: 400Gi
@@ -68,6 +83,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: navidrome
+  namespace: blit
 spec:
   serviceName: "navidrome"
   replicas: 1
@@ -76,12 +92,17 @@ spec:
       app: navidrome
   template:
     metadata:
+      namespace: blit
       labels:
         app: navidrome
     spec:
       containers:
         - name: navidrome
           image: deluan/navidrome
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: "4"
           volumeMounts:
             - name: music-vol
               mountPath: /music
@@ -91,16 +112,22 @@ spec:
     - metadata:
         name: music-vol
       spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: "local-storage"
+        accessModes: ["ReadOnlyMany"]
+        storageClassName: local-storage
+        selector:
+          matchLabels:
+            storageName: music
         resources:
           requests:
-            storage: 400Gi
+            storage: 399Gi
     - metadata:
         name: navidrome-vol
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: "local-storage"
+        storageClassName: local-storage
+        selector:
+          matchLabels:
+            storageName: navidrome
         resources:
           requests:
             storage: 40Gi
@@ -109,6 +136,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: blit-web
+  namespace: blit
 spec:
   ports:
     - port: 80
@@ -120,6 +148,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: navidrome
+  namespace: blit
 spec:
   ports:
     - port: 80
@@ -131,8 +160,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: blit-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  namespace: blit
 spec:
   ingressClassName: public
   rules:
