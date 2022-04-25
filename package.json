@@ -1,11 +1,8 @@
 {
   "scripts": {
-    "build": "(cd web && astro build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
-    "build:nd": "(cd navidrome && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-navidrome .)",
+    "build-web": "(cd web && astro build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
     "push": "yarn build && docker push antihero/blitcc",
-    "local:upgrade": "ssh root@soul 'cd blit && git pull && yarn server:upgrade'",
-    "server:upgrade": "docker-compose pull && docker-compose up --detach --build",
-    "push:upgrade": "yarn push && yarn local:upgrade"
+    "upgrade": "kubectl rollout restart deployment blit-web"
   },
   "workspaces": [
     "web"
