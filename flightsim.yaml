@@ -1035,7 +1035,7 @@ spec:
       containers:
         - name: flightsim-postgresql
           image: postgres:9.6.2
-          imagePullPolicy: ""
+          imagePullPolicy: "Always"
           env:
             - name: POSTGRES_USER
               value: gogs
@@ -1805,7 +1805,6 @@ metadata:
   name: flightsim-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
     - hosts:
@@ -1815,6 +1814,7 @@ spec:
         - docker-registry.k8s.blit.cc
         - vault.k8s.blit.cc
         - mailhog.k8s.blit.cc
+      secretName: flightsim-ingress-cert-prod
   rules:
     - host: concourse.k8s.blit.cc
       http:

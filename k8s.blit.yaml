@@ -161,11 +161,11 @@ kind: Ingress
 metadata:
   name: blit-ingress
   namespace: blit
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  ingressClassName: public
   rules:
-    - host: blit.cc
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
