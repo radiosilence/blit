@@ -165,7 +165,8 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-    - http:
+    - host: blit.cc
+      http:
         paths:
           - path: /
             pathType: Prefix
