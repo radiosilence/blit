@@ -185,3 +185,8 @@ spec:
                 name: navidrome
                 port:
                   number: 80
+  tls:
+    - hosts:
+        - blit.cc
+        - nd.blit.cc
+      secretName: blit-tls
