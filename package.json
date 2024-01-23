@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build-web": "(cd web && p run build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
+    "build-web": "(cd web && pnpm run build && docker buildx build --platform linux/amd64,linux/arm64 --push -t antihero/blitcc-web .)",
     "push": "pnpm run build-web && docker push antihero/blitcc",
     "deploy": "kubectl rollout restart deployment blit-web"
   },
