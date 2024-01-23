@@ -12,7 +12,7 @@ metadata:
   name: blit-web
   namespace: blit
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: blit-web
