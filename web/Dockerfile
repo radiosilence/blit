@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
-FROM nginx
-COPY dist /usr/share/nginx/html
-EXPOSE 80
+FROM ghcr.io/compliance-framework/nano-web:latest
+COPY ./dist /public/
+ENV SPA_MODE=1
