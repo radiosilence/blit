@@ -22,7 +22,7 @@ services:
       - blit
 
   web:
-    image: antihero/blitcc-web:latest
+    image: ghcr.io/radiosilence/blit:latest
     container_name: web
     restart: "always"
     ports:
