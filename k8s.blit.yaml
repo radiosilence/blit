@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: blit-web
-          image: antihero/blitcc-web
+          image: ghcr.io/radiosilence/blit:latest
           ports:
             - containerPort: 80
 ---
