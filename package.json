@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "deploy": "kubectl rollout restart deployment blit-web"
+    "deploy": "kubectl rollout restart deployment blit-web --namespace blit"
   },
   "devDependencies": {
     "@evilmartians/lefthook": "^1.6.0",
