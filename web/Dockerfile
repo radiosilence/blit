@@ -1,2 +1,2 @@
-FROM ghcr.io/compliance-framework/nano-web:latest
+FROM ghcr.io/radiosilence/nano-web:latest
 COPY ./dist /public/
