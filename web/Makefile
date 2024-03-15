@@ -25,5 +25,5 @@ image-create: image-create-config image-copy-assets
 	cd $(IMAGE_DIR); ops image create -c config.json --package radiosilence/nano-web:latest -i $(IMAGE_NAME)
 
 image-create-aws: image-create-config image-copy-assets
-	ops image delete -t aws -z $(AWS_REGION) $(IMAGE_NAME)
+	ops image delete -t aws -z $(AWS_REGION) $(IMAGE_NAME) --assume-yes
 	cd $(IMAGE_DIR); ops image create -t aws -c config.json --package radiosilence/nano-web:latest -i $(IMAGE_NAME)
