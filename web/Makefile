@@ -16,6 +16,7 @@ image-dir:
 	mkdir -p $(IMAGE_DIR)
 
 image-copy-assets: image-dir build
+	rm -rf $(IMAGE_DIR)/public
 	cp -r ./dist $(IMAGE_DIR)/public
 
 image-create-config: image-dir 
