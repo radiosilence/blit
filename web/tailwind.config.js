@@ -2,8 +2,8 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{astro,js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
-      sans: ["Consolas", "sans-serif"],
-      serif: ["Consolas", "sans-serif"],
+      sans: ["Hack", "sans-serif"],
+      serif: ["Hack", "sans-serif"],
     },
     extend: {},
   },
