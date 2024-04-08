@@ -28,3 +28,6 @@ image-create: image-create-config image-copy-assets
 image-create-aws: image-create-config image-copy-assets
 	ops image delete -t aws -z $(AWS_REGION) $(IMAGE_NAME) --assume-yes
 	cd $(IMAGE_DIR); ops image create -t aws -c config.json --package radiosilence/nano-web:latest -i $(IMAGE_NAME)
+
+instance-create-aws: image-create-aws
+	ops instance create -t aws -z eu-west-2 blit-web --port 80 
