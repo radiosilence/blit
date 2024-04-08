@@ -10,7 +10,7 @@ cat <<EOF
     "Platform": "aws",
     "Zone": "$AWS_REGION",
     "BucketName": "$AWS_BUCKET_NAME",
-    "Flavor": "t3.nano"
+    "Flavor": "$AWS_FLAVOR"
   }
 }
 
