@@ -3,7 +3,7 @@ AWS_FLAVOR=t3.nano
 AWS_REGION=eu-west-2
 AWS_BUCKET_NAME=nano-test-bucket
 IMAGE_DIR=./build
-IMAGE_NAME=blit-web-$(PKGARCH)
+IMAGE_NAME=blit-web-$(PKGARCH)-$(shell date +"%Y-%m-%dT%H%M")
 
 clean:
 	rm -rf $(IMAGE_DIR)
