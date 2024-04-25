@@ -30,7 +30,7 @@ resource "cloudflare_record" "record_nd_a" {
   proxied = false
   ttl     = 1
   type    = "A"
-  value   = "185.216.25.175"
+  value   = var.nd_server_ip
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -65,7 +65,7 @@ resource "cloudflare_record" "record_root_cname" {
   proxied = false
   ttl     = 1
   type    = "CNAME"
-  value   = "d1zupeyrordnnw.cloudfront.net"
+  value   = var.root_cname_domain
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -112,7 +112,7 @@ resource "cloudflare_record" "record_fm_mx2" {
   ttl      = 1
   type     = "MX"
   value    = "in2-smtp.messagingengine.com"
-  zone_id  = "8aa9988e3df6b6a6ab4e4e6dbc3a2451"
+  zone_id  = cloudflare_zone.zone.id
 }
 
 resource "cloudflare_record" "record_fm_mx1" {
@@ -122,7 +122,7 @@ resource "cloudflare_record" "record_fm_mx1" {
   ttl      = 1
   type     = "MX"
   value    = "in1-smtp.messagingengine.com"
-  zone_id  = "8aa9988e3df6b6a6ab4e4e6dbc3a2451"
+  zone_id  = cloudflare_zone.zone.id
 }
 
 resource "cloudflare_record" "record_bluesky_atproto" {
