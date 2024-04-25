@@ -17,3 +17,9 @@ variable "root_cname_domain" {
   description = "The domain name to use for the root CNAME record"
   type        = string
 }
+
+variable "nd_server_ip" {
+  description = "The IP address of the ND server"
+  type        = string
+  default     = "185.216.25.175"
+}
