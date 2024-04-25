@@ -27,7 +27,7 @@ resource "cloudflare_zone" "zone" {
 
 resource "cloudflare_record" "record_nd_a" {
   name    = "nd"
-  proxied = false
+  proxied = true
   ttl     = 1
   type    = "A"
   value   = var.nd_server_ip
@@ -93,15 +93,6 @@ resource "cloudflare_record" "record_fm3_dk" {
   ttl     = 1
   type    = "CNAME"
   value   = "fm3.blit.cc.dkim.fmhosted.com"
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_sig1_dk" {
-  name    = "sig1._domainkey"
-  proxied = false
-  ttl     = 3600
-  type    = "CNAME"
-  value   = "sig1.dkim.blit.cc.at.icloudmailadmin.com"
   zone_id = cloudflare_zone.zone.id
 }
 
