@@ -36,5 +36,4 @@ variable "price_class" {
 variable "certificate_arn" {
   description = "The ARN of the ACM certificate to use for the CloudFront distribution"
   type        = string
-  default     = "arn:aws:acm:us-east-1:339435723451:certificate/fe56fb93-c648-453c-b341-7ef234c958f3"
 }
