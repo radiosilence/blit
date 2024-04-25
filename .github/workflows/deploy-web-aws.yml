@@ -22,7 +22,7 @@ jobs:
         run: curl https://ops.city/get.sh -sSfL | sh
       - uses: pnpm/action-setup@v2
         with:
-          version: 9
+          version: latest
           run_install: |
             - recursive: true
       - name: Create AMI
