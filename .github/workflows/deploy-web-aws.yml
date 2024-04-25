@@ -17,11 +17,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v3
       - name: Set up OPS
-        run: |
-          curl https://ops.city/get.sh -sSfL | sh
+        run: curl https://ops.city/get.sh -sSfL | sh
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: |
+            - recursive: true
       - name: Create AMI
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -31,7 +34,7 @@ jobs:
           export PATH="$HOME/.ops/bin:$PATH"
           cd web
           make image-create-aws
-      - name: Echo AMI
+      - name: Echo AMI Data
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -39,5 +42,5 @@ jobs:
           export OPS_DIR="$HOME/.ops"
           export PATH="$HOME/.ops/bin:$PATH"
           cd web
-          make get-image-aws
+          make get-image-aws | jq
           echo "TODO: Run TF deployment with this image using TF cloud"
