@@ -162,7 +162,8 @@ metadata:
   name: blit-ingress
   namespace: blit
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  #   cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
     - host: blit.cc
@@ -185,8 +186,8 @@ spec:
                 name: navidrome
                 port:
                   number: 80
-  tls:
-    - hosts:
-        - blit.cc
-        - nd.blit.cc
-      secretName: blit-tls
+  # tls:
+  #   - hosts:
+  #       - blit.cc
+  #       - nd.blit.cc
+  #     secretName: blit-tls
