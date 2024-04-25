@@ -38,7 +38,7 @@ jobs:
         uses: steebchen/kubectl@v2.0.0
         with:
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: rollout restart deployment blit-web --namespace blit
+          command: rollout restart deployment/blit-web --namespace blit
 
   rollout-navidrome:
     name: rollout navidrome
@@ -49,4 +49,4 @@ jobs:
         uses: steebchen/kubectl@v2.0.0
         with:
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: rollout restart statefulset navidrome --namespace blit
+          command: rollout restart statefulset/navidrome --namespace blit
