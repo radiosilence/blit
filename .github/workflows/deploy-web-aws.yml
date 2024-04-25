@@ -30,8 +30,8 @@ jobs:
         run: curl https://ops.city/get.sh -sSfL | sh
       - name: Set OPS environment variables
         run: |
-          echo "OPS_DIR=~/.ops" >> $GITHUB_ENV
-          echo "~/.ops/bin" >> $GITHUB_PATH
+          echo "OPS_DIR=$HOME/.ops" >> $GITHUB_ENV
+          echo "$HOME/.ops/bin" >> $GITHUB_PATH
       - uses: pnpm/action-setup@v2
         with:
           version: latest
