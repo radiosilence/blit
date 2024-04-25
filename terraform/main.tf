@@ -5,9 +5,7 @@ terraform {
       version = "~> 4.0"
     }
   }
-
-  cloud {
-  }
+  required_version = ">= 1.2.0"
 }
 
 provider "cloudflare" {

@@ -7,14 +7,6 @@ terraform {
   }
 
   required_version = ">= 1.2.0"
-
-  cloud {
-    organization = "crack-squirrels"
-
-    workspaces {
-      name = "blit-web"
-    }
-  }
 }
 
 provider "aws" {
