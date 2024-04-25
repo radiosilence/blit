@@ -100,4 +100,9 @@ resource "aws_cloudfront_distribution" "cf" {
       restriction_type = "none"
     }
   }
+
+
+  provisioner "local-exec" {
+    command = "aws cloudfront create-invalidation --distribution-id ${self.id} --paths '/*'"
+  }
 }
