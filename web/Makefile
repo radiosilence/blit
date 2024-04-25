@@ -9,10 +9,10 @@ clean:
 	rm -rf $(IMAGE_DIR)
 
 install:
-	pnpm install
+	bun install
 
 build: install
-	pnpm run build
+	bun run build
 
 image-dir:
 	mkdir -p $(IMAGE_DIR)
