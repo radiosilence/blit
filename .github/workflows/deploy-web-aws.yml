@@ -48,7 +48,7 @@ jobs:
           cd web
           make image-get-aws | jq
           AMI_ID=$(echo $(make image-get-aws) | jq -r '.ID')
-          echo "TF_VAR_ami_id='$AMI_ID' >> $GITHUB_ENV
+          echo "TF_VAR_ami_id='$AMI_ID'" >> $GITHUB_ENV
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: apply-upload
