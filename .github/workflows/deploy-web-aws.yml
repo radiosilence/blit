@@ -28,15 +28,15 @@ jobs:
       - uses: docker/setup-qemu-action@v3
       - name: Set up OPS
         run: curl https://ops.city/get.sh -sSfL | sh
+      - name: Set OPS environment variables
+        run: |
+          echo "OPS_DIR=~/.ops" >> $GITHUB_ENV
+          echo "PATH=~/.ops/bin:$PATH" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v2
         with:
           version: latest
           run_install: |
             - recursive: true
-      - name: Set OPS environment variables
-        run: |
-          echo "OPS_DIR=~/.ops" >> $GITHUB_ENV
-          echo "PATH=~/.ops/bin:$PATH" >> $GITHUB_ENV
       - name: Create AMI
         run: |
           cd web
