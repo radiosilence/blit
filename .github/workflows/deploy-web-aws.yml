@@ -35,11 +35,13 @@ jobs:
             - recursive: true
       - name: Set OPS environment variables
         run: |
-          echo "OPS_DIR="\$HOME/.ops\"" >> $GITHUB_ENV
-          echo "PATH="\$HOME/.ops/bin:$PATH\"" >> $GITHUB_ENV
+          echo "OPS_DIR=~/.ops" >> $GITHUB_ENV
+          echo "PATH=~/.ops/bin:$PATH" >> $GITHUB_ENV
       - name: Create AMI
         run: |
           cd web
+          echo PATH=$PATH
+          echo OPS_DIR=$OPS_DIR
           make image-create-aws
       - name: Set AMI ID
         run: |
