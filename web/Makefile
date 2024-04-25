@@ -32,7 +32,5 @@ image-create-aws: image-create-config image-copy-assets
 	cd $(IMAGE_DIR); ops image create -t aws -c config.json --package radiosilence/nano-web:latest --arch $(PKGARCH) -i $(IMAGE_NAME)
 
 image-get-aws:
-	@ops image list -t aws -z eu-west-2  --json | jq -c '.[] | select(.Tag | contains("$(IMAGE_NAME)"))'
-
-instance-create-aws: image-create-aws
-	ops instance create -t aws -z eu-west-2 blit-web --port 80 
+	@ops image list -t aws -z $(AWS_REGION)  --json | jq -c '.[] | select(.Tag | contains("$(IMAGE_NAME)"))'
+ 
