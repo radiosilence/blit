@@ -7,7 +7,7 @@ terraform {
   }
 
   cloud {
-    organization = "crack-squirrels"
+    organization = "radiosilence"
 
     workspaces {
       name = "blit-cloudflare"
