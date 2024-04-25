@@ -32,11 +32,7 @@ jobs:
         run: |
           echo "OPS_DIR=$HOME/.ops" >> $GITHUB_ENV
           echo "$HOME/.ops/bin" >> $GITHUB_PATH
-      - uses: pnpm/action-setup@v3
-        with:
-          version: latest
-          run_install: |
-            - recursive: true
+      - uses: oven-sh/setup-bun@v1
       - name: Create AMI
         run: |
           cd web
