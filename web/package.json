@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build"
+    "dev": "bunx --bun astro dev",
+    "build": "bunx --bun astro build"
   },
   "devDependencies": {
     "@astrojs/react": "^3.3.1",
