@@ -17,7 +17,7 @@ env:
   CONFIG_DIRECTORY: "./terraform"
 
 jobs:
-  deploy-aws:
+  deploy-dns:
     runs-on: ubuntu-latest
     permissions:
       packages: write
