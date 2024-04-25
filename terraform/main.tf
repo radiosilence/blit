@@ -7,11 +7,6 @@ terraform {
   }
 
   cloud {
-    organization = "radiosilence"
-
-    workspaces {
-      name = "blit-cloudflare"
-    }
   }
 }
 
