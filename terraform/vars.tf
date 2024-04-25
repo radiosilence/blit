@@ -21,5 +21,4 @@ variable "root_cname_domain" {
 variable "nd_server_ip" {
   description = "The IP address of the navidrome server"
   type        = string
-  default     = "185.216.25.175"
 }
