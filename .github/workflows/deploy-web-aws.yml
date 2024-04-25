@@ -31,7 +31,7 @@ jobs:
       - name: Set OPS environment variables
         run: |
           echo "OPS_DIR=~/.ops" >> $GITHUB_ENV
-          echo "PATH=~/.ops/bin:$PATH" >> $GITHUB_ENV
+          echo "~/.ops/bin" >> $GITHUB_PATH
       - uses: pnpm/action-setup@v2
         with:
           version: latest
