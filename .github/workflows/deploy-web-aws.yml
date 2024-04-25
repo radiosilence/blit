@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: Deploy web to AWS
 
 permissions:
   contents: read
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-ami:
+  deploy-aws:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -29,6 +29,7 @@ jobs:
         run: |
           export OPS_DIR="$HOME/.ops"
           export PATH="$HOME/.ops/bin:$PATH"
+          cd web
           make image-create-aws
       - name: Echo AMI
         env:
@@ -37,5 +38,6 @@ jobs:
         run: |
           export OPS_DIR="$HOME/.ops"
           export PATH="$HOME/.ops/bin:$PATH"
+          cd web
           make get-image-aws
           echo "TODO: Run TF deployment with this image using TF cloud"
