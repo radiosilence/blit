@@ -12,3 +12,8 @@ variable "cloudflare_zone" {
   description = "The domain name of the Cloudflare zone to use"
   type        = string
 }
+
+variable "root_cname_domain" {
+  description = "The domain name to use for the root CNAME record"
+  type        = string
+}
