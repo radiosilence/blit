@@ -33,11 +33,10 @@ env:
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
 jobs:
-  deploy-aws:
+  build-deploy-aws:
     concurrency: 1
     runs-on: ubuntu-latest
     permissions:
-      packages: write
       contents: read
 
     steps:

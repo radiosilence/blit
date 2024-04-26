@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  publish:
+  deploy-web-aws:
     uses: radiosilence/blit/.github/workflows/ami-aws.yml@main
     with:
       working_directory: "./web"
