@@ -17,6 +17,7 @@ env:
 
 jobs:
   deploy-aws:
+    concurrency: 1
     runs-on: ubuntu-latest
     permissions:
       packages: write
