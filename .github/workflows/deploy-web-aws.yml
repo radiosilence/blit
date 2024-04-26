@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
   deploy-web-aws:
     uses: radiosilence/blit/.github/workflows/ami-aws.yml@main
