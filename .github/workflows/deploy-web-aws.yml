@@ -12,6 +12,7 @@ jobs:
   publish:
     uses: radiosilence/blit-web/.github/workflows/deploy-ami-aws.yml@main
     with:
+      working_directory: "./web"
       tf_cloud_organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
       tf_workspace: "blit-web"
       tf_config_directory: "./web/terraform"
