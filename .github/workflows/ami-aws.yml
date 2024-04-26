@@ -1,4 +1,4 @@
-name: Deploy AMI to AWS
+name: Build & Deploy AMI to AWS
 
 permissions:
   contents: read

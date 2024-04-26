@@ -10,7 +10,7 @@ on:
 
 jobs:
   publish:
-    uses: radiosilence/blit-web/.github/workflows/deploy-ami-aws.yml@main
+    uses: radiosilence/blit/.github/workflows/ami-aws.yml@main
     with:
       working_directory: "./web"
       tf_cloud_organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
