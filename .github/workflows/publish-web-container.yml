@@ -2,6 +2,7 @@ name: Publish Blit Web Container
 
 permissions:
   contents: read
+  packages: write
 
 on:
   push:
