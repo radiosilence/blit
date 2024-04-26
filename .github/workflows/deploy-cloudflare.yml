@@ -16,6 +16,9 @@ env:
   TF_WORKSPACE: "blit-cloudflare"
   CONFIG_DIRECTORY: "./terraform"
 
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
   deploy-dns:
     concurrency: 1
