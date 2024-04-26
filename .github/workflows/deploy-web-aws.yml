@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   deploy-web-aws:
-    uses: radiosilence/blit/.github/workflows/ami-aws.yml@main
+    uses: radiosilence/blit-workflows/.github/workflows/ami-aws.yml@main
     with:
       working_directory: "./web"
       tf_cloud_organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
