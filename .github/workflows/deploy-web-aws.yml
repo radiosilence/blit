@@ -9,7 +9,7 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: "deploy-web-aws"
 
 jobs:
   deploy-web-aws:

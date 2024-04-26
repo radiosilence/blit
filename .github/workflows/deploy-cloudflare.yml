@@ -17,7 +17,7 @@ env:
   CONFIG_DIRECTORY: "./terraform"
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: "deploy-cloudflare"
 
 jobs:
   deploy-dns:
