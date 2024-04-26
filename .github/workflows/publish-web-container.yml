@@ -1,4 +1,4 @@
-name: Publish Web Container
+name: Publish Blit Web Container
 
 permissions:
   contents: read
