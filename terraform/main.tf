@@ -53,14 +53,23 @@ resource "cloudflare_record" "record_letsencrypt_caa" {
   }
 }
 
-resource "cloudflare_record" "record_root_cname" {
-  name    = "blit.cc"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  value   = var.root_cname_domain
+resource "cloudflare_record" "verify_github" {
+  type    = "TXT"
+  name    = "_github-pages-challenge-radiosilence"
+  value   = "963852554fb760462512037c38879e"
   zone_id = cloudflare_zone.zone.id
 }
+
+resource "cloudflare_record" "github_pages_a" {
+  name     = "blit.cc"
+  proxied  = false
+  ttl      = 1
+  type     = "A"
+  value    = each.key
+  for_each = toset(["185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153"])
+  zone_id  = cloudflare_zone.zone.id
+}
+
 
 resource "cloudflare_record" "record_fm1_dk" {
   name    = "fm1._domainkey"
@@ -92,7 +101,6 @@ resource "cloudflare_record" "record_fm3_dk" {
 resource "cloudflare_record" "record_fm_mx2" {
   name     = "blit.cc"
   priority = 20
-  proxied  = false
   ttl      = 1
   type     = "MX"
   value    = "in2-smtp.messagingengine.com"
@@ -102,7 +110,6 @@ resource "cloudflare_record" "record_fm_mx2" {
 resource "cloudflare_record" "record_fm_mx1" {
   name     = "blit.cc"
   priority = 10
-  proxied  = false
   ttl      = 1
   type     = "MX"
   value    = "in1-smtp.messagingengine.com"
@@ -111,7 +118,6 @@ resource "cloudflare_record" "record_fm_mx1" {
 
 resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
-  proxied = false
   ttl     = 1
   type    = "TXT"
   value   = "did=did:plc:d32vuqlfqjttwbckkxgxgbgl"
@@ -120,7 +126,6 @@ resource "cloudflare_record" "record_bluesky_atproto" {
 
 resource "cloudflare_record" "record_fm_spf" {
   name    = "blit.cc"
-  proxied = false
   ttl     = 1
   type    = "TXT"
   value   = "v=spf1 include:spf.messagingengine.com ?all"
@@ -129,7 +134,6 @@ resource "cloudflare_record" "record_fm_spf" {
 
 resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
-  proxied = false
   ttl     = 1
   type    = "TXT"
   value   = "v=DMARC1; p=none;"
