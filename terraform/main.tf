@@ -66,7 +66,16 @@ resource "cloudflare_record" "github_pages_a" {
   ttl      = 1
   type     = "A"
   value    = each.key
-  for_each = toset(["185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153"])
+  for_each = var.github_a_records
+  zone_id  = cloudflare_zone.zone.id
+}
+resource "cloudflare_record" "github_pages_a_www" {
+  name     = "www.blit.cc"
+  proxied  = false
+  ttl      = 1
+  type     = "A"
+  value    = each.key
+  for_each = var.github_a_records
   zone_id  = cloudflare_zone.zone.id
 }
 
