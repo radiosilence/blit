@@ -111,7 +111,7 @@ _Key Skills: PHP, AngularJS, Django, jQuery, Node.js, Flask, Linux, nginx, Apach
 - Created cutting-edge projects with Node.js, Django, Flask, and Django REST Framework technologies.
 - Managed deployment and hosting of many client websites.
 
-## Other Skills / Tech I Enjoy
+## other skills
 
 ### TypeScript/JavaScript
 
