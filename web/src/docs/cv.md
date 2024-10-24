@@ -33,7 +33,7 @@ _Key Skills: AWS, Docker, Kubernetes, Azure, Concourse, Go_
 - Implemented Cloud Security Posture Management solutions and influenced enhancements to Azure Policy tool functionalities during a Microsoft Paddington office visit.
 - Contributed to open-source projects such as Kubernetes External Secrets Operator and assisted in the development of Compliance Framework, a verified CSPM tool.
 
-### Lead Full Stack / Mobile Developer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021 -- Apr 2023</small>
+### Lead Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021 -- Apr 2023</small>
 
 _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST API, DynamoDB_
 
