@@ -6,7 +6,24 @@ module.exports = {
       sans: ["Hack", "sans-serif"],
       serif: ["Hack", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            color: "#333",
+            a: {
+              color: "#e65e5e",
+              "&:hover": {
+                color: "#666666",
+              },
+              "&:visited": {
+                color: "#e65e5e",
+              },
+            },
+          },
+        },
+      },
+    },
   },
   plugins: [require("@tailwindcss/typography")],
 };
