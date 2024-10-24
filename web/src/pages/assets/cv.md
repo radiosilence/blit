@@ -1,5 +1,3 @@
-<img src="/assets/logo.png" class="logo w-[128px] mt-12 mb-16" />
-
 # james cleveland
 
 full stack / react native / devops
