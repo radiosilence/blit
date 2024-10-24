@@ -110,7 +110,7 @@ _Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets_
 
 ### Lead Frontend Developer, Bootbag <small>Jan 2014 -- Jan 2015</small>
 
-_Key Skills: React, CSS, Redux, HTML, flux, WebSocket_
+_Key Skills: React, CSS, Redux, HTML, flux, WebSockets_
 
 ### Technical Director, Links Creative <small>Jan 2013 -- Jan 2015</small>
 
