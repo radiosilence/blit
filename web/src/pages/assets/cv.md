@@ -4,8 +4,8 @@
 
 full stack / react native / devops
 
-**E-mail:** [jc@blit.cc](mailto:jc@blit.cc)  
-**GitHub:** [@radiosilence](https://github.com/radiosilence)
+**e-mail:** [jc@blit.cc](mailto:jc@blit.cc)  
+**github:** [@radiosilence](https://github.com/radiosilence)
 
 Experienced polyglot engineer with a huge breadth and depth of knowledge and understanding, working in multiple languages across a wide range of commercial frontend, backend, devops, and embedded contexts. Lives for problem solving and optimising, and thrives in the challenges of the London tech startup scene.
 
