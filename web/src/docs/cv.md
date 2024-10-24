@@ -72,7 +72,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.JS, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna
+TypeScript, Next.JS, Astro, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna
 
 ### Python
 
@@ -80,7 +80,7 @@ Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (
 
 ### Devops
 
-Docker, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, Github Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS
+Docker, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS
 
 ### Data
 
@@ -92,7 +92,7 @@ Tailwind, DaisyUI, CSS, Bootstrap, SASS, LESS, Foundation, HTML5, XML
 
 ### Misc
 
-Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, C++, C, x86 ASM, C#, Qt, C30, Linux, zsh, brew
+Go, Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Golang, Agile, JIRA, Trello, C++, C, x86 ASM, C#, Qt, C30, Linux, zsh, brew
 
 ## who is james?
 
