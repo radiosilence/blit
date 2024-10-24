@@ -55,7 +55,7 @@ _Key Skills: React, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSock
 
 ### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 -- Jan 2024</small>
 
-_Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree, WebSocket_
+_Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree, WebSockets_
 
 - Recruited by a former business partner to create a React Native app for both a startup venture and a revitalized project.
 - Utilized MobX State Tree (MST) to enhance application performance through observables, 'flows', and minimal boilerplate.
@@ -72,7 +72,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017 -- Jan 2018</small>
 
-_Key Skills: React, TypeScript, Redux, Go, Node.js, Golang_
+_Key Skills: React, TypeScript, Redux, Go, Node.js_
 
 - Developed front-end UI, emphasizing allocation for controllers to assign deliveries and bookings to couriers.
 - Led codebase refactoring to incorporate modern practices such as redux, redux-observable, and React 16.
