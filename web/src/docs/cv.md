@@ -102,41 +102,20 @@ I don’t see programming and computers as simply a job, but part of who I am. I
 
 ### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017 -- Jan 2018</small>
 
-_Key Skills: React, TypeScript, Redux, Go, Node.js_
-
-- Developed front-end UI, emphasizing allocation for controllers to assign deliveries and bookings to couriers.
-- Led codebase refactoring to incorporate modern practices such as redux, redux-observable, and React 16.
-- Managed backend projects including authentication framework (Auth0), authorization system using AWS Lambda and JWT, and user management services with automated API aggregation (Swagger, AWS API Gateway, Apigee).
+_Key Skills: React, TypeScript, Redux, Go, Node.js, API Gateway, Apigee, Auth0_
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015 -- Jan 2017</small>
 
 _Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets_
 
-- Led software engineering for SmartFocus, enhancing frontend code and internal services.
-- Specialized in TypeScript, React, Redux, and Node.JS technologies.
-- Developed core products, mentored team members, and established best practices.
-- Quickly adapted skills to address diverse technical challenges and contribute to database architecture, UX, and product design.
-
 ### Lead Frontend Developer, Bootbag <small>Jan 2014 -- Jan 2015</small>
 
 _Key Skills: React, CSS, Redux, HTML, flux, WebSocket_
-
-- I worked prototyping and building the frontend for a startup using React and Websockets
 
 ### Technical Director, Links Creative <small>Jan 2013 -- Jan 2015</small>
 
 _Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, ASP.NET_
 
-- Worked as Technical Director for a small Brighton based agency.
-- Mainly using Django, AngularJS, jQuery and PHP
-- Transformed ideas in clients’ heads into fully developed products.
-- Managed and operated Linux webservers and services.
-
 ### Web Developer, Freelance <small>Jan 2010 -- Jan 2013</small>
 
 _Key Skills: PHP, AngularJS, Django, jQuery, Node.js, Flask, Linux, nginx, Apache_
-
-- Adapted swiftly to a new environment in Brighton, refining networking and project management capabilities alongside advancing technical skills.
-- Efficiently oversaw projects on ASP.NET, PHP, and Wordpress platforms.
-- Created cutting-edge projects with Node.js, Django, Flask, and Django REST Framework technologies.
-- Managed deployment and hosting of many client websites.
