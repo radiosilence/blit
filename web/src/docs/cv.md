@@ -11,7 +11,7 @@ Communicating complex technical solutions and to stakeholders and fellow enginee
 
 Recently bolstered skillset in the areas of infrastructure, platform and CI/CD and IaC (devops), but as a natural creative, what drives me is a job where I wake up every day and go to work and build something interesting.
 
-## work experience
+## recent work
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
@@ -68,6 +68,38 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 - Ensured high code quality through thorough testing with detox and @testing-library/react-native.
 - Collaborated closely with analysts and backend developers, contributing to bug fixes and gaining deep understanding of financial products.
 
+## skills
+
+### TypeScript / JavaScript
+
+TypeScript, Next.JS, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna
+
+### Python
+
+Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (contributor)
+
+### Devops
+
+Docker, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, Github Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS
+
+### Data
+
+PostgreSQL, MySQL, Couchbase, MSSQL, MongoDB, Redis, Memcached, GraphQL, CouchDB
+
+### Styling
+
+Tailwind, DaisyUI, CSS, Bootstrap, SASS, LESS, Foundation, HTML5, XML
+
+### Misc
+
+Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, C++, C, x86 ASM, C#, Qt, C30, Linux, zsh, brew
+
+## who is james?
+
+I don’t see programming and computers as simply a job, but part of who I am. I think the world is going through very interesting times and it will be passionate programmers and thinkers that will play an important part in shaping it. My current hobbies are photography (events, portrait, street, travel), and I’m an avid cyclist (mainly fixed, but also gravel). When I lived in Brighton I often helped out with putting on shows and DJing club nights. I enjoy going out with friends and finding new bands or other weird and wonderful things to do. I am a keen follower of current aﬀairs, especially from a technical standpoint, and think a lot about the world and am interested by new developments politically and scientifically.
+
+## less recent work
+
 ### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017 -- Jan 2018</small>
 
 _Key Skills: React, TypeScript, Redux, Go, Node.js_
@@ -108,33 +140,3 @@ _Key Skills: PHP, AngularJS, Django, jQuery, Node.js, Flask, Linux, nginx, Apach
 - Efficiently oversaw projects on ASP.NET, PHP, and Wordpress platforms.
 - Created cutting-edge projects with Node.js, Django, Flask, and Django REST Framework technologies.
 - Managed deployment and hosting of many client websites.
-
-## other skills
-
-### TypeScript/JavaScript
-
-TypeScript, Next.JS, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna
-
-### Python
-
-Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (contributor)
-
-### Devops
-
-Docker, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, Github Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS
-
-### Data
-
-PostgreSQL, MySQL, Couchbase, MSSQL, MongoDB, Redis, Memcached, GraphQL, CouchDB
-
-### Styling
-
-Tailwind, DaisyUI, CSS, Bootstrap, SASS, LESS, Foundation, HTML5, XML
-
-### Misc
-
-Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, C++, C, x86 ASM, C#, Qt, C30, Linux, zsh, brew
-
-## who is james?
-
-I don’t see programming and computers as simply a job, but part of who I am. I think the world is going through very interesting times and it will be passionate programmers and thinkers that will play an important part in shaping it. My current hobbies are photography (events, portrait, street, travel), and I’m an avid cyclist (mainly fixed, but also gravel). When I lived in Brighton I often helped out with putting on shows and DJing club nights. I enjoy going out with friends and finding new bands or other weird and wonderful things to do. I am a keen follower of current aﬀairs, especially from a technical standpoint, and think a lot about the world and am interested by new developments politically and scientifically.
