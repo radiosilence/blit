@@ -48,7 +48,7 @@ _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST AP
 _Key Skills: React, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSockets_
 
 - Developed key projects from scratch and contributed to the core product, the “Companion App”, in React Native. Innovatively utilized a unique approach for low latency LAN communication using a websocket server on mobile devices due to constraints of running within a browser context.
-- Implemented Java and Swift WebSocket libraries for mobile platforms and ensured thread safety on iOS using GCD.
+- Implemented Java and Swift WebSocket libraries as native React Native modules and ensured thread safety on iOS using GCD.
 - Created internal curation tools with MobX State Tree, Tailwind, and Vite, and designed an eCommerce website with account servicing functionality using the Astro framework based on Vite.
 
 ### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 -- Jan 2024</small>
@@ -64,6 +64,7 @@ _Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree
 _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin, Swift_
 
 - Led development of the credit-card section in Zopa's app using React Native and Redux.
+- Built native modules for the React Native app using Swift and Kotlin for brand new Stripe card issuing APIs.
 - Enhanced skills in React Native through collaborative upkeep of a cutting-edge codebase with modern tech like hooks.
 - Ensured high code quality through thorough testing with detox and @testing-library/react-native.
 - Collaborated closely with analysts and backend developers, contributing to bug fixes and gaining deep understanding of financial products.
