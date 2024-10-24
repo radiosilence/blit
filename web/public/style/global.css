@@ -128,7 +128,5 @@ a:active,
 a:visited,
 a:hover {
   color: #e65e5e;
-  color: #666666;
   text-decoration: underline;
-  font-weight: bold;
 }
