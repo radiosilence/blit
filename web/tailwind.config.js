@@ -3,8 +3,8 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{astro,js,ts,jsx,tsx,md}"],
   theme: {
     fontFamily: {
-      sans: ["Geist Mono", "Hack", "sans-serif"],
-      serif: ["Geist Mono", "Hack", "sans-serif"],
+      sans: ["Geist Mono", "sans-serif"],
+      serif: ["Geist Mono", "sans-serif"],
     },
     extend: {
       typography: {
