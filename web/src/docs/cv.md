@@ -72,7 +72,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.JS, Astro, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna
+TypeScript, Next.JS, Astro, NestJS, Generics, async/await, Node, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n
 
 ### Python
 
