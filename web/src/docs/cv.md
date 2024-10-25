@@ -25,9 +25,9 @@ _Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Next.js, NestJS_
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022 -- Jan 2024</small>
 
-_Key Skills: AWS, Docker, Kubernetes, Azure, Concourse, Go_
+_Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Go_
 
-- Specialized in transforming cloud infrastructure for companies by adopting software development practices like continuous deployment and cloud-native approaches.
+- Specialized in transforming cloud infrastructure for companies by adopting software development practices like continuous deployment, GitOps, IaC, and cloud-native approaches.
 - Developed Kubernetes controllers in Go and created complex CI pipelines using Concourse, GitHub Actions, and GitLab pipelines.
 - Led enterprise-level project transformations with a focus on manageability, scalability, and declarative workflows prioritizing reproducibility and drift resilience over GitOps.
 - Implemented Cloud Security Posture Management solutions and influenced enhancements to Azure Policy tool functionalities during a Microsoft Paddington office visit.
@@ -38,7 +38,7 @@ _Key Skills: AWS, Docker, Kubernetes, Azure, Concourse, Go_
 _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST API, DynamoDB_
 
 - Developed an internal Android app for bike delivery drivers with job viewing, note and photo uploads, training features, and customer payment functionality.
-- Utilized CDK, Lambda, DynamoDB, and API Gateway to seamlessly integrate the app with existing AWS infrastructure.
+- Utilized IaC, GitOps, CDK, Lambda, DynamoDB, and API Gateway to seamlessly integrate the app with existing AWS infrastructure.
 - Implemented React Native, MobX State Tree, and AWS Amplify for the frontend to prioritize speed, efficiency, and cost-effectiveness.
 - Established a comprehensive BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app copies with minimal configuration needed.
 - Enhanced security measures in existing code through rigorous auditing and updates.
@@ -81,7 +81,7 @@ Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (
 
 ### Devops
 
-Docker, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS, Azure Policy
+Docker, Terraform, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS, Azure Policy
 
 ### Data
 
@@ -93,7 +93,7 @@ Tailwind, DaisyUI, CSS, Bootstrap, SASS, LESS, Foundation, HTML5, XML
 
 ### Other Languages
 
-Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSON, TOML, YAML
+Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSON, TOML, YAML, HCL
 
 ### Misc
 
