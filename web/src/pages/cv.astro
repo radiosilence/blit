@@ -1,6 +1,5 @@
 ---
-import Logo from "../assets/logo.png";
-import { Picture } from "astro:assets";
+import Logo from "../components/logo.astro";
 import { Content as CV } from "../docs/cv.md";
 import Wrapper from "../layouts/wrapper.astro";
 ---
@@ -10,15 +9,7 @@ import Wrapper from "../layouts/wrapper.astro";
     <article
       class="prose prose-sm max-w-screen-lg prose-h2:text-2xl prose-h2:font-thin prose-h1:font-extralight prose-h1:text-4xl prose-h3:text-sm">
       <a href="/">
-        <Picture
-          src={Logo}
-          formats={["webp", "png"]}
-          width={128}
-          quality="max"
-          densities={[1.5, 2, 3]}
-          alt=""
-          class="logo mt-12 mb-16"
-        />
+        <Logo width={128} class="mt-12 mb-16" />
       </a>
       <CV />
     </article>
