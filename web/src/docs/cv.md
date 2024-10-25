@@ -25,7 +25,7 @@ _Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Next.js, Nes
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022 -- Jan 2024</small>
 
-_Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Go_
+_Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Python, Go, CSPM, Cloud Foundry, BOSH_
 
 - Specialized in transforming cloud infrastructure for companies by adopting software development practices like continuous deployment, GitOps, IaC, and cloud-native approaches.
 - Developed Kubernetes controllers in Go and created complex CI pipelines using Concourse, GitHub Actions, and GitLab pipelines.
