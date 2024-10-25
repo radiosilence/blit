@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/markdown.astro
+layout: ../layouts/post.astro
 ---
 
 # james cleveland
