@@ -38,19 +38,19 @@ _Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Python, Go, C
 _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST API, DynamoDB_
 
 - Developed an internal Android app for bike delivery drivers with job viewing, note and photo uploads, training features, and customer payment functionality.
-- Utilized IaC, GitOps, CDK, Lambda, DynamoDB, and API Gateway to seamlessly integrate the app with existing AWS infrastructure.
-- Implemented React Native, MobX State Tree, and AWS Amplify for the frontend to prioritize speed, efficiency, and cost-effectiveness.
-- Established a comprehensive BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app copies with minimal configuration needed.
-- Enhanced security measures in existing code through rigorous auditing and updates.
+- Utilized IaC, GitOps, CDK, Lambda, DynamoDB, and API Gateway to create an infrastucture that seamlessly integrated with existing systems.
+- Used React Native, MobX State Tree, and AWS Amplify for the app.
+- Established a comprehensive BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app builds with minimal configuration needed.
+- Enhanced security measures in existing infrastructure code through rigorous auditing and patches.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020 -- Jan 2022</small>
 
 _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSockets_
 
-- Developed key projects from scratch and contributed to the core product, the “Companion App”, in React Native. Innovatively utilized a unique approach for low latency LAN communication using a websocket server on mobile devices due to constraints of running within a browser context.
+- Developed key projects such as the "Companion App" from scratch in React Native, which utilized a unique approach for low latency LAN communication using native Android/iOS websocket server implementations on mobile devices due to constraints of running the TV app within a browser context.
 - Implemented Java and Swift WebSocket libraries as native React Native modules and ensured thread safety on iOS using GCD.
-- Created internal curation tools with MobX State Tree, Tailwind, and Vite, and designed an eCommerce website with account servicing functionality using the Astro framework based on Vite.
-- Built entire customer facing e-commerce website using Astro for pure-CDN deployment.
+- Created internal curation tools with MobX State Tree, Tailwind, and Vite
+- Designed an eCommerce website with account servicing functionality using the Astro framework.
 
 ### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 -- Jan 2024</small>
 
