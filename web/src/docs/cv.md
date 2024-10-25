@@ -81,7 +81,7 @@ Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (
 
 ### Devops
 
-Docker, Terraform, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, GitOPS, Azure Policy
+Docker, Terraform, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, Azure Policy
 
 ### Data
 
