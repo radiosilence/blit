@@ -45,7 +45,7 @@ _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST AP
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020 -- Jan 2022</small>
 
-_Key Skills: React, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSockets_
+_Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSockets_
 
 - Developed key projects from scratch and contributed to the core product, the “Companion App”, in React Native. Innovatively utilized a unique approach for low latency LAN communication using a websocket server on mobile devices due to constraints of running within a browser context.
 - Implemented Java and Swift WebSocket libraries as native React Native modules and ensured thread safety on iOS using GCD.
