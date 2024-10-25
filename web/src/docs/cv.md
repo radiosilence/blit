@@ -89,7 +89,7 @@ PostgreSQL, MySQL, Couchbase, MSSQL, MongoDB, Redis, Memcached, GraphQL, CouchDB
 
 ### Styling
 
-Tailwind, DaisyUI, CSS, Bootstrap, SASS, LESS, Foundation, HTML5, XML
+Tailwind, DaisyUI, CSS, Mobile First, Bootstrap, SASS, SCSS, LESS, Foundation, HTML5, XML
 
 ### Other Languages
 
