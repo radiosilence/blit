@@ -50,6 +50,7 @@ _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, 
 - Developed key projects from scratch and contributed to the core product, the “Companion App”, in React Native. Innovatively utilized a unique approach for low latency LAN communication using a websocket server on mobile devices due to constraints of running within a browser context.
 - Implemented Java and Swift WebSocket libraries as native React Native modules and ensured thread safety on iOS using GCD.
 - Created internal curation tools with MobX State Tree, Tailwind, and Vite, and designed an eCommerce website with account servicing functionality using the Astro framework based on Vite.
+- Built entire customer facing e-commerce website using Astro for pure-CDN deployment.
 
 ### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 -- Jan 2024</small>
 
