@@ -66,7 +66,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 - Led development of the credit-card section in Zopa's app using React Native and Redux.
 - Built native modules for the React Native app using Swift and Kotlin for brand new Stripe card issuing APIs.
-- Enhanced skills in React Native through collaborative upkeep of a cutting-edge codebase with modern tech like hooks.
+- Enhanced skills in React Native through collaborative upkeep of a cutting-edge codebase with (then) modern patterns like hooks.
 - Ensured high code quality through thorough testing with detox and @testing-library/react-native.
 - Collaborated closely with analysts and backend developers, contributing to bug fixes and gaining deep understanding of financial products.
 
