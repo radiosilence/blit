@@ -17,8 +17,8 @@ Recently bolstered skillset in the areas of infrastructure, platform and CI/CD a
 
 _Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Next.js, NestJS_
 
-- Developed new features using Next.JS and TypeScript, facilitating the migration to a new architecture.
-- Created APIs and endpoints with NestJS and Next.JS for improved functionality.
+- Developed new features using Next.js and TypeScript, facilitating the migration to a new architecture.
+- Created APIs and endpoints with NestJS and Next.js for improved functionality.
 - Managed legacy JS code within React microservices.
 - Resolved issues and enhanced performance of code deployed on Kubernetes.
 - Enhanced and expanded existing CI/CD pipelines through GitHub Actions.
@@ -73,7 +73,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.JS, Astro, NestJS, Generics, async/await, Node.JS, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n
+TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.JS, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n
 
 ### Python
 
