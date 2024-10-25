@@ -7,6 +7,13 @@ module.exports = {
       serif: ["Geist Mono", "sans-serif"],
     },
     extend: {
+      colors: {
+        brand: {
+          DEFAULT: "#e65e5e",
+          light: "#f7d4d4",
+          dark: "#333",
+        },
+      },
       typography: {
         DEFAULT: {
           css: {
