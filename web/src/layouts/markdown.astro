@@ -1,17 +1,16 @@
 ---
 import Logo from "../components/logo.astro";
-import { Content as CV } from "../docs/cv.md";
-import Wrapper from "../layouts/wrapper.astro";
+import Page from "../layouts/page.astro";
 ---
 
-<Wrapper>
+<Page>
   <section class="flex items-center flex-col mb-24 px-4 lg:px-0">
     <article
       class="prose prose-sm max-w-screen-lg prose-h2:text-2xl prose-h2:font-thin prose-h1:font-extralight prose-h1:text-4xl prose-h3:text-sm">
       <a href="/">
         <Logo width={128} class="mt-12 mb-16" />
       </a>
-      <CV />
+      <slot />
     </article>
   </section>
-</Wrapper>
+</Page>

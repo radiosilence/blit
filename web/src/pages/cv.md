@@ -1,3 +1,7 @@
+---
+layout: ../layouts/markdown.astro
+---
+
 # james cleveland
 
 full stack / react native / devops
