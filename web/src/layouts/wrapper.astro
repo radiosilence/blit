@@ -60,6 +60,10 @@
         font-style: normal;
       }
 
+      * {
+        @apply text-brand-dark;
+      }
+
       @font-face {
         font-family: "Geist Mono";
         src: url("../assets/fonts/GeistMono-UltraBlack.woff2") format("woff2");
@@ -68,11 +72,13 @@
       }
 
       a,
-      a:active,
       a:visited,
+      a:active {
+        @apply text-brand underline;
+      }
+
       a:hover {
-        color: #e65e5e;
-        text-decoration: underline;
+        @apply text-brand-dark;
       }
     </style>
   </head>
