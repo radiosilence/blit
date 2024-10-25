@@ -1,7 +1,13 @@
 ---
 import { Picture } from "astro:assets";
 import logo from "./logo.png";
-const { width, class: cls } = Astro.props;
+
+interface Props {
+  width: number;
+  class?: string;
+}
+
+const { width, class: cls = "" } = Astro.props;
 ---
 
 <Picture
