@@ -113,7 +113,7 @@ _Key Skills: React, TypeScript, Redux, Go, Node.js, API Gateway, Apigee, Auth0_
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015 -- Jan 2017</small>
 
-_Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets_
+_Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets, C++, C#, .NET, Qt_
 
 ### Lead Frontend Developer, Bootbag <small>Jan 2014 -- Jan 2015</small>
 
@@ -121,7 +121,7 @@ _Key Skills: React, CSS, Redux, HTML, flux, WebSockets_
 
 ### Technical Director, Links Creative <small>Jan 2013 -- Jan 2015</small>
 
-_Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, ASP.NET_
+_Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, .NET, C#_
 
 ### Web Developer, Freelance <small>Jan 2010 -- Jan 2013</small>
 
