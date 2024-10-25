@@ -77,7 +77,7 @@ TypeScript, Next.JS, Astro, NestJS, Generics, async/await, Node.JS, React Native
 
 ### Python
 
-Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (contributor)
+Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (contributor), libev, uWSGI
 
 ### Devops
 
@@ -97,7 +97,7 @@ Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSON, 
 
 ### Misc
 
-Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, Linux
+Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, Linux, Ansible
 
 ## who is james?
 
