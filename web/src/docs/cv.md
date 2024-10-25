@@ -15,7 +15,7 @@ Recently bolstered skillset in the areas of infrastructure, platform and CI/CD a
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
-_Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Next.js, NestJS_
+_Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Next.js, NestJS_
 
 - Developed new features using Next.js and TypeScript, facilitating the migration to a new architecture.
 - Created APIs and endpoints with NestJS and Next.js for improved functionality.
@@ -73,7 +73,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n
+TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, Websockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n, Axios,
 
 ### Python
 
