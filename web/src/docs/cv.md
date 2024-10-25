@@ -15,7 +15,7 @@ Recently bolstered skillset in the areas of infrastructure, platform and CI/CD a
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
-_Key Skills: React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Next.js, NestJS_
+_Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite_
 
 - Developed new features using Next.js and TypeScript, facilitating the migration to a new architecture.
 - Created APIs and endpoints with NestJS and Next.js for improved functionality.
