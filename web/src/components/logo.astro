@@ -1,0 +1,15 @@
+---
+import { Picture } from "astro:assets";
+import logo from "./logo.png";
+const { width, class: cls } = Astro.props;
+---
+
+<Picture
+  src={logo}
+  formats={["webp", "png"]}
+  alt=""
+  width={width}
+  quality="max"
+  densities={[1.5, 2, 3]}
+  class={`logo ${cls}`}
+/>

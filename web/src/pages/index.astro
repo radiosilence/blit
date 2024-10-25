@@ -1,20 +1,11 @@
 ---
-import Logo from "../assets/logo.png";
+import Logo from "../components/logo.astro";
 import Wrapper from "../layouts/wrapper.astro";
-import { Picture } from "astro:assets";
 ---
 
 <Wrapper>
   <section class="flex flex-col items-center m-12 space-y-4">
-    <Picture
-      src={Logo}
-      formats={["webp", "png"]}
-      alt=""
-      width={256}
-      quality="max"
-      densities={[1.5, 2, 3]}
-      class="logo mt-12 mb-8"
-    />
+    <Logo width={256} class="mt-12 mb-8" />
     <h1 class="text-3xl font-extralight">james cleveland</h1>
     <h2 class="text-sm">full stack / react native / devops</h2>
     <div>
