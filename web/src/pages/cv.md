@@ -19,7 +19,7 @@ Recently bolstered skillset in the areas of infrastructure, platform and CI/CD a
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
-_Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite_
+_Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Express_
 
 - Developed new features using Next.js and TypeScript, facilitating the migration to a new architecture.
 - Created APIs and endpoints with NestJS and Next.js for improved functionality.
@@ -79,7 +79,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, WebSockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n, Axios,
+TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, WebSockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n, Axios, Express
 
 ### Python
 
@@ -117,7 +117,7 @@ _Key Skills: React, TypeScript, Redux, Go, Node.js, API Gateway, Apigee, Auth0_
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015 -- Jan 2017</small>
 
-_Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets, C++, C#, .NET, Qt_
+_Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets, Express, ZeroMQ, C++, C#, .NET, Qt_
 
 ### Lead Frontend Developer, Bootbag <small>Jan 2014 -- Jan 2015</small>
 
@@ -125,7 +125,7 @@ _Key Skills: React, CSS, Redux, HTML, flux, WebSockets_
 
 ### Technical Director, Links Creative <small>Jan 2013 -- Jan 2015</small>
 
-_Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, .NET, C#_
+_Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, Express, .NET, C#_
 
 ### Web Developer, Freelance <small>Jan 2010 -- Jan 2013</small>
 
