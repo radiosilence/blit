@@ -34,7 +34,7 @@ _Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Python, Go, C
 - Specialized in transforming cloud infrastructure for companies by adopting software development practices like continuous deployment, GitOps, IaC, and cloud-native approaches.
 - Developed Kubernetes controllers in Go and created complex CI pipelines using Concourse, GitHub Actions, and GitLab pipelines.
 - Led enterprise-level project transformations with a focus on manageability, scalability, and declarative workflows prioritizing reproducibility and drift resilience over GitOps.
-- Implemented Cloud Security Posture Management policies and influenced enhancements to Azure Policy tool functionalities during a Microsoft Paddington office visit.
+- Implemented Cloud Security Posture Management policies and influenced enhancements to Azure Policy during a Microsoft Paddington office visit.
 - Built code & deployment auditing tools using Python for enterprise clients.
 - Contributed to open-source projects such as Kubernetes External Secrets Operator and assisted in the development of Compliance Framework, a verified CSPM tool.
 
