@@ -44,7 +44,7 @@ _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST AP
 
 - Developed an internal Android app for bike delivery drivers with job viewing, note and photo uploads, training features, and customer payment functionality.
 - Utilized IaC, GitOps, CDK, Lambda, DynamoDB, and API Gateway to create an infrastucture that seamlessly integrated with existing systems.
-- Used React Native, MobX State Tree, and AWS Amplify for the app.
+- Used React Native, MobX-State-Tree, and AWS Amplify for the app.
 - Established a comprehensive BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app builds with minimal configuration needed.
 - Enhanced security measures in existing infrastructure code through rigorous auditing and patches.
 
@@ -54,7 +54,7 @@ _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, 
 
 - Developed key projects such as the "Companion App" from scratch in React Native, which utilized a unique approach for low latency LAN communication using native Android/iOS websocket server implementations on mobile devices due to constraints of running the TV app within a browser context.
 - Implemented Java and Swift WebSocket libraries as native React Native modules and ensured thread safety on iOS using GCD.
-- Created internal curation tools with MobX State Tree, Tailwind, and Vite
+- Created internal curation tools with MobX-State-Tree, Tailwind, and Vite
 - Designed an eCommerce website with account servicing functionality using the Astro framework.
 
 ### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 -- Jan 2024</small>
@@ -62,7 +62,7 @@ _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, 
 _Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree, WebSockets_
 
 - Recruited by a former business partner to create a React Native app for both a startup venture and a revitalized project.
-- Utilized MobX State Tree (MST) to enhance application performance through observables, 'flows', and minimal boilerplate.
+- Utilized MobX-State-Tree to enhance application performance through observables, 'flows', and minimal boilerplate.
 - Transformed codebase from class components to functional components with mobx-react observers and hooks, transitioning from Redux to embrace MobX's simplicity and elegance.
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018 -- Jan 2020</small>
@@ -79,7 +79,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 
 ### TypeScript / JavaScript
 
-TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX State Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, WebSockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n, Axios, Express
+TypeScript, Next.js, Astro, NestJS, Generics, async/await, Node.js, React Native (+ Swift/Kotlin/Java), Expo, React, Zustand, esbuild, bun, Redux, MobX-State-Tree, Flux, Immer, ReasonML, RxJS, Webpack, Vite, GraphQL, WebSockets, Socket.IO, ZeroMQ, Oao, Lerna, i18n, Axios, Express
 
 ### Python
 
