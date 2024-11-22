@@ -22,10 +22,10 @@ Recently bolstered skillset in the areas of infrastructure, platform and CI/CD a
 _Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Express_
 
 - Developed new features using Next.js and TypeScript, facilitating the migration to a new architecture.
-- Created APIs and endpoints with NestJS and Next.js for improved functionality.
-- Managed legacy JS code within React microservices.
-- Resolved issues and enhanced performance of code deployed on Kubernetes.
-- Enhanced and expanded existing CI/CD pipelines through GitHub Actions.
+- Created APIs and endpoints using NestJS.
+- Managed legacy JS code in React frontends and Express microservices.
+- Resolved issues and debugged performance of services deployed on Kubernetes.
+- Enhanced and expanded existing GitHub Actions CI/CD pipelines.
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022 -- Jan 2024</small>
 
