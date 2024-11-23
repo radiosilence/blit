@@ -62,7 +62,7 @@ resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
-  content = "did=${var.bluesky_did}"
+  content = "did=${var.bsky_did}"
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -70,7 +70,7 @@ resource "cloudflare_record" "record_fm_spf" {
   name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
-  content = "v=spf1 include:${var.fastmail_dkim_domain} ?all"
+  content = "v=spf1 include:${var.fm_dkim_domain} ?all"
   zone_id = cloudflare_zone.zone.id
 }
 
