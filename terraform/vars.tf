@@ -24,7 +24,7 @@ variable "github_a_records" {
   default     = ["185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153"]
 }
 
-variable "bluesky_did" {
+variable "bsky_did" {
   description = "The DID of the Bluesky agent to use"
   type        = string
   default     = "did:plc:d32vuqlfqjttwbckkxgxgbgl"
@@ -42,7 +42,7 @@ variable "github_verify" {
   }
 }
 
-variable "fastmail_dkim_domain" {
+variable "fm_dkim_domain" {
   description = "The domain name to use for the Fastmail DKIM records"
   type        = string
   default     = "spf.messagingengine.com"
