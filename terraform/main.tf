@@ -34,7 +34,7 @@ resource "cloudflare_record" "record_letsencrypt_caa" {
 resource "cloudflare_record" "verify_github" {
   type    = "TXT"
   name    = var.github_verify.name
-  content = var.github_verify.value
+  content = "\"${var.github_verify.value}\""
   zone_id = cloudflare_zone.zone.id
 }
 
