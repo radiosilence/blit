@@ -48,6 +48,15 @@ resource "cloudflare_record" "github_pages_a" {
   zone_id  = cloudflare_zone.zone.id
 }
 
+resource "cloudflare_record" "github_pages_a_www" {
+  name    = "www.${var.cloudflare_zone}"
+  proxied = false
+  ttl     = 1
+  type    = "CNAME"
+  content = var.github_pages_domain
+  zone_id = cloudflare_zone.zone.id
+}
+
 resource "cloudflare_record" "record_fm_dk" {
   for_each = toset(["fm1", "fm2", "fm3", "fm4"])
   name     = "${each.key}._domainkey"
