@@ -58,7 +58,7 @@ resource "cloudflare_record" "github_pages_a_www" {
 }
 
 resource "cloudflare_record" "record_fm_dk" {
-  for_each = ["fm1", "fm2", "fm3", "fm4"]
+  for_each = toset(["fm1", "fm2", "fm3", "fm4"])
   name     = "${each.key}._domainkey"
   proxied  = false
   ttl      = 1
@@ -68,10 +68,10 @@ resource "cloudflare_record" "record_fm_dk" {
 }
 
 resource "cloudflare_record" "record_fm_mx" {
-  for_each = [
-    { name = "in1", priority = 10 },
-    { name = "in2", priority = 20 },
-  ]
+  for_each = toset([
+    object({ name = "in1", priority = 10 }),
+    object({ name = "in2", priority = 20 }),
+  ])
   name     = var.cloudflare_zone
   priority = each.key.priority
   ttl      = 1
