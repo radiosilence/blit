@@ -18,13 +18,14 @@ variable "root_cname_domain" {
   type        = string
 }
 
-variable "nd_server_ip" {
-  description = "The IP address of the navidrome server"
-  type        = string
-}
-
 variable "github_a_records" {
   description = "A map of GitHub Pages A records to create"
   type        = set(string)
   default     = ["185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153"]
+}
+
+variable "bluesky_did" {
+  description = "The DID of the Bluesky agent to use"
+  type        = string
+  default     = "did:plc:d32vuqlfqjttwbckkxgxgbgl"
 }
