@@ -42,12 +42,6 @@ variable "github_verify" {
   }
 }
 
-variable "github_pages_domain" {
-  description = "The domain name to use for the GitHub Pages CNAME record"
-  type        = string
-  default     = "radiosilence.github.io"
-}
-
 variable "fm_dkim_domain" {
   description = "The domain name to use for the Fastmail DKIM records"
   type        = string
