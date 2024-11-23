@@ -34,7 +34,7 @@ resource "cloudflare_record" "record_letsencrypt_caa" {
 resource "cloudflare_record" "verify_github" {
   type    = "TXT"
   name    = var.github_verify.name
-  value   = var.github_verify.value
+  content = var.github_verify.value
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -43,7 +43,7 @@ resource "cloudflare_record" "github_pages_a" {
   proxied  = false
   ttl      = 1
   type     = "A"
-  value    = each.key
+  content  = each.key
   for_each = var.github_a_records
   zone_id  = cloudflare_zone.zone.id
 }
@@ -54,7 +54,7 @@ resource "cloudflare_record" "record_fm_dk" {
   proxied  = false
   ttl      = 1
   type     = "CNAME"
-  value    = "${each.key}.${var.cloudflare_zone}.dkim.fmhosted.com"
+  content  = "${each.key}.${var.cloudflare_zone}.dkim.fmhosted.com"
   zone_id  = cloudflare_zone.zone.id
 }
 
@@ -62,7 +62,7 @@ resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
-  value   = "did=${var.bluesky_did}"
+  content = "did=${var.bluesky_did}"
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -70,7 +70,7 @@ resource "cloudflare_record" "record_fm_spf" {
   name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
-  value   = "v=spf1 include:${var.fastmail_dkim_domain} ?all"
+  content = "v=spf1 include:${var.fastmail_dkim_domain} ?all"
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -78,7 +78,7 @@ resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
-  value   = "v=DMARC1; p=none;"
+  content = "v=DMARC1; p=none;"
   zone_id = cloudflare_zone.zone.id
 }
 
