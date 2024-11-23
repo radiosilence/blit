@@ -70,7 +70,7 @@ resource "cloudflare_record" "record_fm_spf" {
   name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
-  value   = "v=spf1 include:spf.messagingengine.com ?all"
+  value   = "v=spf1 include:${var.fastmail_dkim_domain} ?all"
   zone_id = cloudflare_zone.zone.id
 }
 

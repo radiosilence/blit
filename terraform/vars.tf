@@ -29,3 +29,18 @@ variable "bluesky_did" {
   type        = string
   default     = "did:plc:d32vuqlfqjttwbckkxgxgbgl"
 }
+
+variable "github_verify" {
+  description = "The GitHub Pages verification string to use"
+  type        = map()
+  default = {
+    name  = "_github-pages-challenge-radiosilence"
+    value = "963852554fb760462512037c38879e"
+  }
+}
+
+variable "fastmail_dkim_domain" {
+  description = "The domain name to use for the Fastmail DKIM records"
+  type        = string
+  default     = "spf.messagingengine.com"
+}
