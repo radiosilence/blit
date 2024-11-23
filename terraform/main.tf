@@ -18,30 +18,8 @@ resource "cloudflare_zone" "zone" {
   zone       = var.cloudflare_zone
 }
 
-resource "cloudflare_record" "record_nd_a" {
-  name    = "nd"
-  proxied = true
-  ttl     = 1
-  type    = "A"
-  value   = var.nd_server_ip
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_amazon_caa" {
-  name    = "blit.cc"
-  proxied = false
-  ttl     = 1
-  type    = "CAA"
-  zone_id = cloudflare_zone.zone.id
-  data {
-    flags = 0
-    tag   = "issue"
-    value = "amazon.com"
-  }
-}
-
-resource "cloudflare_record" "record_letsencrypt_caa" {
-  name    = "blit.cc"
+resource "cloudflare_dns_record" "record_letsencrypt_caa" {
+  name    = var.cloudflare_zone
   proxied = false
   ttl     = 1
   type    = "CAA"
@@ -53,15 +31,15 @@ resource "cloudflare_record" "record_letsencrypt_caa" {
   }
 }
 
-resource "cloudflare_record" "verify_github" {
+resource "cloudflare_dns_record" "verify_github" {
   type    = "TXT"
-  name    = "_github-pages-challenge-radiosilence"
-  value   = "963852554fb760462512037c38879e"
+  name    = var.github_verify.name
+  value   = var.github_verify.value
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_record" "github_pages_a" {
-  name     = "blit.cc"
+resource "cloudflare_dns_record" "github_pages_a" {
+  name     = var.cloudflare_zone
   proxied  = false
   ttl      = 1
   type     = "A"
@@ -69,78 +47,34 @@ resource "cloudflare_record" "github_pages_a" {
   for_each = var.github_a_records
   zone_id  = cloudflare_zone.zone.id
 }
-resource "cloudflare_record" "github_pages_a_www" {
-  name    = "www.blit.cc"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  value   = "radiosilence.github.io"
-  zone_id = cloudflare_zone.zone.id
-}
 
-
-resource "cloudflare_record" "record_fm1_dk" {
-  name    = "fm1._domainkey"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  value   = "fm1.blit.cc.dkim.fmhosted.com"
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm2_dk" {
-  name    = "fm2._domainkey"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  value   = "fm2.blit.cc.dkim.fmhosted.com"
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm3_dk" {
-  name    = "fm3._domainkey"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  value   = "fm3.blit.cc.dkim.fmhosted.com"
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm_mx2" {
-  name     = "blit.cc"
-  priority = 20
+resource "cloudflare_dns_record" "record_fm_dk" {
+  for_each = toset(["fm1", "fm2", "fm3", "fm4"])
+  name     = "${each.key}._domainkey"
+  proxied  = false
   ttl      = 1
-  type     = "MX"
-  value    = "in2-smtp.messagingengine.com"
+  type     = "CNAME"
+  value    = "${each.key}.${var.cloudflare_zone}.dkim.fmhosted.com"
   zone_id  = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_record" "record_fm_mx1" {
-  name     = "blit.cc"
-  priority = 10
-  ttl      = 1
-  type     = "MX"
-  value    = "in1-smtp.messagingengine.com"
-  zone_id  = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_bluesky_atproto" {
+resource "cloudflare_dns_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
-  value   = "did=did:plc:d32vuqlfqjttwbckkxgxgbgl"
+  value   = "did=${var.bluesky_did}"
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_record" "record_fm_spf" {
-  name    = "blit.cc"
+resource "cloudflare_dns_record" "record_fm_spf" {
+  name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
   value   = "v=spf1 include:spf.messagingengine.com ?all"
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_record" "record_fm_dmarc" {
+resource "cloudflare_dns_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
