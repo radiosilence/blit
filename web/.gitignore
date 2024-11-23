@@ -22,3 +22,6 @@ build
 
 .terraform.lock.hcl
 .terraform
+
+# Astro
+.astro

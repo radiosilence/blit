@@ -2,7 +2,7 @@
 layout: ../layouts/post.astro
 ---
 
-# james cleveland
+# James Cleveland
 
 full stack / react native / devops
 
@@ -15,7 +15,7 @@ Communicating complex technical solutions and to stakeholders and fellow enginee
 
 Recently bolstered skillset in the areas of infrastructure, platform and CI/CD and IaC (devops), but as a natural creative, what drives me is a job where I wake up every day and go to work and build something interesting.
 
-## recent work
+## Recent Work
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
@@ -75,7 +75,7 @@ _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin
 - Ensured high code quality through thorough testing with detox and @testing-library/react-native.
 - Collaborated closely with analysts and backend developers, contributing to bug fixes and gaining deep understanding of financial products.
 
-## skills
+## Skills
 
 ### TypeScript / JavaScript
 
@@ -105,11 +105,11 @@ Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSON, 
 
 Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, Linux, Ansible
 
-## who is james?
+## Who is James?
 
 I don’t see programming and computers as simply a job, but part of who I am. I think the world is going through very interesting times and it will be passionate programmers and thinkers that will play an important part in shaping it. My current hobbies are photography (events, portrait, street, travel), and I’m an avid cyclist (mainly fixed, but also gravel). When I lived in Brighton I often helped out with putting on shows and DJing club nights. I enjoy going out with friends and finding new bands or other weird and wonderful things to do. I am a keen follower of current aﬀairs, especially from a technical standpoint, and think a lot about the world and am interested by new developments politically and scientifically.
 
-## less recent work
+## Less Recent Work
 
 ### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017 -- Jan 2018</small>
 

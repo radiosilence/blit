@@ -27,6 +27,12 @@ module.exports = {
                 color: "#e65e5e",
               },
             },
+            h2: {
+              "text-transform": "lowercase",
+            },
+            h1: {
+              "text-transform": "lowercase",
+            },
           },
         },
       },
