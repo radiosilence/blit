@@ -84,7 +84,7 @@ resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
-  content = "did=${var.bsky_did}"
+  content = "\"did=${var.bsky_did}\""
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -92,7 +92,7 @@ resource "cloudflare_record" "record_fm_spf" {
   name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
-  content = "v=spf1 include:${var.fm_dkim_domain} ?all"
+  content = "\"v=spf1 include:${var.fm_dkim_domain} ?all\""
   zone_id = cloudflare_zone.zone.id
 }
 
@@ -100,7 +100,7 @@ resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
-  content = "v=DMARC1; p=none;"
+  content = "\"v=DMARC1; p=none;\""
   zone_id = cloudflare_zone.zone.id
 }
 
