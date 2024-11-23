@@ -13,7 +13,9 @@ Experienced polyglot engineer with a huge breadth and depth of knowledge and und
 
 Communicating complex technical solutions and to stakeholders and fellow engineers in a way that they can relate to is also key to my approach, as if people can’t understand what’s happening, the most appropriate solution is unlikely to be reached.
 
-Recently bolstered skillset in the areas of infrastructure, platform and CI/CD and IaC (devops), but as a natural creative, what drives me is a job where I wake up every day and go to work and build something interesting.
+Recently bolstered skillset in the areas of infrastructure, platform and CI/CD and IaC (devops).
+
+As a natural creative, what drives me is a job where I wake up every day and build something interesting.
 
 ## Recent Work
 
