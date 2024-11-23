@@ -2,7 +2,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 5.0"
+      version = "~> 4.0"
     }
   }
   required_version = ">= 1.2.0"
@@ -18,7 +18,7 @@ resource "cloudflare_zone" "zone" {
   zone       = var.cloudflare_zone
 }
 
-resource "cloudflare_dns_record" "record_letsencrypt_caa" {
+resource "cloudflare_record" "record_letsencrypt_caa" {
   name    = var.cloudflare_zone
   proxied = false
   ttl     = 1
@@ -31,14 +31,14 @@ resource "cloudflare_dns_record" "record_letsencrypt_caa" {
   }
 }
 
-resource "cloudflare_dns_record" "verify_github" {
+resource "cloudflare_record" "verify_github" {
   type    = "TXT"
   name    = var.github_verify.name
   value   = var.github_verify.value
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_dns_record" "github_pages_a" {
+resource "cloudflare_record" "github_pages_a" {
   name     = var.cloudflare_zone
   proxied  = false
   ttl      = 1
@@ -48,7 +48,7 @@ resource "cloudflare_dns_record" "github_pages_a" {
   zone_id  = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_dns_record" "record_fm_dk" {
+resource "cloudflare_record" "record_fm_dk" {
   for_each = toset(["fm1", "fm2", "fm3", "fm4"])
   name     = "${each.key}._domainkey"
   proxied  = false
@@ -58,7 +58,7 @@ resource "cloudflare_dns_record" "record_fm_dk" {
   zone_id  = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_dns_record" "record_bluesky_atproto" {
+resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
@@ -66,7 +66,7 @@ resource "cloudflare_dns_record" "record_bluesky_atproto" {
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_dns_record" "record_fm_spf" {
+resource "cloudflare_record" "record_fm_spf" {
   name    = var.cloudflare_zone
   ttl     = 1
   type    = "TXT"
@@ -74,7 +74,7 @@ resource "cloudflare_dns_record" "record_fm_spf" {
   zone_id = cloudflare_zone.zone.id
 }
 
-resource "cloudflare_dns_record" "record_fm_dmarc" {
+resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
