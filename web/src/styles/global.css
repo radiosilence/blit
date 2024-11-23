@@ -86,3 +86,9 @@ h1 {
 h2 {
   @apply text-sm;
 }
+
+@media print {
+  html {
+    font-size: 67%;
+  }
+}
