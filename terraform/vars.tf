@@ -32,7 +32,10 @@ variable "bluesky_did" {
 
 variable "github_verify" {
   description = "The GitHub Pages verification string to use"
-  type        = map()
+  type = object({
+    name  = string
+    value = string
+  })
   default = {
     name  = "_github-pages-challenge-radiosilence"
     value = "963852554fb760462512037c38879e"
