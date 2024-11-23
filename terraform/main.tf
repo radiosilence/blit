@@ -69,8 +69,8 @@ resource "cloudflare_record" "record_fm_dk" {
 
 resource "cloudflare_record" "record_fm_mx" {
   for_each = [
-    object({ name = "in1", priority = 10 }),
-    object({ name = "in2", priority = 20 }),
+    { name = "in1", priority = 10 },
+    { name = "in2", priority = 20 },
   ]
   name     = var.cloudflare_zone
   priority = each.key.priority
