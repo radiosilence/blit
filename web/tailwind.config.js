@@ -11,27 +11,18 @@ module.exports = {
         brand: {
           DEFAULT: "#e65e5e",
           light: "#f7d4d4",
+          mid: "#666666",
           dark: "#333",
         },
       },
       typography: {
         DEFAULT: {
           css: {
-            color: "#333",
             a: {
               color: "#e65e5e",
               "&:hover": {
                 color: "#666666",
               },
-              "&:visited": {
-                color: "#e65e5e",
-              },
-            },
-            h2: {
-              "text-transform": "lowercase",
-            },
-            h1: {
-              "text-transform": "lowercase",
             },
           },
         },

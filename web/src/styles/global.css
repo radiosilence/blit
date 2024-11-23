@@ -46,11 +46,6 @@
   font-weight: 800;
   font-style: normal;
 }
-
-* {
-  @apply text-brand-dark;
-}
-
 @font-face {
   font-family: "Geist Mono";
   src: url("../assets/fonts/GeistMono-UltraBlack.woff2") format("woff2");
@@ -65,5 +60,22 @@ a:active {
 }
 
 a:hover {
+  @apply text-brand-mid;
+}
+
+body {
   @apply text-brand-dark;
+}
+
+h1,
+h2 {
+  @apply lowercase;
+}
+
+h1 {
+  @apply text-3xl font-extralight;
+}
+
+h2 {
+  @apply text-sm;
 }
