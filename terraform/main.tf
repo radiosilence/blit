@@ -53,7 +53,7 @@ resource "cloudflare_record" "github_pages_a_www" {
   proxied = false
   ttl     = 1
   type    = "CNAME"
-  content = var.github_pages_domain
+  content = var.cloudflare_zone
   zone_id = cloudflare_zone.zone.id
 }
 
