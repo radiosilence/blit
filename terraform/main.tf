@@ -43,7 +43,7 @@ resource "cloudflare_record" "github_pages_a" {
   proxied  = false
   ttl      = 1
   type     = "A"
-  content  = each.key
+  content  = each.value
   for_each = var.github_a_records
   zone_id  = cloudflare_zone.zone.id
 }
@@ -59,11 +59,11 @@ resource "cloudflare_record" "github_pages_a_www" {
 
 resource "cloudflare_record" "record_fm_dk" {
   for_each = toset(["fm1", "fm2", "fm3", "fm4"])
-  name     = "${each.key}._domainkey"
+  name     = "${each.value}._domainkey"
   proxied  = false
   ttl      = 1
   type     = "CNAME"
-  content  = "${each.key}.${var.cloudflare_zone}.dkim.fmhosted.com"
+  content  = "${each.value}.${var.cloudflare_zone}.dkim.fmhosted.com"
   zone_id  = cloudflare_zone.zone.id
 }
 
@@ -73,10 +73,10 @@ resource "cloudflare_record" "record_fm_mx" {
     { name = "in2", priority = 20 },
   ])
   name     = var.cloudflare_zone
-  priority = each.key.priority
+  priority = each.value.priority
   ttl      = 1
   type     = "MX"
-  content  = "${each.key.name}-smtp.messagingengine.com"
+  content  = "${each.value.name}-smtp.messagingengine.com"
   zone_id  = cloudflare_zone.zone.id
 }
 
