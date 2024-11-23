@@ -67,6 +67,19 @@ resource "cloudflare_record" "record_fm_dk" {
   zone_id  = cloudflare_zone.zone.id
 }
 
+resource "cloudflare_record" "record_fm_mx" {
+  for_each = tomap({
+    "in1" = 10,
+    "in2" = 20,
+  })
+  name     = var.cloudflare_zone
+  priority = each.value
+  ttl      = 1
+  type     = "MX"
+  content  = "${each.key}-smtp.messagingengine.com"
+  zone_id  = cloudflare_zone.zone.id
+}
+
 resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"
   ttl     = 1
