@@ -68,7 +68,7 @@ resource "cloudflare_record" "record_fm_dk" {
 }
 
 resource "cloudflare_record" "record_fm_mx" {
-  for_each = map({
+  for_each = tomap({
     "in1" = 10,
     "in2" = 20,
   })
