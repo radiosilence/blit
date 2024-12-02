@@ -16,8 +16,10 @@ const proseVars = [
   "--tw-prose-td-borders",
 ];
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
+
+export default {
   content: ["./index.html", "./src/**/*.{astro,js,ts,jsx,tsx,md}"],
   theme: {
     fontFamily: {
@@ -43,5 +45,5 @@ module.exports = {
       }),
     },
   },
-  plugins: [require("@tailwindcss/typography")],
-};
+  plugins: [typography],
+} satisfies Config;
