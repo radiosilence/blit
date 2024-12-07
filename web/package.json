@@ -7,7 +7,6 @@
     "build": "bunx --bun astro build"
   },
   "devDependencies": {
-    "@astrojs/tailwind": "^5.1.3",
     "@tailwindcss/postcss": "^4.0.0-beta.4",
     "@tailwindcss/typography": "^0.5.15",
     "astro": "5.0.3",
