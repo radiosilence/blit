@@ -62,10 +62,7 @@
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
   --color-brand-dark: #333;
-  --font-*: initial;
-  --font-sans: "Geist Mono", sans-serif;
-  --font-serif: "Geist Mono", sans-serif;
-  --font-display: "Geist Mono", sans-serif;
+  --default-font-family: "Geist Mono", sans-serif;
 }
 
 a,
