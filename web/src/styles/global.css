@@ -80,6 +80,7 @@
     --tw-prose-code: inherit;
     --tw-prose-pre-code: inherit;
     --tw-prose-pre-bg: inherit;
+    @apply max-w-screen-lg;
   }
 }
 

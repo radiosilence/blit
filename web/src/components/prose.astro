@@ -8,6 +8,6 @@ interface Props {
 const { class: cls = "", ...rest } = Astro.props;
 ---
 
-<article class={cx("prose", "prose-sm", "max-w-screen-lg", cls)} {...rest}>
+<article class={cx("prose", "prose-sm", cls)} {...rest}>
   <slot />
 </article>
