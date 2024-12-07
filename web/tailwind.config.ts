@@ -1,3 +1,6 @@
+`import type { Config } from "tailwindcss";`;
+import typography from "@tailwindcss/typography";
+
 const proseVars = [
   "--tw-prose-body",
   "--tw-prose-headings",
@@ -15,9 +18,6 @@ const proseVars = [
   "--tw-prose-th-borders",
   "--tw-prose-td-borders",
 ];
-
-import type { Config } from "tailwindcss";
-import typography from "@tailwindcss/typography";
 
 export default {
   content: ["./index.html", "./src/**/*.{astro,js,ts,jsx,tsx,md}"],
