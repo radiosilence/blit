@@ -61,27 +61,10 @@
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
   --color-brand-dark: #333;
+  --font-*: initial;
   --font-sans: "Geist Mono", sans-serif;
   --font-serif: "Geist Mono", sans-serif;
   --font-display: "Geist Mono", sans-serif;
-}
-
-@layer base {
-  --tw-prose-body: inherit;
-  --tw-prose-headings: inherit;
-  --tw-prose-lead: inherit;
-  --tw-prose-bold: inherit;
-  --tw-prose-counters: inherit;
-  --tw-prose-bullets: inherit;
-  --tw-prose-hr: inherit;
-  --tw-prose-quotes: inherit;
-  --tw-prose-quote-borders: inherit;
-  --tw-prose-captions: inherit;
-  --tw-prose-code: inherit;
-  --tw-prose-pre-code: inherit;
-  --tw-prose-pre-bg: inherit;
-  --tw-prose-th-borders: inherit;
-  --tw-prose-td-borders: inherit;
 }
 
 a,
@@ -114,7 +97,15 @@ h1 {
   @apply text-3xl font-extralight;
 }
 
+.prose h1 {
+  @apply text-4xl;
+}
+
 h2 {
+  @apply text-2xl font-thin;
+}
+
+h3 {
   @apply text-sm;
 }
 
