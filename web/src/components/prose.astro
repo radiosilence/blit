@@ -8,24 +8,6 @@ interface Props {
 const { class: cls = "", ...rest } = Astro.props;
 ---
 
-<article
-  class={cx(
-    "prose-sm",
-    "max-w-screen-lg",
-    "prose",
-    "prose-h1:text-inherit",
-    "prose-h2:text-inherit",
-    "prose-h3:text-sm",
-    "prose-body:text-inherit",
-    "prose-strong:text-inherit",
-    "prose-h2:text-inherit",
-    "prose-h3:text-inherit",
-    "prose-h4:text-inherit",
-    "prose-code:text-inherit",
-    "prose-quotes:text-inherit",
-    "text-inherit",
-    cls,
-  )}
-  {...rest}>
+<article class={cx("prose", "prose-sm", "max-w-screen-lg", cls)} {...rest}>
   <slot />
 </article>
