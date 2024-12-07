@@ -57,6 +57,7 @@
 }
 
 @theme {
+  --color-*: initial;
   --color-brand: #e65e5e;
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
@@ -81,13 +82,6 @@ body {
   @apply text-brand-dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    @apply bg-brand-dark;
-    @apply text-brand-light;
-  }
-}
-
 h1,
 h2 {
   @apply lowercase;
@@ -106,7 +100,18 @@ h2 {
 }
 
 h3 {
-  @apply text-sm;
+  @apply text-sm font-semibold;
+}
+
+strong {
+  @apply font-semibold;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-brand-dark;
+    @apply text-brand-light;
+  }
 }
 
 @media print {
