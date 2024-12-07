@@ -5,5 +5,5 @@ export default defineConfig({
   prefetch: {
     defaultStrategy: "viewport",
   },
-  integrations: [tailwind()],
+  // integrations: [tailwind()],
 });
