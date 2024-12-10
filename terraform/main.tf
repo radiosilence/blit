@@ -100,7 +100,7 @@ resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
-  content = "\"v=DMARC1; p=none;\""
+  content = "\"v=DMARC1; p=reject; rua=mailto:dmarc-agg@blit.cc\""
   zone_id = cloudflare_zone.zone.id
 }
 
