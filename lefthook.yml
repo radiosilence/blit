@@ -3,13 +3,13 @@ pre-commit:
   commands:
     pretty-quick:
       run: bunx pretty-quick {staged_files} && git add {staged_files}
-    eslint:
-      glob: "*.{tsx,ts}"
-      run: bunx eslint {staged_files}
+    eslint-web:
+      glob: "./web/*.{tsx,ts,astro}"
+      run: bunx eslint -c ./web/eslint.config.mjs {staged_files}
 
 fixer:
   parallel: true
   commands:
     fix:
-      glob: "*.{tsx,ts}"
+      glob: "*.{tsx,ts,astro}"
       run: bunx eslint --fix {all_files}
