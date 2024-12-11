@@ -9,6 +9,14 @@ export default defineFlatConfig([
   }),
   ...eslintPluginAstro.configs.recommended,
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
     rules: {
       "no-console": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -16,6 +24,7 @@ export default defineFlatConfig([
       "@typescript-eslint/no-empty-object-type": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-var-requires": "warn",
+      "@typescript-eslint/naming-convention": "off",
       "react/no-multi-comp": "off",
       "react/function-component-definition": [
         "error",
