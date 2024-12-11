@@ -5,9 +5,9 @@ import eslintPluginAstro from "eslint-plugin-astro";
 export default defineFlatConfig([
   ...sheriff({
     react: true,
-    astro: false,
+    astro: false, // TODO: Enable this when the plugin is ready
   }),
-  ...eslintPluginAstro.configs.recommended,
+  ...eslintPluginAstro.configs.recommended, // TODO: Disable this when the plugin is ready
   {
     languageOptions: {
       parserOptions: {
