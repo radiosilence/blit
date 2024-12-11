@@ -1,14 +1,11 @@
 {
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
     "@evilmartians/lefthook": "^1.8.5",
     "@types/node": "^22.10.1",
     "eslint": "^9.16.0",
-    "eslint-config-prettier": "^9.1.0",
-    "prettier": "^3.4.2",
-    "pretty-quick": "^4.0.0",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.17.0"
+    "eslint-config-sheriff": "^25.3.0",
+    "eslint-define-config": "^2.1.0",
+    "typescript": "^5.7.2"
   },
   "workspaces": [
     "web"
