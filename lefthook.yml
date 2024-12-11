@@ -2,14 +2,7 @@ pre-commit:
   parallel: true
   commands:
     pretty-quick:
-      run: npx pretty-quick {staged_files} && git add {staged_files}
-    eslint:
-      glob: "*.{tsx,ts,astro,mjs,js}"
-      run: npx eslint {staged_files}
-
-fixer:
-  parallel: true
-  commands:
-    fix:
-      glob: "*.{tsx,ts,astro,mjs,js}"
-      run: npx eslint --fix {all_files}
+      run: bunx pretty-quick {staged_files} && git add {staged_files}
+    eslint-web:
+      glob: "./web/*.{tsx,ts,astro,mjs,js}}"
+      run: bunx eslint -c ./web/eslint.config.mjs {staged_files}
