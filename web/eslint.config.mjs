@@ -1,13 +1,13 @@
 import { sheriff } from "eslint-config-sheriff";
 import { defineFlatConfig } from "eslint-define-config";
-
-const sheriffOptions = {
-  react: true,
-  astro: false,
-};
+import eslintPluginAstro from "eslint-plugin-astro";
 
 export default defineFlatConfig([
-  ...sheriff(sheriffOptions),
+  ...sheriff({
+    react: true,
+    astro: false,
+  }),
+  ...eslintPluginAstro.configs.recommended,
   {
     rules: {
       "no-console": "warn",
