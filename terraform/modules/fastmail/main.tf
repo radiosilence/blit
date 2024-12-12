@@ -16,17 +16,17 @@ resource "cloudflare_record" "record_fm_mx" {
   priority = each.value
   ttl      = 1
   type     = "MX"
-  content  = "${each.key}-smtp.messagingengine.com"
+  content  = "${each.key}-${var.mx_domain}"
   zone_id  = var.zone.id
 }
 
-resource "cloudflare_record" "record_fm_dk" {
+resource "cloudflare_record" "record_fm_dkim" {
   for_each = toset(["fm1", "fm2", "fm3", "fm4"])
-  name     = "${each.key}._domainkey"
+  name     = "${each.key}.${var.dkim_subdomain}"
   proxied  = false
   ttl      = 1
   type     = "CNAME"
-  content  = "${each.key}.${var.zone.name}.dkim.fmhosted.com"
+  content  = "${each.key}.${var.zone.name}.${var.dkim_domain}"
   zone_id  = var.zone.id
 }
 
@@ -35,15 +35,15 @@ resource "cloudflare_record" "record_fm_spf" {
   name    = var.zone.name
   ttl     = 1
   type    = "TXT"
-  content = "\"v=spf1 include:spf.messagingengine.com ?all\""
+  content = "\"v=spf1 include:${var.spf_domain} ?all\""
   zone_id = var.zone.id
 }
 
 resource "cloudflare_record" "record_fm_dmarc" {
-  name    = "_dmarc"
+  name    = var.dmarc_subdomain
   ttl     = 1
   type    = "TXT"
-  content = "\"v=DMARC1; p=reject; rua=mailto:dmarc-agg@blit.cc\""
+  content = "\"v=DMARC1; p=${var.dmarc_policy}; rua=mailto:${var.dmarc_agg_email}\""
   zone_id = var.zone.id
 }
 
