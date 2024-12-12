@@ -1,11 +1,21 @@
-resource "cloudflare_record" "verify" {
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+  required_version = ">= 1.9.8"
+}
+
+resource "cloudflare_dns_record" "verify" {
   type    = "TXT"
   name    = var.github_verify.name
   content = "\"${var.github_verify.value}\""
   zone_id = var.zone_id
 }
 
-resource "cloudflare_record" "a" {
+resource "cloudflare_dns_record" "a" {
   name     = var.domain
   proxied  = false
   ttl      = 1
@@ -15,7 +25,7 @@ resource "cloudflare_record" "a" {
   zone_id  = cloudflare_zone_blit.zone.id
 }
 
-resource "cloudflare_record" "a_www" {
+resource "cloudflare_dns_record" "a_www" {
   name    = "www.${var.domain}"
   proxied = false
   ttl     = 1
