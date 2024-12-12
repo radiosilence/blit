@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-resource "cloudflare_dns_record" "record_fm_mx" {
+resource "cloudflare_record" "record_fm_mx" {
   for_each = tomap({
     "in1" = 10,
     "in2" = 20,
@@ -20,7 +20,7 @@ resource "cloudflare_dns_record" "record_fm_mx" {
   zone_id  = var.zone_id
 }
 
-resource "cloudflare_dns_record" "record_fm_dk" {
+resource "cloudflare_record" "record_fm_dk" {
   for_each = toset(["fm1", "fm2", "fm3", "fm4"])
   name     = "${each.key}._domainkey"
   proxied  = false
@@ -31,7 +31,7 @@ resource "cloudflare_dns_record" "record_fm_dk" {
 }
 
 
-resource "cloudflare_dns_record" "record_fm_spf" {
+resource "cloudflare_record" "record_fm_spf" {
   name    = var.domain
   ttl     = 1
   type    = "TXT"
@@ -39,7 +39,7 @@ resource "cloudflare_dns_record" "record_fm_spf" {
   zone_id = var.zone_id
 }
 
-resource "cloudflare_dns_record" "record_fm_dmarc" {
+resource "cloudflare_record" "record_fm_dmarc" {
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"

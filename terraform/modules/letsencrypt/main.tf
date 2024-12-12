@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-resource "cloudflare_dns_record" "record" {
+resource "cloudflare_record" "record" {
   name    = var.domain
   proxied = false
   ttl     = 1
