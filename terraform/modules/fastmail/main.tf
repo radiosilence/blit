@@ -12,12 +12,12 @@ resource "cloudflare_record" "record_fm_mx" {
     "in1" = 10,
     "in2" = 20,
   })
-  name     = var.domain
+  name     = var.zone.name
   priority = each.value
   ttl      = 1
   type     = "MX"
   content  = "${each.key}-smtp.messagingengine.com"
-  zone_id  = var.zone_id
+  zone_id  = var.zone.id
 }
 
 resource "cloudflare_record" "record_fm_dk" {
@@ -26,17 +26,17 @@ resource "cloudflare_record" "record_fm_dk" {
   proxied  = false
   ttl      = 1
   type     = "CNAME"
-  content  = "${each.key}.${var.domain}.dkim.fmhosted.com"
-  zone_id  = var.zone_id
+  content  = "${each.key}.${var.zone.name}.dkim.fmhosted.com"
+  zone_id  = var.zone.id
 }
 
 
 resource "cloudflare_record" "record_fm_spf" {
-  name    = var.domain
+  name    = var.zone.name
   ttl     = 1
   type    = "TXT"
   content = "\"v=spf1 include:spf.messagingengine.com ?all\""
-  zone_id = var.zone_id
+  zone_id = var.zone.id
 }
 
 resource "cloudflare_record" "record_fm_dmarc" {
@@ -44,6 +44,6 @@ resource "cloudflare_record" "record_fm_dmarc" {
   ttl     = 1
   type    = "TXT"
   content = "\"v=DMARC1; p=reject; rua=mailto:dmarc-agg@blit.cc\""
-  zone_id = var.zone_id
+  zone_id = var.zone.id
 }
 

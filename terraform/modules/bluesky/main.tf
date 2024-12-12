@@ -12,6 +12,6 @@ resource "cloudflare_record" "record" {
   ttl     = 1
   type    = "TXT"
   content = "\"did=${var.bsky_did}\""
-  zone_id = var.zone_id
+  zone_id = var.zone.id
 }
 
