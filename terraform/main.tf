@@ -22,8 +22,8 @@ provider "cloudflare" {
 # Blit
 resource "cloudflare_zone" "zone" {
   account_id = var.cloudflare_account_id
-  zone       = var.blit_zone.name
   id         = var.blit_zone.id
+  zone       = var.blit_zone.name
 }
 
 # Blit Let's Encrypt
