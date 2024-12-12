@@ -34,8 +34,8 @@ module "blit" {
 resource "cloudflare_record" "bambi" {
   name    = "bambi.${var.blit_zone.name}"
   ttl     = 1
-  type    = "CNAME"
-  content = var.bambi_cname
+  type    = "A"
+  content = var.bambi_ip
   zone_id = var.blit_zone.id
 }
 
