@@ -15,7 +15,7 @@ provider "cloudflare" {
 # Blit
 
 # Blit Zone
-resource "blit_cloudflare_zone" "zone" {
+resource "cloudflare_zone" "blit_zone" {
   account_id = var.cloudflare_account_id
   zone       = var.blit_domain
 }
@@ -23,34 +23,34 @@ resource "blit_cloudflare_zone" "zone" {
 # Blit Let's Encrypt
 module "blit_letsencrypt" {
   source  = "./modules/letsencrypt"
-  zone_id = blit_cloudflare_zone.zone.id
+  zone_id = blit_zone.zone.id
   domain  = var.blit_domain
 }
 
 # Blit Fastmail
 module "blit_fastmail" {
   source  = "./modules/fastmail"
-  zone_id = blit_cloudflare_zone.zone.id
+  zone_id = blit_zone.zone.id
   domain  = var.blit_domain
 }
 
 # Blit GitHub
 module "blit_github" {
   source  = "./modules/github"
-  zone_id = blit_cloudflare_zone.zone.id
+  zone_id = blit_zone.zone.id
   domain  = var.blit_domain
 }
 
 # Blit Bluesky
 module "blit_bluesky" {
   source  = "./modules/bluesky"
-  zone_id = blit_cloudflare_zone.zone.id
+  zone_id = blit_zone.zone.id
 }
 
 # Buttholes
 
 # Buttholes Zone
-resource "buttholes_cloudflare_zone" "zone" {
+resource "cloudflare_zone" "buttholes_zone" {
   account_id = var.cloudflare_account_id
   zone       = var.buttholes_domain
 }
@@ -58,7 +58,7 @@ resource "buttholes_cloudflare_zone" "zone" {
 # Buttholes Let's Encrypt
 module "buttholes_letsencrypt" {
   source  = "./modules/letsencrypt"
-  zone_id = buttholes_cloudflare_zone.zone.id
+  zone_id = buttholes_zone.zone.id
   domain  = var.buttholes_domain
 }
 
@@ -66,12 +66,12 @@ module "buttholes_letsencrypt" {
 # Buttholes Fastmail
 module "buttholes_fastmail" {
   source  = "./modules/fastmail"
-  zone_id = buttholes_cloudflare_zone.zone.id
+  zone_id = buttholes_zone.zone.id
   domain  = var.buttholes_domain
 }
 
 # Buttholes Bsky
 module "buttholes_bluesky" {
   source  = "./modules/bluesky"
-  zone_id = buttholes_cloudflare_zone.zone.id
+  zone_id = buttholes_zone.zone.id
 }
