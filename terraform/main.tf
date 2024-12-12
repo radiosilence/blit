@@ -53,6 +53,12 @@ resource "buttholes_cloudflare_zone" "zone" {
 }
 
 # Buttholes Let's Encrypt
+module "buttholes_letsencrypt" {
+  source  = "./modules/letsencrypt"
+  zone_id = buttholes_cloudflare_zone.zone.id
+  domain  = var.buttholes_domain
+}
+
 
 # Buttholes Fastmail
 module "buttholes_fastmail" {
