@@ -19,8 +19,7 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
-# Blit
-
+# blit.cc
 module "blit_letsencrypt" {
   source = "./modules/letsencrypt"
   zone   = var.blit_zone
@@ -41,8 +40,7 @@ module "blit_bluesky" {
   zone   = var.blit_zone
 }
 
-# Buttholes
-
+# buttholes.live
 module "buttholes_bluesky" {
   source = "./modules/bluesky"
   zone   = var.buttholes_zone
@@ -53,7 +51,7 @@ module "buttholes_fastmail" {
   zone   = var.buttholes_zone
 }
 
-# Radiosilence
+# radiosilence.dev
 module "radiosilence_bluesky" {
   source = "./modules/bluesky"
   zone   = var.radiosilence_zone
