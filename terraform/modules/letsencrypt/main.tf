@@ -1,4 +1,11 @@
-
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
 resource "cloudflare_record" "record_letsencrypt_caa" {
   name    = var.domain
   proxied = false
