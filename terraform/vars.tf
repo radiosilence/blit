@@ -9,15 +9,26 @@ variable "cloudflare_account_id" {
   type        = string
 }
 
-variable "blit_domain" {
-  description = "The domain name for blit"
-  type        = string
-  default     = "blit.cc"
+variable "blit_zone" {
+  description = "The zone ID for blit"
+  type = object({
+    name = string
+    id   = string
+  })
+  default = {
+    id   = "8aa9988e3df6b6a6ab4e4e6dbc3a2451"
+    name = "blit.cc"
+  }
 }
 
-variable "buttholes_domain" {
+variable "buttholes_zone" {
   description = "The domain name buttholes"
-  type        = string
-  default     = "buttholes.live"
+  type = object({
+    name = string
+    id   = string
+  })
+  default = {
+    id   = "1115a1e5006523692d61e49e672f6df0"
+    name = "buttholes.live"
+  }
 }
-
