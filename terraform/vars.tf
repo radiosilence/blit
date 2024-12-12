@@ -46,6 +46,11 @@ variable "radiosilence_zone" {
   }
 }
 
+variable "bambi_cname" {
+  description = "The CNAME to use for the Bambi subdomain"
+  type        = string
+}
+
 variable "bambi_ip" {
   description = "The IP address to use for the Bambi A record"
   type        = string
