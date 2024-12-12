@@ -36,6 +36,7 @@ resource "cloudflare_record" "bambi" {
   ttl     = 1
   type    = "A"
   content = var.bambi_ip
+  proxied = true
   zone_id = var.blit_zone.id
 }
 
