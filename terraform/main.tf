@@ -31,6 +31,14 @@ module "blit" {
   ]
 }
 
+resource "cloudflare_record" "bambi" {
+  name    = "bambi.${var.blit_zone.name}"
+  ttl     = 1
+  type    = "HTTPS"
+  content = var.bambi_cname
+  zone_id = var.blit_zone.id
+}
+
 # buttholes.live
 module "buttholes" {
   source = "./modules/zone"
