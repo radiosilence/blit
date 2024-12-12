@@ -45,3 +45,8 @@ variable "radiosilence_zone" {
     name = "radiosilence.dev"
   }
 }
+
+variable "bambi_cname" {
+  description = "The CNAME to use for the Bambi subdomain"
+  type        = string
+}
