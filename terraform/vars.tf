@@ -8,13 +8,14 @@ variable "cloudflare_account_id" {
   description = "The account ID of the Cloudflare account to use"
   type        = string
 }
-variable "domain_blit" {
+
+variable "blit_domain" {
   description = "The domain name for blit"
   type        = string
   default     = "blit.cc"
 }
 
-variable "domain_buttholes" {
+variable "buttholes_domain" {
   description = "The domain name buttholes"
   type        = string
   default     = "buttholes.live"
