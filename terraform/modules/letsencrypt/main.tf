@@ -8,11 +8,11 @@ terraform {
 }
 
 resource "cloudflare_record" "record" {
-  name    = var.domain
+  name    = var.zone.name
   proxied = false
   ttl     = 1
   type    = "CAA"
-  zone_id = var.zone_id
+  zone_id = var.zone.id
   data {
     flags = 0
     tag   = "issue"
