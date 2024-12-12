@@ -13,94 +13,13 @@ provider "cloudflare" {
 }
 
 
-resource "cloudflare_zone" "zone" {
+resource "cloudflare_zone_blit" "zone" {
   account_id = var.cloudflare_account_id
-  zone       = var.cloudflare_zone
+  zone       = var.domain_blit
 }
 
-resource "cloudflare_record" "record_letsencrypt_caa" {
-  name    = var.cloudflare_zone
-  proxied = false
-  ttl     = 1
-  type    = "CAA"
-  zone_id = cloudflare_zone.zone.id
-  data {
-    flags = 0
-    tag   = "issue"
-    value = "letsencrypt.org"
-  }
-}
 
-resource "cloudflare_record" "verify_github" {
-  type    = "TXT"
-  name    = var.github_verify.name
-  content = "\"${var.github_verify.value}\""
-  zone_id = cloudflare_zone.zone.id
+resource "cloudflare_zone_buttholes" "zone" {
+  account_id = var.cloudflare_account_id
+  zone       = var.domain_buttholes
 }
-
-resource "cloudflare_record" "github_pages_a" {
-  name     = var.cloudflare_zone
-  proxied  = false
-  ttl      = 1
-  type     = "A"
-  content  = each.key
-  for_each = var.github_a_records
-  zone_id  = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "github_pages_a_www" {
-  name    = "www.${var.cloudflare_zone}"
-  proxied = false
-  ttl     = 1
-  type    = "CNAME"
-  content = var.cloudflare_zone
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm_dk" {
-  for_each = toset(["fm1", "fm2", "fm3", "fm4"])
-  name     = "${each.key}._domainkey"
-  proxied  = false
-  ttl      = 1
-  type     = "CNAME"
-  content  = "${each.key}.${var.cloudflare_zone}.dkim.fmhosted.com"
-  zone_id  = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm_mx" {
-  for_each = tomap({
-    "in1" = 10,
-    "in2" = 20,
-  })
-  name     = var.cloudflare_zone
-  priority = each.value
-  ttl      = 1
-  type     = "MX"
-  content  = "${each.key}-smtp.messagingengine.com"
-  zone_id  = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_bluesky_atproto" {
-  name    = "_atproto"
-  ttl     = 1
-  type    = "TXT"
-  content = "\"did=${var.bsky_did}\""
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm_spf" {
-  name    = var.cloudflare_zone
-  ttl     = 1
-  type    = "TXT"
-  content = "\"v=spf1 include:${var.fm_dkim_domain} ?all\""
-  zone_id = cloudflare_zone.zone.id
-}
-
-resource "cloudflare_record" "record_fm_dmarc" {
-  name    = "_dmarc"
-  ttl     = 1
-  type    = "TXT"
-  content = "\"v=DMARC1; p=reject; rua=mailto:dmarc-agg@blit.cc\""
-  zone_id = cloudflare_zone.zone.id
-}
-
