@@ -40,6 +40,15 @@ resource "cloudflare_record" "bambi" {
   zone_id = var.blit_zone.id
 }
 
+resource "cloudflare_record" "bambic" {
+  name    = "bambic.${var.blit_zone.name}"
+  ttl     = 1
+  type    = "CNAME"
+  content = var.bambi_cname
+  proxied = true
+  zone_id = var.blit_zone.id
+}
+
 # buttholes.live
 module "buttholes" {
   source = "./modules/zone"
