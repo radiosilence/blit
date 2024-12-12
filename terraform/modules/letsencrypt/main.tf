@@ -1,4 +1,4 @@
-resource "cloudflare_record" "record_letsencrypt_caa" {
+resource "cloudflare_record" "record" {
   name    = var.domain
   proxied = false
   ttl     = 1

@@ -1,4 +1,4 @@
-resource "cloudflare_record" "record_bluesky_atproto" {
+resource "cloudflare_record" "record" {
   name    = "_atproto"
   ttl     = 1
   type    = "TXT"
