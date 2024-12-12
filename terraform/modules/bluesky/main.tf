@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
 
 resource "cloudflare_record" "record_bluesky_atproto" {
   name    = "_atproto"

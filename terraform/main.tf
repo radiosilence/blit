@@ -5,12 +5,13 @@ terraform {
       version = "~> 4.0"
     }
   }
-  required_version = ">= 1.2.0"
 }
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
+
+# Blit
 
 # Blit Zone
 resource "blit_cloudflare_zone" "zone" {
@@ -39,12 +40,13 @@ module "blit_github" {
   domain  = var.blit_domain
 }
 
-
 # Blit Bluesky
 module "blit_bluesky" {
   source  = "./modules/bluesky"
   zone_id = blit_cloudflare_zone.zone.id
 }
+
+# Buttholes
 
 # Buttholes Zone
 resource "buttholes_cloudflare_zone" "zone" {
