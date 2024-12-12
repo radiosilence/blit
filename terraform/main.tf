@@ -20,6 +20,11 @@ provider "cloudflare" {
 }
 
 # Blit
+resource "cloudflare_zone" "zone" {
+  account_id = var.cloudflare_account_id
+  zone       = var.blit_zone.name
+  id         = var.blit_zone.id
+}
 
 # Blit Let's Encrypt
 module "blit_letsencrypt" {
