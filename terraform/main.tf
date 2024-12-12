@@ -22,7 +22,7 @@ provider "cloudflare" {
 # Blit
 
 # Blit Zone
-resource "cloudflare_zone" "blit" {
+resource "cloudflare_zone" "zone" {
   account_id = var.cloudflare_account_id
   zone       = var.blit_domain
 }
@@ -61,14 +61,14 @@ module "blit_bluesky" {
 # Buttholes
 
 # Buttholes Zone
-resource "cloudflare_zone" "buttholes" {
+resource "cloudflare_zone" "buttholes_zone" {
   account_id = var.cloudflare_account_id
   zone       = var.buttholes_domain
 }
 
 locals {
   buttholes_zone = {
-    id   = cloudflare_zone.blit.id
+    id   = cloudflare_zone.buttholes_zone.id
     name = var.blit_domain
   }
 }
