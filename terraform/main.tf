@@ -64,3 +64,16 @@ module "buttholes_bluesky" {
   source = "./modules/bluesky"
   zone   = var.buttholes_zone
 }
+
+# Radiosilence
+
+# Buttholes Bsky
+module "radiosilence_bluesky" {
+  source = "./modules/bluesky"
+  zone   = var.radiosilence_zone
+}
+
+module "radiosilence_fastmail" {
+  source = "./modules/fastmail"
+  zone   = var.radiosilence_zone
+}

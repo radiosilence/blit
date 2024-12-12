@@ -10,7 +10,7 @@ variable "cloudflare_account_id" {
 }
 
 variable "blit_zone" {
-  description = "The zone ID for blit"
+  description = "The Cloudflare zone to use for blit"
   type = object({
     name = string
     id   = string
@@ -22,7 +22,7 @@ variable "blit_zone" {
 }
 
 variable "buttholes_zone" {
-  description = "The domain name buttholes"
+  description = "The Cloudflare zone to use for buttholes"
   type = object({
     name = string
     id   = string
@@ -30,5 +30,18 @@ variable "buttholes_zone" {
   default = {
     id   = "1115a1e5006523692d61e49e672f6df0"
     name = "buttholes.live"
+  }
+}
+
+
+variable "radiosilence_zone" {
+  description = "The Cloudflare zone to use for radiosilence"
+  type = object({
+    name = string
+    id   = string
+  })
+  default = {
+    id   = "3373ad7c3dc3104e7aeab31c1176e684"
+    name = "radiosilence.dev"
   }
 }
