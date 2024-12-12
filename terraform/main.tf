@@ -20,44 +20,33 @@ provider "cloudflare" {
 }
 
 # blit.cc
-module "blit_letsencrypt" {
-  source = "./modules/letsencrypt"
+module "blit" {
+  source = "./modules/zone"
   zone   = var.blit_zone
-}
-
-module "blit_fastmail" {
-  source = "./modules/fastmail"
-  zone   = var.blit_zone
-}
-
-module "blit_github" {
-  source = "./modules/github"
-  zone   = var.blit_zone
-}
-
-module "blit_bluesky" {
-  source = "./modules/bluesky"
-  zone   = var.blit_zone
+  modules = [
+    "letsencrypt",
+    "fastmail",
+    "github",
+    "bluesky",
+  ]
 }
 
 # buttholes.live
-module "buttholes_bluesky" {
-  source = "./modules/bluesky"
+module "buttholes" {
+  source = "./modules/zone"
   zone   = var.buttholes_zone
-}
-
-module "buttholes_fastmail" {
-  source = "./modules/fastmail"
-  zone   = var.buttholes_zone
+  modules = [
+    "fastmail",
+    "bluesky",
+  ]
 }
 
 # radiosilence.dev
-module "radiosilence_bluesky" {
-  source = "./modules/bluesky"
+module "radiosilence" {
+  source = "./modules/zone"
   zone   = var.radiosilence_zone
-}
-
-module "radiosilence_fastmail" {
-  source = "./modules/fastmail"
-  zone   = var.radiosilence_zone
+  modules = [
+    "bluesky",
+    "fastmail",
+  ]
 }
