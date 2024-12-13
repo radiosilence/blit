@@ -15,7 +15,7 @@ resource "cloudflare_record" "verify" {
 }
 
 resource "cloudflare_record" "a" {
-  name     = var.zone.name
+  name     = "@"
   proxied  = false
   ttl      = 1
   type     = "A"
@@ -25,7 +25,7 @@ resource "cloudflare_record" "a" {
 }
 
 resource "cloudflare_record" "a_www" {
-  name    = "www.${var.zone.name}"
+  name    = "www"
   proxied = false
   ttl     = 1
   type    = "CNAME"
