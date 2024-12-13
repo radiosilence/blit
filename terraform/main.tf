@@ -57,5 +57,5 @@ resource "cloudflare_record" "bambi" {
   type    = "CNAME"
   content = var.bambi_cname
   proxied = true
-  zone_id = var.radiosilence.id
+  zone_id = var.radiosilence_zone.id
 }
