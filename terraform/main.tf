@@ -31,24 +31,6 @@ module "blit" {
   ]
 }
 
-resource "cloudflare_record" "bambi" {
-  name    = "bambi.${var.blit_zone.name}"
-  ttl     = 1
-  type    = "A"
-  content = var.bambi_ip
-  proxied = true
-  zone_id = var.blit_zone.id
-}
-
-resource "cloudflare_record" "bambic" {
-  name    = "bambic.${var.blit_zone.name}"
-  ttl     = 1
-  type    = "CNAME"
-  content = var.bambi_cname
-  proxied = true
-  zone_id = var.blit_zone.id
-}
-
 # buttholes.live
 module "buttholes" {
   source = "./modules/zone"
@@ -67,4 +49,13 @@ module "radiosilence" {
     "bluesky",
     "fastmail",
   ]
+}
+
+resource "cloudflare_record" "bambi" {
+  name    = "bambi"
+  ttl     = 1
+  type    = "CNAME"
+  content = var.bambi_cname
+  proxied = true
+  zone_id = var.radiosilence.id
 }
