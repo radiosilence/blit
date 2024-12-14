@@ -33,6 +33,7 @@ module "blit" {
     "music" = {
       type    = "CNAME"
       content = var.jaritanet_cname
+      proxied = true
     }
   }
 }
@@ -59,6 +60,7 @@ module "radiosilence" {
     "bambi" = {
       type    = "CNAME"
       content = var.jaritanet_cname
+      proxied = true
     }
   }
 }
