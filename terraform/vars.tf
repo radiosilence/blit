@@ -46,12 +46,8 @@ variable "radiosilence_zone" {
   }
 }
 
-variable "bambi_cname" {
-  description = "The CNAME to use for the Bambi subdomain"
+variable "jaritanet_cname" {
+  description = "The CNAME to use for JARITANET"
   type        = string
 }
 
-variable "bambi_ip" {
-  description = "The IP address to use for the Bambi A record"
-  type        = string
-}
