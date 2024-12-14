@@ -15,7 +15,8 @@ variable "subdomains" {
   description = "Additional subdomains"
   type = map(object({
     type    = string,
-    content = string
+    content = string,
+    proxied = bool
   }))
   default = {}
 }
