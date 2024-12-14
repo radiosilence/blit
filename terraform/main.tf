@@ -29,6 +29,12 @@ module "blit" {
     "github",
     "bluesky",
   ]
+  subdomains = {
+    "music" = {
+      type    = "CNAME"
+      content = var.jaritanet_cname
+    }
+  }
 }
 
 # buttholes.live
@@ -49,13 +55,10 @@ module "radiosilence" {
     "bluesky",
     "fastmail",
   ]
-}
-
-resource "cloudflare_record" "bambi" {
-  name    = "bambi"
-  ttl     = 1
-  type    = "CNAME"
-  content = var.bambi_cname
-  proxied = true
-  zone_id = var.radiosilence_zone.id
+  subdomains = {
+    "bambi" = {
+      type    = "CNAME"
+      content = var.jaritanet_cname
+    }
+  }
 }

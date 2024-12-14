@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
 
 module "letsencrypt" {
   source = "../letsencrypt"
@@ -21,4 +29,14 @@ module "bluesky" {
   source = "../bluesky"
   zone   = var.zone
   count  = contains(var.modules, "bluesky") ? 1 : 0
+}
+
+resource "cloudflare_record" "cnames" {
+  for_each = var.subdomains
+  name     = each.key
+  ttl      = 1
+  type     = each.value.type
+  content  = each.value.content
+  proxied  = true
+  zone_id  = var.zone.id
 }
