@@ -62,5 +62,10 @@ module "radiosilence" {
       content = var.jaritanet_cname
       proxied = true
     }
+    "files" = {
+      type    = "CNAME"
+      content = var.jaritanet_cname
+      proxied = true
+    }
   }
 }
