@@ -40,7 +40,7 @@ function(name='blit', tag='latest') [
               ],
               resources: {
                 limits: {
-                  memory: '64Mi',
+                  memory: '65Mi',
                   cpu: '50m',
                 },
               },
