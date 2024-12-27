@@ -1,6 +1,6 @@
 local k = import 'lib/k.libsonnet';
 
-function(name='blit', tag='sha-600095d') [
+function(name='blit', tag='latest') [
   k.v1.Service(name + '-service') {
     spec: {
       ports: [
