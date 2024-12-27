@@ -18,6 +18,6 @@ jobs:
   publish-web:
     uses: radiosilence/blit-workflows/.github/workflows/build-publish-container.yml@main
     with:
-      working_directory: "./web"
+      working-directory: "./web"
     secrets:
       PASSWORD: ${{ secrets.GITHUB_TOKEN }}
