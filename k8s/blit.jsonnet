@@ -1,6 +1,7 @@
+local package = import '../package.json';
 local k = import 'lib/k.libsonnet';
 
-function(name='blit', tag='1.0.0') [
+function(name='blit', tag=package.version) [
   k.v1.Service(name + '-service') {
     spec: {
       ports: [
