@@ -38,9 +38,12 @@ fi
 
 # Create an annotated tag with the version
 git tag -a "v$CURRENT_VERSION" -m "Version $CURRENT_VERSION"
-git push -n --follow-tags
 
-echo "✅ Successfully created tag v$CURRENT_VERSION"
+# Push the tag to remote
+# Note: We use the full refs path to be explicit
+git push origin "refs/tags/v$CURRENT_VERSION"
+
+echo "✅ Successfully created and pushed tag v$CURRENT_VERSION"
 echo "Remote version was: $LAST_VERSION"
 echo "New version is: $CURRENT_VERSION"
 exit 0
