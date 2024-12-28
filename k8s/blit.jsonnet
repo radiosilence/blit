@@ -1,7 +1,7 @@
 local package = import '../package.json';
 local k = import 'lib/k.libsonnet';
 
-function(name='blit', tag=package.version) [
+function(name='blit', tag=package.version, replicas=2) [
   k.v1.Service(name + '-service') {
     spec: {
       ports: [
@@ -17,7 +17,7 @@ function(name='blit', tag=package.version) [
   },
   k.apps.v1.Deployment(name) {
     spec: {
-      replicas: 2,
+      replicas: replicas,
       selector: {
         matchLabels: {
           app: name,
