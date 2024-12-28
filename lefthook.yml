@@ -6,5 +6,8 @@ pre-commit:
     eslint-web:
       glob: "./web/*.{tsx,ts,astro,mjs,js}}"
       run: bunx eslint -c ./web/eslint.config.mjs {staged_files}
-    terraform:
-      run: cd terraform; terraform validate
+pre-push:
+  scripts:
+    "version-check":
+      runner: bash
+      script: scripts/version-check.sh
