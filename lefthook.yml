@@ -9,4 +9,4 @@ pre-commit:
 pre-push:
   commands:
     version-check:
-      run: scripts/version-check.sh
+      run: curl -sSL https://raw.githubusercontent.com/radiosilence/blit-workflows/refs/heads/main/scripts/tag-latest.sh | bash
