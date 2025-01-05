@@ -89,7 +89,7 @@ Typing, Django, Dataclasses, Flask, Twisted, Cython, Jinja2, Celery, pypy, pip (
 
 ### Devops
 
-Docker, Terraform, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, Azure Policy
+Docker, Terraform, Pulumi, ArgoCD, AWS, DynamoDB, Lambda, API Gateway, S3, ELB, VPC, Security Groups, AMIs, CloudFront, Cognito, CloudFormation, CDK, SES, SQS, CloudWatch, ECS, Fargate, EC2, EFS, RDS, Lambda@Edge, IAM, Route53, OAI, Apigee, CircleCI, Docker, Concourse, Mesos, Marathon, BitBucket Pipelines, GitHub Actions, Kubernetes, GitOps, Traefik, Unikernels, NanoVM, Azure Policy, Ansible
 
 ### Data
 
@@ -101,11 +101,11 @@ Tailwind, DaisyUI, CSS, Mobile First, Bootstrap, SASS, SCSS, LESS, Foundation, H
 
 ### Other Languages
 
-Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSON, TOML, YAML, HCL
+Go / Golang, Kotlin, Swift, Java, C# C++, C, x86 ASM, Qt, C30, bash, zsh, JSonnet, JSON, TOML, YAML, HCL
 
 ### Misc
 
-Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, Linux, Ansible
+Git, SVN, BDD, TDD, Vagrant, Nginx, Apache, Agile, JIRA, Trello, Linux
 
 ## Who is James?
 
