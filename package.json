@@ -8,7 +8,5 @@
   },
   "workspaces": ["web"],
   "private": true,
-  "trustedDependencies": [
-    "@biomejs/biome"
-  ]
+  "trustedDependencies": ["@biomejs/biome"]
 }
