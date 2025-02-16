@@ -57,7 +57,6 @@
 }
 
 @theme {
-  --color-*: initial;
   --color-brand: #e65e5e;
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
