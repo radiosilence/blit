@@ -17,7 +17,12 @@
   "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
-    "rules": { "recommended": true }
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnknownProperty": "warn"
+      }
+    }
   },
   "json": {
     "formatter": {
