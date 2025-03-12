@@ -8,13 +8,13 @@
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.4",
-    "@tailwindcss/postcss": "^4.0.12",
+    "@tailwindcss/postcss": "^4.0.13",
     "@tailwindcss/typography": "^0.5.16",
-    "@tailwindcss/vite": "^4.0.12",
+    "@tailwindcss/vite": "^4.0.13",
     "@types/classnames": "^2.3.4",
-    "astro": "5.4.2",
+    "astro": "5.4.3",
     "classnames": "^2.5.1",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.12"
+    "tailwindcss": "^4.0.13"
   }
 }
