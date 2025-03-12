@@ -11,13 +11,13 @@ on:
     tags:
       - v*
     paths:
-      - "web/**"
+      - "./**"
   pull_request:
 
 jobs:
   publish-web:
     uses: radiosilence/blit-workflows/.github/workflows/build-publish-container.yml@main
     with:
-      working-directory: "./web"
+      working-directory: "."
     secrets:
       PASSWORD: ${{ secrets.GITHUB_TOKEN }}
