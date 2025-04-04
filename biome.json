@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://next.biomejs.dev/schemas/2.0.0-beta/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,14 +7,20 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [".astro"]
+    "includes": ["!**/*.astro"]
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
+    }
   },
   "formatter": {
     "indentStyle": "space",
     "attributePosition": "auto",
     "formatWithErrors": true
   },
-  "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
     "rules": { "recommended": true }
