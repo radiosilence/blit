@@ -9,17 +9,17 @@
     "ignoreUnknown": false,
     "includes": ["!**/*.astro"]
   },
+  "formatter": {
+    "indentStyle": "space",
+    "attributePosition": "auto",
+    "formatWithErrors": true
+  },
   "assist": {
     "actions": {
       "source": {
         "organizeImports": "off"
       }
     }
-  },
-  "formatter": {
-    "indentStyle": "space",
-    "attributePosition": "auto",
-    "formatWithErrors": true
   },
   "linter": {
     "enabled": true,
