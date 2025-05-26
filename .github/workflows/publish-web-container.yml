@@ -41,7 +41,7 @@ jobs:
         with:
           repository: ${{ env.ACCOUNT }}/${{ env.DEPLOYMENT_REPO }}
           ref: ${{ env.DEPLOYMENT_BRANCH }}
-          token: ${{ secrets.DEPLOYMENT_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEPLOYMENT_PAT }}
           path: ${{ env.DEPLOYMENT_REPO }}
 
       - name: Update service tag in deployment config
