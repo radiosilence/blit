@@ -4,6 +4,7 @@ env:
   PROJECT_NAME: blit
   ACCOUNT: radiosilence
   DEPLOYMENT_REPO: jaritanet
+  DEPLOYMENT_BRANCH: main
   DEPLOYMENT_CONFIG_PATH: packages/k8s/Pulumi.main.yaml
 
 permissions:
@@ -39,6 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.ACCOUNT }}/${{ env.DEPLOYMENT_REPO }}
+          ref: ${{ env.DEPLOYMENT_BRANCH }}
           token: ${{ secrets.DEPLOYMENT_PAT || secrets.GITHUB_TOKEN }}
           path: ${{ env.DEPLOYMENT_REPO }}
 
