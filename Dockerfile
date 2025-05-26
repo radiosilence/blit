@@ -8,11 +8,11 @@ RUN bun i
 
 # Rebuild the source code only when needed
 FROM base AS builder
-WORKDIR /app  
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
 # Run the stuff
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
-COPY --from=builder /app/dist /public/
+COPY --from=builder /app/.output/public/ /public/
