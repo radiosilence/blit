@@ -1,4 +1,10 @@
-name: Publish Blit Web Container
+name: Build and Deploy Blit
+
+env:
+  PROJECT_NAME: blit
+  ACCOUNT: radiosilence
+  DEPLOYMENT_REPO: jaritanet
+  DEPLOYMENT_CONFIG_PATH: packages/k8s/Pulumi.main.yaml
 
 permissions:
   contents: read
@@ -13,36 +19,48 @@ on:
   pull_request:
 
 jobs:
-  publish-web:
+  build-and-publish:
     uses: radiosilence/blit-workflows/.github/workflows/build-publish-container.yml@main
     with:
       working-directory: "."
     secrets:
       PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  deploy-web:
+
+  update-deployment:
     runs-on: ubuntu-latest
-    needs: publish-web
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    needs: build-and-publish
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      SHORT_SHA: sha-${{ github.sha }}
+
     steps:
-      - name: Checkout jaritanet architecture repo
+      - name: Checkout deployment repository
         uses: actions/checkout@v4
         with:
-          repository: radiosilence/jaritanet
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: jaritanet
+          repository: ${{ env.ACCOUNT }}/${{ env.DEPLOYMENT_REPO }}
+          token: ${{ secrets.DEPLOYMENT_PAT || secrets.GITHUB_TOKEN }}
+          path: ${{ env.DEPLOYMENT_REPO }}
 
-      - name: Update blit service tag in Pulumi config
+      - name: Update service tag in deployment config
         run: |
-          SHORT_SHA="sha-$(echo ${{ github.sha }} | cut -c1-7)"
+          SHORT_SHA_TRIMMED="${{ env.SHORT_SHA }}"
+          SHORT_SHA_TRIMMED=${SHORT_SHA_TRIMMED:0:11}
 
-          # Use yq to update the blit service tag
-          yq eval '(.config."jaritanet-k8s:services"[] | select(.name == "blit") | .args.image.tag) = "'$SHORT_SHA'"' -i jaritanet/packages/k8s/Pulumi.main.yaml
+          yq eval \
+            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.image.tag) = "'$SHORT_SHA_TRIMMED'"' \
+            -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
 
-      - name: Commit and push changes
+      - name: Commit and push deployment update
         run: |
-          cd jaritanet
+          cd ${{ env.DEPLOYMENT_REPO }}
+
+          SHORT_SHA_TRIMMED="${{ env.SHORT_SHA }}"
+          SHORT_SHA_TRIMMED=${SHORT_SHA_TRIMMED:0:11}
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add packages/k8s/Pulumi.main.yaml
-          git commit -m "Update blit service tag to sha-$(echo ${{ github.sha }} | cut -c1-7)"
+
+          git add ${{ env.DEPLOYMENT_CONFIG_PATH }}
+          git commit -m "🚀 Update ${{ env.PROJECT_NAME }} service to $SHORT_SHA_TRIMMED"
           git push
