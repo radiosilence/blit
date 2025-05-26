@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import { createFileRoute } from "@tanstack/react-router";
 import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/cv")({
@@ -18,7 +19,7 @@ function RouteComponent() {
         <a href="/">
           <Logo width={128} className="mt-12 mb-16" />
         </a>
-        <Markdown>{cv}</Markdown>
+        <Markdown rehypePlugins={[rehypeRaw]} allowedElements={undefined}>{cv}</Markdown>
       </article>
     </section>
   );
