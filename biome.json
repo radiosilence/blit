@@ -6,8 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["!**/*.astro"]
+    "ignoreUnknown": true
   },
   "formatter": {
     "indentStyle": "space",
@@ -17,7 +16,7 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": "on"
       }
     }
   },
