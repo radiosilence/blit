@@ -1,9 +1,0 @@
-pre-commit:
-  commands:
-    check:
-      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
-      stage_fixed: true
-pre-push:
-  commands:
-    version-check:
-      run: curl -sSL https://raw.githubusercontent.com/radiosilence/blit-workflows/refs/heads/main/scripts/tag-latest.sh | bash
