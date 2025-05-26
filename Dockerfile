@@ -13,6 +13,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
-# Run the stuff
+# Run nano
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
 COPY --from=builder /app/.output/public/ /public/
