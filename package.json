@@ -23,6 +23,7 @@
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
     "classnames": "latest",
+    "lefthook": "latest",
     "postcss": "latest",
     "react": "latest",
     "react-dom": "latest",
