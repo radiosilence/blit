@@ -16,7 +16,9 @@ on:
     branches:
       - main
     paths:
-      - "**"
+      - "app/**"
+      - "bun.lock"
+      - "Dockerfile"
   pull_request:
 
 jobs:
