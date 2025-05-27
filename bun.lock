@@ -18,7 +18,7 @@
         "@types/react-dom": "latest",
         "@vitejs/plugin-react": "latest",
         "classnames": "latest",
-        "lefthook": "^1.11.13",
+        "lefthook": "latest",
         "postcss": "latest",
         "react": "latest",
         "react-dom": "latest",
