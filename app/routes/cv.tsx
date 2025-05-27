@@ -19,7 +19,9 @@ function RouteComponent() {
         <a href="/">
           <Logo width={128} className="mt-12 mb-16" />
         </a>
-        <Markdown rehypePlugins={[rehypeRaw]} allowedElements={undefined}>{cv}</Markdown>
+        <Markdown rehypePlugins={[rehypeRaw]} allowedElements={undefined}>
+          {cv}
+        </Markdown>
       </article>
     </section>
   );
