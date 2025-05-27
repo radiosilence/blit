@@ -12,14 +12,9 @@
     "lint:biome:fix": "bunx @biomejs/biome check . --write",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "bunx @biomejs/biome check --write ."
-    ]
-  },
   "devDependencies": {
     "@biomejs/biome": "beta",
-    "@evilmartians/lefthook": "latest",
+    "@evilmartians/lefthook": "^1.11.13",
     "@tailwindcss/typography": "latest",
     "@tailwindcss/vite": "latest",
     "@tanstack/react-router": "latest",
@@ -30,7 +25,6 @@
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
     "classnames": "latest",
-    "husky": "latest",
     "postcss": "latest",
     "react": "latest",
     "react-dom": "latest",
