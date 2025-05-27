@@ -9,12 +9,10 @@
     "dev": "vinxi dev",
     "start": "vinxi start",
     "lint:biome": "bunx @biomejs/biome check .",
-    "lint:biome:fix": "bunx @biomejs/biome check . --write",
-    "prepare": "husky"
+    "lint:biome:fix": "bunx @biomejs/biome check . --write"
   },
   "devDependencies": {
     "@biomejs/biome": "beta",
-    "@evilmartians/lefthook": "^1.11.13",
     "@tailwindcss/typography": "latest",
     "@tailwindcss/vite": "latest",
     "@tanstack/react-router": "latest",
