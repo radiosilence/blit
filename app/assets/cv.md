@@ -15,7 +15,7 @@ As a natural creative, what drives me is a job where I wake up every day and bui
 
 ## Recent Work
 
-## Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 -- Present</small>
+### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 -- Present</small>
 
 _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Protobufs, AI, Docker_
 
