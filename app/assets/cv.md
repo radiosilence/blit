@@ -15,6 +15,18 @@ As a natural creative, what drives me is a job where I wake up every day and bui
 
 ## Recent Work
 
+## Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 -- Present</small>
+
+_Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Protobufs, AI, Docker_
+
+- Developing features from backend in Elixir to gateway (GraphQL/Yoga) to Front-end (TypeScript/Next.js)
+- Being relied upon to be a source of knowledge and experience when others face challenges or direction is needed.
+- Building complex resolvers pulling in datasources from a variety of internal APIs.
+- Managing requirements in a fast-paced environment and taking initiative to deliver high-quality work within tight deadlines.
+- Coming up with creative solutions to problems that are unique to the Fresha codebase.
+- Providing mentorship and guidance to junior engineers.
+- Getting involved with projects at product-level in order to give myself and others the context required to make things happen.
+
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 -- Aug 2024</small>
 
 _Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Express_
@@ -43,7 +55,7 @@ _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST AP
 - Developed an internal Android app for bike delivery drivers with job viewing, note and photo uploads, training features, and customer payment functionality.
 - Utilized IaC, GitOps, CDK, Lambda, DynamoDB, and API Gateway to create an infrastucture that seamlessly integrated with existing systems.
 - Used React Native, MobX-State-Tree, and AWS Amplify for the app.
-- Established a comprehensive BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app builds with minimal configuration needed.
+- Established a comprehensive CI/CD BitBucket Pipeline for deploying infrastructure, incorporating CloudFront outputs, and automating app builds with minimal configuration needed.
 - Enhanced security measures in existing infrastructure code through rigorous auditing and patches.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020 -- Jan 2022</small>
