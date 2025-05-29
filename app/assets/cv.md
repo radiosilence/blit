@@ -21,6 +21,7 @@ _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Pr
 
 - Developing features from backend in Elixir to gateway (GraphQL/Yoga) to Front-end (TypeScript/Next.js)
 - Being relied upon to be a source of knowledge and experience when others face challenges or direction is needed.
+- Instrumental in delivering the largest feature the B2C side of the platform (loyalty) has released to date.
 - Building complex resolvers pulling in datasources from a variety of internal APIs.
 - Managing requirements in a fast-paced environment and taking initiative to deliver high-quality work within tight deadlines.
 - Coming up with creative solutions to problems that are unique to the Fresha codebase.
