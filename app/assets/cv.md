@@ -13,8 +13,6 @@ Passionate about having reproducible infrastructure using CI/CD and IaC (GitOps)
 
 As a natural creative, what drives me is a job where I wake up every day and build something interesting.
 
-_Check out my project [nano-web](https://github.com/radiosilence/nano-web)! It's an ultra low-footprint low-latency webserver written in Go that this site is hosted on._
-
 ## Recent Work
 
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 -- Present</small>
