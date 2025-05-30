@@ -55,10 +55,11 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/blit
           flavor: |
             latest=${{ matrix.variant.is_default }}
-            suffix=-${{ matrix.variant.name }},onlatest=false
           tags: |
             type=raw,value=latest,enable={{is_default_branch}},suffix=-${{ matrix.variant.name }}
             type=sha,suffix=-${{ matrix.variant.name }}
+            type=raw,value=latest,enable=${{ matrix.variant.is_default && github.ref == 'refs/heads/main' }}
+            type=sha,enable=${{ matrix.variant.is_default }}
 
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
