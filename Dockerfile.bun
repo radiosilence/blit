@@ -1,0 +1,29 @@
+FROM oven/bun:alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json ./
+RUN bun install
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN bun run build
+
+FROM base AS runner
+
+WORKDIR /app
+COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/package.json ./
+
+# Change ownership to bun user
+RUN chown -R bun:bun /app
+
+# Switch to non-privileged user
+USER bun
+
+ENV PORT=3000
+EXPOSE 3000
+
+CMD ["bun", "run", ".output/server/index.mjs"]
