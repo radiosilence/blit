@@ -10,5 +10,5 @@ Basically this builds and deploys blit.cc
 
 - Created with [TanStack Start](https://tanstack.com/start)
 - Packaged as a docker image, hosted on a local microk8s and accessible via CloudFlare Tunnel.
-- Uses my project [nano-web](https://github.com/radiosilence/nano-web) to serve files.
+- Uses [Bun](https://bun.sh) as the JavaScript runtime for fast performance.
 - Deployed using Pulumi.

@@ -46,13 +46,17 @@ jobs:
           token: ${{ secrets.DEPLOYMENT_PAT }}
           path: ${{ env.DEPLOYMENT_REPO }}
 
-      - name: Update service tag in deployment config
+      - name: Update service tag and httpPort in deployment config
         run: |
           SHORT_SHA_TRIMMED="${{ env.SHORT_SHA }}"
           SHORT_SHA_TRIMMED=${SHORT_SHA_TRIMMED:0:11}
 
           yq eval \
             '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.image.tag) = "'$SHORT_SHA_TRIMMED'"' \
+            -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
+
+          yq eval \
+            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.httpPort) = 3000' \
             -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
 
       - name: Commit and push deployment update

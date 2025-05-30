@@ -1,18 +1,29 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:alpine AS base
 WORKDIR /app
 
 FROM base AS deps
-# Install dependencies based on the preferred package manager
-COPY package.json  ./
-RUN bun i
+COPY package.json ./
+RUN bun install
 
-# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
-# Run nano-web
-FROM ghcr.io/radiosilence/nano-web:latest AS runner
-COPY --from=builder /app/.output/public/ /public/
+FROM base AS runner
+
+WORKDIR /app
+COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/package.json ./
+
+# Change ownership to bun user
+RUN chown -R bun:bun /app
+
+# Switch to non-privileged user
+USER bun
+
+ENV PORT=3000
+EXPOSE 3000
+
+CMD ["bun", "run", ".output/server/index.mjs"]
