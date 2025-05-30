@@ -20,6 +20,7 @@ on:
       - "bun.lock"
       - "Dockerfile.nano"
       - "Dockerfile.bun"
+      - .github/workflows/publish-web-container.yml
   pull_request:
 
 jobs:
