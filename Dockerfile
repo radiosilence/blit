@@ -1,4 +1,5 @@
-FROM oven/bun:alpine AS base
+FROM oven/bun:1 AS base
+RUN adduser --disabled-password --shell /bin/sh nano
 WORKDIR /app
 
 FROM base AS deps
@@ -6,24 +7,15 @@ COPY package.json ./
 RUN bun install
 
 FROM base AS builder
-WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
+RUN chown -R nano:nano /app/.output/public/
 
-FROM base AS runner
-
-WORKDIR /app
-COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/package.json ./
-
-# Change ownership to bun user
-RUN chown -R bun:bun /app
-
-# Switch to non-privileged user
-USER bun
-
+FROM ghcr.io/radiosilence/nano-web:latest AS runner
+COPY --from=base /etc/passwd /etc/passwd
+COPY --from=base /etc/group /etc/group
+COPY --from=builder /app/.output/public/ /public/
+USER nano
 ENV PORT=3000
 EXPOSE 3000
-
-CMD ["bun", "run", ".output/server/index.mjs"]
