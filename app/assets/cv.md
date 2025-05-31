@@ -17,18 +17,19 @@ _Check out my project [nano-web](https://github.com/radiosilence/nano-web)! It's
 
 ## Recent Work
 
-### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 - Present</small>
+### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 – Present</small>
+
+_World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner businesses across 120+ countries_
 
 _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Protobufs, AI, Docker_
 
-- Developing features from backend in Elixir to gateway (GraphQL/Yoga) to Front-end (TypeScript/Next.js)
-- Being relied upon to be a source of knowledge and experience when others face challenges or direction is needed.
-- Instrumental in delivering the largest feature (customer loyalty) the B2C side of the platform has released to date.
-- Building complex resolvers pulling in datasources from a variety of internal APIs.
+- Developing features from backend Elixir microservices to gateway (GraphQL/Yoga) to frontend (TypeScript/Next.js) across consumer and business applications.
+- Building complex resolvers pulling in datasources from a variety of internal APIs and microservices.
+- Instrumental in delivering the customer loyalty platform – the largest B2C feature release to date.
 - Managing requirements in a fast-paced environment and taking initiative to deliver high-quality work within tight deadlines.
-- Coming up with creative solutions to problems that are unique to the Fresha codebase.
-- Providing mentorship and guidance to junior engineers.
-- Getting involved with projects at product-level in order to give myself and others the context required to make things happen.
+- Coming up with creative solutions to problems unique to global marketplace scale and architecture.
+- Providing technical leadership and mentorship to junior engineers when they face complex challenges.
+- Getting involved with projects at product-level to give context required for technical decision making.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 - Aug 2024</small>
 
