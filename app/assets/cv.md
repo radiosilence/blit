@@ -13,8 +13,6 @@ Passionate about having reproducible infrastructure using CI/CD and IaC (GitOps)
 
 As a natural creative, what drives me is a job where I wake up every day and build something interesting.
 
-> Check out my project [nano-web](https://github.com/radiosilence/nano-web)! It's an ultra low-footprint low-latency webserver written in Go that this site is hosted on.
-
 ## Recent Work
 
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 – Present</small>
@@ -28,7 +26,7 @@ _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Pr
 - Instrumental in delivering the customer loyalty platform – the largest B2C feature release to date.
 - Managing requirements in a fast-paced environment and taking initiative to deliver high-quality work within tight deadlines.
 - Coming up with creative solutions to problems unique to global marketplace scale and architecture.
-- Providing technical leadership and mentorship to junior engineers when they face complex challenges.
+- Providing technical leadership and mentorship to junior and mid-level engineers when they face complex challenges.
 - Getting involved with projects at product-level to give context required for technical decision making.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 – Aug 2024</small>
