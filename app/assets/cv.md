@@ -9,9 +9,11 @@ Experienced polyglot engineer with a huge breadth and depth of knowledge and und
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way they can relate to is key to my approach—if people can't understand what's happening, the most appropriate solution is unlikely to be reached.
 
-Passionate about having reproducible infrastructure using CI/CD and IaC (GitOps).
+Passionate about having reproducible, declarative infrastructure using CI/CD and IaC (GitOps).
 
 As a natural creative, what drives me is a job where I wake up every day and build something interesting.
+
+> Check out my project [nano-web](https://github.com/radiosilence/nano-web)! It's an ultra low-footprint low-latency webserver written in Go that this site is hosted on.
 
 ## Recent Work
 
