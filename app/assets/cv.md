@@ -19,7 +19,7 @@ As a natural creative, what drives me is a job where I wake up every day and bui
 
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 – Present</small>
 
-_World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner businesses across 120+ countries_
+<small>World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner businesses across 120+ countries</small>
 
 _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Protobufs, AI, Docker_
 
