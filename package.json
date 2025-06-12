@@ -33,7 +33,6 @@
     "postcss": "^8.5.5",
     "react-markdown": "^10.1.0",
     "tailwindcss": "^4.1.10",
-    "vinxi": "^0.5.7",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "trustedDependencies": [
