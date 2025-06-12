@@ -7,7 +7,7 @@ import { Logo } from "~/components/logo";
 export const Route = createFileRoute("/cv")({
   component: RouteComponent,
   loader: async () => ({
-    cv: await fs.promises.readFile("./app/assets/cv.md", "utf-8"),
+    cv: await fs.promises.readFile("./src/assets/cv.md", "utf-8"),
   }),
 });
 

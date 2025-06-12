@@ -7,7 +7,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
-    "start": "bun ./output/server/index.mjs",
+    "start": "bun .output/server/index.mjs",
     "lint:biome": "bunx @biomejs/biome check .",
     "lint:biome:fix": "bunx @biomejs/biome check . --write"
   },
