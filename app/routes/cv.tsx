@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import { createFileRoute } from "@tanstack/react-router";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import { Logo } from "@/components/logo";
+import { Logo } from "~/components/logo";
 
 export const Route = createFileRoute("/cv")({
   component: RouteComponent,

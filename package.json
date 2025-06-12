@@ -12,7 +12,7 @@
     "lint:biome:fix": "bunx @biomejs/biome check . --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "beta",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.10",
     "@types/bun": "^1.2.16",
