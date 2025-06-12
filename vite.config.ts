@@ -10,9 +10,6 @@ export default defineConfig({
     }),
     tailwindcss(),
     tanstackStart({
-      tsr: {
-        srcDirectory: "app",
-      },
       target: "bun",
       prerender: {
         enabled: true,
