@@ -10,10 +10,10 @@ export default defineConfig({
     }),
     tailwindcss(),
     tanstackStart({
-      target: "bun",
+      target: "static",
       prerender: {
+        failOnError: true,
         enabled: true,
-        filter: () => true,
         crawlLinks: true,
       },
     }),
