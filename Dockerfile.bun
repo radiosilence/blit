@@ -26,4 +26,4 @@ USER bun
 ENV PORT=3000
 EXPOSE 3000
 
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["bun", ".output/server/index.mjs"]
