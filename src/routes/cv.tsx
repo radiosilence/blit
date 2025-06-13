@@ -1,13 +1,13 @@
-import * as fs from "node:fs";
 import { createFileRoute } from "@tanstack/react-router";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { Logo } from "~/components/logo";
+import cv from "../assets/cv.md";
 
 export const Route = createFileRoute("/cv")({
   component: RouteComponent,
   loader: async () => ({
-    cv: await fs.promises.readFile("./cv.md", "utf-8"),
+    cv,
   }),
 });
 
