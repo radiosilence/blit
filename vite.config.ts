@@ -20,7 +20,10 @@ export default defineConfig({
     {
       name: "markdown-loader",
       transform(code, id) {
-        if (id.slice(-3) === ".md") `export default ${JSON.stringify(code)};`;
+        if (id.slice(-3) === ".md") {
+          // For .md files, get the raw content
+          return `export default ${JSON.stringify(code)};`;
+        }
       },
     },
   ],
