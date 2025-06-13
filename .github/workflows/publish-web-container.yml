@@ -104,7 +104,7 @@ jobs:
           SHORT_SHA_TRIMMED=${SHORT_SHA_TRIMMED:0:11}
 
           yq eval \
-            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.image.tag) = "'$SHORT_SHA_TRIMMED-bun'"' \
+            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.image.tag) = "'$SHORT_SHA_TRIMMED'"' \
             -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
 
           yq eval \
