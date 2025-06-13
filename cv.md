@@ -17,7 +17,7 @@ As a natural creative, what drives me is a job where I wake up every day and bui
 
 ## Recent Work
 
-### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025 – Present</small>
+### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025–Present</small>
 
 <small>World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner businesses across 120+ countries</small>
 
@@ -31,7 +31,7 @@ _Key Skills: GraphQL, Next.js, Elixir, TypeScript, GitHub Actions, CSS, gRPC, Pr
 - Providing technical leadership and mentorship to junior and mid-level engineers when they face complex challenges.
 - Getting involved with projects at product-level to give context required for technical decision making.
 
-### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024 – Aug 2024</small>
+### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024–Aug 2024</small>
 
 _Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, Vite, Express_
 
@@ -41,7 +41,7 @@ _Key Skills: Next.js, NestJS, React, Kubernetes, SCSS, TypeScript, JavaScript, V
 - Resolved issues and debugged performance of services deployed on Kubernetes.
 - Enhanced and expanded existing GitHub Actions CI/CD pipelines.
 
-### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022 – Jan 2024</small>
+### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022–Jan 2024</small>
 
 _Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Python, Go, CSPM, Cloud Foundry, BOSH_
 
@@ -52,7 +52,7 @@ _Key Skills: AWS, Docker, Kubernetes, Terraform, Azure, Concourse, Python, Go, C
 - Built code & deployment auditing tools using Python for enterprise clients.
 - Contributed to open source projects including Kubernetes External Secrets Operator and the development of Compliance Framework, a verified CSPM auditing tool.
 
-### Lead Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021 – Apr 2023</small>
+### Lead Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021–Apr 2023</small>
 
 _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST API, DynamoDB_
 
@@ -62,7 +62,7 @@ _Key Skills: React, AWS, TypeScript, React Native, API Gateway, AWS CDK, REST AP
 - Created a highly integrated BitBucket Pipeline that deploys infrastructure, uses CloudFront outputs dynamically, and builds the app with zero manual configuration — everything is completely dynamic with minimal environment configuration needed.
 - Audited existing infrastructure code and implemented security patches and enhancements.
 
-### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020 – Jan 2022</small>
+### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020–Jan 2022</small>
 
 _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, WebSockets_
 
@@ -71,7 +71,7 @@ _Key Skills: React, Astro, AWS, TypeScript, React Native, Java, Swift, Node.js, 
 - Created internal curation tools using MobX-State-Tree, Tailwind, and Vite for enhanced performance.
 - Designed and built a statically generated eCommerce website with account servicing functionality using the then-new Astro framework (based on Vite).
 
-### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020 – Jan 2024</small>
+### Lead Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020–Jan 2024</small>
 
 _Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree, WebSockets_
 
@@ -80,7 +80,7 @@ _Key Skills: React, TypeScript, React Native, Node.js, Firebase, MobX-State-Tree
 - Initially skeptical due to preference for explicit, functional style immutability used in Redux, but approached with open mind and successfully refactored codebase from class components to modern functional components wrapped by mobx-react observers using hooks.
 - Discovered the simplicity and elegance of MobX made it worth the paradigm shift from Redux.
 
-### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018 – Jan 2020</small>
+### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018–Jan 2020</small>
 
 _Key Skills: React, TypeScript, React Native, Redux, Zeplin, Java, Kafka, Kotlin, Swift_
 
@@ -126,7 +126,7 @@ I don't see programming and computers as simply a job, but part of who I am. I t
 
 ## Less Recent Work
 
-### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017 – Jan 2018</small>
+### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017–Jan 2018</small>
 
 _Key Skills: React, TypeScript, Redux, Go, Node.js, API Gateway, Apigee, Auth0_
 
@@ -134,7 +134,7 @@ _Key Skills: React, TypeScript, Redux, Go, Node.js, API Gateway, Apigee, Auth0_
 - Refactored entire codebase to use modern practices and patterns including Redux, redux-observable for side-effects, and React 16.
 - Took ownership of the authentication framework (Auth0), authorization system (AWS Lambda and JWT), and various services for user management and automated API aggregation using Swagger, AWS API Gateway, and Apigee.
 
-### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015 – Jan 2017</small>
+### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015–Jan 2017</small>
 
 _Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets, Express, ZeroMQ, C++, C#, .NET, Qt_
 
@@ -143,20 +143,20 @@ _Key Skills: React, AngularJS, Redux, Redis, Node.js, flux, WebSockets, Express,
 - Created patterns and practices widely commended within the technical team.
 - Quickly tapped into skills across database architecture, general architecture, UX and product design to solve problems and improve solutions.
 
-### Lead Frontend Developer, Bootbag <small>Jan 2014 – Jan 2015</small>
+### Lead Frontend Developer, Bootbag <small>Jan 2014–Jan 2015</small>
 
 _Key Skills: React, CSS, Redux, HTML, flux, WebSockets_
 
 - Prototyped and built the frontend for a startup using ReactJS.
 
-### Technical Director, Links Creative <small>Jan 2013 – Jan 2015</small>
+### Technical Director, Links Creative <small>Jan 2013–Jan 2015</small>
 
 _Key Skills: PHP, React, AngularJS, Django, jQuery, Node.js, Linux, nginx, Express, .NET, C#_
 
 - Worked as Technical Director for a small Brighton based agency.
 - Took projects from ideas in clients' heads to fully developed products using Django, AngularJS, jQuery and PHP.
 
-### Web Developer, Freelance <small>Jan 2010 – Jan 2013</small>
+### Web Developer, Freelance <small>Jan 2010–Jan 2013</small>
 
 _Key Skills: PHP, AngularJS, Django, jQuery, Node.js, Flask, Linux, nginx, Apache_
 
