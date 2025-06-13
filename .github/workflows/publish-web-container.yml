@@ -18,6 +18,7 @@ on:
     paths:
       - "app/**"
       - "bun.lock"
+      - "package.json"
       - "Dockerfile.nano"
       - "Dockerfile.bun"
       - .github/workflows/publish-web-container.yml
