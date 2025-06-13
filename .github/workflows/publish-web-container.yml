@@ -33,9 +33,9 @@ jobs:
     strategy:
       matrix:
         variant:
-          - name: nano
-            dockerfile: Dockerfile.nano
-            is_default: false
+          # - name: nano
+          #   dockerfile: Dockerfile.nano
+          #   is_default: false
           - name: bun
             dockerfile: Dockerfile.bun
             is_default: true
