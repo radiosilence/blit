@@ -12,6 +12,7 @@ export default defineConfig({
     tanstackStart({
       target: "bun",
       prerender: {
+        concurrency: 14,
         failOnError: true,
         enabled: true,
         crawlLinks: true,
@@ -19,12 +20,10 @@ export default defineConfig({
     }),
     {
       name: "markdown-loader",
-      transform(code, id) {
-        if (id.slice(-3) === ".md") {
-          // For .md files, get the raw content
-          return `export default ${JSON.stringify(code)};`;
-        }
-      },
+      transform: (code, id) =>
+        id.slice(-3) === ".md"
+          ? `export default ${JSON.stringify(code)};`
+          : undefined,
     },
   ],
 });
