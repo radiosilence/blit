@@ -1,4 +1,5 @@
 {
+  "extends": ["@tsconfig/bun"],
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "strict": true,
