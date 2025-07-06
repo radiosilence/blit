@@ -1,8 +1,8 @@
-import { compile } from "@mdx-js/mdx";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
+import { markdownLoader } from "./markdown-loader";
 
 export default defineConfig({
   server: {
@@ -22,18 +22,6 @@ export default defineConfig({
         crawlLinks: true,
       },
     }),
-    {
-      name: "markdown-loader",
-      transform: async (code, id) => {
-        if (id.slice(-3) === ".md") {
-          return String(
-            await compile(code, {
-              outputFormat: "program",
-              development: false,
-            }),
-          );
-        }
-      },
-    },
+    markdownLoader(),
   ],
 });
