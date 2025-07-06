@@ -1,5 +1,8 @@
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { createElement } from "react";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
@@ -23,10 +26,17 @@ export default defineConfig({
     }),
     {
       name: "markdown-loader",
-      transform: (code, id) =>
-        id.slice(-3) === ".md"
-          ? `export default ${JSON.stringify(code)};`
-          : undefined,
+      transform: (code, id) => {
+        if (id.slice(-3) === ".md") {
+          return `
+            import Markdown from "react-markdown";
+            import rehypeRaw from "rehype-raw";
+            import { createElement } from "react";
+            const md = ${JSON.stringify(code)};
+            export default createElement(Markdown, { rehypePlugins: [rehypeRaw], children: md });
+          `;
+        }
+      },
     },
   ],
 });
