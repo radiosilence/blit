@@ -26,18 +26,12 @@ export default defineConfig({
       name: "markdown-loader",
       transform: async (code, id) => {
         if (id.slice(-3) === ".md") {
-          try {
-            const compiled = await compile(code, {
+          return String(
+            await compile(code, {
               outputFormat: "program",
               development: false,
-            });
-
-            return compiled.toString();
-          } catch (error) {
-            console.error("Error compiling markdown:", error);
-            return `import { jsx as _jsx } from "react/jsx-runtime";
-export default function() { return _jsx("div", { children: "Error processing markdown" }); }`;
-          }
+            }),
+          );
         }
       },
     },
