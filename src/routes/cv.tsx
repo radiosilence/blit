@@ -1,14 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
+
 import cv from "~/assets/cv.md";
 import { Logo } from "~/components/logo";
 
 export const Route = createFileRoute("/cv")({
   component: RouteComponent,
 });
-
-const CV = <Markdown rehypePlugins={[rehypeRaw]}>{cv}</Markdown>;
 
 function RouteComponent() {
   return (
@@ -17,7 +14,7 @@ function RouteComponent() {
         <a href="/">
           <Logo width={128} className="mt-12 mb-16" />
         </a>
-        {CV}
+        {cv}
       </article>
     </section>
   );
