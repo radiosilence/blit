@@ -1,8 +1,8 @@
+import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { markdownLoader } from "./markdown-loader";
 
 export default defineConfig({
   server: {
@@ -22,6 +22,6 @@ export default defineConfig({
         crawlLinks: true,
       },
     }),
-    markdownLoader(),
+    mdx(),
   ],
 });
