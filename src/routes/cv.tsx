@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import cv from "~/assets/cv.md";
+import CV from "~/assets/cv.mdx";
 import { Logo } from "~/components/logo";
 
 export const Route = createFileRoute("/cv")({
@@ -13,7 +13,7 @@ function RouteComponent() {
         <a href="/">
           <Logo width={128} className="mt-12 mb-16" />
         </a>
-        {cv()}
+        <CV />
       </article>
     </section>
   );
