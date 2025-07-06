@@ -8,6 +8,8 @@ export const Route = createFileRoute("/cv")({
   component: RouteComponent,
 });
 
+const CV = <Markdown rehypePlugins={[rehypeRaw]}>{cv}</Markdown>;
+
 function RouteComponent() {
   return (
     <section className="flex items-center flex-col mb-24 px-4 lg:px-0">
@@ -15,7 +17,7 @@ function RouteComponent() {
         <a href="/">
           <Logo width={128} className="mt-12 mb-16" />
         </a>
-        <Markdown rehypePlugins={[rehypeRaw]}>{cv}</Markdown>
+        {CV}
       </article>
     </section>
   );
