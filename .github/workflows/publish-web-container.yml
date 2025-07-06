@@ -16,7 +16,7 @@ on:
     branches:
       - main
     paths:
-      - "app/**"
+      - "src/**"
       - "bun.lock"
       - "package.json"
       - "Dockerfile.nano"
