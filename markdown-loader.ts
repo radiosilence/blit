@@ -1,7 +1,9 @@
-import { compile } from "@mdx-js/mdx";
+import { type CompileOptions, compile } from "@mdx-js/mdx";
 import type { PluginOption } from "vite";
 
-export const markdownLoader = (): PluginOption => ({
+export const markdownLoader = (
+  compileOptions: Readonly<CompileOptions> = {},
+): PluginOption => ({
   name: "markdown-loader",
   transform: async (code, id) => {
     if (id.slice(-3) === ".md") {
@@ -9,6 +11,7 @@ export const markdownLoader = (): PluginOption => ({
         await compile(code, {
           outputFormat: "program",
           development: false,
+          ...compileOptions,
         }),
       );
     }
