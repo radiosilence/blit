@@ -1,8 +1,6 @@
+import { compile } from "@mdx-js/mdx";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import { createElement } from "react";
-import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
@@ -26,15 +24,20 @@ export default defineConfig({
     }),
     {
       name: "markdown-loader",
-      transform: (code, id) => {
+      transform: async (code, id) => {
         if (id.slice(-3) === ".md") {
-          return `
-            import Markdown from "react-markdown";
-            import rehypeRaw from "rehype-raw";
-            import { createElement } from "react";
-            const md = ${JSON.stringify(code)};
-            export default createElement(Markdown, { rehypePlugins: [rehypeRaw], children: md });
-          `;
+          try {
+            const compiled = await compile(code, {
+              outputFormat: "program",
+              development: false,
+            });
+
+            return compiled.toString();
+          } catch (error) {
+            console.error("Error compiling markdown:", error);
+            return `import { jsx as _jsx } from "react/jsx-runtime";
+export default function() { return _jsx("div", { children: "Error processing markdown" }); }`;
+          }
         }
       },
     },
