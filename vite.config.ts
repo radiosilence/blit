@@ -9,6 +9,7 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [
+    { enforce: "pre", ...mdx() },
     tsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
@@ -22,6 +23,5 @@ export default defineConfig({
         crawlLinks: true,
       },
     }),
-    mdx(),
   ],
 });
