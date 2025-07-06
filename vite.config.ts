@@ -10,7 +10,7 @@ export default defineConfig({
     }),
     tailwindcss(),
     tanstackStart({
-      target: "static",
+      target: "bun",
       prerender: {
         concurrency: 14,
         failOnError: true,
