@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import CV from "~/assets/cv.mdx";
+import CV from "~/components/cv.mdx";
 import { Logo } from "~/components/logo";
 
 export const Route = createFileRoute("/cv")({
