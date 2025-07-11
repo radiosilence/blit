@@ -12,6 +12,7 @@ import favicon32 from "~/assets/favicon-32x32.png";
 import appCss from "~/styles/app.css?url";
 
 export const Route = createRootRoute({
+  notFoundComponent: () => "💀",
   head: () => ({
     meta: [
       {
