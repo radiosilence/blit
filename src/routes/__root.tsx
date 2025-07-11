@@ -23,7 +23,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "james cleveland : full stack / react native / devops",
+        title: "james cleveland : senior full stack engineer",
       },
     ],
     links: [
