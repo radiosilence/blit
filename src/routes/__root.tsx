@@ -15,36 +15,15 @@ export const Route = createRootRoute({
   notFoundComponent: () => "💀",
   head: () => ({
     meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "james cleveland : senior full stack engineer",
-      },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "james cleveland : senior full stack engineer" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      {
-        rel: "apple-touch-icon",
-        sizes: "180x180",
-        href: appleTouchIcon,
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: favicon32,
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "16x16",
-        href: favicon16,
-      },
+      { rel: "apple-touch-icon", sizes: "180x180", href: appleTouchIcon },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: favicon32 },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: favicon16 },
     ],
   }),
   component: RootComponent,
