@@ -21,6 +21,7 @@ on:
       - "package.json"
       - "Dockerfile.nano"
       - "Dockerfile.bun"
+      - "Dockerfile.node"
       - .github/workflows/publish-web-container.yml
   pull_request:
 
@@ -36,8 +37,8 @@ jobs:
           # - name: nano
           #   dockerfile: Dockerfile.nano
           #   is_default: false
-          - name: bun
-            dockerfile: Dockerfile.bun
+          - name: node
+            dockerfile: Dockerfile.node
             is_default: true
 
     steps:
