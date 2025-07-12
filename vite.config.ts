@@ -27,7 +27,10 @@ export default defineConfig({
       target,
       pages: [
         { path: "/", prerender: { enabled: true } },
-        { path: "/cv", prerender: { enabled: true } },
+        {
+          path: "/cv",
+          prerender: { enabled: true, outputPath: "/cv/index.html" },
+        },
       ],
       customViteReactPlugin: true,
       prerender: {
