@@ -1,4 +1,8 @@
 {
+  "extends": [
+    "@tsconfig/node24/tsconfig.json",
+    "@tsconfig/node-ts/tsconfig.json"
+  ],
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "strict": true,
