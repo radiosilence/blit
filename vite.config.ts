@@ -25,6 +25,10 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart({
       target,
+      pages: [
+        { path: "/", prerender: { enabled: true } },
+        { path: "/cv", prerender: { enabled: true } },
+      ],
       customViteReactPlugin: true,
       prerender: {
         concurrency: 14,
