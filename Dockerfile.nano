@@ -9,6 +9,7 @@ RUN bun install
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV target=static
 RUN bun run build
 RUN chown -R nano:nano /app/.output/public/
 

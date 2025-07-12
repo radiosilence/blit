@@ -34,12 +34,15 @@ jobs:
     strategy:
       matrix:
         variant:
-          # - name: nano
-          #   dockerfile: Dockerfile.nano
-          #   is_default: false
+          - name: nano
+            dockerfile: Dockerfile.nano
+            is_default: true
+          - name: bun
+            dockerfile: Dockerfile.bun
+            is_default: false
           - name: node
             dockerfile: Dockerfile.node
-            is_default: true
+            is_default: false
 
     steps:
       - uses: actions/checkout@v4
