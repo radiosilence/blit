@@ -26,7 +26,6 @@ export default defineConfig({
     tanstackStart({
       target,
       pages: [
-        { path: "/", prerender: { enabled: true } },
         {
           path: "/cv",
           prerender: { enabled: true, outputPath: "/cv/index.html" },
