@@ -105,11 +105,11 @@ jobs:
           SHORT_SHA_TRIMMED=${SHORT_SHA_TRIMMED:0:11}
 
           yq eval \
-            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.image.tag) = "'$SHORT_SHA_TRIMMED'"' \
+            '(.config."jaritanet-k8s:services"."${{ env.PROJECT_NAME }}".args.image.tag) = "'$SHORT_SHA_TRIMMED'"' \
             -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
 
           yq eval \
-            '(.config."jaritanet-k8s:services"[] | select(.name == "${{ env.PROJECT_NAME }}") | .args.httpPort) = 3000' \
+            '(.config."jaritanet-k8s:services"."${{ env.PROJECT_NAME }}".args.httpPort) = 3000' \
             -i ${{ env.DEPLOYMENT_REPO }}/${{ env.DEPLOYMENT_CONFIG_PATH }}
 
       - name: Commit and push deployment update
