@@ -25,18 +25,10 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart({
       target,
-      pages: [
-        {
-          path: "/cv",
-          prerender: { enabled: true, outputPath: "/cv/index.html" },
-        },
-      ],
       customViteReactPlugin: true,
       prerender: {
-        concurrency: 14,
-        failOnError: true,
         enabled: true,
-        crawlLinks: true,
+        autoSubfolderIndex: true,
       },
     }),
   ],
