@@ -8,7 +8,7 @@ import { z } from "zod/v4";
 
 const { target } = z
   .object({
-    target: z.string().default("node-server"),
+    target: z.string().default("static"),
   })
   .parse(process.env);
 
