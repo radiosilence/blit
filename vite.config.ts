@@ -1,7 +1,7 @@
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-oxc";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { z } from "zod/v4";
@@ -18,7 +18,6 @@ export default defineConfig({
   },
   plugins: [
     { enforce: "pre", ...mdx() },
-    react(),
     tsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
@@ -31,5 +30,6 @@ export default defineConfig({
         autoSubfolderIndex: true,
       },
     }),
+    react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
   ],
 });
