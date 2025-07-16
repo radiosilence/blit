@@ -1,0 +1,9 @@
+@use "@surgeventures/design-system-styles/build/baseline" as baseline;
+@use "@surgeventures/design-system-styles/build/normalize" as normalize;
+@use "@surgeventures/design-tokens/build/mixins/create-theme" as *;
+
+@use "@surgeventures/design-tokens/build/apps/tokens-flat" as tokens;
+
+:root {
+  @include create-theme(tokens.$tokens-flat);
+}

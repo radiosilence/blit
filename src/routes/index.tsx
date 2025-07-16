@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "~/components/logo";
 
 export const Route = createFileRoute("/")({
@@ -12,8 +12,14 @@ function RouteComponent() {
       <h1>james cleveland</h1>
       <p className="text-sm">senior full stack engineer</p>
       <p>
-        <a href="/cv">cv-2025.01</a> /{" "}
-        <a href="https://github.com/radiosilence">github</a>
+        <Link to="/cv">cv-2025.01</Link> /{" "}
+        <a
+          href="https://github.com/radiosilence"
+          target="_blank"
+          rel="noopener"
+        >
+          github
+        </a>
       </p>
     </section>
   );

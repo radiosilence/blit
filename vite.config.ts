@@ -17,7 +17,12 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [
-    { enforce: "pre", ...mdx() },
+    {
+      enforce: "pre",
+      ...mdx({
+        providerImportSource: "@mdx-js/react",
+      }),
+    },
     tsConfigPaths({
       projects: ["./tsconfig.json"],
     }),

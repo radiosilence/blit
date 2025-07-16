@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-
+/*
 @font-face {
   font-family: "Geist Mono";
   src: url("../assets/fonts/GeistMono-Thin.woff2") format("woff2");
@@ -133,4 +133,4 @@ strong {
   html {
     font-size: 67%;
   }
-}
+} */

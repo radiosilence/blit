@@ -10,6 +10,7 @@ import appleTouchIcon from "~/assets/apple-touch-icon.png";
 import favicon16 from "~/assets/favicon-16x16.png";
 import favicon32 from "~/assets/favicon-32x32.png";
 import appCss from "~/styles/app.css?url";
+import globalScss from "~/styles/global.scss?url";
 
 export const Route = createRootRoute({
   notFoundComponent: () => "💀",
@@ -21,6 +22,7 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: globalScss },
       { rel: "apple-touch-icon", sizes: "180x180", href: appleTouchIcon },
       { rel: "icon", type: "image/png", sizes: "32x32", href: favicon32 },
       { rel: "icon", type: "image/png", sizes: "16x16", href: favicon16 },

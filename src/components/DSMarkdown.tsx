@@ -1,7 +1,13 @@
-import { Divider, Link, SimpleList, Text } from "@surgeventures/design-system";
+import {
+  CalloutBanner,
+  Divider,
+  Link,
+  SimpleList,
+  Text,
+} from "@surgeventures/design-system";
 import type { MDXComponents } from "mdx/types";
 
-export function useMDXComponents(components: MDXComponents): MDXComponents {
+export function useDSComponents(components: MDXComponents = {}): MDXComponents {
   return {
     h1: ({ children }) => (
       <Text font="header-2xl-bold" as="h1">
@@ -52,46 +58,30 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </Text>
     ),
     em: ({ children }) => (
-      <Text font="body-m-regular" as="em" unsafeClassName="italic">
+      <Text font="body-m-regular" as="em">
         {children}
       </Text>
     ),
     code: ({ children }) => (
-      <Text
-        font="body-s-medium"
-        as="span"
-        unsafeClassName="font-mono bg-gray-100 px-1 rounded"
-      >
+      <Text font="body-s-medium" as="span">
         {children}
       </Text>
     ),
     pre: ({ children }) => (
-      <div className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
-        <Text
-          font="body-s-regular"
-          as="div"
-          unsafeClassName="font-mono whitespace-pre"
-        >
+      <pre>
+        <Text font="body-s-regular" as="div">
           {children}
         </Text>
-      </div>
+      </pre>
     ),
     blockquote: ({ children }) => (
-      <div className="border-l-4 border-gray-300 pl-4 italic">
-        <Text font="body-m-regular" as="div">
-          {children}
-        </Text>
-      </div>
+      <CalloutBanner description={children} hasIcon={false} />
     ),
     ul: ({ children }) => (
-      <SimpleList listStyle="bullet" unsafeClassName="ml-4">
-        {children}
-      </SimpleList>
+      <SimpleList listStyle="bullet">{children}</SimpleList>
     ),
     ol: ({ children }) => (
-      <SimpleList listStyle="decimal" unsafeClassName="ml-4">
-        {children}
-      </SimpleList>
+      <SimpleList listStyle="decimal">{children}</SimpleList>
     ),
     li: ({ children }) => <SimpleList.Item>{children}</SimpleList.Item>,
     hr: () => <Divider />,
