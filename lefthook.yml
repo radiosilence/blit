@@ -2,7 +2,7 @@ pre-commit:
   parallel: true
   commands:
     biome:
-      run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: npm run lint:biome:fix -- --no-errors-on-unmatched {staged_files}
       stage_fixed: true
     typecheck:
-      run: bunx tsc --noEmit
+      run: npm run typecheck
