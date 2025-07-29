@@ -7,9 +7,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
-    "start": "bun .output/server/index.mjs",
-    "lint:biome": "bunx @biomejs/biome check",
-    "lint:biome:fix": "bunx @biomejs/biome check --write",
+    "lint:biome": "npx @biomejs/biome check",
+    "lint:biome:fix": "npx @biomejs/biome check --write",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
