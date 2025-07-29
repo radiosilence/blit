@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@plugin "tailwindcss-logical";
 
 @font-face {
   font-family: "Geist Mono";
