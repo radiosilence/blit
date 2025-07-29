@@ -6,20 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Start development server
-bun run dev
+npm run dev
 
 # Build for production
-bun run build
+npm run build
 
 # Start production server (requires build first)
-bun run start
+npm run start
 
 # Lint and format code
-bun run lint:biome
-bun run lint:biome:fix
+npm run lint:biome
+npm run lint:biome:fix
 
 # Type checking
-bunx tsc --noEmit
+bun run typecheck
 ```
 
 ## Architecture Overview
@@ -36,6 +36,7 @@ This is a TanStack Start application for a personal website (blit.cc):
 - **Deployment**: Docker containers with microk8s + CloudFlare Tunnel
 
 Key architectural decisions:
+
 - Routes are file-based in `src/routes/` with `__root.tsx` providing layout
 - Static assets in `src/assets/` including favicons and fonts
 - Components are minimal - only Logo component and MDX content
