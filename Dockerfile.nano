@@ -21,7 +21,7 @@ ENV target="static"
 RUN npm run build
 RUN chown -R nano:nano /app/.output/public
 
-FROM ghcr.io/radiosilence/nano-web:latest AS runner
+FROM ghcr.io/radiosilence/nano-web:main-amd64 AS runner
 COPY --from=builder /app/.output/public/ /public/
 COPY --from=base /etc/passwd /etc/passwd
 COPY --from=base /etc/group /etc/group
