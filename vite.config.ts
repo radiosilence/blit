@@ -10,6 +10,15 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  build: {
+    rollupOptions: {
+      external: [
+        "@inlang/plugin-message-format",
+        "@inlang/plugin-m-function-matcher",
+      ],
+    },
+    minify: false,
+  },
   plugins: [
     { enforce: "pre", ...mdx() },
     paraglideVitePlugin({
