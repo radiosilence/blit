@@ -11,37 +11,22 @@ import { useEffect } from "react";
 import appleTouchIcon from "~/assets/apple-touch-icon.png";
 import favicon16 from "~/assets/favicon-16x16.png";
 import favicon32 from "~/assets/favicon-32x32.png";
+import { supportedLocales } from "~/i18n";
 import * as m from "~/paraglide/messages";
 import appCss from "~/styles/app.css?url";
 
 const rtlLocales = ["ar", "ar-PS"];
-const supportedLocales = [
-  "en-GB",
-  "fr-FR",
-  "ar",
-  "ja-JP",
-  "zh-CN",
-  "ka-GE",
-  "uk-UA",
-  "ar-PS",
-  "it-IT",
-  "de-DE",
-  "nl-BE",
-  "nl-NL",
-  "pl-PL",
-] as const;
-type SupportedLocale = (typeof supportedLocales)[number];
 
 const isRtlLocale = (locale: string): boolean => {
   return rtlLocales.includes(locale);
 };
 
-const getLocaleFromPath = (pathname: string): SupportedLocale | null => {
+const getLocaleFromPath = (pathname: string) => {
   const segments = pathname.split("/");
   const potentialLocale = segments[1];
-  return (supportedLocales as readonly string[]).includes(potentialLocale)
-    ? (potentialLocale as SupportedLocale)
-    : null;
+  return (
+    supportedLocales.find((locale) => locale === potentialLocale) ?? "en-GB"
+  );
 };
 
 export const Route = createRootRoute({
@@ -51,7 +36,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const location = useLocation();
-  const currentLocale = getLocaleFromPath(location.pathname) || "en-GB";
+  const currentLocale = getLocaleFromPath(location.pathname);
   const isRtl = isRtlLocale(currentLocale);
 
   useEffect(() => {
