@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import * as z from "zod";
 import { supportedLocales } from "~/i18n";
 import { HomePage } from "~/pages/home";
-import { setLanguageTag } from "~/paraglide/runtime";
+import { setLocale } from "~/paraglide/runtime";
 
 const ParamsSchema = z.object({
   languageTag: z.enum(supportedLocales),
@@ -23,7 +23,7 @@ function RouteComponent() {
   const { languageTag } = Route.useLoaderData();
 
   // Set language tag for both SSR and CSR
-  setLanguageTag(languageTag);
+  setLocale(languageTag);
 
   return <HomePage languageTag={languageTag} />;
 }
