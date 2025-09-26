@@ -4,7 +4,6 @@ export const supportedLocales = [
   "ar",
   "ja-JP",
   "zh-CN",
-  "vi-VN",
   "ka-GE",
   "uk-UA",
   "ar-PS",
@@ -13,7 +12,6 @@ export const supportedLocales = [
   "nl-BE",
   "nl-NL",
   "pl-PL",
-  "cs-CZ",
 ] as const;
 export type SupportedLocale = (typeof supportedLocales)[number];
 

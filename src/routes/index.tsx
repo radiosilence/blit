@@ -35,8 +35,6 @@ function RouteComponent() {
         <a href="/ja-JP/cv">履歴書</a>
         <a href="/zh-CN/">中文</a>
         <a href="/zh-CN/cv">简历</a>
-        <a href="/vi-VN/">Tiếng Việt</a>
-        <a href="/vi-VN/cv">Sơ yếu lý lịch</a>
         <a href="/ka-GE/">ქართული</a>
         <a href="/ka-GE/cv">რეზიუმე</a>
         <a href="/uk-UA/">Українська</a>
@@ -53,8 +51,6 @@ function RouteComponent() {
         <a href="/nl-NL/cv">CV</a>
         <a href="/pl-PL/">Polski</a>
         <a href="/pl-PL/cv">Życiorys</a>
-        <a href="/cs-CZ/">Čeština</a>
-        <a href="/cs-CZ/cv">Životopis</a>
       </div>
     </section>
   );
