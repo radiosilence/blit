@@ -1,4 +1,9 @@
-import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
 import { defaultLocale, isValidLocale } from "~/lib/i18n";
 
 export const Route = createFileRoute("/$locale")({
@@ -13,4 +18,5 @@ export const Route = createFileRoute("/$locale")({
       throw redirect({ to: "/" });
     }
   },
+  component: () => <Outlet />,
 });
