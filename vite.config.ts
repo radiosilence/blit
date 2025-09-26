@@ -5,13 +5,6 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { z } from "zod/v4";
-
-const { target } = z
-  .object({
-    target: z.string().default("static"),
-  })
-  .parse(process.env);
 
 export default defineConfig({
   server: {
