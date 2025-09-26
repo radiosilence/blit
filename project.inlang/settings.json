@@ -1,6 +1,7 @@
 {
-  "sourceLanguageTag": "en-GB",
-  "languageTags": [
+  "$schema": "https://inlang.com/schema/project-settings",
+  "baseLocale": "en-GB",
+  "locales": [
     "en-GB",
     "fr-FR",
     "ar",
@@ -20,6 +21,6 @@
     "./node_modules/@inlang/plugin-m-function-matcher/dist/index.js"
   ],
   "plugin.inlang.messageFormat": {
-    "pathPattern": "./messages/{languageTag}.json"
+    "pathPattern": "./messages/{locale}.json"
   }
 }

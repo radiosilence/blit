@@ -3,8 +3,10 @@
   "name": "@radiosilence/blit-web",
   "type": "module",
   "private": true,
+  "bin": {
+    "paraglide-js": "./bin/run.js"
+  },
   "scripts": {
-    "prebuild": "bunx @inlang/paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
     "build": "vite build",
     "dev": "vite dev",
     "lint:biome": "bunx @biomejs/biome check",
