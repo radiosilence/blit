@@ -1,12 +1,11 @@
-FROM node:24-alpine AS base
-RUN apk add curl bash
+FROM oven/bun:alpine AS base
+RUN apk add bash
 RUN adduser --disabled-password --shell /bin/sh nano
-RUN curl -fsSL https://bun.sh/install | bash
 WORKDIR /app
 
 FROM base AS deps
 COPY package.json bun.lock ./
-RUN ~/.bun/bin/bun install
+RUN bun install
 
 FROM base AS builder
 WORKDIR /app
@@ -16,9 +15,8 @@ COPY --from=base /etc/group /etc/group
 COPY --from=base /etc/passwd /etc/passwd
 COPY . .
 
-
 ENV target="static"
-RUN ~/.bun/bin/bun run build
+RUN bun run build
 RUN chown -R nano:nano /app/dist
 
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
