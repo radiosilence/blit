@@ -13,6 +13,7 @@ import favicon16 from "~/assets/favicon-16x16.png";
 import favicon32 from "~/assets/favicon-32x32.png";
 import appCss from "~/styles/app.css?url";
 import "~/lib/i18n";
+import { isRtlLocale, type SupportedLocale } from "~/lib/i18n";
 
 export const Route = createRootRoute({
   notFoundComponent: () => "💀",
@@ -20,7 +21,9 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language as SupportedLocale;
+  const isRtl = isRtlLocale(currentLang);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -31,7 +34,12 @@ function RootComponent() {
   }, []);
 
   return (
-    <RootDocument title={t("site.title")} appName={t("site.appName")}>
+    <RootDocument
+      title={t("site.title")}
+      appName={t("site.appName")}
+      lang={currentLang}
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       <Outlet />
     </RootDocument>
   );
@@ -42,14 +50,16 @@ function RootDocument({
   lang = "en-GB",
   title = "james cleveland : senior full stack engineer",
   appName = "blit.cc",
+  dir = "ltr",
 }: Readonly<{
   children: ReactNode;
   lang?: string;
   title?: string;
   appName?: string;
+  dir?: "ltr" | "rtl";
 }>) {
   return (
-    <html lang={lang}>
+    <html lang={lang} dir={dir}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
