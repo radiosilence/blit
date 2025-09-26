@@ -6,7 +6,7 @@ yarn.lock
 .cache
 .env
 .vercel
-.output
+dist
 .nitro
 /build/
 /api/
