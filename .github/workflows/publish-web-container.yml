@@ -19,9 +19,7 @@ on:
       - "src/**"
       - "bun.lock"
       - "package.json"
-      - "Dockerfile.nano"
-      - "Dockerfile.bun"
-      - "Dockerfile.node"
+      - "Dockerfile"
       - .github/workflows/publish-web-container.yml
   pull_request:
 
@@ -31,18 +29,6 @@ jobs:
     permissions:
       packages: write
       contents: read
-    strategy:
-      matrix:
-        variant:
-          - name: nano
-            dockerfile: Dockerfile.nano
-            is_default: true
-          - name: bun
-            dockerfile: Dockerfile.bun
-            is_default: false
-          - name: node
-            dockerfile: Dockerfile.node
-            is_default: false
 
     steps:
       - uses: actions/checkout@v4
@@ -59,12 +45,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/blit
-          flavor: |
-            latest=${{ matrix.variant.is_default }}
           tags: |
-            type=raw,value=latest-${{ matrix.variant.name }},enable=${{ github.ref == 'refs/heads/main' }}
-            type=sha,suffix=-${{ matrix.variant.name }}
-            type=sha,enable=${{ matrix.variant.is_default }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=sha
 
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
@@ -78,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ${{ matrix.variant.dockerfile }}
+          file: Dockerfile
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
