@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CvRouteImport } from './routes/cv'
+import { Route as LanguageTagRouteImport } from './routes/$languageTag'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LanguageTagIndexRouteImport } from './routes/$languageTag/index'
 import { Route as LanguageTagCvRouteImport } from './routes/$languageTag/cv'
@@ -19,27 +20,33 @@ const CvRoute = CvRouteImport.update({
   path: '/cv',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LanguageTagRoute = LanguageTagRouteImport.update({
+  id: '/$languageTag',
+  path: '/$languageTag',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LanguageTagIndexRoute = LanguageTagIndexRouteImport.update({
-  id: '/$languageTag/',
-  path: '/$languageTag/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => LanguageTagRoute,
 } as any)
 const LanguageTagCvRoute = LanguageTagCvRouteImport.update({
-  id: '/$languageTag/cv',
-  path: '/$languageTag/cv',
-  getParentRoute: () => rootRouteImport,
+  id: '/cv',
+  path: '/cv',
+  getParentRoute: () => LanguageTagRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$languageTag': typeof LanguageTagRouteWithChildren
   '/cv': typeof CvRoute
   '/$languageTag/cv': typeof LanguageTagCvRoute
-  '/$languageTag': typeof LanguageTagIndexRoute
+  '/$languageTag/': typeof LanguageTagIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -50,23 +57,34 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$languageTag': typeof LanguageTagRouteWithChildren
   '/cv': typeof CvRoute
   '/$languageTag/cv': typeof LanguageTagCvRoute
   '/$languageTag/': typeof LanguageTagIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cv' | '/$languageTag/cv' | '/$languageTag'
+  fullPaths:
+    | '/'
+    | '/$languageTag'
+    | '/cv'
+    | '/$languageTag/cv'
+    | '/$languageTag/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/cv' | '/$languageTag/cv' | '/$languageTag'
-  id: '__root__' | '/' | '/cv' | '/$languageTag/cv' | '/$languageTag/'
+  id:
+    | '__root__'
+    | '/'
+    | '/$languageTag'
+    | '/cv'
+    | '/$languageTag/cv'
+    | '/$languageTag/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LanguageTagRoute: typeof LanguageTagRouteWithChildren
   CvRoute: typeof CvRoute
-  LanguageTagCvRoute: typeof LanguageTagCvRoute
-  LanguageTagIndexRoute: typeof LanguageTagIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,6 +96,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$languageTag': {
+      id: '/$languageTag'
+      path: '/$languageTag'
+      fullPath: '/$languageTag'
+      preLoaderRoute: typeof LanguageTagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,26 +112,39 @@ declare module '@tanstack/react-router' {
     }
     '/$languageTag/': {
       id: '/$languageTag/'
-      path: '/$languageTag'
-      fullPath: '/$languageTag'
+      path: '/'
+      fullPath: '/$languageTag/'
       preLoaderRoute: typeof LanguageTagIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof LanguageTagRoute
     }
     '/$languageTag/cv': {
       id: '/$languageTag/cv'
-      path: '/$languageTag/cv'
+      path: '/cv'
       fullPath: '/$languageTag/cv'
       preLoaderRoute: typeof LanguageTagCvRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof LanguageTagRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  CvRoute: CvRoute,
+interface LanguageTagRouteChildren {
+  LanguageTagCvRoute: typeof LanguageTagCvRoute
+  LanguageTagIndexRoute: typeof LanguageTagIndexRoute
+}
+
+const LanguageTagRouteChildren: LanguageTagRouteChildren = {
   LanguageTagCvRoute: LanguageTagCvRoute,
   LanguageTagIndexRoute: LanguageTagIndexRoute,
+}
+
+const LanguageTagRouteWithChildren = LanguageTagRoute._addFileChildren(
+  LanguageTagRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  LanguageTagRoute: LanguageTagRouteWithChildren,
+  CvRoute: CvRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
