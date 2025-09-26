@@ -24,6 +24,18 @@ function RouteComponent() {
         <a href="/cv">{t("nav.cv")}</a> /{" "}
         <a href="https://github.com/radiosilence">{t("nav.github")}</a>
       </p>
+
+      {/* Hidden locale links for prerender crawler */}
+      <div style={{ display: "none" }}>
+        <a href="/fr-FR/">Français</a>
+        <a href="/fr-FR/cv">CV Français</a>
+        <a href="/ar/">العربية</a>
+        <a href="/ar/cv">السيرة الذاتية</a>
+        <a href="/ja-JP/">日本語</a>
+        <a href="/ja-JP/cv">履歴書</a>
+        <a href="/zh-CN/">中文</a>
+        <a href="/zh-CN/cv">简历</a>
+      </div>
     </section>
   );
 }
