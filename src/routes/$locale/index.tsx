@@ -1,13 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Logo } from "~/components/logo";
-import { i18n, isValidLocale, type SupportedLocale } from "~/lib/i18n";
+import * as m from "~/paraglide/messages";
+import { setLanguageTag } from "~/paraglide/runtime";
 
-// Direct import of translation files for SSR
-const getTranslations = async (locale: SupportedLocale) => {
-  const translations = await import(
-    `../../lib/i18n/locales/${locale}/common.json`
-  );
-  return translations.default || translations;
+const supportedLocales = [
+  "en-GB",
+  "fr-FR",
+  "ar",
+  "ja-JP",
+  "zh-CN",
+  "ka-GE",
+  "uk-UA",
+  "ar-PS",
+  "it-IT",
+  "de-DE",
+  "nl-BE",
+  "nl-NL",
+  "pl-PL",
+] as const;
+type SupportedLocale = (typeof supportedLocales)[number];
+
+const isValidLocale = (locale: string): locale is SupportedLocale => {
+  return (supportedLocales as readonly string[]).includes(locale);
 };
 
 export const Route = createFileRoute("/$locale/")({
@@ -15,32 +29,29 @@ export const Route = createFileRoute("/$locale/")({
     if (!isValidLocale(params.locale)) {
       throw new Error(`Invalid locale: ${params.locale}`);
     }
-    // Set language for SSR - wait for it to complete
-    await i18n.changeLanguage(params.locale);
+    // Set paraglide language tag for SSR
+    setLanguageTag(params.locale);
   },
   loader: async ({ params }: { params: { locale: string } }) => {
     const locale = params.locale as SupportedLocale;
-    const translations = await getTranslations(locale);
-
-    return {
-      translations,
-      locale,
-    };
+    return { locale };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { translations, locale } = Route.useLoaderData();
+  const { locale } = Route.useLoaderData();
 
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
       <Logo width={256} className="mbs-12 mbe-8" />
-      <h1>{translations.home.name}</h1>
-      <p className="text-sm">{translations.home.role}</p>
+      <h1>{m.home_name({ languageTag: locale })}</h1>
+      <p className="text-sm">{m.home_role({ languageTag: locale })}</p>
       <p>
-        <a href={`/${locale}/cv`}>{translations.nav.cv}</a> /{" "}
-        <a href="https://github.com/radiosilence">{translations.nav.github}</a>
+        <a href={`/${locale}/cv`}>{m.nav_cv({ languageTag: locale })}</a> /{" "}
+        <a href="https://github.com/radiosilence">
+          {m.nav_github({ languageTag: locale })}
+        </a>
       </p>
     </section>
   );

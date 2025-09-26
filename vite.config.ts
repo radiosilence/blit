@@ -1,3 +1,4 @@
+import { paraglide } from "@inlang/paraglide-vite";
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -18,6 +19,10 @@ export default defineConfig({
   },
   plugins: [
     { enforce: "pre", ...mdx() },
+    paraglide({
+      project: "./project.inlang",
+      outdir: "./src/paraglide",
+    }),
     tsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
