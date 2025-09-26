@@ -60,9 +60,9 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/blit
           flavor: |
-            latest=${{ matrix.variant.is_default }}
+            latest=false
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}},suffix=-${{ matrix.variant.name }}
+            type=raw,value=latest-${{ matrix.variant.name }},enable={{is_default_branch}}
             type=sha,suffix=-${{ matrix.variant.name }}
             type=raw,value=latest,enable=${{ matrix.variant.is_default && github.ref == 'refs/heads/main' }}
             type=sha,enable=${{ matrix.variant.is_default }}
