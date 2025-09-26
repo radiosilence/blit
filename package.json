@@ -8,7 +8,9 @@
     "dev": "vite dev",
     "lint:biome": "npx @biomejs/biome check",
     "lint:biome:fix": "npx @biomejs/biome check --write",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "i18n:extract": "i18next-scanner",
+    "i18n:missing": "i18next-scanner --config i18next-scanner.config.js"
   },
   "dependencies": {
     "@mdx-js/rollup": "^3.1.1",
@@ -36,6 +38,7 @@
     "@types/i18next-fs-backend": "^1.2.0",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
+    "i18next-scanner": "^4.6.0",
     "lefthook": "^1.13.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.13",
