@@ -10,19 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CvRouteImport } from './routes/cv'
-import { Route as LanguageTagRouteImport } from './routes/$languageTag'
+import { Route as LocaleRouteImport } from './routes/$locale'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LanguageTagIndexRouteImport } from './routes/$languageTag/index'
-import { Route as LanguageTagCvRouteImport } from './routes/$languageTag/cv'
+import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleCvRouteImport } from './routes/$locale/cv'
 
 const CvRoute = CvRouteImport.update({
   id: '/cv',
   path: '/cv',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageTagRoute = LanguageTagRouteImport.update({
-  id: '/$languageTag',
-  path: '/$languageTag',
+const LocaleRoute = LocaleRouteImport.update({
+  id: '/$locale',
+  path: '/$locale',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -30,60 +30,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageTagIndexRoute = LanguageTagIndexRouteImport.update({
+const LocaleIndexRoute = LocaleIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LanguageTagRoute,
+  getParentRoute: () => LocaleRoute,
 } as any)
-const LanguageTagCvRoute = LanguageTagCvRouteImport.update({
+const LocaleCvRoute = LocaleCvRouteImport.update({
   id: '/cv',
   path: '/cv',
-  getParentRoute: () => LanguageTagRoute,
+  getParentRoute: () => LocaleRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$languageTag': typeof LanguageTagRouteWithChildren
+  '/$locale': typeof LocaleRouteWithChildren
   '/cv': typeof CvRoute
-  '/$languageTag/cv': typeof LanguageTagCvRoute
-  '/$languageTag/': typeof LanguageTagIndexRoute
+  '/$locale/cv': typeof LocaleCvRoute
+  '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cv': typeof CvRoute
-  '/$languageTag/cv': typeof LanguageTagCvRoute
-  '/$languageTag': typeof LanguageTagIndexRoute
+  '/$locale/cv': typeof LocaleCvRoute
+  '/$locale': typeof LocaleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$languageTag': typeof LanguageTagRouteWithChildren
+  '/$locale': typeof LocaleRouteWithChildren
   '/cv': typeof CvRoute
-  '/$languageTag/cv': typeof LanguageTagCvRoute
-  '/$languageTag/': typeof LanguageTagIndexRoute
+  '/$locale/cv': typeof LocaleCvRoute
+  '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/$languageTag'
-    | '/cv'
-    | '/$languageTag/cv'
-    | '/$languageTag/'
+  fullPaths: '/' | '/$locale' | '/cv' | '/$locale/cv' | '/$locale/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cv' | '/$languageTag/cv' | '/$languageTag'
-  id:
-    | '__root__'
-    | '/'
-    | '/$languageTag'
-    | '/cv'
-    | '/$languageTag/cv'
-    | '/$languageTag/'
+  to: '/' | '/cv' | '/$locale/cv' | '/$locale'
+  id: '__root__' | '/' | '/$locale' | '/cv' | '/$locale/cv' | '/$locale/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LanguageTagRoute: typeof LanguageTagRouteWithChildren
+  LocaleRoute: typeof LocaleRouteWithChildren
   CvRoute: typeof CvRoute
 }
 
@@ -96,11 +85,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$languageTag': {
-      id: '/$languageTag'
-      path: '/$languageTag'
-      fullPath: '/$languageTag'
-      preLoaderRoute: typeof LanguageTagRouteImport
+    '/$locale': {
+      id: '/$locale'
+      path: '/$locale'
+      fullPath: '/$locale'
+      preLoaderRoute: typeof LocaleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -110,40 +99,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$languageTag/': {
-      id: '/$languageTag/'
+    '/$locale/': {
+      id: '/$locale/'
       path: '/'
-      fullPath: '/$languageTag/'
-      preLoaderRoute: typeof LanguageTagIndexRouteImport
-      parentRoute: typeof LanguageTagRoute
+      fullPath: '/$locale/'
+      preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRoute
     }
-    '/$languageTag/cv': {
-      id: '/$languageTag/cv'
+    '/$locale/cv': {
+      id: '/$locale/cv'
       path: '/cv'
-      fullPath: '/$languageTag/cv'
-      preLoaderRoute: typeof LanguageTagCvRouteImport
-      parentRoute: typeof LanguageTagRoute
+      fullPath: '/$locale/cv'
+      preLoaderRoute: typeof LocaleCvRouteImport
+      parentRoute: typeof LocaleRoute
     }
   }
 }
 
-interface LanguageTagRouteChildren {
-  LanguageTagCvRoute: typeof LanguageTagCvRoute
-  LanguageTagIndexRoute: typeof LanguageTagIndexRoute
+interface LocaleRouteChildren {
+  LocaleCvRoute: typeof LocaleCvRoute
+  LocaleIndexRoute: typeof LocaleIndexRoute
 }
 
-const LanguageTagRouteChildren: LanguageTagRouteChildren = {
-  LanguageTagCvRoute: LanguageTagCvRoute,
-  LanguageTagIndexRoute: LanguageTagIndexRoute,
+const LocaleRouteChildren: LocaleRouteChildren = {
+  LocaleCvRoute: LocaleCvRoute,
+  LocaleIndexRoute: LocaleIndexRoute,
 }
 
-const LanguageTagRouteWithChildren = LanguageTagRoute._addFileChildren(
-  LanguageTagRouteChildren,
-)
+const LocaleRouteWithChildren =
+  LocaleRoute._addFileChildren(LocaleRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LanguageTagRoute: LanguageTagRouteWithChildren,
+  LocaleRoute: LocaleRouteWithChildren,
   CvRoute: CvRoute,
 }
 export const routeTree = rootRouteImport

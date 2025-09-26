@@ -4,25 +4,25 @@ import { supportedLocales } from "~/i18n";
 import { setLocale } from "~/paraglide/runtime";
 
 const ParamsSchema = z.object({
-  languageTag: z.enum(supportedLocales),
+  locale: z.enum(supportedLocales),
 });
 
-export const Route = createFileRoute("/$languageTag")({
+export const Route = createFileRoute("/$locale")({
   loader: ({ params }) => {
     const { data } = ParamsSchema.safeParse(params);
 
     return {
-      languageTag: data?.languageTag ?? "en-GB",
+      locale: data?.locale ?? "en-GB",
     };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { languageTag } = Route.useLoaderData();
+  const { locale } = Route.useLoaderData();
 
   // Ensure language tag is set for CSR
-  setLocale(languageTag);
+  setLocale(locale);
 
   return <Outlet />;
 }

@@ -15,6 +15,7 @@ export default defineConfig({
     paraglideVitePlugin({
       project: "./project.inlang",
       outdir: "./src/paraglide",
+      outputStructure: "locale-modules",
     }),
     tsConfigPaths({
       projects: ["./tsconfig.json"],

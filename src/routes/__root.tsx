@@ -49,8 +49,8 @@ function RootComponent() {
 
   return (
     <RootDocument
-      title={m.site_title({ languageTag: currentLocale })}
-      appName={m.site_appName({ languageTag: currentLocale })}
+      title={m.site_title({ locale: currentLocale })}
+      appName={m.site_appName({ locale: currentLocale })}
       lang={currentLocale}
       dir={isRtl ? "rtl" : "ltr"}
     >

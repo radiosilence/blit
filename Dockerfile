@@ -1,21 +1,15 @@
-FROM oven/bun:alpine AS base
-RUN apk add bash
+FROM oven/bun:debian AS base
 RUN adduser --disabled-password --shell /bin/sh nano
-WORKDIR /app
-
-FROM base AS deps
-COPY package.json bun.lock ./
-RUN bun install
 
 FROM base AS builder
-WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=base /etc/group /etc/group
-COPY --from=base /etc/passwd /etc/passwd
+WORKDIR /app
 COPY . .
+RUN bun install
 
 ENV NODE_ENV=production
+RUN ls -l ./node_modules/@inlang/
+RUN cat ./node_modules/@inlang/plugin-message-format/dist/index.js
 RUN bun run build
 RUN chown -R nano:nano /app/dist
 
