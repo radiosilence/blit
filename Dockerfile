@@ -4,7 +4,7 @@ RUN adduser --disabled-password --shell /bin/sh nano
 FROM base AS builder
 
 WORKDIR /app
-COPY *.json *.ts messages project.inlang public src ./
+COPY . .
 
 RUN npm install
 
