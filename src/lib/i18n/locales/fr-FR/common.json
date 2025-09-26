@@ -1,0 +1,14 @@
+{
+  "site": {
+    "title": "james cleveland : ingénieur full stack senior",
+    "appName": "blit.cc"
+  },
+  "nav": {
+    "cv": "cv-2025.01",
+    "github": "github"
+  },
+  "home": {
+    "name": "james cleveland",
+    "role": "ingénieur full stack senior"
+  }
+}
