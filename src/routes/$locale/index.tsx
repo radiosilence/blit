@@ -20,12 +20,6 @@ const supportedLanguageTags = [
 ] as const;
 type SupportedLanguageTag = (typeof supportedLanguageTags)[number];
 
-const isValidLanguageTag = (
-  languageTag: string,
-): languageTag is SupportedLanguageTag => {
-  return (supportedLanguageTags as readonly string[]).includes(languageTag);
-};
-
 export const Route = createFileRoute("/$locale/")({
   loader: ({ params }: { params: { locale: string } }) => {
     const languageTag = params.locale as SupportedLanguageTag;
