@@ -39,14 +39,6 @@ function RootComponent() {
   const currentLocale = getLocaleFromPath(location.pathname);
   const isRtl = isRtlLocale(currentLocale);
 
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
-        // Service worker registration failed, but app still works
-      });
-    }
-  }, []);
-
   return (
     <RootDocument
       title={m.site_title({ locale: currentLocale })}
