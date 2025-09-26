@@ -1,16 +1,16 @@
-FROM oven/bun:debian AS base
+FROM node:24 AS base
 RUN adduser --disabled-password --shell /bin/sh nano
 
 FROM base AS builder
 
 WORKDIR /app
 COPY . .
-RUN bun install
+RUN npm run install
 
 ENV NODE_ENV=production
 RUN ls -l ./node_modules/@inlang/
 RUN cat ./node_modules/@inlang/plugin-message-format/dist/index.js
-RUN bun run build
+RUN npm run build
 RUN chown -R nano:nano /app/dist
 
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
