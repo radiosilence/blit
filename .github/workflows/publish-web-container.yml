@@ -82,8 +82,8 @@ jobs:
           file: ${{ matrix.variant.dockerfile }}
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.metadists.tags }}
-          labels: ${{ steps.metadists.labels }}
+          tags: ${{ steps.meta.tags }}
+          labels: ${{ steps.meta.labels }}
 
   update-deployment:
     runs-on: ubuntu-latest
