@@ -4,12 +4,11 @@ RUN adduser --disabled-password --shell /bin/sh nano
 FROM base AS builder
 
 WORKDIR /app
-COPY . .
-RUN npm run install
+COPY *.json *.ts messages project.inlang public src ./
+
+RUN npm install
 
 ENV NODE_ENV=production
-RUN ls -l ./node_modules/@inlang/
-RUN cat ./node_modules/@inlang/plugin-message-format/dist/index.js
 RUN npm run build
 RUN chown -R nano:nano /app/dist
 
