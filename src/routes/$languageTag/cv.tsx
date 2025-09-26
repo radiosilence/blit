@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import CV from "~/components/cv.mdx";
 import { Logo } from "~/components/logo";
 
-export const Route = createFileRoute("/$locale/cv")({
+export const Route = createFileRoute("/$languageTag/cv")({
   component: RouteComponent,
 });
 

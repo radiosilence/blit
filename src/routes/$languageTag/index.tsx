@@ -1,34 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
+import * as z from "zod";
 import { Logo } from "~/components/logo";
 import * as m from "~/paraglide/messages";
 import { setLanguageTag } from "~/paraglide/runtime";
 
-const supportedLanguageTags = [
-  "en-GB",
-  "fr-FR",
-  "ar",
-  "ja-JP",
-  "zh-CN",
-  "ka-GE",
-  "uk-UA",
-  "ar-PS",
-  "it-IT",
-  "de-DE",
-  "nl-BE",
-  "nl-NL",
-  "pl-PL",
-] as const;
-type SupportedLanguageTag = (typeof supportedLanguageTags)[number];
-
-export const Route = createFileRoute("/$locale/")({
-  loader: ({ params }: { params: { locale: string } }) => {
-    const languageTag = params.locale as SupportedLanguageTag;
-    return { languageTag };
-  },
-  component: RouteComponent,
+const ParamsSchema = z.object({
+  languageTag: z.enum([
+    "en-GB",
+    "fr-FR",
+    "ar",
+    "ja-JP",
+    "zh-CN",
+    "ka-GE",
+    "uk-UA",
+    "ar-PS",
+    "it-IT",
+    "de-DE",
+    "nl-BE",
+    "nl-NL",
+    "pl-PL",
+  ]),
 });
 
-function RouteComponent() {
+export const Route = createFileRoute("/$languageTag/")({
+  loader: ({ params }) => {
+    const { data } = ParamsSchema.safeParse(params);
+
+    return {
+      languageTag: data?.languageTag ?? "en-GB",
+    };
+  },
+  component: HomeRoute,
+});
+
+export function HomeRoute() {
   const { languageTag } = Route.useLoaderData();
 
   // Set language tag for both SSR and CSR
