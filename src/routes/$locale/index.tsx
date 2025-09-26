@@ -27,12 +27,6 @@ const isValidLanguageTag = (
 };
 
 export const Route = createFileRoute("/$locale/")({
-  beforeLoad: ({ params }: { params: { locale: string } }) => {
-    if (!isValidLanguageTag(params.locale)) {
-      throw new Error(`Invalid language tag: ${params.locale}`);
-    }
-    setLanguageTag(params.locale);
-  },
   loader: ({ params }: { params: { locale: string } }) => {
     const languageTag = params.locale as SupportedLanguageTag;
     return { languageTag };
