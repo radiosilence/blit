@@ -1,24 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as z from "zod";
+import { supportedLocales } from "~/i18n";
 import { HomePage } from "~/pages/home";
 import { setLanguageTag } from "~/paraglide/runtime";
 
 const ParamsSchema = z.object({
-  languageTag: z.enum([
-    "en-GB",
-    "fr-FR",
-    "ar",
-    "ja-JP",
-    "zh-CN",
-    "ka-GE",
-    "uk-UA",
-    "ar-PS",
-    "it-IT",
-    "de-DE",
-    "nl-BE",
-    "nl-NL",
-    "pl-PL",
-  ]),
+  languageTag: z.enum(supportedLocales),
 });
 
 export const Route = createFileRoute("/$languageTag/")({
