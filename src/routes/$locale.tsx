@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 
-const supportedLocales = [
+const supportedLanguageTags = [
   "en-GB",
   "fr-FR",
   "ar",
@@ -20,22 +20,24 @@ const supportedLocales = [
   "nl-NL",
   "pl-PL",
 ] as const;
-type SupportedLocale = (typeof supportedLocales)[number];
-const defaultLocale: SupportedLocale = "en-GB";
+type SupportedLanguageTag = (typeof supportedLanguageTags)[number];
+const defaultLanguageTag: SupportedLanguageTag = "en-GB";
 
-const isValidLocale = (locale: string): locale is SupportedLocale => {
-  return (supportedLocales as readonly string[]).includes(locale);
+const isValidLanguageTag = (
+  languageTag: string,
+): languageTag is SupportedLanguageTag => {
+  return (supportedLanguageTags as readonly string[]).includes(languageTag);
 };
 
 export const Route = createFileRoute("/$locale")({
   beforeLoad: ({ params }: { params: { locale: string } }) => {
-    if (!isValidLocale(params.locale)) {
+    if (!isValidLanguageTag(params.locale)) {
       throw notFound();
     }
   },
   loader: ({ params }: { params: { locale: string } }) => {
     // Redirect root locale to default without locale prefix
-    if (params.locale === defaultLocale) {
+    if (params.locale === defaultLanguageTag) {
       throw redirect({ to: "/" });
     }
   },
