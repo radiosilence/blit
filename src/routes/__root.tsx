@@ -4,6 +4,7 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
@@ -22,8 +23,13 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as SupportedLocale;
-  const isRtl = isRtlLocale(currentLang);
+  const location = useLocation();
+
+  // Get locale from route params or default
+  const currentLocale =
+    location.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?|ar-PS)\//)?.[1] ||
+    "en-GB";
+  const isRtl = isRtlLocale(currentLocale as SupportedLocale);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -37,7 +43,7 @@ function RootComponent() {
     <RootDocument
       title={t("site.title")}
       appName={t("site.appName")}
-      lang={currentLang}
+      lang={currentLocale}
       dir={isRtl ? "rtl" : "ltr"}
     >
       <Outlet />
