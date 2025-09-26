@@ -16,10 +16,8 @@
     "pl-PL"
   ],
   "modules": [
-    "@inlang/message-lint-rule-empty-pattern",
-    "@inlang/message-lint-rule-missing-translation",
-    "@inlang/plugin-message-format",
-    "@inlang/plugin-m-function-matcher"
+    "./node_modules/@inlang/plugin-message-format/dist/index.js",
+    "./node_modules/@inlang/plugin-m-function-matcher/dist/index.js"
   ],
   "plugin.inlang.messageFormat": {
     "pathPattern": "./messages/{languageTag}.json"
