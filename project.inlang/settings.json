@@ -16,10 +16,10 @@
     "pl-PL"
   ],
   "modules": [
-    "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-empty-pattern@latest/dist/index.js",
-    "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-missing-translation@latest/dist/index.js",
-    "https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@latest/dist/index.js",
-    "https://cdn.jsdelivr.net/npm/@inlang/plugin-m-function-matcher@latest/dist/index.js"
+    "@inlang/message-lint-rule-empty-pattern",
+    "@inlang/message-lint-rule-missing-translation",
+    "@inlang/plugin-message-format",
+    "@inlang/plugin-m-function-matcher"
   ],
   "plugin.inlang.messageFormat": {
     "pathPattern": "./messages/{languageTag}.json"
