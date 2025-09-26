@@ -10,19 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CvRouteImport } from './routes/cv'
-import { Route as LocaleRouteImport } from './routes/$locale'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
-import { Route as LocaleCvRouteImport } from './routes/$locale/cv'
+import { Route as LanguageTagIndexRouteImport } from './routes/$languageTag/index'
+import { Route as LanguageTagCvRouteImport } from './routes/$languageTag/cv'
 
 const CvRoute = CvRouteImport.update({
   id: '/cv',
   path: '/cv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocaleRoute = LocaleRouteImport.update({
-  id: '/$locale',
-  path: '/$locale',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -30,50 +24,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleIndexRoute = LocaleIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LocaleRoute,
+const LanguageTagIndexRoute = LanguageTagIndexRouteImport.update({
+  id: '/$languageTag/',
+  path: '/$languageTag/',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleCvRoute = LocaleCvRouteImport.update({
-  id: '/cv',
-  path: '/cv',
-  getParentRoute: () => LocaleRoute,
+const LanguageTagCvRoute = LanguageTagCvRouteImport.update({
+  id: '/$languageTag/cv',
+  path: '/$languageTag/cv',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$locale': typeof LocaleRouteWithChildren
   '/cv': typeof CvRoute
-  '/$locale/cv': typeof LocaleCvRoute
-  '/$locale/': typeof LocaleIndexRoute
+  '/$languageTag/cv': typeof LanguageTagCvRoute
+  '/$languageTag': typeof LanguageTagIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cv': typeof CvRoute
-  '/$locale/cv': typeof LocaleCvRoute
-  '/$locale': typeof LocaleIndexRoute
+  '/$languageTag/cv': typeof LanguageTagCvRoute
+  '/$languageTag': typeof LanguageTagIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$locale': typeof LocaleRouteWithChildren
   '/cv': typeof CvRoute
-  '/$locale/cv': typeof LocaleCvRoute
-  '/$locale/': typeof LocaleIndexRoute
+  '/$languageTag/cv': typeof LanguageTagCvRoute
+  '/$languageTag/': typeof LanguageTagIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$locale' | '/cv' | '/$locale/cv' | '/$locale/'
+  fullPaths: '/' | '/cv' | '/$languageTag/cv' | '/$languageTag'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cv' | '/$locale/cv' | '/$locale'
-  id: '__root__' | '/' | '/$locale' | '/cv' | '/$locale/cv' | '/$locale/'
+  to: '/' | '/cv' | '/$languageTag/cv' | '/$languageTag'
+  id: '__root__' | '/' | '/cv' | '/$languageTag/cv' | '/$languageTag/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LocaleRoute: typeof LocaleRouteWithChildren
   CvRoute: typeof CvRoute
+  LanguageTagCvRoute: typeof LanguageTagCvRoute
+  LanguageTagIndexRoute: typeof LanguageTagIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -85,13 +78,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale': {
-      id: '/$locale'
-      path: '/$locale'
-      fullPath: '/$locale'
-      preLoaderRoute: typeof LocaleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -99,40 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/': {
-      id: '/$locale/'
-      path: '/'
-      fullPath: '/$locale/'
-      preLoaderRoute: typeof LocaleIndexRouteImport
-      parentRoute: typeof LocaleRoute
+    '/$languageTag/': {
+      id: '/$languageTag/'
+      path: '/$languageTag'
+      fullPath: '/$languageTag'
+      preLoaderRoute: typeof LanguageTagIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/$locale/cv': {
-      id: '/$locale/cv'
-      path: '/cv'
-      fullPath: '/$locale/cv'
-      preLoaderRoute: typeof LocaleCvRouteImport
-      parentRoute: typeof LocaleRoute
+    '/$languageTag/cv': {
+      id: '/$languageTag/cv'
+      path: '/$languageTag/cv'
+      fullPath: '/$languageTag/cv'
+      preLoaderRoute: typeof LanguageTagCvRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface LocaleRouteChildren {
-  LocaleCvRoute: typeof LocaleCvRoute
-  LocaleIndexRoute: typeof LocaleIndexRoute
-}
-
-const LocaleRouteChildren: LocaleRouteChildren = {
-  LocaleCvRoute: LocaleCvRoute,
-  LocaleIndexRoute: LocaleIndexRoute,
-}
-
-const LocaleRouteWithChildren =
-  LocaleRoute._addFileChildren(LocaleRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LocaleRoute: LocaleRouteWithChildren,
   CvRoute: CvRoute,
+  LanguageTagCvRoute: LanguageTagCvRoute,
+  LanguageTagIndexRoute: LanguageTagIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
