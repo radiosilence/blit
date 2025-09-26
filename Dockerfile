@@ -15,7 +15,6 @@ COPY --from=base /etc/group /etc/group
 COPY --from=base /etc/passwd /etc/passwd
 COPY . .
 
-ENV target="static"
 RUN bun run build
 RUN chown -R nano:nano /app/dist
 
