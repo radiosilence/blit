@@ -1,0 +1,14 @@
+{
+  "site": {
+    "title": "james cleveland : kỹ sư full stack cấp cao",
+    "appName": "blit.cc"
+  },
+  "nav": {
+    "cv": "sơ yếu lý lịch-2025.01",
+    "github": "github"
+  },
+  "home": {
+    "name": "james cleveland",
+    "role": "kỹ sư full stack cấp cao"
+  }
+}
