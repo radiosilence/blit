@@ -123,6 +123,12 @@ strong {
   @apply font-semibold;
 }
 
+.picker {
+  @apply fixed;
+  inset-inline-end: 0.5rem;
+  inset-block-end: 0.5rem;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     @apply bg-brand-dark;
