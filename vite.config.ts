@@ -25,6 +25,7 @@ export default defineConfig({
       project: "./project.inlang",
       outdir: "./src/paraglide",
       outputStructure: "locale-modules",
+      strategy: ["url", "baseLocale"],
     }),
     tsConfigPaths({
       projects: ["./tsconfig.json"],

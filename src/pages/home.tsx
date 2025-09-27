@@ -2,10 +2,11 @@ import type { ComponentType } from "react";
 import { Logo } from "~/components/logo";
 import { supportedLocales } from "~/i18n";
 import * as m from "~/paraglide/messages";
+import { getLocale } from "~/paraglide/runtime";
 
-export const HomePage: ComponentType<{
-  locale?: string;
-}> = ({ locale }) => {
+export const HomePage: ComponentType<{}> = () => {
+  const locale = getLocale();
+  console.log("render getLocale", getLocale());
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
       <Logo width={256} className="mbs-12 mbe-8" />
@@ -24,6 +25,23 @@ export const HomePage: ComponentType<{
             <a href={`/${locale}/cv`}>{locale} CV</a>
           </div>
         ))}
+      </div>
+
+      {/* Language picker */}
+      <div className="picker">
+        <select
+          onChange={(e) => {
+            window.location.href = `/${e.target.value}`;
+          }}
+          value={locale}
+          className="bg-transparent text-xs cursor-pointer"
+        >
+          {supportedLocales.map((locale) => (
+            <option key={locale} value={locale}>
+              {locale}
+            </option>
+          ))}
+        </select>
       </div>
     </section>
   );

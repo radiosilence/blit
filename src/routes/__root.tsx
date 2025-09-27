@@ -11,8 +11,8 @@ import { useEffect } from "react";
 import appleTouchIcon from "~/assets/apple-touch-icon.png";
 import favicon16 from "~/assets/favicon-16x16.png";
 import favicon32 from "~/assets/favicon-32x32.png";
-import { supportedLocales } from "~/i18n";
 import * as m from "~/paraglide/messages";
+import { getLocale } from "~/paraglide/runtime";
 import appCss from "~/styles/app.css?url";
 
 const rtlLocales = ["ar", "ar-PS"];
@@ -21,29 +21,20 @@ const isRtlLocale = (locale: string): boolean => {
   return rtlLocales.includes(locale);
 };
 
-const getLocaleFromPath = (pathname: string) => {
-  const segments = pathname.split("/");
-  const potentialLocale = segments[1];
-  return (
-    supportedLocales.find((locale) => locale === potentialLocale) ?? "en-GB"
-  );
-};
-
 export const Route = createRootRoute({
   notFoundComponent: () => "💀",
   component: RootComponent,
 });
 
 function RootComponent() {
-  const location = useLocation();
-  const currentLocale = getLocaleFromPath(location.pathname);
-  const isRtl = isRtlLocale(currentLocale);
+  const locale = getLocale();
+  const isRtl = isRtlLocale(locale);
 
   return (
     <RootDocument
-      title={m.site_title({ locale: currentLocale })}
-      appName={m.site_appName({ locale: currentLocale })}
-      lang={currentLocale}
+      title={m.site_title({ locale })}
+      appName={m.site_appName({ locale })}
+      lang={locale}
       dir={isRtl ? "rtl" : "ltr"}
     >
       <Outlet />
