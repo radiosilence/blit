@@ -1,0 +1,42 @@
+---
+import { supportedLocales } from "~/i18n";
+import * as m from "~/paraglide/messages";
+import { getLocale } from "~/paraglide/runtime";
+import Logo from "./Logo.astro";
+
+const locale = getLocale();
+---
+
+<section class="flex flex-col items-center m-12 space-y-4 text-center">
+  <Logo width={256} className="mbs-12 mbe-8" />
+  <h1>{m.home_name()}</h1>
+  <p class="text-sm">{m.home_role()}</p>
+  <p>
+    <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}>{m.nav_cv()}</a> /{" "}
+    <a href="https://github.com/radiosilence">{m.nav_github()}</a>
+  </p>
+
+  <!-- Hidden links for prerender crawler to discover locale routes -->
+  <div class="hidden">
+    {supportedLocales.map((locale) => (
+      <div>
+        <a href={`/${locale}`}>{locale}</a>
+        <a href={`/${locale}/cv`}>{locale} CV</a>
+      </div>
+    ))}
+  </div>
+
+  <!-- Language picker -->
+  <div class="picker">
+    <select
+      onchange={`window.location.href = '/' + (this.value !== 'en-GB' ? this.value : '')`}
+      class="bg-transparent text-xs cursor-pointer"
+    >
+      {supportedLocales.map((loc) => (
+        <option value={loc} selected={loc === locale}>
+          {loc}
+        </option>
+      ))}
+    </select>
+  </div>
+</section>
