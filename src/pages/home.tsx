@@ -4,9 +4,8 @@ import { supportedLocales } from "~/i18n";
 import * as m from "~/paraglide/messages";
 import { getLocale } from "~/paraglide/runtime";
 
-export const HomePage: ComponentType<{}> = () => {
+export const HomePage: ComponentType = () => {
   const locale = getLocale();
-  console.log("render getLocale", getLocale());
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
       <Logo width={256} className="mbs-12 mbe-8" />
@@ -31,7 +30,7 @@ export const HomePage: ComponentType<{}> = () => {
       <div className="picker">
         <select
           onChange={(e) => {
-            window.location.href = `/${e.target.value}`;
+            window.location.href = `/${e.target.value !== "en-GB" ? e.target.value : ""}`;
           }}
           value={locale}
           className="bg-transparent text-xs cursor-pointer"
