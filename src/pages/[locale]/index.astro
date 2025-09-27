@@ -8,8 +8,10 @@ export async function getStaticPaths() {
     .filter((locale) => locale !== "en-GB") // Default locale handled by /index.astro
     .map((locale) => ({ params: { locale } }));
 }
+
+const { locale } = Astro.params;
 ---
 
-<Layout>
-  <HomePage />
+<Layout locale={locale}>
+  <HomePage locale={locale} />
 </Layout>

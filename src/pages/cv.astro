@@ -2,9 +2,11 @@
 import CV from "../components/cv.mdx";
 import Logo from "../components/Logo.astro";
 import Layout from "../layouts/Layout.astro";
+
+const locale = "en-GB";
 ---
 
-<Layout>
+<Layout locale={locale}>
   <section class="flex items-center flex-col mbe-24 px-4 lg:px-0">
     <article class="prose prose-sm">
       <a href="/">
