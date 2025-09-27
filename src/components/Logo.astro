@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import logo from "./logo.png";
+
+interface Props {
+  width: number;
+  className?: string;
+}
+
+const { width, className = "" } = Astro.props;
+---
+
+<Image
+  src={logo}
+  formats={["webp", "png"]}
+  alt=""
+  width={width}
+  quality="max"
+  densities={[1.5, 2, 3]}
+  class={`logo ${className}`}
+/>

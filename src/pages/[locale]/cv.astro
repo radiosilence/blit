@@ -1,0 +1,23 @@
+---
+import CV from "../../components/cv.mdx";
+import Logo from "../../components/Logo.astro";
+import { supportedLocales } from "../../i18n";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  return supportedLocales
+    .filter((locale) => locale !== "en-GB") // Default locale handled by /cv.astro
+    .map((locale) => ({ params: { locale } }));
+}
+---
+
+<Layout>
+  <section class="flex items-center flex-col mbe-24 px-4 lg:px-0">
+    <article class="prose prose-sm">
+      <a href="/">
+        <Logo width={128} className="mbs-12 mbe-16" />
+      </a>
+      <CV />
+    </article>
+  </section>
+</Layout>

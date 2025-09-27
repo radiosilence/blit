@@ -1,26 +1,9 @@
 {
-  "extends": [
-    "@tsconfig/node24/tsconfig.json",
-    "@tsconfig/node-ts/tsconfig.json"
-  ],
-  "include": ["**/*.ts", "**/*.tsx"],
+  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "strict": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "target": "ESNext",
-    "allowJs": true,
-    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    },
-    "noEmit": true
+    }
   }
 }
