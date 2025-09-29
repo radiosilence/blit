@@ -1,5 +1,6 @@
 ---
 import { supportedLocales, getCurrentLocale, t } from "@/i18n";
+import { MSG } from "@/messages";
 import Logo from "@/components/Logo.astro";
 
 const locale = getCurrentLocale();
@@ -7,13 +8,13 @@ const locale = getCurrentLocale();
 
 <section class="flex flex-col items-center m-12 space-y-4 text-center">
     <Logo width={256} className="mbs-12 mbe-8" />
-    <h1>{t("james cleveland")}</h1>
-    <p class="text-sm">{t("senior full stack engineer")}</p>
+    <h1>{t(MSG.NAME)}</h1>
+    <p class="text-sm">{t(MSG.TITLE)}</p>
     <p>
         <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}
-            >{t("cv-2025.01")}</a
+            >{t(MSG.CV_LINK)}</a
         > /{" "}
-        <a href="https://github.com/radiosilence">{t("github")}</a>
+        <a href="https://github.com/radiosilence">{t(MSG.GITHUB_LINK)}</a>
     </p>
 
     <!-- Hidden links for prerender crawler to discover locale routes -->
