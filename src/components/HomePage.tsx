@@ -1,11 +1,10 @@
 import { i18n } from "@lingui/core";
-import LanguageSelector from "@/components/LanguageSelector.tsx";
+import type { ComponentType } from "react";
 import Logo from "@/components/Logo.tsx";
-import { supportedLocales } from "@/i18n";
 
 const { locale } = i18n;
 
-export const HomePage = () => {
+export const HomePage: ComponentType = () => {
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
       <Logo width={256} className="mbs-12 mbe-8" />
@@ -19,15 +18,6 @@ export const HomePage = () => {
         </a>
         {" / "}
         <a href="https://github.com/radiosilence">{i18n._("github")}</a>
-        <div className="hidden">
-          {supportedLocales.map((locale) => (
-            <div key={locale}>
-              <a href={`/${locale}`}>{locale}</a>
-              <a href={`/${locale}/cv`}>{locale} CV</a>
-            </div>
-          ))}
-        </div>
-        <LanguageSelector />
       </p>
     </section>
   );

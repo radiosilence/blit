@@ -5,6 +5,7 @@ import favicon32 from "@/assets/favicon-32x32.png";
 import { Title } from "@/components/Title";
 import "@/styles/app.css";
 import { i18n, initI18n, supportedLocales } from "@/i18n";
+import LanguageSelector from "@/components/LanguageSelector";
 
 // Extract locale from URL
 const url = new URL(Astro.request.url);
@@ -45,5 +46,9 @@ const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
     </head>
     <body>
         <slot />
+
+        <section class="flex flex-col items-center m-12 space-y-4 text-center">
+            <LanguageSelector client:load locales={supportedLocales} />
+        </section>
     </body>
 </html>
