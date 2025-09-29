@@ -3,29 +3,28 @@
   "name": "@radiosilence/blit-web",
   "type": "module",
   "private": true,
-  "bin": {
-    "paraglide-js": "./bin/run.js"
-  },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "lingui compile && astro build",
     "preview": "astro preview",
     "lint:biome": "npx @biomejs/biome check",
     "lint:biome:fix": "npx @biomejs/biome check --write",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lingui:extract": "lingui extract",
+    "lingui:compile": "lingui compile"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.6",
     "@astrojs/node": "^9.4.4",
-    "@inlang/paraglide-js": "^2.4.0",
+    "@lingui/core": "^5.5.0",
     "astro": "^5.14.1",
     "biome": "^0.3.3",
     "vite": "npm:rolldown-vite@^7.1.13"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
-    "@inlang/plugin-m-function-matcher": "^2.1.0",
-    "@inlang/plugin-message-format": "^4.0.0",
+    "@lingui/cli": "^5.5.0",
+    "@lingui/vite-plugin": "^5.5.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.13",
     "lefthook": "^1.13.4",

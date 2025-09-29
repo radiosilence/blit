@@ -1,19 +1,17 @@
 ---
-import { supportedLocales } from "@/i18n";
-import * as m from "@/paraglide/messages";
-import { getLocale} from "@/paraglide/runtime";
+import { supportedLocales, getCurrentLocale, t } from "@/i18n";
 import Logo from "@/components/Logo.astro";
 
-const locale = getLocale()
+const locale = getCurrentLocale()
 ---
 
 <section class="flex flex-col items-center m-12 space-y-4 text-center">
   <Logo width={256} className="mbs-12 mbe-8" />
-  <h1>{m.home_name()}</h1>
-  <p class="text-sm">{m.home_role()}</p>
+  <h1>{t("james cleveland")}</h1>
+  <p class="text-sm">{t("senior full stack engineer")}</p>
   <p>
-    <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}>{m.nav_cv()}</a> /{" "}
-    <a href="https://github.com/radiosilence">{m.nav_github()}</a>
+    <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}>{t("cv-2025.01")}</a> /{" "}
+    <a href="https://github.com/radiosilence">{t("github")}</a>
   </p>
 
   <!-- Hidden links for prerender crawler to discover locale routes -->

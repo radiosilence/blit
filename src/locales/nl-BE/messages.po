@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: nl-BE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "james cleveland : senior full stack engineer"
+msgstr "james cleveland : senior full stack ontwikkelaar"
+
+msgid "blit.cc"
+msgstr "blit.cc"
+
+msgid "cv-2025.01"
+msgstr "curriculum vitae-2025.01"
+
+msgid "github"
+msgstr "github"
+
+msgid "james cleveland"
+msgstr "james cleveland"
+
+msgid "senior full stack engineer"
+msgstr "senior full stack ontwikkelaar"
+

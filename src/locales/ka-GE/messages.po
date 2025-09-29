@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: ka-GE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "james cleveland : senior full stack engineer"
+msgstr "ჯეიმს კლივლენდი : უფროსი ფულ-სტეკ ინჟინერი"
+
+msgid "blit.cc"
+msgstr "blit.cc"
+
+msgid "cv-2025.01"
+msgstr "რეზიუმე-2025.01"
+
+msgid "github"
+msgstr "გითჰაბი"
+
+msgid "james cleveland"
+msgstr "ჯეიმს კლივლენდი"
+
+msgid "senior full stack engineer"
+msgstr "უფროსი ფულ-სტეკ ინჟინერი"
+
