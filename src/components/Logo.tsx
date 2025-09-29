@@ -8,7 +8,7 @@ interface LogoProps {
 export const Logo = ({ width, className = "" }: LogoProps) => {
   return (
     <img
-      src={logo}
+      src={logo.src}
       alt="blit.cc logo"
       width={width}
       className={`logo ${className}`}
