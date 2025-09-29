@@ -12,26 +12,25 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/messages.ts:10
-msgid "blit.cc"
-msgstr "blit.cc"
-
-#: src/messages.ts:8
-msgid "cv-2025.01"
-msgstr "履歴書-2025.01"
-
-#: src/messages.ts:9
-msgid "github"
-msgstr "ギットハブ"
-
-#: src/messages.ts:6
-msgid "james cleveland"
-msgstr "ジェームス・クリーブランド"
-
-#: src/messages.ts:5
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:13
+#: src/components/Title.tsx:5
 msgid "james cleveland : senior full stack engineer"
 msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
 
-#: src/messages.ts:7
-msgid "senior full stack engineer"
-msgstr "シニアフルスタックエンジニア"
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:11
+msgid "james cleveland"
+msgstr "ジェームス・クリーブランド"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:17
+msgid "cv-2025.01"
+msgstr "履歴書-2025.01"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:20
+msgid "github"
+msgstr "ギットハブ"
+
+
