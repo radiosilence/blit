@@ -14,11 +14,11 @@ export const supportedLocales = [
   "nl-BE",
   "nl-NL",
   "pl-PL",
-];
+] as const;
 
 export default defineConfig({
   sourceLocale: "en-GB",
-  locales: supportedLocales,
+  locales: [...supportedLocales],
   catalogs: [
     {
       path: "<rootDir>/src/locales/{locale}/messages",

@@ -1,11 +1,11 @@
 import { i18n } from "@lingui/core";
-import { supportedLocales } from "../lingui.config.js";
+import { supportedLocales } from "../lingui.config";
 
 export { supportedLocales };
 export type Locale = (typeof supportedLocales)[number];
 
 // Load and cache messages for all locales at startup
-const messageCache = new Map<Locale, any>();
+const messageCache = new Map<Locale, Record<string, string[]>>();
 
 async function loadMessages(locale: Locale) {
   if (messageCache.has(locale)) {
@@ -16,7 +16,7 @@ async function loadMessages(locale: Locale) {
     const { messages } = await import(`./locales/${locale}/messages.mjs`);
     messageCache.set(locale, messages);
     return messages;
-  } catch (error) {
+  } catch (_error) {
     console.warn(`Failed to load messages for locale ${locale}`);
     return {};
   }
