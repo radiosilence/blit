@@ -1,4 +1,5 @@
 import { i18n } from "@lingui/core";
+import LanguageSelector from "@/components/LanguageSelector.tsx";
 import Logo from "@/components/Logo.tsx";
 import { supportedLocales } from "@/i18n";
 
@@ -26,20 +27,7 @@ export const HomePage = () => {
             </div>
           ))}
         </div>
-        <div className="picker">
-          <select
-            onChange={(e) => {
-              window.location.href = `/${e.target.value !== "en-GB" ? e.target.value : ""}`;
-            }}
-            className="bg-transparent text-xs cursor-pointer"
-          >
-            {supportedLocales.map((l) => (
-              <option key={l} value={l} selected={l === locale}>
-                {l}
-              </option>
-            ))}
-          </select>
-        </div>
+        <LanguageSelector />
       </p>
     </section>
   );

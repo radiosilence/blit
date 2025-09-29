@@ -4,9 +4,22 @@ import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
 import { Title } from "@/components/Title";
 import "@/styles/app.css";
-import { i18n } from "@lingui/core";
+import { i18n, initI18n, supportedLocales } from "@/i18n";
 
-const isRtl = ["ar-PS"].includes(i18n.locale);
+// Extract locale from URL
+const url = new URL(Astro.request.url);
+const pathSegments = url.pathname.split("/").filter(Boolean);
+const localeFromPath = pathSegments[0];
+
+// Determine the locale
+const locale = supportedLocales.includes(localeFromPath)
+    ? localeFromPath
+    : "en-GB";
+
+// Initialize i18n
+await initI18n(locale);
+
+const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
 ---
 
 <html lang={i18n.locale} dir={isRtl ? "rtl" : "ltr"}>
