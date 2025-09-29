@@ -3,7 +3,6 @@ import { defineConfig } from "@lingui/cli";
 export const supportedLocales = [
   "en-GB",
   "fr-FR",
-  "ar",
   "ja-JP",
   "zh-CN",
   "ka-GE",
