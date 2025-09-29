@@ -2,8 +2,7 @@
 import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
-import * as m from "@/paraglide/messages";
-import { setLocale } from "@/paraglide/runtime";
+import { setLocale, t, type Locale } from "@/i18n";
 import "@/styles/app.css";
 
 interface Props {
@@ -11,10 +10,10 @@ interface Props {
 }
 
 const { locale = "en-GB" } = Astro.props;
-setLocale(locale);
+await setLocale(locale);
 const isRtl = ["ar", "ar-PS"].includes(locale);
-const title = m.site_title();
-const appName = m.site_appName();
+const title = t("james cleveland : senior full stack engineer");
+const appName = t("blit.cc");
 ---
 
 <html lang={locale} dir={isRtl ? "rtl" : "ltr"}>

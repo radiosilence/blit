@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: zh-CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "james cleveland : senior full stack engineer"
+msgstr "詹姆斯·克利夫兰：高级全栈工程师"
+
+msgid "blit.cc"
+msgstr "blit.cc"
+
+msgid "cv-2025.01"
+msgstr "简历-2025.01"
+
+msgid "github"
+msgstr "github"
+
+msgid "james cleveland"
+msgstr "詹姆斯·克利夫兰"
+
+msgid "senior full stack engineer"
+msgstr "高级全栈工程师"
+

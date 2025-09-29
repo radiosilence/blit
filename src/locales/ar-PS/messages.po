@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: ar-PS\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "james cleveland : senior full stack engineer"
+msgstr "جيمس كليفلاند : مهندس برمجيات كامل متقدم"
+
+msgid "blit.cc"
+msgstr "blit.cc"
+
+msgid "cv-2025.01"
+msgstr "السيرة الذاتية-2025.01"
+
+msgid "github"
+msgstr "غيت هاب"
+
+msgid "james cleveland"
+msgstr "جيمس كليفلاند"
+
+msgid "senior full stack engineer"
+msgstr "مهندس برمجيات كامل متقدم"
+
