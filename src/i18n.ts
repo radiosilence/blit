@@ -36,7 +36,7 @@ export async function setLocale(locale: string) {
   }
 }
 
-export function t(id: string): string {
+export function __(id: string): string {
   return i18n._(id);
 }
 
