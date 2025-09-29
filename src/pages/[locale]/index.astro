@@ -1,17 +1,15 @@
 ---
-import HomePage from "../../components/HomePage.astro";
-import Layout from "../../layouts/Layout.astro";
-import { supportedLocales } from "../../i18n";
+import HomePage from "@/components/HomePage.astro";
+import Layout from "@/layouts/Layout.astro";
+import { supportedLocales } from "@/../lingui.config";
 
 export async function getStaticPaths() {
-  return supportedLocales
-    .filter((locale) => locale !== "en-GB") // Default locale handled by /index.astro
-    .map((locale) => ({ params: { locale } }));
+    return supportedLocales
+        .filter((locale) => locale !== "en-GB")
+        .map((locale) => ({ params: { locale } }));
 }
-
-const { locale } = Astro.params;
 ---
 
-<Layout locale={locale}>
-  <HomePage locale={locale} />
+<Layout>
+    <HomePage />
 </Layout>
