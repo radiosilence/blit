@@ -1,7 +1,9 @@
 import { i18n } from "@lingui/core";
-import { supportedLocales } from "@/i18n";
+import type { ComponentType } from "react";
 
-export const LanguageSelector = () => {
+export const LanguageSelector: ComponentType<{ locales: string[] }> = ({
+  locales,
+}) => {
   return (
     <div className="picker">
       <select
@@ -12,7 +14,7 @@ export const LanguageSelector = () => {
         }}
         className="bg-transparent text-xs cursor-pointer"
       >
-        {supportedLocales.map((locale) => (
+        {locales.map((locale) => (
           <option key={locale} value={locale}>
             {locale}
           </option>

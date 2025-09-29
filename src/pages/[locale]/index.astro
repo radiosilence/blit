@@ -1,15 +1,15 @@
 ---
 import { HomePage } from "@/components/HomePage.tsx";
 import Layout from "@/layouts/Layout.astro";
-import { supportedLocales } from "@/../lingui.config";
+import { locales } from "@/../lingui.config";
 
 export async function getStaticPaths() {
-    return supportedLocales
+    return locales
         .filter((locale) => locale !== "en-GB")
         .map((locale) => ({ params: { locale } }));
 }
 ---
 
 <Layout>
-    <HomePage client:load />
+    <HomePage />
 </Layout>

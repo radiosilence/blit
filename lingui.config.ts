@@ -1,6 +1,6 @@
 import { defineConfig } from "@lingui/cli";
 
-export const supportedLocales = [
+export const locales = [
   "en-GB",
   "fr-FR",
   "ja-JP",
@@ -13,11 +13,11 @@ export const supportedLocales = [
   "nl-BE",
   "nl-NL",
   "pl-PL",
-] as const;
+];
 
 export default defineConfig({
   sourceLocale: "en-GB",
-  locales: [...supportedLocales],
+  locales,
   catalogs: [
     {
       path: "<rootDir>/src/locales/{locale}/messages",

@@ -1,11 +1,11 @@
 import { i18n } from "@lingui/core";
 import { z } from "zod";
-import { supportedLocales } from "../lingui.config";
+import { locales } from "../lingui.config";
 
-export { supportedLocales };
+export { locales as supportedLocales };
 
 // Zod schema for locale validation
-const LocaleSchema = z.enum(supportedLocales);
+const LocaleSchema = z.enum(locales);
 
 export async function initI18n(locale: string = "en-GB") {
   const validLocale = LocaleSchema.safeParse(locale).success
