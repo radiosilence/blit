@@ -18,25 +18,21 @@ export const supportedLocales = [
 
 export type Locale = (typeof supportedLocales)[number];
 
-// Initialize with en-GB as default
-i18n.activate("en-GB");
-
-export async function setLocale(locale: string) {
+export async function initI18n(locale: string = "en-GB") {
   const validLocale = supportedLocales.includes(locale as Locale)
     ? (locale as Locale)
     : "en-GB";
 
   try {
-    // Dynamically import the compiled catalog
     const { messages } = await import(`./locales/${validLocale}/messages.mjs`);
     i18n.loadAndActivate({ locale: validLocale, messages });
   } catch (error) {
-    console.warn(`Failed to load locale ${validLocale}, falling back to en-GB`);
+    console.warn(`Failed to load locale ${validLocale}`);
     i18n.activate("en-GB");
   }
 }
 
-export function __(id: string): string {
+export function t(id: string): string {
   return i18n._(id);
 }
 

@@ -2,7 +2,7 @@
 import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
-import { setLocale, __ } from "@/i18n";
+import { t, getCurrentLocale } from "@/i18n";
 import "@/styles/app.css";
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 }
 
 const { locale = "en-GB" } = Astro.props;
-await setLocale(locale);
 const isRtl = ["ar", "ar-PS"].includes(locale);
 ---
 
@@ -18,7 +17,7 @@ const isRtl = ["ar", "ar-PS"].includes(locale);
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{__("james cleveland : senior full stack engineer")}</title>
+        <title>{t("james cleveland : senior full stack engineer")}</title>
         <meta name="theme-color" content="#ffffff" />
         <meta name="application-name" content="blit.cc" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
