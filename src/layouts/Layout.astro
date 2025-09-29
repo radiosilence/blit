@@ -12,14 +12,13 @@ interface Props {
 const { locale = "en-GB" } = Astro.props;
 await setLocale(locale);
 const isRtl = ["ar", "ar-PS"].includes(locale);
-
 ---
 
 <html lang={locale} dir={isRtl ? "rtl" : "ltr"}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{__("james cleveland : senior full stack engineer"}</title>
+        <title>{__("james cleveland : senior full stack engineer")}</title>
         <meta name="theme-color" content="#ffffff" />
         <meta name="application-name" content="blit.cc" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
