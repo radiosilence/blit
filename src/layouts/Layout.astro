@@ -2,38 +2,41 @@
 import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
-import { setLocale, t, type Locale } from "@/i18n";
+import { setLocale, __ } from "@/i18n";
 import "@/styles/app.css";
 
 interface Props {
-  locale?: string;
+    locale?: string;
 }
 
 const { locale = "en-GB" } = Astro.props;
 await setLocale(locale);
 const isRtl = ["ar", "ar-PS"].includes(locale);
-const title = t("james cleveland : senior full stack engineer");
-const appName = t("blit.cc");
+
 ---
 
 <html lang={locale} dir={isRtl ? "rtl" : "ltr"}>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="application-name" content={appName} />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content={appName} />
-    <meta name="mobile-web-app-capable" content="yes" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{__("james cleveland : senior full stack engineer"}</title>
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="application-name" content="blit.cc" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="blit.cc" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
-    <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
-    <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
-    <link rel="manifest" href="/manifest.json" />
-  </head>
-  <body>
-    <slot />
-  </body>
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href={appleTouchIcon.src}
+        />
+        <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
+        <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
+        <link rel="manifest" href="/manifest.json" />
+    </head>
+    <body>
+        <slot />
+    </body>
 </html>

@@ -1,40 +1,46 @@
 ---
-import { supportedLocales, getCurrentLocale, t } from "@/i18n";
+import { supportedLocales, getCurrentLocale, __ } from "@/i18n";
 import Logo from "@/components/Logo.astro";
 
-const locale = getCurrentLocale()
+const locale = getCurrentLocale();
 ---
 
 <section class="flex flex-col items-center m-12 space-y-4 text-center">
-  <Logo width={256} className="mbs-12 mbe-8" />
-  <h1>{t("james cleveland")}</h1>
-  <p class="text-sm">{t("senior full stack engineer")}</p>
-  <p>
-    <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}>{t("cv-2025.01")}</a> /{" "}
-    <a href="https://github.com/radiosilence">{t("github")}</a>
-  </p>
+    <Logo width={256} className="mbs-12 mbe-8" />
+    <h1>{__("james cleveland")}</h1>
+    <p class="text-sm">{__("senior full stack engineer")}</p>
+    <p>
+        <a href={`${locale !== "en-GB" ? `/${locale}` : ""}/cv`}
+            >{__("cv-2025.01")}</a
+        > /{" "}
+        <a href="https://github.com/radiosilence">{__("github")}</a>
+    </p>
 
-  <!-- Hidden links for prerender crawler to discover locale routes -->
-  <div class="hidden">
-    {supportedLocales.map((locale) => (
-      <div>
-        <a href={`/${locale}`}>{locale}</a>
-        <a href={`/${locale}/cv`}>{locale} CV</a>
-      </div>
-    ))}
-  </div>
+    <!-- Hidden links for prerender crawler to discover locale routes -->
+    <div class="hidden">
+        {
+            supportedLocales.map((locale) => (
+                <div>
+                    <a href={`/${locale}`}>{locale}</a>
+                    <a href={`/${locale}/cv`}>{locale} CV</a>
+                </div>
+            ))
+        }
+    </div>
 
-  <!-- Language picker -->
-  <div class="picker">
-    <select
-      onchange={`window.location.href = '/' + (this.value !== 'en-GB' ? this.value : '')`}
-      class="bg-transparent text-xs cursor-pointer"
-    >
-      {supportedLocales.map((loc) => (
-        <option value={loc} selected={loc === locale}>
-          {loc}
-        </option>
-      ))}
-    </select>
-  </div>
+    <!-- Language picker -->
+    <div class="picker">
+        <select
+            onchange={`window.location.href = '/' + (this.value !== 'en-GB' ? this.value : '')`}
+            class="bg-transparent text-xs cursor-pointer"
+        >
+            {
+                supportedLocales.map((loc) => (
+                    <option value={loc} selected={loc === locale}>
+                        {loc}
+                    </option>
+                ))
+            }
+        </select>
+    </div>
 </section>
