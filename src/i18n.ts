@@ -1,34 +1,25 @@
 import { i18n } from "@lingui/core";
+import { z } from "zod";
 import { supportedLocales } from "../lingui.config";
 
 export { supportedLocales };
 export type Locale = (typeof supportedLocales)[number];
 
-// Load and cache messages for all locales at startup
-const messageCache = new Map<Locale, Record<string, string[]>>();
-
-async function loadMessages(locale: Locale) {
-  if (messageCache.has(locale)) {
-    return messageCache.get(locale);
-  }
-
-  try {
-    const { messages } = await import(`./locales/${locale}/messages.mjs`);
-    messageCache.set(locale, messages);
-    return messages;
-  } catch (_error) {
-    console.warn(`Failed to load messages for locale ${locale}`);
-    return {};
-  }
-}
+// Zod schema for locale validation
+const LocaleSchema = z.enum(supportedLocales);
 
 export async function initI18n(locale: string = "en-GB") {
-  const validLocale = supportedLocales.includes(locale as Locale)
-    ? (locale as Locale)
+  const validLocale = LocaleSchema.safeParse(locale).success
+    ? LocaleSchema.parse(locale)
     : "en-GB";
 
-  const messages = await loadMessages(validLocale);
-  i18n.loadAndActivate({ locale: validLocale, messages });
+  try {
+    const { messages } = await import(`./locales/${validLocale}/messages.mjs`);
+    i18n.loadAndActivate({ locale: validLocale, messages });
+  } catch (_error) {
+    console.warn(`Failed to load messages for locale ${validLocale}`);
+    i18n.activate("en-GB");
+  }
 
   return validLocale;
 }
