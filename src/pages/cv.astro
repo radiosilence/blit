@@ -2,8 +2,10 @@
 import CV from "../components/cv.mdx";
 import Logo from "../components/Logo.tsx";
 import Layout from "../layouts/Layout.astro";
+import { initI18n } from "../i18n";
 
 const locale = "en-GB";
+await initI18n(locale);
 ---
 
 <Layout>
