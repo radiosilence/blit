@@ -18,26 +18,42 @@ export const supportedLocales = [
 
 export type Locale = (typeof supportedLocales)[number];
 
+// Load and cache messages for all locales at startup
+const messageCache = new Map<Locale, any>();
+
+async function loadMessages(locale: Locale) {
+  if (messageCache.has(locale)) {
+    return messageCache.get(locale);
+  }
+
+  try {
+    const { messages } = await import(`./locales/${locale}/messages.mjs`);
+    messageCache.set(locale, messages);
+    return messages;
+  } catch (error) {
+    console.warn(`Failed to load messages for locale ${locale}`);
+    return {};
+  }
+}
+
 export async function initI18n(locale: string = "en-GB") {
   const validLocale = supportedLocales.includes(locale as Locale)
     ? (locale as Locale)
     : "en-GB";
 
-  try {
-    const { messages } = await import(`./locales/${validLocale}/messages.mjs`);
-    i18n.loadAndActivate({ locale: validLocale, messages });
-  } catch (error) {
-    console.warn(`Failed to load locale ${validLocale}`);
-    i18n.activate("en-GB");
-  }
-}
+  const messages = await loadMessages(validLocale);
+  i18n.loadAndActivate({ locale: validLocale, messages });
 
-export function t(id: string): string {
-  return i18n._(id);
+  return validLocale;
 }
 
 export function getCurrentLocale(): Locale {
   return (i18n.locale as Locale) || "en-GB";
+}
+
+// Use i18n._ directly for translations
+export function t(messageId: string): string {
+  return i18n._(messageId);
 }
 
 export { i18n };
