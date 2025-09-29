@@ -12,46 +12,50 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:14
-#: src/components/Title.tsx:5
-msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : senior full stack engineer"
-
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:12
-msgid "james cleveland"
-msgstr "james cleveland"
-
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:18
-msgid "cv-2025.01"
-msgstr "cv-2025.01"
-
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:21
-msgid "github"
-msgstr "github"
-
 #: src/messages.ts:10
 #~ msgid "blit.cc"
 #~ msgstr "blit.cc"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:40
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
 
 #: src/messages.ts:8
 #~ msgid "cv-2025.01"
 #~ msgstr "cv-2025.01"
 
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:44
+msgid "github"
+msgstr "github"
+
 #: src/messages.ts:9
 #~ msgid "github"
 #~ msgstr "github"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:31
+msgid "james cleveland"
+msgstr "james cleveland"
 
 #: src/messages.ts:6
 #~ msgid "james cleveland"
 #~ msgstr "james cleveland"
 
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:34
+#: src/components/Title.tsx:5
+msgid "james cleveland : senior full stack engineer"
+msgstr "james cleveland : senior full stack engineer"
+
 #: src/messages.ts:5
 #~ msgid "james cleveland : senior full stack engineer"
 #~ msgstr "james cleveland : senior full stack engineer"
+
+#: src/components/LanguageSelectorClient.tsx:79
+msgid "Select language"
+msgstr "Select language"
 
 #: src/messages.ts:7
 #~ msgid "senior full stack engineer"

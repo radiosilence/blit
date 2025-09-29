@@ -13,22 +13,26 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/components/HomePage.tsx:14
-#: src/components/Title.tsx:5
-msgid "james cleveland : senior full stack engineer"
-msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
-
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:12
-msgid "james cleveland"
-msgstr "ジェームス・クリーブランド"
-
-#. js-lingui-explicit-id
-#: src/components/HomePage.tsx:18
+#: src/components/HomePage.tsx:40
 msgid "cv-2025.01"
 msgstr "履歴書-2025.01"
 
 #. js-lingui-explicit-id
-#: src/components/HomePage.tsx:21
+#: src/components/HomePage.tsx:44
 msgid "github"
 msgstr "ギットハブ"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:31
+msgid "james cleveland"
+msgstr "ジェームス・クリーブランド"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:34
+#: src/components/Title.tsx:5
+msgid "james cleveland : senior full stack engineer"
+msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
+
+#: src/components/LanguageSelectorClient.tsx:79
+msgid "Select language"
+msgstr ""

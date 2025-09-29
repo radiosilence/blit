@@ -27,4 +27,14 @@ export default defineConfig({
   ],
   format: "po",
   compileNamespace: "es",
+  extractBabelOptions: {
+    presets: ["@babel/preset-typescript"],
+  },
+  // Custom extractors aren't supported in this version, so comment out for now
+  // extractors: [
+  //   {
+  //     match: /\.astro$/,
+  //     extractor: "./scripts/astro-extractor.mjs",
+  //   },
+  // ],
 });
