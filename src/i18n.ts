@@ -1,21 +1,7 @@
 import { i18n } from "@lingui/core";
+import { supportedLocales } from "../lingui.config.js";
 
-export const supportedLocales = [
-  "en-GB",
-  "fr-FR",
-  "ar",
-  "ja-JP",
-  "zh-CN",
-  "ka-GE",
-  "uk-UA",
-  "ar-PS",
-  "it-IT",
-  "de-DE",
-  "nl-BE",
-  "nl-NL",
-  "pl-PL",
-] as const;
-
+export { supportedLocales };
 export type Locale = (typeof supportedLocales)[number];
 
 // Load and cache messages for all locales at startup
