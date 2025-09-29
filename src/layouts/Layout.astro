@@ -2,6 +2,7 @@
 import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
+import { Title } from "@/components/Title";
 import "@/styles/app.css";
 import { i18n } from "@lingui/core";
 
@@ -12,7 +13,7 @@ const isRtl = ["ar-PS"].includes(i18n.locale);
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{i18n._("james cleveland : senior full stack engineer")}</title>
+        <Title />
         <meta name="theme-color" content="#ffffff" />
         <meta name="application-name" content="blit.cc" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
