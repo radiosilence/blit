@@ -1,10 +1,10 @@
 ---
 import CV from "../components/cv.mdx";
-import Logo from "../components/Logo.astro";
-import Layout from "../layouts/Layout.astro";
+import Logo from "@/components/logo.astro";
+import Default from "@/layouts/default.astro";
 ---
 
-<Layout>
+<Default>
     <section class="flex items-center flex-col mbe-24 px-4 lg:px-0">
         <article class="prose prose-sm">
             <a href="/">
@@ -13,4 +13,4 @@ import Layout from "../layouts/Layout.astro";
             <CV />
         </article>
     </section>
-</Layout>
+</Default>
