@@ -3,19 +3,11 @@ import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
 import "@/styles/app.css";
-import { i18n, initI18n, supportedLocales } from "@/i18n";
+import { i18n, supportedLocales } from "@/i18n";
 import LanguageSelector from "@/components/language-selector";
-
-const [locale] = new URL(Astro.request.url).pathname
-    .split("/")
-    .filter((part) => !!part && /^[a-z]{2}-[A-Z]{2}$/.test(part));
-
-await initI18n(locale ?? "en-GB");
-
-const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
 ---
 
-<html lang={i18n.locale} dir={isRtl ? "rtl" : "ltr"}>
+<html lang={i18n.locale} dir={Astro.locals.isRtl ? "rtl" : "ltr"}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,7 +18,6 @@ const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="blit.cc" />
         <meta name="mobile-web-app-capable" content="yes" />
-
         <link
             rel="apple-touch-icon"
             sizes="180x180"
@@ -38,7 +29,6 @@ const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
     </head>
     <body>
         <slot />
-
         <section class="flex flex-col items-center m-12 space-y-4 text-center">
             <LanguageSelector client:load locales={supportedLocales} />
         </section>
