@@ -6,18 +6,11 @@ import "@/styles/app.css";
 import { i18n, initI18n, supportedLocales } from "@/i18n";
 import LanguageSelector from "@/components/language-selector";
 
-// Extract locale from URL
-const url = new URL(Astro.request.url);
-const pathSegments = url.pathname.split("/").filter(Boolean);
-const localeFromPath = pathSegments[0];
+const [locale] = new URL(Astro.request.url).pathname
+    .split("/")
+    .filter((part) => !!part && /^[a-z]{2}-[A-Z]{2}$/.test(part))[0];
 
-// Determine the locale
-const locale = supportedLocales.includes(localeFromPath)
-    ? localeFromPath
-    : "en-GB";
-
-// Initialize i18n
-await initI18n(locale);
+await initI18n(locale ?? "en-GB");
 
 const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
 ---
