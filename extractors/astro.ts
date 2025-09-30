@@ -4,7 +4,7 @@
  */
 
 import { convertToTSX } from "@astrojs/compiler";
-import { extractor as defaultExtractor } from "@lingui/cli/api";
+import linguiApi from "@lingui/cli/api";
 import type { ExtractorType } from "@lingui/conf";
 
 /**
@@ -17,13 +17,15 @@ export const astroExtractor: ExtractorType = {
   },
 
   async extract(filename, code, onMessageExtracted, ctx) {
-    const { code: transformedCode, map } = await convertToTSX(code);
+    console.log("converting to tsx", filename);
+    const { code: tsxCode, map } = await convertToTSX(code);
 
-    return defaultExtractor.extract(
+    console.log("extracting", tsxCode);
+    return linguiApi.extractor.extract(
       `${filename}.tsx`,
-      transformedCode,
+      tsxCode,
       onMessageExtracted,
-      { ...ctx, sourceMaps: [map] },
+      { ...ctx, sourceMaps: map },
     );
   },
 };

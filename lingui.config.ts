@@ -1,5 +1,5 @@
 import { defineConfig } from "@lingui/cli";
-import { extractor as defaultExtractor } from "@lingui/cli/api";
+import linguiApi from "@lingui/cli/api";
 import { astroExtractor } from "./extractors/astro";
 
 export const locales = [
@@ -29,5 +29,5 @@ export default defineConfig({
   ],
   format: "po",
   compileNamespace: "es",
-  extractors: [defaultExtractor, astroExtractor],
+  extractors: [linguiApi.extractor, astroExtractor],
 });

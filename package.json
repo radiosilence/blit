@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
+    "dev": "lingui compile && astro dev",
     "build": "lingui compile && astro build",
     "preview": "astro preview",
     "lint:biome": "npx @biomejs/biome check",
