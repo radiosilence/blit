@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"Language: en-GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/messages.ts:10
+#~ msgid "blit.cc"
+#~ msgstr "blit.cc"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:40
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
+
+#: src/messages.ts:8
+#~ msgid "cv-2025.01"
+#~ msgstr "cv-2025.01"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:44
+msgid "github"
+msgstr "github"
+
+#: src/messages.ts:9
+#~ msgid "github"
+#~ msgstr "github"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:31
+msgid "james cleveland"
+msgstr "james cleveland"
+
+#: src/messages.ts:6
+#~ msgid "james cleveland"
+#~ msgstr "james cleveland"
+
+#. js-lingui-explicit-id
+#: src/components/HomePage.tsx:34
+#: src/components/Title.tsx:5
+msgid "james cleveland : senior full stack engineer"
+msgstr "james cleveland : senior full stack engineer"
+
+#: src/messages.ts:5
+#~ msgid "james cleveland : senior full stack engineer"
+#~ msgstr "james cleveland : senior full stack engineer"
+
+#: src/components/LanguageSelectorClient.tsx:79
+msgid "Select language"
+msgstr "Select language"
+
+#: src/messages.ts:7
+#~ msgid "senior full stack engineer"
+#~ msgstr "senior full stack engineer"
