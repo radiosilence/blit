@@ -1,0 +1,17 @@
+---
+import logo from "./logo.png";
+
+export interface LogoProps {
+    width: number;
+    className?: string;
+}
+
+const { width, className } = Astro.props;
+---
+
+<img
+    src={logo.src}
+    alt="blit.cc logo"
+    width={width}
+    class={`logo ${className}`}
+/>
