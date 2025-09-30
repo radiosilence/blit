@@ -11,8 +11,10 @@ export const localeMiddleware = defineMiddleware(async (context, next) => {
   const locale =
     parts.find((part) => zLocale.safeParse(part).success) ?? "en-GB";
 
-  const { messages } = await import(`../locales/${locale}/messages.mjs`);
-  i18n.loadAndActivate({ locale: locale, messages });
+  i18n.loadAndActivate({
+    locale,
+    ...(await import(`../locales/${locale}/messages.mjs`)),
+  });
 
   context.locals.isRtl = ["ar-PS"].includes(locale);
   context.locals.locale = locale;
