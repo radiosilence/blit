@@ -6,9 +6,7 @@ import { i18n } from "@lingui/core";
 import { locales } from "@/../lingui.config";
 
 export const getStaticPaths = async () =>
-    locales
-        .filter((locale) => locale !== "en-GB")
-        .map((locale) => ({ params: { locale } }));
+    locales.map((locale) => ({ params: { locale } }));
 ---
 
 <Default>
