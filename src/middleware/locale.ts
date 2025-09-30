@@ -1,15 +1,9 @@
 import { defineMiddleware } from "astro:middleware";
 import { i18n } from "@lingui/core";
-import * as z from "zod";
 import { locales } from "@/../lingui.config";
 
-const zLocale = z.enum(locales);
-
 export const localeMiddleware = defineMiddleware(async (context, next) => {
-  const locale =
-    context.request.url
-      .split("/")
-      .find((part) => zLocale.safeParse(part).success) ?? "en-GB";
+  const { locale } = context.params;
 
   i18n.loadAndActivate({
     locale,

@@ -4,17 +4,17 @@ import { astroExtractor } from "./extractors/astro";
 
 export const locales = [
   "en-GB",
-  "fr-FR",
-  "ja-JP",
-  "zh-CN",
-  "ka-GE",
-  "uk-UA",
   "ar-PS",
-  "it-IT",
   "de-DE",
+  "fr-FR",
+  "it-IT",
+  "ja-JP",
+  "ka-GE",
   "nl-BE",
   "nl-NL",
   "pl-PL",
+  "uk-UA",
+  "zh-CN",
 ];
 
 export default defineConfig({
