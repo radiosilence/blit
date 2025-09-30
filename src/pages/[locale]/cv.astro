@@ -3,13 +3,12 @@ import CV from "@/components/cv.mdx";
 import Logo from "@/components/logo.astro";
 import Default from "@/layouts/default.astro";
 import { i18n } from "@lingui/core";
-import { supportedLocales } from "@/i18n";
+import { locales } from "@/../lingui.config";
 
-export async function getStaticPaths() {
-    return supportedLocales
-        .filter((locale) => locale !== "en-GB") // Default locale handled by /cv.astro
+export const getStaticPaths = async () =>
+    locales
+        .filter((locale) => locale !== "en-GB")
         .map((locale) => ({ params: { locale } }));
-}
 ---
 
 <Default>
