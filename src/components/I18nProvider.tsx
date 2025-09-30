@@ -38,7 +38,7 @@ export const I18nProvider = ({
               `../locales/${locale}/messages.mjs`
             );
             messages = messagesModule.messages;
-          } catch (error) {
+          } catch (_error) {
             console.warn(
               `Failed to load messages for locale ${locale}, falling back to en-GB`,
             );

@@ -14,7 +14,7 @@ export const astroExtractor = {
     return filename.endsWith(".astro");
   },
 
-  async extract(filename, code, onMessageExtracted, ctx) {
+  async extract(filename, code, onMessageExtracted, _ctx) {
     try {
       // Parse the Astro file
       const parsed = parse(code);
@@ -45,6 +45,7 @@ function extractFromCode(content, filename, onMessageExtracted) {
 
   patterns.forEach((pattern) => {
     let match;
+    // biome-ignore lint/suspicious/noAssignInExpressions: fine
     while ((match = pattern.exec(content)) !== null) {
       const message = match[1];
       if (message) {
