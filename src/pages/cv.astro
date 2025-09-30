@@ -1,3 +1,17 @@
 ---
-return Astro.rewrite("/en-GB/cv");
+import CV from "@/components/cv.mdx";
+import Logo from "@/components/logo.astro";
+import Default from "@/layouts/default.astro";
+import { i18n } from "@lingui/core";
 ---
+
+<Default>
+    <section class="flex items-center flex-col mbe-24 px-4 lg:px-0">
+        <article class="prose prose-sm">
+            <a href={`${i18n.locale !== "en-GB" ? `/${i18n.locale}` : "/"}`}>
+                <Logo width={128} className="mbs-12 mbe-16" />
+            </a>
+            <CV />
+        </article>
+    </section>
+</Default>
