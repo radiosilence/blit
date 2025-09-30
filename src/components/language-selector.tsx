@@ -6,7 +6,6 @@ export const LanguageSelector = withI18n(
     const { i18n } = useLingui();
     return (
       <div className="picker">
-        {i18n._("SELECT LANGUAGE:")}
         <select
           value={i18n.locale}
           onChange={(e) => {

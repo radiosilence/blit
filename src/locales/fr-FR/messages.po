@@ -13,11 +13,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/components/language-selector.tsx:10
-msgid "SELECT LANGUAGE:"
-msgstr "SELECTEUR LANGUAISE:"
-
-#. js-lingui-explicit-id
 #: %3Cstdin%3E:14
 #: %3Cstdin%3E:11
 msgid "james cleveland : senior full stack engineer"
