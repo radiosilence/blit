@@ -1,7 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider, useLingui } from "@lingui/react";
-import type { ComponentProps } from "astro/types";
-import { type ComponentType, useEffect, useRef } from "react";
+import { type ComponentType, useRef } from "react";
 
 const locale = "fr-FR";
 
@@ -34,8 +33,8 @@ const LanguageSelectorInner: ComponentType<{
   );
 };
 
-export function withLanguage<T extends ComponentType>(C: T) {
-  return ({ locale, ...props }: ComponentProps<T> & { locale: string }) => {
+export function withLanguage<P extends object>(C: ComponentType<P>) {
+  return (props: P & { locale: string }) => {
     const activated = useRef(false);
     console.log("LanguageSelector::render");
     (async () => {
@@ -43,8 +42,8 @@ export function withLanguage<T extends ComponentType>(C: T) {
       if (activated.current) return;
       activated.current = true;
       i18n.loadAndActivate({
-        locale,
-        ...(await import(`../locales/${locale}/messages.mjs`)),
+        locale: props.locale,
+        ...(await import(`../locales/${props.locale}/messages.mjs`)),
       });
     })();
     return (
