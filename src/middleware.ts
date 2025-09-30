@@ -4,7 +4,7 @@ import { initI18n } from "./i18n";
 export const onRequest = defineMiddleware(async (context, next) => {
   const [locale] = new URL(context.request.url).pathname
     .split("/")
-    .filter((part) => !!part && /^[a-z]{2}-[A-Z]{2}$/.test(part))[0];
+    .filter((part) => !!part && /^[a-z]{2}-[A-Z]{2}$/.test(part));
 
   await initI18n(locale ?? "en-GB");
 
