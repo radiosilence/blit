@@ -3,7 +3,7 @@ import { i18n } from "@lingui/core";
 import { locales } from "@/../lingui.config";
 
 export const localeMiddleware = defineMiddleware(async (context, next) => {
-  const { locale } = context.params;
+  const { locale = "en-GB" } = context.params;
 
   i18n.loadAndActivate({
     locale,

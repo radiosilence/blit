@@ -10,7 +10,7 @@ export const LanguageSelector: ComponentType<{ locales: string[] }> = ({
         value={i18n.locale}
         onChange={(e) => {
           const locale = e.target.value;
-          window.location.href = locale === "en-GB" ? `/}` : `/${locale}`;
+          window.location.href = locale === "en-GB" ? `/` : `/${locale}`;
         }}
         className="bg-transparent text-xs cursor-pointer"
       >
