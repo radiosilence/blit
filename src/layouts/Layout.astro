@@ -2,39 +2,53 @@
 import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
-import * as m from "@/paraglide/messages";
-import { setLocale } from "@/paraglide/runtime";
+import { Title } from "@/components/Title";
 import "@/styles/app.css";
+import { i18n, initI18n, supportedLocales } from "@/i18n";
+import LanguageSelector from "@/components/LanguageSelector";
 
-interface Props {
-  locale?: string;
-}
+// Extract locale from URL
+const url = new URL(Astro.request.url);
+const pathSegments = url.pathname.split("/").filter(Boolean);
+const localeFromPath = pathSegments[0];
 
-const { locale = "en-GB" } = Astro.props;
-setLocale(locale);
-const isRtl = ["ar", "ar-PS"].includes(locale);
-const title = m.site_title();
-const appName = m.site_appName();
+// Determine the locale
+const locale = supportedLocales.includes(localeFromPath)
+    ? localeFromPath
+    : "en-GB";
+
+// Initialize i18n
+await initI18n(locale);
+
+const isRtl = ["ar", "ar-PS"].includes(i18n.locale);
 ---
 
-<html lang={locale} dir={isRtl ? "rtl" : "ltr"}>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="application-name" content={appName} />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content={appName} />
-    <meta name="mobile-web-app-capable" content="yes" />
+<html lang={i18n.locale} dir={isRtl ? "rtl" : "ltr"}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Title />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="application-name" content="blit.cc" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="blit.cc" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
-    <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
-    <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
-    <link rel="manifest" href="/manifest.json" />
-  </head>
-  <body>
-    <slot />
-  </body>
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href={appleTouchIcon.src}
+        />
+        <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
+        <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
+        <link rel="manifest" href="/manifest.json" />
+    </head>
+    <body>
+        <slot />
+
+        <section class="flex flex-col items-center m-12 space-y-4 text-center">
+            <LanguageSelector client:load locales={supportedLocales} />
+        </section>
+    </body>
 </html>

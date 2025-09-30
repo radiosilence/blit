@@ -1,4 +1,4 @@
-FROM node:24 AS base
+FROM oven/bun:latest AS base
 RUN adduser --disabled-password --shell /bin/sh nano
 
 
@@ -7,8 +7,8 @@ FROM base AS builder
 WORKDIR /app
 COPY . .
 
-RUN npm install
-RUN npm run build
+RUN bun install
+RUN bun run build
 RUN chown -R nano:nano /app/dist
 
 
