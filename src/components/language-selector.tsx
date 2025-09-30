@@ -1,61 +1,27 @@
-import { i18n } from "@lingui/core";
-import { I18nProvider, useLingui } from "@lingui/react";
-import { type ComponentType, useRef } from "react";
+import { useLingui } from "@lingui/react";
+import { withI18n } from "@/helpers/withI18n";
 
-const locale = "fr-FR";
-
-console.log("activating", locale);
-
-const LanguageSelectorInner: ComponentType<{
-  locales: string[];
-  sourceLocale: string;
-}> = ({ locales, sourceLocale }) => {
-  const { i18n } = useLingui();
-  console.log("LanguageSelectorInner::", i18n.locale);
-  return (
-    <div className="picker">
-      {i18n._("SELECT LANGUAGE:")}
-      <select
-        value={i18n.locale}
-        onChange={(e) => {
-          const locale = e.target.value;
-          window.location.href = locale === sourceLocale ? `/` : `/${locale}`;
-        }}
-        className="bg-transparent text-xs cursor-pointer"
-      >
-        {locales.map((locale) => (
-          <option key={locale} value={locale}>
-            {locale}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
-export function withLanguage<P extends object>(C: ComponentType<P>) {
-  return (props: P & { locale: string }) => {
-    const activated = useRef(false);
-    console.log("LanguageSelector::render");
-    (async () => {
-      console.log("LanguageSelector::doing load and activate");
-      if (activated.current) return;
-      activated.current = true;
-      i18n.loadAndActivate({
-        locale: props.locale,
-        ...(await import(`../locales/${props.locale}/messages.mjs`)),
-      });
-    })();
+export const LanguageSelector = withI18n(
+  ({ locales, sourceLocale }: { locales: string[]; sourceLocale: string }) => {
+    const { i18n } = useLingui();
     return (
-      <I18nProvider i18n={i18n}>
-        <C {...props} />
-      </I18nProvider>
+      <div className="picker">
+        {i18n._("SELECT LANGUAGE:")}
+        <select
+          value={i18n.locale}
+          onChange={(e) => {
+            const locale = e.target.value;
+            window.location.href = locale === sourceLocale ? `/` : `/${locale}`;
+          }}
+          className="bg-transparent text-xs cursor-pointer"
+        >
+          {locales.map((locale) => (
+            <option key={locale} value={locale}>
+              {locale}
+            </option>
+          ))}
+        </select>
+      </div>
     );
-  };
-}
-
-export const LanguageSelector = withLanguage(LanguageSelectorInner);
-
-const Balh = () => {
-  return <LanguageSelector locale="fr-FR" sourceLocale="en-GB" locales={[]} />;
-};
+  },
+);
