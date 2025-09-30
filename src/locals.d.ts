@@ -6,5 +6,6 @@ namespace App {
   export interface Locals {
     isRtl: boolean;
     locale: string;
+    locales: string[];
   }
 }
