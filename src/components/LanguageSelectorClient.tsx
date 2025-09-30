@@ -1,9 +1,8 @@
-import { msg, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 
 /**
  * Client-side language selector that works with React context
- * This version can use Lingui macros and proper React patterns
+ * This version uses runtime API instead of macros to avoid build issues
  */
 export const LanguageSelectorClient = () => {
   const { i18n } = useLingui();
@@ -76,7 +75,7 @@ export const LanguageSelectorClient = () => {
         value={i18n.locale}
         onChange={(e) => handleLocaleChange(e.target.value)}
         className="bg-transparent text-xs cursor-pointer"
-        aria-label={i18n._(msg`Select language`)}
+        aria-label={i18n._("Select language")}
       >
         {supportedLocales.map((locale) => (
           <option key={locale} value={locale}>

@@ -1,4 +1,5 @@
 import { defineConfig } from "@lingui/cli";
+import { astroExtractor } from "./scripts/astro-extractor.mjs";
 
 export const locales = [
   "en-GB",
@@ -27,14 +28,5 @@ export default defineConfig({
   ],
   format: "po",
   compileNamespace: "es",
-  extractBabelOptions: {
-    presets: ["@babel/preset-typescript"],
-  },
-  // Custom extractors aren't supported in this version, so comment out for now
-  // extractors: [
-  //   {
-  //     match: /\.astro$/,
-  //     extractor: "./scripts/astro-extractor.mjs",
-  //   },
-  // ],
+  extractors: [astroExtractor],
 });
