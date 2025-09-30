@@ -6,10 +6,10 @@ import { locales } from "@/../lingui.config";
 const zLocale = z.enum(locales);
 
 export const localeMiddleware = defineMiddleware(async (context, next) => {
-  const parts = context.request.url.split("/");
-
   const locale =
-    parts.find((part) => zLocale.safeParse(part).success) ?? "en-GB";
+    context.request.url
+      .split("/")
+      .find((part) => zLocale.safeParse(part).success) ?? "en-GB";
 
   i18n.loadAndActivate({
     locale,
