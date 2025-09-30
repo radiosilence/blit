@@ -3,11 +3,8 @@ import HomeContent from "@/components/home-content.astro";
 import Default from "@/layouts/default.astro";
 import { locales } from "@/../lingui.config";
 
-export const getStaticPaths = async () => {
-    return locales
-        .filter((locale) => locale !== "en-GB")
-        .map((locale) => ({ params: { locale } }));
-};
+export const getStaticPaths = async () =>
+    locales.map((locale) => ({ params: { locale } }));
 ---
 
 <Default>
