@@ -1,5 +1,6 @@
 import { defineConfig } from "@lingui/cli";
-import { astroExtractor } from "./scripts/astro-extractor.mjs";
+import { extractor as defaultExtractor } from "@lingui/cli/api";
+import { astroExtractor } from "./extractors/astro";
 
 export const locales = [
   "en-GB",
@@ -28,5 +29,5 @@ export default defineConfig({
   ],
   format: "po",
   compileNamespace: "es",
-  extractors: [astroExtractor],
+  extractors: [defaultExtractor, astroExtractor],
 });
