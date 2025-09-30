@@ -1,6 +1,4 @@
 import { i18n } from "@lingui/core";
-import I18nProvider from "@/components/I18nProvider.tsx";
-import LanguageSelectorClient from "@/components/LanguageSelectorClient.tsx";
 import Logo from "@/components/Logo.tsx";
 
 const { locale } = i18n;
