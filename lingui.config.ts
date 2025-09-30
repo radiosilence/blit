@@ -2,6 +2,8 @@ import { defineConfig } from "@lingui/cli";
 import linguiApi from "@lingui/cli/api";
 import { astroExtractor } from "./extractors/astro";
 
+export const sourceLocale = "en-GB";
+
 export const locales = [
   "en-GB",
   "ar-PS",
@@ -18,7 +20,7 @@ export const locales = [
 ];
 
 export default defineConfig({
-  sourceLocale: "en-GB",
+  sourceLocale,
   locales,
   catalogs: [
     {

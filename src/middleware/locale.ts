@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 import { i18n } from "@lingui/core";
-import { locales } from "@/../lingui.config";
+import { locales, sourceLocale } from "@/../lingui.config";
 
 export const localeMiddleware = defineMiddleware(async (context, next) => {
   const { locale = "en-GB" } = context.params;
@@ -11,8 +11,8 @@ export const localeMiddleware = defineMiddleware(async (context, next) => {
   });
 
   context.locals.isRtl = ["ar-PS"].includes(locale);
-  context.locals.locale = locale;
   context.locals.locales = locales;
+  context.locals.sourceLocale = sourceLocale;
 
   return next();
 });
