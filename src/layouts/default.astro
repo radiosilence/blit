@@ -3,7 +3,7 @@ import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
 import "@/styles/app.css";
-import { i18n, supportedLocales } from "@/i18n";
+import { i18n } from "@lingui/core";
 import LanguageSelector from "@/components/language-selector";
 ---
 
@@ -30,7 +30,7 @@ import LanguageSelector from "@/components/language-selector";
     <body>
         <slot />
         <section class="flex flex-col items-center m-12 space-y-4 text-center">
-            <LanguageSelector client:load locales={supportedLocales} />
+            <LanguageSelector client:load locales={Astro.locals.locales} />
         </section>
     </body>
 </html>
