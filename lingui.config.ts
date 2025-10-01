@@ -6,6 +6,7 @@ export const sourceLocale = "en-GB";
 
 export const locales = [
   "en-GB",
+  "ar-EG",
   "ar-PS",
   "de-DE",
   "fr-FR",
