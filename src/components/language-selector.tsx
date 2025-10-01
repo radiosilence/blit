@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { withI18n } from "@/helpers/withI18n";
+import { withI18n } from "astro-lingui/client";
 
 export const LanguageSelector = withI18n(
   ({ locales, sourceLocale }: { locales: string[]; sourceLocale: string }) => {
