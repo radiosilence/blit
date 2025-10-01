@@ -19,5 +19,4 @@ dist
 .tanstack
 
 # Lingui compiled message files (generated from .po sources)
-src/locales/**/*.mjs
-src/locales/**/*.js
+src/locales/**/*.ts

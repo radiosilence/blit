@@ -24,11 +24,11 @@ msgid "james cleveland"
 msgstr "james cleveland"
 
 #. js-lingui-explicit-id
-#: %3Cstdin%3E:17
+#: %3Cstdin%3E:16
 msgid "cv-2025.01"
 msgstr "curriculum-2025.01"
 
 #. js-lingui-explicit-id
-#: %3Cstdin%3E:20
+#: %3Cstdin%3E:17
 msgid "github"
 msgstr "github"

@@ -1,6 +1,6 @@
 import { defineConfig } from "@lingui/cli";
 import linguiApi from "@lingui/cli/api";
-import { astroExtractor } from "./extractors/astro";
+import astroLingui from "astro-lingui";
 
 export const sourceLocale = "en-GB";
 
@@ -26,10 +26,10 @@ export default defineConfig({
     {
       path: "<rootDir>/src/locales/{locale}/messages",
       include: ["src"],
-      exclude: ["**/node_modules/**"],
+      exclude: ["**/node_modules/**", "src/integrations/**"],
     },
   ],
   format: "po",
-  compileNamespace: "es",
-  extractors: [linguiApi.extractor, astroExtractor],
+  compileNamespace: "ts",
+  extractors: [linguiApi.extractor, astroLingui.extractor],
 });

@@ -1,14 +1,23 @@
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
-import { lingui } from "@lingui/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import astroLingui from "astro-lingui";
+import { locales, sourceLocale } from "./lingui.config";
 
 export default defineConfig({
   output: "static",
-  integrations: [mdx(), react()],
+  integrations: [
+    mdx(),
+    react(),
+    astroLingui.integration({
+      sourceLocale,
+      locales,
+      dir: "./src/locales",
+    }),
+  ],
   vite: {
-    // biome-ignore lint/suspicious/noExplicitAny: lingui is a dick
-    plugins: [tailwindcss(), lingui() as unknown as any, react()],
+    // biome-ignore lint/suspicious/noExplicitAny: do not care
+    plugins: [tailwindcss() as any, react()],
   },
 });
