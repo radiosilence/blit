@@ -1,6 +1,6 @@
 import { defineConfig } from "@lingui/cli";
 import linguiApi from "@lingui/cli/api";
-import astroLingui from "astro-lingui";
+import astroLingui from "astro-lingui/server";
 
 export const sourceLocale = "en-GB";
 
@@ -26,7 +26,7 @@ export default defineConfig({
     {
       path: "<rootDir>/src/locales/{locale}/messages",
       include: ["src"],
-      exclude: ["**/node_modules/**", "src/integrations/**"],
+      exclude: ["**/node_modules/**"],
     },
   ],
   format: "po",
