@@ -5,9 +5,11 @@ import favicon32 from "@/assets/favicon-32x32.png";
 import "@/styles/app.css";
 import { i18n } from "@lingui/core";
 import { LanguageSelector } from "@/components/language-selector";
+
+const { isRtl, locales, sourceLocale } = Astro.locals;
 ---
 
-<html lang={i18n.locale} dir={Astro.locals.isRtl ? "rtl" : "ltr"}>
+<html lang={i18n.locale} dir={isRtl ? "rtl" : "ltr"}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,8 +35,8 @@ import { LanguageSelector } from "@/components/language-selector";
             <LanguageSelector
                 client:load
                 locale={i18n.locale}
-                locales={Astro.locals.locales}
-                sourceLocale={Astro.locals.sourceLocale}
+                locales={locales}
+                sourceLocale={sourceLocale}
             />
         </section>
     </body>
