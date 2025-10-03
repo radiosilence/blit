@@ -5,6 +5,11 @@ import favicon32 from "@/assets/favicon-32x32.png";
 import "@/styles/app.css";
 import { i18n } from "@lingui/core";
 import { LanguageSelector } from "@/components/language-selector";
+console.log("AStro.locals", Astro.locals);
+console.log("i18n", i18n);
+console.log("i18n.locale", i18n.locale);
+console.log("i18n._locale", i18n._locale);
+i18n.activate("en-GB");
 
 const { isRtl, locales, sourceLocale } = Astro.locals;
 ---
