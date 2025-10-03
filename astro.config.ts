@@ -13,7 +13,7 @@ export default defineConfig({
     astroLingui.integration({
       sourceLocale,
       locales,
-      dir: "./src/locales",
+      path: "<rootDir>/src/locales/{locale}/messages.ts",
     }),
   ],
   vite: {
