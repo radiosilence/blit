@@ -19,5 +19,8 @@ export default defineConfig({
   vite: {
     // biome-ignore lint/suspicious/noExplicitAny: do not care
     plugins: [tailwindcss() as any, react()],
+    optimizeDeps: {
+      exclude: ["virtual:astro-lingui-config", "virtual:astro-lingui-modules"],
+    },
   },
 });
