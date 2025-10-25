@@ -4,7 +4,7 @@ import favicon16 from "@/assets/favicon-16x16.png";
 import favicon32 from "@/assets/favicon-32x32.png";
 import "@/styles/app.css";
 import { i18n } from "@lingui/core";
-import { LanguageSelector } from "@/components/language-selector";
+// import { LanguageSelector } from "@/components/language-selector";
 console.log("AStro.locals", Astro.locals);
 console.log("i18n", i18n);
 console.log("i18n.locale", i18n.locale);
@@ -15,34 +15,24 @@ const { isRtl, locales, sourceLocale } = Astro.locals;
 ---
 
 <html lang={i18n.locale} dir={isRtl ? "rtl" : "ltr"}>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{i18n._("james cleveland : senior full stack engineer")}</title>
-        <meta name="theme-color" content="#ffffff" />
-        <meta name="application-name" content="blit.cc" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="blit.cc" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href={appleTouchIcon.src}
-        />
-        <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
-        <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
-        <link rel="manifest" href="/manifest.json" />
-    </head>
-    <body>
-        <slot />
-        <section class="flex flex-col items-center m-12 space-y-4 text-center">
-            <LanguageSelector
-                client:load
-                locale={i18n.locale}
-                locales={locales}
-                sourceLocale={sourceLocale}
-            />
-        </section>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{i18n._("james cleveland : senior full stack engineer")}</title>
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="application-name" content="blit.cc" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="blit.cc" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
+    <link rel="icon" type="image/png" sizes="32x32" href={favicon32.src} />
+    <link rel="icon" type="image/png" sizes="16x16" href={favicon16.src} />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <slot />
+    <section class="flex flex-col items-center m-12 space-y-4 text-center">
+    </section>
+  </body>
 </html>
