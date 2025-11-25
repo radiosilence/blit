@@ -16,7 +16,6 @@ export const locales = [
   "el-GR",
   "fr-FR",
   "gu-IN",
-  "he-IL",
   "hi-IN",
   "hy-AM",
   "it-IT",
