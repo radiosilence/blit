@@ -6,16 +6,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: th-TH\n"
-
-#. js-lingui-explicit-id
-#: %3Cstdin%3E:16
-#: %3Cstdin%3E:11
-msgid "james cleveland : senior full stack engineer"
-msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: %3Cstdin%3E:11
+#: %3Cstdin%3E:16
+msgid "james cleveland : senior full stack engineer"
 msgstr ""
 
 #. js-lingui-explicit-id
