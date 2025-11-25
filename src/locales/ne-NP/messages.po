@@ -3,27 +3,27 @@ msgstr ""
 "POT-Creation-Date: 2025-11-25 15:21+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8-bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ne-NP\n"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
-msgstr ""
+msgstr "जेम्स क्लिभल्यान्ड"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr ""
+msgstr "जेम्स क्लिभल्यान्ड : वरिष्ठ पूर्ण स्ट्याक इन्जिनियर"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
 msgid "cv-2025.01"
-msgstr ""
+msgstr "cv-2025.01"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:16
 msgid "github"
-msgstr ""
+msgstr "github"
