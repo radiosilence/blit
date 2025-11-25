@@ -10,20 +10,20 @@ msgstr ""
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
-msgstr ""
+msgstr "詹姆斯·克利夫蘭"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr ""
+msgstr "詹姆斯·克利夫蘭：資深全端工程師"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
 msgid "cv-2025.01"
-msgstr ""
+msgstr "cv-2025.01"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:16
 msgid "github"
-msgstr ""
+msgstr "github"
