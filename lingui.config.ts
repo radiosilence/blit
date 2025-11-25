@@ -6,43 +6,43 @@ export const sourceLocale = "en-GB";
 
 export const locales = [
   "en-GB",
-  "am-ET", // Amharic - Ethiopic script
+  "am-ET",
   "ar-EG",
   "ar-PS",
-  "bn-BD", // Bengali - beautiful curvy script
-  "bo-CN", // Tibetan - stacked syllables
+  "bn-BD",
+  "bo-CN",
   "de-DE",
-  "dv-MV", // Dhivehi (Maldivian) - Thaana script, RTL
-  "el-GR", // Greek - classic
+  "dv-MV",
+  "el-GR",
   "fr-FR",
-  "gu-IN", // Gujarati
-  "he-IL", // Hebrew - RTL
+  "gu-IN",
+  "he-IL",
   "hi-IN",
-  "hy-AM", // Armenian - unique alphabet
+  "hy-AM",
   "it-IT",
   "ja-JP",
-  "ka-GE", // Georgian - gorgeous script
-  "km-KH", // Khmer - most letters of any alphabet
-  "kn-IN", // Kannada - South Indian
-  "ko-KR", // Korean - Hangul
-  "lo-LA", // Lao - curly and beautiful
-  "ml-IN", // Malayalam - very round
-  "mn-MN", // Mongolian - traditional vertical script
-  "my-MM", // Burmese - circular letters
-  "ne-NP", // Nepali - Devanagari
+  "ka-GE",
+  "km-KH",
+  "kn-IN",
+  "ko-KR",
+  "lo-LA",
+  "ml-IN",
+  "mn-MN",
+  "my-MM",
+  "ne-NP",
   "nl-BE",
   "nl-NL",
-  "or-IN", // Odia - very curvy
+  "or-IN",
   "pa-IN",
   "pl-PL",
-  "si-LK", // Sinhala - Sri Lankan, super curly
-  "ta-IN", // Tamil - ancient Dravidian
-  "te-IN", // Telugu - looks like aliens wrote it
+  "si-LK",
+  "ta-IN",
+  "te-IN",
   "th-TH",
   "uk-UA",
-  "vi-VN", // Vietnamese - Latin with wild diacritics
+  "vi-VN",
   "zh-CN",
-  "zh-TW", // Traditional Chinese
+  "zh-TW",
 ];
 
 export default defineConfig({

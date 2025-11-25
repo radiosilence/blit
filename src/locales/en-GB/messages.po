@@ -13,15 +13,15 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: %3Cstdin%3E:16
-#: %3Cstdin%3E:11
-msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : senior full stack engineer"
-
-#. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
 msgstr "james cleveland"
+
+#. js-lingui-explicit-id
+#: %3Cstdin%3E:11
+#: %3Cstdin%3E:16
+msgid "james cleveland : senior full stack engineer"
+msgstr "james cleveland : senior full stack engineer"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15

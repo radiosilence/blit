@@ -1,34 +1,29 @@
 msgid ""
 msgstr ""
-"Language: ar-EG\n"
+"POT-Creation-Date: 2025-11-25 15:21+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
+"Language: lo-LA\n"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
-msgstr "جيمس كليفلاند"
+msgstr ""
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr "جيمس كليفلاند : مهندس برمجيات كامل متقدم"
+msgstr ""
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
 msgid "cv-2025.01"
-msgstr "السيرة الذاتية-٢٠٢٥.٠١"
+msgstr ""
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:16
 msgid "github"
-msgstr "غيت هاب"
+msgstr ""
