@@ -4,11 +4,17 @@
 
 ## What this does
 
-Basically this builds and deploys blit.cc
+Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
 
-### Web ([blit.cc](https://blit.cc))
+### Stack
 
-- Created with [TanStack Start](https://tanstack.com/start)
-- Packaged as a docker image, hosted on a local microk8s and accessible via CloudFlare Tunnel.
-- Uses [Bun](https://bun.sh) as the JavaScript runtime for fast performance.
-- Deployed using Pulumi.
+- [Astro](https://astro.build) with React 19 islands
+- [Lingui](https://lingui.dev) for i18n (37 locales)
+- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono font
+- [Rolldown](https://rolldown.rs) (via rolldown-vite) for bundling
+- [Bun](https://bun.sh) as package manager
+- [Biome](https://biomejs.dev) for linting/formatting
+
+### Deployment
+
+Docker image → microk8s → CloudFlare Tunnel. Deployed via Pulumi (separate IaC repo).

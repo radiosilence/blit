@@ -6,39 +6,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Start development server
-npm run dev
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
-# Start production server (requires build first)
-npm run start
+# Preview production build
+bun run preview
 
 # Lint and format code
-npm run lint:biome
-npm run lint:biome:fix
+bun run lint:biome
+bun run lint:biome:fix
 
 # Type checking
 bun run typecheck
+
+# i18n string extraction and compilation
+bun run lingui:extract
+bun run lingui:compile
 ```
 
 ## Architecture Overview
 
-This is a TanStack Start application for a personal website (blit.cc):
+Personal website for [blit.cc](https://blit.cc), built with Astro:
 
-- **Runtime**: Node.js (Bun used only as package manager)
-- **Framework**: TanStack Start with React 19
-- **Styling**: TailwindCSS v4 with custom fonts (Geist Mono)
-- **Content**: MDX for CV content rendering
-- **Routing**: File-based routing via TanStack Router with auto-generated route tree
-- **Build**: Vite with prerendering enabled for static site generation
-- **Linting**: Biome for formatting and linting with lefthook git hooks
-- **Deployment**: Docker containers with microk8s + CloudFlare Tunnel
+- **Package manager**: Bun
+- **Framework**: Astro 5 with React 19 (for interactive islands)
+- **Styling**: TailwindCSS v4 with Geist Mono font
+- **Content**: MDX for CV content
+- **i18n**: Lingui with 37 locales, PO file format, compiled to TypeScript
+- **Routing**: File-based via Astro (`src/pages/`) with dynamic `[locale]` segments
+- **Build**: Rolldown (via rolldown-vite) with static output
+- **Linting**: Biome for formatting/linting, lefthook for git hooks
+- **Deployment**: Docker → microk8s → CloudFlare Tunnel
 
-Key architectural decisions:
+Key decisions:
 
-- Routes are file-based in `src/routes/` with `__root.tsx` providing layout
-- Static assets in `src/assets/` including favicons and fonts
-- Components are minimal - only Logo component and MDX content
-- Prerendering crawls all links for static generation
+- Static site generation (`output: "static"`) — no server runtime needed
+- Favicons in `src/assets/` (Astro-processed), icons for manifest in `public/`
+- Locale files: `.po` sources committed, compiled `.ts` files gitignored
 - Git hooks run Biome formatting and TypeScript checking on commit
