@@ -8,9 +8,9 @@ Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
 
 ### Stack
 
-- [Astro](https://astro.build) with React 19 islands
-- [Lingui](https://lingui.dev) for i18n (37 locales)
-- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono font
+- [Astro 6](https://astro.build) with React 19 islands
+- [Lingui](https://lingui.dev) + [astro-lingui](https://github.com/radiosilence/astro-lingui) for i18n (37 locales, including RTL)
+- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono variable font
 - [Rolldown](https://rolldown.rs) (via rolldown-vite) for bundling
 - [Bun](https://bun.sh) as package manager
 - [Biome](https://biomejs.dev) for linting/formatting
