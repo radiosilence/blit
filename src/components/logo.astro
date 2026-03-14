@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import logo from "./logo.png";
 
 export interface LogoProps {
@@ -9,8 +10,8 @@ export interface LogoProps {
 const { width, className } = Astro.props;
 ---
 
-<img
-    src={logo.src}
+<Image
+    src={logo}
     alt="blit.cc logo"
     width={width}
     class={`logo ${className}`}
