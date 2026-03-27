@@ -18,3 +18,5 @@ Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
 ### Deployment
 
 Docker image → microk8s → CloudFlare Tunnel. Deployed via Pulumi (separate IaC repo).
+
+blyat
