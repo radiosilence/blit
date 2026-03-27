@@ -6,7 +6,6 @@ import astroLingui from "astro-lingui/server";
 import { locales, sourceLocale } from "./lingui.config";
 
 export default defineConfig({
-  output: "static",
   integrations: [
     mdx(),
     react(),
