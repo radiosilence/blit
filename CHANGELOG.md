@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.0 — 2026-03-31
+
+### Tooling
+
+- Replaced Biome with [oxlint](https://oxc.rs/docs/guide/usage/linter) (linting) and [oxfmt](https://oxc.rs/docs/guide/usage/formatter) (formatting) from the oxc toolchain
+- Removed `biome.json`, added `.oxlintrc.json` and `.oxfmtrc.json`
+- Updated lefthook pre-commit hooks to use oxlint + oxfmt
+- Updated package.json scripts: `lint`, `lint:fix`, `format`, `format:check`
+
 ## 3.0.0 — 2026-03-14
 
 Astro 6 upgrade with build and asset optimisations.

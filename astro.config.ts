@@ -10,16 +10,15 @@ export default defineConfig({
     mdx(),
     react(),
     astroLingui.integration({
-      sourceLocale,
       locales,
       path: "<rootDir>/src/locales/{locale}/messages.ts",
+      sourceLocale,
     }),
   ],
   vite: {
-    // biome-ignore lint/suspicious/noExplicitAny: do not care
-    plugins: [tailwindcss() as any, react()],
     optimizeDeps: {
       exclude: ["virtual:astro-lingui-config", "virtual:astro-lingui-modules"],
     },
+    plugins: [tailwindcss() as any, react()],
   },
 });
