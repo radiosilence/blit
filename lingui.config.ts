@@ -45,8 +45,6 @@ export const locales = [
 ];
 
 export default defineConfig({
-  sourceLocale,
-  locales,
   catalogs: [
     {
       path: "<rootDir>/src/locales/{locale}/messages",
@@ -54,7 +52,9 @@ export default defineConfig({
       exclude: ["**/node_modules/**"],
     },
   ],
-  format: "po",
   compileNamespace: "ts",
   extractors: [linguiApi.extractor, astroLingui.extractor],
+  format: "po",
+  locales,
+  sourceLocale,
 });

@@ -1,8 +1,11 @@
 pre-commit:
   parallel: true
   commands:
-    biome:
-      run: npm run lint:biome:fix -- --no-errors-on-unmatched {staged_files}
+    oxlint:
+      run: bun run lint:fix {staged_files}
+      stage_fixed: true
+    oxfmt:
+      run: bun run format {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true
     typecheck:
-      run: npm run typecheck
+      run: bun run typecheck
