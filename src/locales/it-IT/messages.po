@@ -21,7 +21,7 @@ msgstr "james cleveland"
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : senior ingegnere full stack"
+msgstr "james cleveland : ingegnere full stack senior"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15

@@ -22,7 +22,7 @@ msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ"
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ : ਸੀਨੀਅਰ ਫੁੱਲ ਸਟੈਕ ਇੰਜੀਨੀਅਰ"
+msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ : ਸੀਨੀਅਰ ਫੁਲ ਸਟੈਕ ਇੰਜੀਨੀਅਰ"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15

@@ -21,12 +21,12 @@ msgstr "james cleveland"
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : senior full stack ontwikkelaar"
+msgstr "james cleveland : senior full stack ingenieur"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
 msgid "cv-2025.01"
-msgstr "curriculum vitae-2025.01"
+msgstr "cv-2025.01"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:16
