@@ -1,44 +1,48 @@
 {
-  "version": "4.0.0",
   "name": "@radiosilence/blit-web",
-  "type": "module",
+  "version": "4.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "serve": "bun run serve.ts",
-    "lint:biome": "biome check",
-    "lint:biome:fix": "biome check --write",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt --write",
+    "format:check": "oxfmt --check",
     "typecheck": "tsc --noEmit",
     "lingui:extract": "lingui extract"
   },
   "dependencies": {
-    "@lingui/core": "^5.9.2",
-    "@lingui/react": "^5.9.2",
-    "@tanstack/react-router": "^1.120.0",
-    "@tanstack/react-start": "^1.120.0",
+    "@lingui/core": "^5.9.4",
+    "@lingui/react": "^5.9.4",
+    "@tanstack/react-router": "^1.168.10",
+    "@tanstack/react-start": "^1.167.16",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.7",
-    "@lingui/cli": "^5.9.2",
-    "@lingui/vite-plugin": "^5.9.2",
-    "@mdx-js/rollup": "^3.1.0",
+    "@lingui/cli": "^5.9.4",
+    "@lingui/vite-plugin": "^5.9.4",
+    "@mdx-js/rollup": "^3.1.1",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.2.1",
-    "@types/mdx": "^2.0.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/mdx": "^2.0.13",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^4.5.0",
-    "lefthook": "^2.1.1",
-    "tailwindcss": "^4.2.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "lefthook": "^2.1.4",
+    "oxfmt": "^0.43.0",
+    "oxlint": "^1.58.0",
+    "tailwindcss": "^4.2.2",
     "tailwindcss-logical": "^4.2.0",
-    "typescript": "~5.9.3",
-    "vite": "^7.3.1"
+    "typescript": "~6.0.2",
+    "vite": "^8.0.3"
   },
   "trustedDependencies": [
-    "@biomejs/biome"
+    "oxlint",
+    "oxfmt"
   ]
 }

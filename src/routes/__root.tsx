@@ -1,10 +1,5 @@
 import { useLingui } from "@lingui/react";
-import {
-  createRootRoute,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { Fragment } from "react";
 import { LanguageSelector } from "../components/language-selector";
 import { isRtl, locales } from "../i18n/config";

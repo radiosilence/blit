@@ -12,13 +12,7 @@ export function CvContent() {
     <section className="flex items-center flex-col mbe-24 px-4 lg:px-0">
       <article className="prose prose-sm">
         <a href={homePath}>
-          <img
-            src={logo}
-            alt="blit.cc logo"
-            width={128}
-            height={128}
-            className="mbs-12 mbe-16"
-          />
+          <img src={logo} alt="blit.cc logo" width={128} height={128} className="mbs-12 mbe-16" />
         </a>
         <CV />
       </article>
