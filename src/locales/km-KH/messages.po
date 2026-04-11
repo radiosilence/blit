@@ -16,13 +16,13 @@ msgstr ""
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:9
 msgid "james cleveland"
-msgstr "ជេមស៍ ឃ្លីវលែន"
+msgstr "ជេមស៍ ឃ្លីវលែនដ៍"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:11
 #: %3Cstdin%3E:16
 msgid "james cleveland : senior full stack engineer"
-msgstr "ជេមស៍ ឃ្លីវលែន : វិស្វករ Full Stack ជាន់ខ្ពស់"
+msgstr "ជេមស៍ ឃ្លីវលែនដ៍ : វិស្វករ Full Stack ជាន់ខ្ពស់"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
