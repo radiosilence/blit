@@ -1,9 +1,12 @@
 node_modules
 dist
-.astro
+.output
 .DS_Store
 .cache
 .env
+.vinxi
+.nitro
 
-# Lingui compiled message files (generated from .po sources)
+# Generated
+src/routeTree.gen.ts
 src/locales/**/*.ts
