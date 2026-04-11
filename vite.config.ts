@@ -11,6 +11,9 @@ export default defineConfig({
     port: 4173,
     strictPort: true,
   },
+  optimizeDeps: {
+    exclude: ["@tanstack/start-server-core"],
+  },
   plugins: [
     tanstackStart({
       prerender: {

@@ -1,9 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HomeContent } from "../../components/home-content";
+import { SsrDebug } from "../../components/ssr-debug";
 import { loadLocaleParam, pageHead } from "../-shared";
+import { getPageData } from "../-home.shared";
 
 export const Route = createFileRoute("/$locale/")({
-  loader: ({ params }) => loadLocaleParam(params.locale),
+  loader: async ({ params }) => {
+    loadLocaleParam(params.locale);
+    return getPageData();
+  },
   head: pageHead,
-  component: HomeContent,
+  component: () => {
+    const data = Route.useLoaderData();
+    return (
+      <>
+        <HomeContent />
+        <SsrDebug data={data} />
+      </>
+    );
+  },
 });
