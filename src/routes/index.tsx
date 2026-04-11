@@ -7,7 +7,7 @@ import { getPageData } from "./-home.shared";
 export const Route = createFileRoute("/")({
   loader: async () => {
     loadSourceLocale();
-    return await getPageData();
+    return getPageData();
   },
   head: pageHead,
   component: () => {
