@@ -11,6 +11,6 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
     bun run build
 
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
-COPY --from=builder /app/dist /public
+COPY --from=builder /app/dist/client /public
 ENV PORT=3000
 EXPOSE 3000

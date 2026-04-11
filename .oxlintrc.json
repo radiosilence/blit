@@ -14,5 +14,5 @@
     "id-length": "off",
     "unicorn/prefer-global-this": "off"
   },
-  "ignorePatterns": ["**/*.gen.*", "**/*.astro", ".omc", "dist", ".astro"]
+  "ignorePatterns": ["**/*.gen.*", ".omc", "dist"]
 }
