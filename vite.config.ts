@@ -11,6 +11,8 @@ export default defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: true,
+        retryCount: 5,
+        retryDelay: 500,
       },
     }),
     { enforce: "pre" as const, ...mdx() },
