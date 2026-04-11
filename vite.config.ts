@@ -6,13 +6,16 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  preview: {
+    host: "127.0.0.1",
+    port: 4173,
+    strictPort: true,
+  },
   plugins: [
     tanstackStart({
       prerender: {
         enabled: true,
         crawlLinks: true,
-        retryCount: 5,
-        retryDelay: 500,
       },
     }),
     { enforce: "pre" as const, ...mdx() },
