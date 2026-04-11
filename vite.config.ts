@@ -18,7 +18,7 @@ export default defineConfig({
         crawlLinks: true,
       },
     }),
-    { enforce: "pre" as const, ...mdx() },
+    { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss(),
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
