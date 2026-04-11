@@ -13,7 +13,7 @@ Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono variable font
 - [Rolldown](https://rolldown.rs) (via rolldown-vite) for bundling
 - [Bun](https://bun.sh) as package manager
-- [Biome](https://biomejs.dev) for linting/formatting
+- [oxlint](https://oxc.rs/docs/guide/usage/linter) + [oxfmt](https://oxc.rs/docs/guide/usage/formatter) for linting/formatting
 
 ### i18n
 

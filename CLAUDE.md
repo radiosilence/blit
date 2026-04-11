@@ -14,9 +14,13 @@ bun run build
 # Preview production build
 bun run preview
 
-# Lint and format code
-bun run lint:biome
-bun run lint:biome:fix
+# Lint code
+bun run lint
+bun run lint:fix
+
+# Format code
+bun run format
+bun run format:check
 
 # Type checking
 bun run typecheck
@@ -37,7 +41,7 @@ Personal website for [blit.cc](https://blit.cc), built with Astro:
 - **i18n**: Lingui with 37 locales, PO file format, compiled to TypeScript
 - **Routing**: File-based via Astro (`src/pages/`) with dynamic `[locale]` segments
 - **Build**: Rolldown (via rolldown-vite) with static output
-- **Linting**: Biome for formatting/linting, lefthook for git hooks
+- **Linting**: oxlint for linting, oxfmt for formatting, lefthook for git hooks
 - **Deployment**: Docker → microk8s → CloudFlare Tunnel
 
 Key decisions:
@@ -45,4 +49,4 @@ Key decisions:
 - Static site generation (`output: "static"`) — no server runtime needed
 - Favicons in `src/assets/` (Astro-processed), icons for manifest in `public/`
 - Locale files: `.po` sources committed, compiled `.ts` files gitignored
-- Git hooks run Biome formatting and TypeScript checking on commit
+- Git hooks run oxlint, oxfmt, and TypeScript checking on commit
