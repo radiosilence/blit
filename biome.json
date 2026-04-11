@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/*.gen.*", "!**/*.astro", "!.omc"]
+    "includes": ["**", "!**/*.gen.*", "!.omc"]
   },
   "formatter": {
     "indentStyle": "space",
