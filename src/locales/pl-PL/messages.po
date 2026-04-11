@@ -26,7 +26,7 @@ msgstr "james cleveland : starszy inżynier full stack"
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:15
 msgid "cv-2025.01"
-msgstr "życiorys-2025.01"
+msgstr "cv-2025.01"
 
 #. js-lingui-explicit-id
 #: %3Cstdin%3E:16
