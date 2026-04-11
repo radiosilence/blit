@@ -20,6 +20,8 @@ on:
       - "bun.lock"
       - "package.json"
       - "Dockerfile"
+      - "vite.config.ts"
+      - "lingui.config.ts"
       - .github/workflows/publish-web-container.yml
   pull_request:
 
