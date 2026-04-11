@@ -14,15 +14,21 @@ Replaced Astro with TanStack Start. Server-side i18n with zero client flash.
 
 ### Build
 
-- Upgraded to Vite 7 (rolldown-vite) — required for TanStack Start's `buildApp` hook
+- Vite 8 (rolldown-vite) — required for TanStack Start's `buildApp` hook
 - MDX via `@mdx-js/rollup` (replaces `@astrojs/mdx`)
-- Removed Babel config — no longer needed
+- Removed Babel — no longer needed
+- TypeScript 6
+
+### Tooling
+
+- Replaced Biome with [oxlint](https://oxc.rs/docs/guide/usage/linter) + [oxfmt](https://oxc.rs/docs/guide/usage/formatter)
 
 ### Output
 
 - 76 prerendered HTML pages (37 locales × 2 pages + root)
 - Client JS: ~108kB gzip (main bundle), code-split per route
-- Served by nano-web from `dist/client/`
+- SSG served by nano-web from `dist/client/`
+- Standalone SSR via `bun run serve` (Bun.serve wrapping TanStack Start's fetch handler)
 
 ## 3.0.0 — 2026-03-14
 
