@@ -1,12 +1,9 @@
-import {
-  createStartHandler,
-  defaultStreamHandler,
-} from "@tanstack/react-start/server";
+import { createStartHandler, defaultStreamHandler } from "@tanstack/react-start/server";
 
 const handler = createStartHandler(defaultStreamHandler);
 
 export default {
-  async fetch(request: Request, ...rest: Array<unknown>) {
+  async fetch(request: Request, ...rest: Array<any>) {
     if (request.method !== "POST") return handler(request, ...rest);
 
     // Parse POST body, attach as header, pass through as-is (still a POST)
