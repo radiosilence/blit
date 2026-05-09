@@ -2,6 +2,7 @@ import { lingui } from "@lingui/vite-plugin";
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -14,7 +15,9 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["@tanstack/start-server-core"],
   },
+  resolve: { tsconfigPaths: true },
   plugins: [
+    devtools(),
     tanstackStart({
       srcDirectory: "src",
       prerender: {
@@ -25,6 +28,7 @@ export default defineConfig({
     { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss(),
-    react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
+    // react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
+    react(),
   ],
 });
