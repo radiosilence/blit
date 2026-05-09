@@ -2,11 +2,14 @@ import { lingui } from "@lingui/vite-plugin";
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  resolve: { tsconfigPaths: true },
   plugins: [
+    devtools(),
     tanstackStart({
       prerender: {
         enabled: true,
