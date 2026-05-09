@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { sourceLocale } from "../i18n/config";
+import { sourceLocale } from "@/i18n/config";
 import CV from "./cv.mdx";
 import logo from "./logo.png";
 
