@@ -28,7 +28,6 @@ export default defineConfig({
     { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss(),
-    // react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
-    react(),
+    react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
   ],
 });
