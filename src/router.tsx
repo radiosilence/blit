@@ -7,6 +7,13 @@ export function getRouter() {
   return createRouter({
     routeTree,
     scrollRestoration: true,
+    defaultPreload: "intent",
+    defaultPreloadStaleTime: 0,
     Wrap: ({ children }) => <I18nProvider i18n={i18n}>{children}</I18nProvider>,
   });
+}
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: ReturnType<typeof getRouter>;
+  }
 }

@@ -8,5 +8,4 @@ dist
 .nitro
 
 # Generated
-src/routeTree.gen.ts
 src/locales/**/*.ts
