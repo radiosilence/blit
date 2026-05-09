@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, getRequestHeader } from "@tanstack/start-server-core";
-import type { PageData } from "~/components/ssr-debug";
+import type { PageData } from "@/components/ssr-debug";
 
 export const getPageData = createServerFn({ method: "GET" }).handler(
   async (): Promise<PageData> => {

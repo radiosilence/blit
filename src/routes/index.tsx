@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomeContent } from "~/components/home-content";
-import { SsrDebug } from "~/components/ssr-debug";
-import { loadLocaleParam, pageHead, loadSourceLocale } from "~/routes/-shared";
-import { getPageData } from "~/routes/-home.shared";
+import { HomeContent } from "@/components/home-content";
+import { SsrDebug } from "@/components/ssr-debug";
+import { pageHead, loadSourceLocale } from "@/routes/-shared";
+import { getPageData } from "@/routes/-home.shared";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
