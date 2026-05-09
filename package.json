@@ -16,10 +16,14 @@
     "lingui:extract": "lingui extract"
   },
   "dependencies": {
-    "@lingui/core": "^5.9.4",
-    "@lingui/react": "^5.9.4",
-    "@tanstack/react-router": "^1.168.10",
-    "@tanstack/react-start": "^1.167.16",
+    "@lingui/core": "^6.0.1",
+    "@lingui/react": "^6.0.1",
+    "@tanstack/react-devtools": "latest",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-router-devtools": "latest",
+    "@tanstack/react-router-ssr-query": "latest",
+    "@tanstack/react-start": "latest",
+    "@tanstack/router-plugin": "^1.132.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
@@ -33,13 +37,13 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "lefthook": "^2.1.4",
-    "oxfmt": "^0.43.0",
-    "oxlint": "^1.58.0",
-    "tailwindcss": "^4.2.2",
+    "lefthook": "^2.1.6",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0",
+    "tailwindcss": "^4.3.0",
     "tailwindcss-logical": "^4.2.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.0.3"
+    "typescript": "~6.0.3",
+    "vite": "^8.0.11"
   },
   "trustedDependencies": [
     "oxlint",

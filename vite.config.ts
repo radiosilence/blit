@@ -6,11 +6,6 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  preview: {
-    host: "127.0.0.1",
-    port: 4173,
-    strictPort: true,
-  },
   plugins: [
     tanstackStart({
       prerender: {
@@ -21,6 +16,7 @@ export default defineConfig({
     { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss(),
-    react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
+    // react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
+    react(),
   ],
 });
