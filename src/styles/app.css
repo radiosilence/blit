@@ -94,3 +94,7 @@ strong {
     font-size: 67%;
   }
 }
+
+svg {
+  display: inline-block;
+}
