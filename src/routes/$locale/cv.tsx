@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CvContent } from "../../components/cv-content";
-import { loadLocaleParam, pageHead } from "../-shared";
+import { CvContent } from "~/components/cv-content";
+import { loadLocaleParam, pageHead } from "~/routes/-shared";
 
 export const Route = createFileRoute("/$locale/cv")({
   loader: ({ params }) => loadLocaleParam(params.locale),

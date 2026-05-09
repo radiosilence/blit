@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { sourceLocale } from "../i18n/config";
+import { sourceLocale } from "~/i18n/config";
 import logo from "./logo.png";
 
 export function HomeContent() {
