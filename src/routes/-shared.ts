@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import { notFound } from "@tanstack/react-router";
-import { loadCatalog } from "~/i18n/catalogs";
-import { isValidLocale, sourceLocale } from "~/i18n/config";
+import { loadCatalog } from "../i18n/catalogs";
+import { isValidLocale, sourceLocale } from "../i18n/config";
 
 export function loadSourceLocale() {
   loadCatalog(sourceLocale);
