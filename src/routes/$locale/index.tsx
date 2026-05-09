@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomeContent } from "../../components/home-content";
-import { loadLocaleParam, pageHead } from "../-shared";
+import { HomeContent } from "@/components/home-content";
+import { loadLocaleParam, pageHead } from "@/routes/-shared";
 
 export const Route = createFileRoute("/$locale/")({
   loader: ({ params }) => loadLocaleParam(params.locale),
