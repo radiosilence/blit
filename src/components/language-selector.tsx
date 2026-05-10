@@ -1,4 +1,5 @@
 import { useLingui } from "@lingui/react";
+
 import { locales, sourceLocale } from "#/i18n/config";
 
 export function LanguageSelector() {
