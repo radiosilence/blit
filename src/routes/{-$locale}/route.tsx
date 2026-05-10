@@ -13,6 +13,6 @@ export const Route = createFileRoute("/{-$locale}")({
   },
   loader: ({ params: { locale = sourceLocale } }) => {
     if (!isValidLocale(locale)) throw notFound();
-    return loadCatalog(locale);
+    loadCatalog(locale);
   },
 });
