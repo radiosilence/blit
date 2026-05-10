@@ -8,6 +8,7 @@ import { defineConfig } from "vite";
 import rsc from "@vitejs/plugin-rsc";
 
 import { locales } from "#/i18n/config.ts";
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
   preview: {
@@ -31,6 +32,7 @@ export default defineConfig({
         .flatMap((locale) => [`/${locale}/`, `/${locale}/cv`])
         .map((path) => ({ path })),
     }),
+    cloudflare({}),
     rsc(),
     { enforce: "pre", ...mdx() },
     lingui(),
