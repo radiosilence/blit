@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 import { locales, sourceLocale } from "#/i18n/config";
 
