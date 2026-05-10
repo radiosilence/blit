@@ -63,15 +63,6 @@ function RootComponent() {
         <section className="flex flex-col items-center m-12 space-y-4 text-center">
           <LanguageSelector />
         </section>
-        {/* Prerender crawl discovery */}
-        <nav hidden aria-hidden="true">
-          {locales.map((l) => (
-            <Fragment key={l}>
-              <a href={`/${l}/`}>{l}</a>
-              <a href={`/${l}/cv`}>{l} cv</a>
-            </Fragment>
-          ))}
-        </nav>
         <TanStackDevtools
           config={{
             position: "bottom-left",
