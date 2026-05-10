@@ -6,6 +6,7 @@ dist
 .env
 .vinxi
 .nitro
+.wrangler
 
 # Generated
 src/locales/**/*.ts
