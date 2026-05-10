@@ -21,9 +21,7 @@ function HomeContent() {
       <h1>{i18n._("james cleveland")}</h1>
       <p className="text-sm">{i18n._("james cleveland : senior full stack engineer")}</p>
       <p>
-        <Link to="/{-$locale}/cv" params={(prev) => prev}>
-          {i18n._("cv-2025.01")}
-        </Link>
+        <Link to="/{-$locale}/cv">{i18n._("cv-2025.01")}</Link>
         {" / "}
         <a href="https://github.com/radiosilence" target="_blank" rel="noopener">
           {i18n._("github")}
