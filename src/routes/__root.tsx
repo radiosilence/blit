@@ -5,7 +5,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Fragment } from "react";
 import { LanguageSelector } from "../components/language-selector";
-import { isRtl, locales, sourceLocale } from "../i18n/config";
+import { isRtl, locales } from "../i18n/config";
 import appCss from "../styles/app.css?url";
 
 export const Route = createRootRoute({
