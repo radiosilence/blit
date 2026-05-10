@@ -60,10 +60,6 @@ h1 {
   @apply text-3xl font-extralight;
 }
 
-.prose h1 {
-  @apply text-4xl;
-}
-
 h2 {
   @apply text-2xl font-thin;
 }
@@ -74,6 +70,12 @@ h3 {
 
 strong {
   @apply font-semibold;
+}
+
+.prose {
+  h1 {
+    @apply text-4xl;
+  }
 }
 
 .picker {
