@@ -1,11 +1,11 @@
-import logo from "@/components/logo.png";
+import logo from "#/components/logo.png";
 import { i18n } from "@lingui/core";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Fragment } from "react";
 import { LanguageSelector } from "../components/language-selector";
-import { isRtl, locales } from "../i18n/config";
+import { isRtl, locales, sourceLocale } from "../i18n/config";
 import appCss from "../styles/app.css?url";
 
 export const Route = createRootRoute({
@@ -50,7 +50,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const locale = i18n.locale || "en-GB";
+  const locale = i18n.locale;
 
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"}>
