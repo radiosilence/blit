@@ -1,10 +1,8 @@
 import { loadCatalog } from "#/i18n/catalogs";
-import { isValidLocale } from "#/i18n/config";
+import { isValidLocale, sourceLocale } from "#/i18n/config";
 import { notFound } from "@tanstack/react-router";
 
-export function localeLoader(locale: string) {
-  if (!isValidLocale(locale)) {
-    throw notFound();
-  }
+export function localeLoader(locale: string = sourceLocale) {
+  if (!isValidLocale(locale)) throw notFound();
   return loadCatalog(locale);
 }

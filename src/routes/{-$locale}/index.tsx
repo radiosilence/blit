@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/{-$locale}/")({
   loader: ({ params }) => {
-    localeLoader(params.locale ?? "en-GB");
+    localeLoader(params.locale);
   },
   component: HomeContent,
 });
