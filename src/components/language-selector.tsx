@@ -17,7 +17,7 @@ export function LanguageSelector() {
             to: ".",
             params: (prev) => ({
               ...prev,
-              locale: locale === sourceLocale ? undefined : locale,
+              locale,
             }),
           });
         }}

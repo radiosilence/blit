@@ -2,9 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import CV from "#/assets/cv.mdx";
 import logo from "#/assets/logo.png";
-import { localeLoader } from "./-shared.ts";
+import { localeLoader, maybeStripSourceLocale } from "./-shared.ts";
 
 export const Route = createFileRoute("/{-$locale}/cv")({
+  beforeLoad: ({ params }) => {
+    maybeStripSourceLocale(params.locale);
+  },
   loader: ({ params }) => {
     localeLoader(params.locale);
   },
