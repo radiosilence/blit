@@ -5,14 +5,8 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
-  server: {
-    host: "127.0.0.1",
-    port: 4173,
-    strictPort: true,
-  },
   preview: {
     host: "127.0.0.1",
     port: 4173,
@@ -21,7 +15,6 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
     devtools(),
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
     tanstackStart({
       prerender: {
         enabled: true,
