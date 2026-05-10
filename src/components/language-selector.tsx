@@ -1,16 +1,16 @@
 import { useNavigate } from "@tanstack/react-router";
 
 import { locales } from "#/i18n/config";
-import { i18n } from "@lingui/core";
+import { useLingui } from "@lingui/react";
 
 export function LanguageSelector() {
   const navigate = useNavigate();
-
+  const { i18n } = useLingui();
   return (
     <div className="fixed inline-end-2 block-end-2">
       <select
         // FILTH
-        value={window.location.pathname.match(/\/([a-z]{2}-[A-Z]{2})\/?/)?.[1] ?? i18n.locale}
+        value={i18n.locale}
         onChange={(e) => {
           navigate({
             to: ".",

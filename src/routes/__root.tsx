@@ -7,6 +7,7 @@ import logo from "#/assets/logo.png";
 import { LanguageSelector } from "#/components/language-selector";
 import { isRtl } from "#/i18n/config";
 import appCss from "#/styles/app.css?url";
+import { useLingui } from "@lingui/react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -50,6 +51,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const { i18n } = useLingui();
   const locale = i18n.locale;
 
   return (
