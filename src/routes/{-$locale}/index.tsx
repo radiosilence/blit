@@ -3,9 +3,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import logo from "#/assets/logo.png";
 
-import { localeLoader } from "./-shared.ts";
+import { localeLoader, maybeStripSourceLocale } from "./-shared.ts";
 
 export const Route = createFileRoute("/{-$locale}/")({
+  beforeLoad: ({ params }) => {
+    maybeStripSourceLocale(params.locale);
+  },
   loader: ({ params }) => {
     localeLoader(params.locale);
   },
