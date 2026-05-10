@@ -8,7 +8,7 @@ export function LanguageSelector() {
   const navigate = useNavigate();
 
   return (
-    <div className="picker">
+    <div className="fixed inline-end-2 block-end-2">
       <select
         value={i18n.locale}
         onChange={(e) => {
