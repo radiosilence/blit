@@ -13,7 +13,6 @@ export function LanguageSelector() {
         value={i18n.locale}
         onChange={(e) => {
           const locale = e.target.value;
-          console.log("locale", locale);
           navigate({
             to: ".",
             params: (prev) => ({
