@@ -5,7 +5,7 @@ env:
   ACCOUNT: radiosilence
   DEPLOYMENT_REPO: jaritanet
   DEPLOYMENT_BRANCH: main
-  DEPLOYMENT_CONFIG_PATH: packages/k8s/Pulumi.main.yaml
+  DEPLOYMENT_CONFIG_PATH: packages/infra/Pulumi.main.yaml
 
 permissions:
   contents: read
