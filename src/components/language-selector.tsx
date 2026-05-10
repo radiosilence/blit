@@ -9,7 +9,8 @@ export function LanguageSelector() {
   return (
     <div className="fixed inline-end-2 block-end-2">
       <select
-        value={i18n.locale}
+        // FILTH
+        value={window.location.pathname.match(/\/([a-z]{2}-[A-Z]{2})\/?/)?.[1] ?? i18n.locale}
         onChange={(e) => {
           navigate({
             to: ".",
