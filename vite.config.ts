@@ -32,7 +32,7 @@ export default defineConfig({
         .flatMap((locale) => [`/${locale}/`, `/${locale}/cv`])
         .map((path) => ({ path })),
     }),
-    cloudflare({}),
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
     rsc(),
     { enforce: "pre", ...mdx() },
     lingui(),
