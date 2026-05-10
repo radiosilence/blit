@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import CV from "#/components/cv.mdx";
+
+import CV from "./-cv.mdx";
 import { localeLoader } from "./-shared.ts";
 
 export const Route = createFileRoute("/{-$locale}/cv")({
