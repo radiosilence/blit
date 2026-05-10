@@ -1,5 +1,5 @@
 import { CvContent } from "@/components/cv-content";
-import { localeLoader } from "@/routes/-shared";
+import { localeLoader } from "./-shared.ts";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/{-$locale}/cv")({
