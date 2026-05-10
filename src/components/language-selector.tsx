@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { locales, sourceLocale } from "@/i18n/config";
+import { locales, sourceLocale } from "#/i18n/config";
 
 export function LanguageSelector() {
   const { i18n } = useLingui();

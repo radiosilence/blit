@@ -1,4 +1,4 @@
-import { HomeContent } from "@/components/home-content";
+import { HomeContent } from "#/components/home-content";
 import { localeLoader } from "./-shared.ts";
 import { createFileRoute } from "@tanstack/react-router";
 
