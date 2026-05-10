@@ -27,7 +27,7 @@ function HomeContent() {
           {i18n._("cv-2025.01")}
         </Link>
         {" / "}
-        <a href="https://github.com/radiosilence" target="_blank">
+        <a href="https://github.com/radiosilence" target="_blank" rel="noopener">
           {i18n._("github")}
         </a>
       </p>
