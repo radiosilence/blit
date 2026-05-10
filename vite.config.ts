@@ -25,7 +25,7 @@ export default defineConfig({
     }),
     { enforce: "pre", ...mdx() },
     lingui(),
-    tailwindcss(),
+    tailwindcss({}),
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
   ],
 });
