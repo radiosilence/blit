@@ -1,7 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { sourceLocale } from "#/i18n/config";
 import logo from "#/assets/logo.png";
 
 import { localeLoader } from "./-shared.ts";
@@ -15,7 +14,6 @@ export const Route = createFileRoute("/{-$locale}/")({
 
 function HomeContent() {
   const { i18n } = useLingui();
-  const locale = i18n.locale;
 
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
@@ -23,7 +21,7 @@ function HomeContent() {
       <h1>{i18n._("james cleveland")}</h1>
       <p className="text-sm">{i18n._("james cleveland : senior full stack engineer")}</p>
       <p>
-        <Link to="/{-$locale}/cv" params={{ locale: locale === sourceLocale ? undefined : locale }}>
+        <Link to="/{-$locale}/cv" params={(prev) => prev}>
           {i18n._("cv-2025.01")}
         </Link>
         {" / "}
