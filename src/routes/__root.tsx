@@ -64,7 +64,7 @@ function RootComponent() {
         </section>
         <TanStackDevtools
           config={{
-            position: "bottom-left",
+            position: isRtl(locale) ? "bottom-right" : "bottom-left",
           }}
           plugins={[
             {

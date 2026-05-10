@@ -1,14 +1,13 @@
 import { i18n } from "@lingui/core";
 import { sourceLocale } from "#/i18n/config";
+import { HomeLink } from "#/components/home-link";
 import logo from "#/assets/logo.png";
-
-export const homePath = i18n.locale !== sourceLocale ? `/${i18n.locale}/` : "/";
 
 <div className="flex flex-col mli-4 lg:mli-0 items-center">
 <section className="mb-12 max-w-screen-lg">
-  <a href={homePath}>
+  <HomeLink>
     <img src={logo} alt="blit.cc logo" width={128} height={128} className="mbs-16 lg:mbs-32 mbe-8" />
-  </a>
+  </HomeLink>
   <article className="prose prose-sm">
 
     # James Cleveland
