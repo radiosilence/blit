@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import CV from "#/assets/cv.mdx";
 import { localeLoader } from "./-shared.ts";
@@ -15,11 +15,13 @@ export const Route = createFileRoute("/{-$locale}/cv")({
 
 function CVContent() {
   const { i18n } = useLingui();
-
   return (
     <div className="flex flex-col mli-4 lg:mli-0 items-center">
       <section className="mb-12 max-w-screen-lg">
-        <a href={i18n.locale !== sourceLocale ? `/${i18n.locale}/` : "/"}>
+        <Link
+          to="/{-$locale}"
+          params={{ locale: i18n.locale === sourceLocale ? undefined : i18n.locale }}
+        >
           <img
             src={logo}
             alt="blit.cc logo"
@@ -27,7 +29,7 @@ function CVContent() {
             height={128}
             className="mbs-16 lg:mbs-32 mbe-8"
           />
-        </a>
+        </Link>
         <article className="prose prose-sm">
           <CV />
         </article>
