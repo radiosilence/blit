@@ -12,7 +12,7 @@ export function SsrDebug({ data }: { data: PageData }) {
 
   return (
     <section className="m-12 max-w-screen-sm mx-auto space-y-6">
-      <div className="text-center space-y-4">
+      {/*<div className="text-center space-y-4">
         {formData?.name && (
           <p className="text-xl">
             hey, <strong>{formData.name}</strong>
@@ -29,7 +29,7 @@ export function SsrDebug({ data }: { data: PageData }) {
             go
           </button>
         </form>
-      </div>
+      </div>*/}
 
       <div className="text-xs opacity-40">
         <h3>ssr debug</h3>
