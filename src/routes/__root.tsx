@@ -1,13 +1,12 @@
-import { useLingui } from "@lingui/react";
+import logo from "@/components/logo.png";
+import { i18n } from "@lingui/core";
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Fragment } from "react";
 import { LanguageSelector } from "../components/language-selector";
 import { isRtl, locales } from "../i18n/config";
 import appCss from "../styles/app.css?url";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { i18n } from "@lingui/core";
-import logo from "@/components/logo.png";
 
 export const Route = createRootRoute({
   head: () => ({
