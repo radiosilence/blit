@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react";
 import { useNavigate } from "@tanstack/react-router";
 
-import { locales, sourceLocale } from "#/i18n/config";
+import { locales } from "#/i18n/config";
 
 export function LanguageSelector() {
   const { i18n } = useLingui();
@@ -15,18 +15,13 @@ export function LanguageSelector() {
           const locale = e.target.value;
           navigate({
             to: ".",
-            params: (prev) => ({
-              ...prev,
-              locale,
-            }),
+            params: (prev) => ({ ...prev, locale }),
           });
         }}
         className="bg-transparent text-xs cursor-pointer"
       >
         {locales.map((locale) => (
-          <option key={locale} value={locale}>
-            {locale}
-          </option>
+          <option key={locale}>{locale}</option>
         ))}
       </select>
     </div>
