@@ -4,11 +4,16 @@ import { Fragment } from "react";
 import { LanguageSelector } from "../components/language-selector";
 import { isRtl, locales } from "../i18n/config";
 import appCss from "../styles/app.css?url";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { i18n } from "@lingui/core";
+import logo from "@/components/logo.png";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
+      { title: i18n._("james cleveland : senior full stack engineer") },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
       { name: "application-name", content: "blit.cc" },
@@ -16,6 +21,9 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "apple-mobile-web-app-title", content: "blit.cc" },
       { name: "mobile-web-app-capable", content: "yes" },
+      { name: "og:title", content: i18n._("james cleveland : senior full stack engineer") },
+      { name: "og:url", content: "https://blit.cc" },
+      { name: "og:image", content: logo },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -43,7 +51,6 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { i18n } = useLingui();
   const locale = i18n.locale || "en-GB";
 
   return (
@@ -65,6 +72,17 @@ function RootComponent() {
             </Fragment>
           ))}
         </nav>
+        <TanStackDevtools
+          config={{
+            position: "bottom-left",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
         <Scripts />
       </body>
     </html>
