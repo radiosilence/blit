@@ -5,6 +5,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { locales } from "#/i18n/config.ts";
 
 export default defineConfig({
   preview: {
@@ -19,7 +20,11 @@ export default defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: true,
+        autoStaticPathsDiscovery: true,
       },
+      pages: locales
+        .flatMap((locale) => [`/${locale}/`, `/${locale}/cv`])
+        .map((path) => ({ path })),
     }),
     { enforce: "pre", ...mdx() },
     lingui(),
