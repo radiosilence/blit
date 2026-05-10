@@ -5,6 +5,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
   preview: {
@@ -15,6 +16,7 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
     devtools(),
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
     tanstackStart({
       prerender: {
         enabled: true,
