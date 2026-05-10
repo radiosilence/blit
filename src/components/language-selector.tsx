@@ -1,9 +1,11 @@
 import { useLingui } from "@lingui/react";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 import { locales, sourceLocale } from "#/i18n/config";
 
 export function LanguageSelector() {
   const { i18n } = useLingui();
+  const navigate = useNavigate();
 
   return (
     <div className="picker">
@@ -11,7 +13,14 @@ export function LanguageSelector() {
         value={i18n.locale}
         onChange={(e) => {
           const locale = e.target.value;
-          window.location.href = locale === sourceLocale ? "/" : `/${locale}/`;
+          console.log("locale", locale);
+          navigate({
+            to: ".",
+            params: (prev) => ({
+              ...prev,
+              locale: locale === sourceLocale ? undefined : locale,
+            }),
+          });
         }}
         className="bg-transparent text-xs cursor-pointer"
       >
