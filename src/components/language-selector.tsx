@@ -9,7 +9,6 @@ export function LanguageSelector() {
   return (
     <div className="fixed inline-end-2 block-end-2">
       <select
-        // FILTH
         value={i18n.locale}
         onChange={(e) => {
           navigate({

@@ -32,8 +32,8 @@ export default defineConfig({
         .flatMap((locale) => [`/${locale}/`, `/${locale}/cv`])
         .map((path) => ({ path })),
     }),
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
     rsc(),
+    cloudflare({ viteEnvironment: { name: "ssr", childEnvironments: ["rsc"] } }),
     { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss({}),
