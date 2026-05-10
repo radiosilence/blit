@@ -1,14 +1,14 @@
-import { useLingui } from "@lingui/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import logo from "#/assets/logo.png";
+import { i18n } from "@lingui/core";
+import { createServerFn } from "@tanstack/react-start";
+import { renderServerComponent } from "@tanstack/react-start/rsc";
+import { sourceLocale } from "#/i18n/config";
+import { loadCatalog } from "#/i18n/catalogs";
 
-export const Route = createFileRoute("/{-$locale}/")({
-  component: HomeContent,
-});
-
-function HomeContent() {
-  const { i18n } = useLingui();
+function HomeComponent({ locale }: { locale: string }) {
+  loadCatalog(locale);
 
   return (
     <section className="flex flex-col items-center m-12 space-y-4 text-center">
@@ -24,4 +24,24 @@ function HomeContent() {
       </p>
     </section>
   );
+}
+
+const getHome = createServerFn()
+  .inputValidator((data: { locale: string }) => data)
+  .handler(async ({ data }) => {
+    const Renderable = await renderServerComponent(<HomeComponent locale={data.locale} />);
+    return { Renderable };
+  });
+
+export const Route = createFileRoute("/{-$locale}/")({
+  loader: async ({ params: { locale = sourceLocale } }) => {
+    const { Renderable } = await getHome({ data: { locale } });
+    return { Home: Renderable };
+  },
+  component: HomeContent,
+});
+
+function HomeContent() {
+  const { Home } = Route.useLoaderData();
+  return Home;
 }

@@ -5,6 +5,8 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import rsc from "@vitejs/plugin-rsc";
+
 import { locales } from "#/i18n/config.ts";
 
 export default defineConfig({
@@ -17,6 +19,9 @@ export default defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
+      rsc: {
+        enabled: true,
+      },
       prerender: {
         enabled: true,
         crawlLinks: true,
@@ -26,6 +31,7 @@ export default defineConfig({
         .flatMap((locale) => [`/${locale}/`, `/${locale}/cv`])
         .map((path) => ({ path })),
     }),
+    rsc(),
     { enforce: "pre", ...mdx() },
     lingui(),
     tailwindcss({}),

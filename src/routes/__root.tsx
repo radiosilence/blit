@@ -60,7 +60,7 @@ function RootComponent() {
       <body>
         <Outlet />
         <section className="flex flex-col items-center m-12 space-y-4 text-center">
-          <LanguageSelector />
+          <LanguageSelector locale={locale} />
         </section>
         <TanStackDevtools
           config={{
