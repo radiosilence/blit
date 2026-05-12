@@ -24,3 +24,4 @@ allowBuilds:
   lefthook: true
   sharp: true
   workerd: true
+enableGlobalVirtualStore: false
