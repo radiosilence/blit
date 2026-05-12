@@ -1,6 +1,7 @@
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+
 import { loadCatalog } from "#/i18n/catalogs.ts";
 import { isValidLocale, sourceLocale } from "#/i18n/config.ts";
-import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/{-$locale}")({
   beforeLoad: ({ params }) => {
