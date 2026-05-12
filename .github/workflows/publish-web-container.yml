@@ -17,7 +17,7 @@ on:
       - main
     paths:
       - "src/**"
-      - "bun.lock"
+      - "aube-lock.yaml"
       - "package.json"
       - "Dockerfile"
       - "vite.config.ts"

@@ -12,7 +12,7 @@ Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
 - [Lingui](https://lingui.dev) + `@lingui/vite-plugin` for i18n (37 locales, RTL) — server-side rendering, zero client flash
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono variable font
 - [Vite 8](https://vite.dev) (rolldown-vite) for bundling
-- [Bun](https://bun.sh) as package manager and SSR runtime
+- [aube](https://aube.en.dev) as package manager (Node 24 runtime via mise)
 - [oxlint](https://oxc.rs/docs/guide/usage/linter) + [oxfmt](https://oxc.rs/docs/guide/usage/formatter) for linting/formatting
 
 ### i18n
@@ -23,12 +23,12 @@ Locale routing uses `$locale` path params (`/ja-JP/`, `/fr-FR/cv`). Default loca
 
 ### Running
 
-| Mode | Command | Notes |
-|------|---------|-------|
-| Dev | `bun run dev` | Vite dev server with HMR |
-| Preview | `bun run build && bun run preview` | Preview full build locally |
-| SSG | `bun run build` | Output in `dist/client/` |
-| SSR | `bun run build && bun run serve` | Standalone Bun server on port 3000 |
+| Mode    | Command                              | Notes                               |
+| ------- | ------------------------------------ | ----------------------------------- |
+| Dev     | `aube run dev`                       | Vite dev server with HMR            |
+| Preview | `aube run build && aube run preview` | Preview full build locally          |
+| SSG     | `aube run build`                     | Output in `dist/client/`            |
+| SSR     | `aube run build && aube run serve`   | Standalone Node server on port 3000 |
 
 ### Deployment
 

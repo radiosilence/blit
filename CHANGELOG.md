@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Tooling
+
+- Switched package manager from Bun to [aube](https://aube.en.dev) (pnpm-style isolated `node_modules`, `aube-lock.yaml`)
+- Docker base image: `oven/bun:latest` → `node:24-alpine` with aube installed via npm — aube does not bundle a runtime
+- Build-script allowlist moved from bun's `trustedDependencies` to aube's `allowBuilds` (sharp, workerd, esbuild, lefthook)
+
 ## 4.0.0 — 2026-04-11
 
 Replaced Astro with TanStack Start. Server-side i18n with zero client flash.
