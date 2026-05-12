@@ -50,8 +50,12 @@
     "vite": "^8.0.11",
     "wrangler": "^4.90.0"
   },
-  "trustedDependencies": [
-    "oxlint",
-    "oxfmt"
-  ]
+  "aube": {
+    "allowBuilds": {
+      "esbuild": true,
+      "lefthook": true,
+      "sharp": true,
+      "workerd": true
+    }
+  }
 }
