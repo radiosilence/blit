@@ -5,8 +5,13 @@
 ### Tooling
 
 - Switched package manager from Bun to [aube](https://aube.en.dev) (pnpm-style isolated `node_modules`, `aube-lock.yaml`)
-- Docker base image: `oven/bun:latest` → `node:24-alpine` with aube installed via npm — aube does not bundle a runtime
 - Build-script allowlist moved from bun's `trustedDependencies` to aube's `allowBuilds` (sharp, workerd, esbuild, lefthook)
+
+### CI
+
+- CI now installs aube via [`endevco/aube-action`](https://github.com/endevco/aube-action) (SHA-pinned to v1.0.0) and runs lint + typecheck + build on the runner
+- Docker pipeline split: runner builds `dist/client/` and uploads it as an artifact; the publish job downloads it and packages a thin image (just `FROM nano-web` + `COPY dist/client /public`)
+- Dockerfile no longer needs Node, npm, or aube — final image is just static assets on top of nano-web
 
 ## 4.0.0 — 2026-04-11
 
