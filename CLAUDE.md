@@ -6,35 +6,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Start development server
-bun run dev
+aube run dev
 
 # Build for production
-bun run build
+aube run build
 
 # Preview production build
-bun run preview
+aube run preview
 
 # Lint code
-bun run lint
-bun run lint:fix
+aube run lint
+aube run lint:fix
 
 # Format code
-bun run format
-bun run format:check
+aube run format
+aube run format:check
 
 # Type checking
-bun run typecheck
+aube run typecheck
 
 # i18n string extraction and compilation
-bun run lingui:extract
-bun run lingui:compile
+aube run lingui:extract
+aube run lingui:compile
 ```
 
 ## Architecture Overview
 
 Personal website for [blit.cc](https://blit.cc), built with Astro:
 
-- **Package manager**: Bun
+- **Package manager**: aube (pnpm-style isolated `node_modules`, reads `aube-lock.yaml`)
 - **Framework**: Astro 5 with React 19 (for interactive islands)
 - **Styling**: TailwindCSS v4 with Geist Mono font
 - **Content**: MDX for CV content

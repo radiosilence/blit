@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1.2
-FROM oven/bun:latest AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
-COPY package.json bun.lock ./
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
+RUN npm install -g --ignore-scripts=false @endevco/aube
+COPY package.json aube-lock.yaml ./
+RUN --mount=type=cache,target=/root/.local/share/aube/store \
+    aube ci
 
 FROM deps AS builder
 COPY . .
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun run build
+RUN aube run build
 
 FROM ghcr.io/radiosilence/nano-web:latest AS runner
 COPY --from=builder /app/dist/client /public
