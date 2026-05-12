@@ -6,7 +6,7 @@
 
 - Switched package manager from Bun to [aube](https://aube.en.dev) (pnpm-style isolated `node_modules`, `aube-lock.yaml`)
 - Docker base image: `oven/bun:latest` → `node:24-alpine` with aube installed via npm — aube does not bundle a runtime
-- Build-script allowlist moved from bun's `trustedDependencies` to aube's `allowBuilds` (sharp, workerd, esbuild, lefthook)
+- Added `aube-workspace.yaml` with security-focused defaults: `minimumReleaseAge: 10080` (7-day install delay), `trustPolicy: no-downgrade`, explicit `blockExoticSubdeps`. Build-script allowlist consolidated here (moved out of `package.json`).
 
 ## 4.0.0 — 2026-04-11
 
