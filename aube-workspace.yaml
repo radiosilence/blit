@@ -26,3 +26,5 @@ allowBuilds:
   workerd: true
 
 enableGlobalVirtualStore: false
+
+jailBuilds: true
