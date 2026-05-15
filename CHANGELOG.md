@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Dependencies
+
+- **@lingui/cli + @lingui/vite-plugin → v6.0.1** (major): ESM-only distribution, requires Node 22.19+. Dropped explicit `format: "po"` from `lingui.config.ts` — v6 defaults to the `po` formatter when no format is specified. No catalog format change for our setup (no `formatOptions` were in use). Refreshed `.po` source-location comments via `lingui extract` to reflect current file layout.
+- **@tanstack/devtools-vite → v0.7.0** (major): in-place, no API breakage for our `vite.config.ts` usage.
+- Within-semver batch: `@cloudflare/vite-plugin`, `@tanstack/router-plugin`, `@tanstack/react-devtools`, `@tanstack/react-router`, `@tanstack/react-start`, `@vitejs/plugin-react`, `oxlint`, `oxfmt`, `react`, `react-dom`, `vite`, `wrangler`.
+
 ### Tooling
 
 - Switched package manager from Bun to [aube](https://aube.en.dev) (pnpm-style isolated `node_modules`, `aube-lock.yaml`)

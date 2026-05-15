@@ -11,5 +11,4 @@ export default defineConfig({
       exclude: ["**/node_modules/**"],
     },
   ],
-  format: "po",
 });
