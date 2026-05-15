@@ -13,23 +13,23 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/components/home-content.tsx:14
-#: src/routes/__root.tsx:16
-#: src/routes/__root.tsx:24
+#: src/routes/__root.tsx:15
+#: src/routes/__root.tsx:23
+#: src/routes/{-$locale}/index.tsx:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "джеймс клівленд : старший full stack інженер"
 
 #. js-lingui-explicit-id
-#: src/components/home-content.tsx:13
+#: src/routes/{-$locale}/index.tsx:16
 msgid "james cleveland"
 msgstr "джеймс клівленд"
 
 #. js-lingui-explicit-id
-#: src/components/home-content.tsx:16
+#: src/routes/{-$locale}/index.tsx:19
 msgid "cv-2025.01"
 msgstr "резюме-2025.01"
 
 #. js-lingui-explicit-id
-#: src/components/home-content.tsx:18
+#: src/routes/{-$locale}/index.tsx:22
 msgid "github"
 msgstr "гітхаб"
