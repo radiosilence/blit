@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { glob, mkdir, readdir, readFile, rm, rmdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -31,7 +31,7 @@ const [catalogs, cv] = await Promise.all([
   read("src/content/cv.md").then((source) => markdown.render(source)),
 ]);
 
-const written = await Promise.all(
+await Promise.all(
   locales.flatMap((locale) =>
     pages.map(async (page) => {
       const view = {
@@ -56,32 +56,8 @@ const written = await Promise.all(
       const file = join(dist, view.path, "index.html");
       await mkdir(dirname(file), { recursive: true });
       await writeFile(file, html);
-      return file;
     }),
   ),
 );
-
-/*
- * Drop pages from earlier builds. Without this a removed locale keeps its
- * directory in dist/ and carries on being served. Only index.html files are
- * touched, which is exactly the set this script owns.
- */
-const current = new Set(written);
-const stale: string[] = [];
-for await (const page of glob("*/**/index.html", { cwd: dist })) {
-  if (!current.has(join(dist, page))) stale.push(join(dist, page));
-}
-await Promise.all(stale.map((page) => rm(page)));
-
-// Depth-first: children have to be gone before a directory can be judged empty.
-const prune = async (dir: string) => {
-  const entries = await readdir(dir, { withFileTypes: true });
-  await Promise.all(
-    entries.filter((entry) => entry.isDirectory()).map((entry) => prune(join(dir, entry.name))),
-  );
-  if (dir !== dist && (await readdir(dir)).length === 0) await rmdir(dir);
-};
-
-await prune(dist);
 
 console.log(`Generated ${locales.length * pages.length} pages in ${dist}`);

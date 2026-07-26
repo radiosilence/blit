@@ -95,8 +95,9 @@ no JavaScript at all, and no `<script>` tag on any page.
 - **`/style.css` is fingerprinted** with a content digest. nano-web serves CSS
   `immutable, max-age=31536000`, so a stable URL left returning visitors on old styles
   after a deploy — a cache-busting regression against the old Vite build.
-- **`generate` prunes orphaned pages.** It only ever wrote files, so a removed locale
-  kept its directory in `dist/` and carried on being served locally.
+- **A removed locale no longer lingers in `dist/`.** The build container starts
+  without a `dist/`, so nothing stale can survive it; on the host, `export --wipe`
+  does the same job, since export merges by default.
 - **`static` is no longer fingerprinted.** Its output is a directory rather than one
   named file, so a partially-deleted `dist/` could not be detected and fonts and icons
   silently 404'd.
@@ -108,8 +109,9 @@ no JavaScript at all, and no `<script>` tag on any page.
 - **Cloudflare/Wrangler removed.** `wrangler.jsonc` and `@cloudflare/vite-plugin` were
   a second, unused deploy target — the live path is Docker → ghcr → microk8s → Pulumi.
 - Build output moved from `dist/client/` to `dist/`; Dockerfile and CI updated.
-- CI installs node, aube and dagger from `mise.toml` via `jdx/mise-action`, replacing
-  `endevco/aube-action`, so the runner and local dev share one toolchain definition.
+- CI installs nothing but Dagger, via `dagger/dagger-for-github`; node and aube are
+  provisioned inside the build container from `mise.toml`, replacing
+  `endevco/aube-action`.
 
 ### Dependencies
 
