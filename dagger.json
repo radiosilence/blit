@@ -2,7 +2,7 @@
   "name": "blit",
   "engineVersion": "v0.21.7",
   "sdk": {
-    "source": "typescript"
+    "source": "go"
   },
   "source": "dagger"
 }

@@ -4,7 +4,7 @@
 
 ### Dagger replaces Task, the Dockerfile and most of the workflow
 
-One definition of the build, in `dagger/src/index.ts`, so `dagger call check` on a
+One definition of the build, in `dagger/main.go`, so `dagger call check` on a
 laptop is the execution CI performs rather than an approximation of it. The
 Taskfile, `Dockerfile` and `.dockerignore` are gone, and the workflow drops from
 three jobs and nine pinned actions to one job and two `dagger call`s.
@@ -21,7 +21,11 @@ three jobs and nine pinned actions to one job and two `dagger call`s.
   machine would otherwise push an image the cluster cannot run.
 - **`serve` runs the real image**, so the production container is one command away
   locally instead of requiring a `docker build` that isn't what CI produces.
-- **No watch, and rebuilds cost seconds rather than milliseconds** — a container
+- **The module is Go**, for cold-start alone. The TypeScript SDK boots a node runtime
+  and re-evaluates the module on every call; profiling a rebuild put ~5 of 6.5s in
+  Dagger machinery rather than the build, and the Go port cut it to 2.4s. `gofmt-check`
+  runs in `check` so the build definition is not the one unchecked thing in the repo.
+- **No watch, and rebuilds cost ~2.4s rather than milliseconds** — a container
   round-trip per call. That is the price of the local and CI paths being the same
   path.
 - **The hook checks rather than fixes.** Dagger has no host filesystem access, so
