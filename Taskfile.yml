@@ -101,8 +101,8 @@ tasks:
     cmd: "{{.BIN}}/tsc --noEmit"
 
   i18n:sync:
-    desc: Propagate source-locale keys to every catalogue
-    cmd: node scripts/sync-locales.ts
+    desc: Extract __() calls to messages.pot and sync every catalogue
+    cmd: node scripts/i18n.ts
 
   check:
     desc: Lint, formatting and types

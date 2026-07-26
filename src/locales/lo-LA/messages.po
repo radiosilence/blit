@@ -5,20 +5,28 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ເຈມສ໌ ຄລີຟແລນດ໌"
+#: src/templates/base.html:52
+msgid "change language"
+msgstr "ປ່ຽນພາສາ"
 
-msgid "tagline"
-msgstr "ເຈມສ໌ ຄລີຟແລນດ໌ : ວິສະວະກອນ Full Stack ອາວຸໂສ"
+#: src/templates/base.html:56
+msgid "close"
+msgstr "ປິດ"
 
-msgid "cv"
+#: src/templates/index.html:13
+msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
+#: src/templates/index.html:16
 msgid "github"
 msgstr "github"
 
-msgid "language"
-msgstr "ປ່ຽນພາສາ"
+#: src/templates/index.html:10
+msgid "james cleveland"
+msgstr "ເຈມສ໌ ຄລີຟແລນດ໌"
 
-msgid "close"
-msgstr "ປິດ"
+#: src/templates/base.html:6
+#: src/templates/base.html:15
+#: src/templates/index.html:11
+msgid "james cleveland : senior full stack engineer"
+msgstr "ເຈມສ໌ ຄລີຟແລນດ໌ : ວິສະວະກອນ Full Stack ອາວຸໂສ"

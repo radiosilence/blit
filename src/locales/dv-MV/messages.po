@@ -5,20 +5,28 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ޖޭމްސް ކްލީވްލޭންޑް"
+#: src/templates/base.html:52
+msgid "change language"
+msgstr "ބަސް ބަދަލުކުރުން"
 
-msgid "tagline"
-msgstr "ޖޭމްސް ކްލީވްލޭންޑް : ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
+#: src/templates/base.html:56
+msgid "close"
+msgstr "ބަންދުކުރުން"
 
-msgid "cv"
+#: src/templates/index.html:13
+msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
+#: src/templates/index.html:16
 msgid "github"
 msgstr "github"
 
-msgid "language"
-msgstr "ބަސް ބަދަލުކުރުން"
+#: src/templates/index.html:10
+msgid "james cleveland"
+msgstr "ޖޭމްސް ކްލީވްލޭންޑް"
 
-msgid "close"
-msgstr "ބަންދުކުރުން"
+#: src/templates/base.html:6
+#: src/templates/base.html:15
+#: src/templates/index.html:11
+msgid "james cleveland : senior full stack engineer"
+msgstr "ޖޭމްސް ކްލީވްލޭންޑް : ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
