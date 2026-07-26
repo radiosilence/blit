@@ -1,4 +1,4 @@
 [tools]
 node = "24"
 aube = "1"
-task = "3"
+dagger = "0.21"

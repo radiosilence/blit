@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### Dagger replaces Task, the Dockerfile and most of the workflow
+
+One definition of the build, in `dagger/src/index.ts`, so `dagger call check` on a
+laptop is the execution CI performs rather than an approximation of it. The
+Taskfile, `Dockerfile` and `.dockerignore` are gone, and the workflow drops from
+three jobs and nine pinned actions to one job and two `dagger call`s.
+
+- **The image is assembled in code.** `COPY dist /public` required shipping the repo
+  to the daemon and subtracting the unwanted parts with `.dockerignore`; the module
+  passes the `dist` the build just produced. `dist/` never reaches the host, which
+  also removes the `upload-artifact`/`download-artifact` hop between jobs.
+- **`publish()` returns the digest-pinned ref it pushed**, and `deploy` writes that
+  into the deployment config. Previously the tag was computed twice — by
+  `docker/metadata-action` and again by shell string-trimming in a separate job —
+  with nothing checking the two agreed.
+- **Platform is pinned to `linux/amd64`** in the module. Publishing from an arm64
+  machine would otherwise push an image the cluster cannot run.
+- **`serve` runs the real image**, so the production container is one command away
+  locally instead of requiring a `docker build` that isn't what CI produces.
+- **No watch, and rebuilds cost seconds rather than milliseconds** — a container
+  round-trip per call. That is the price of the local and CI paths being the same
+  path.
+- **The hook checks rather than fixes.** Dagger has no host filesystem access, so
+  `stage_fixed` autofix is replaced by `dagger call format export --path=.`.
+
 ### Rewritten as a static generator — no framework, no bundler, no client JS
 
 The site is two pages, six translated strings and a markdown CV, and its only
