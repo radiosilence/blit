@@ -3,6 +3,10 @@
 
 /* Utility classes only ever appear in the templates; the CV's markup gets `prose`. */
 @source "../templates";
+/* Chosen in generate.ts rather than written in a template, so Tailwind cannot
+   see them. Listed rather than scanning scripts/, which picks up identifiers
+   like `relative` from imports and emits utilities for them. */
+@source inline("text-brand text-inherit");
 
 @font-face {
   font-family: "Geist Mono";
