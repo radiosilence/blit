@@ -13,6 +13,9 @@ importers:
       "@tailwindcss/typography":
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.3.0)
+      "@types/escape-html":
+        specifier: ^1.0.4
+        version: 1.0.4
       "@types/gettext-parser":
         specifier: ^9.0.0
         version: 9.0.0
@@ -22,6 +25,9 @@ importers:
       "@types/node":
         specifier: ^24.10.1
         version: 24.13.3
+      escape-html:
+        specifier: ^1.0.3
+        version: 1.0.3
       gettext-parser:
         specifier: ^9.1.1
         version: 9.1.1
@@ -477,6 +483,12 @@ packages:
     peerDependencies:
       tailwindcss: ">=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1"
 
+  "@types/escape-html@1.0.4":
+    resolution:
+      {
+        integrity: sha512-qZ72SFTgUAZ5a7Tj6kf2SHLetiH5S6f8G5frB2SPQ3EyF02kxdyBFf4Tz4banE3xCgGnKgWLt//a6VuYHKYJTg==,
+      }
+
   "@types/gettext-parser@9.0.0":
     resolution:
       {
@@ -572,6 +584,12 @@ packages:
         integrity: sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA==,
       }
     engines: { node: ">=20.19.0" }
+
+  escape-html@1.0.3:
+    resolution:
+      {
+        integrity: sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==,
+      }
 
   fill-range@7.1.1:
     resolution:
@@ -1107,6 +1125,8 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.3.0
 
+  "@types/escape-html@1.0.4": {}
+
   "@types/gettext-parser@9.0.0":
     dependencies:
       "@types/node": 24.13.3
@@ -1150,6 +1170,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@8.0.0: {}
+
+  escape-html@1.0.3: {}
 
   fill-range@7.1.1:
     dependencies:

@@ -8,9 +8,11 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "@tailwindcss/typography": "^0.5.19",
+    "@types/escape-html": "^1.0.4",
     "@types/gettext-parser": "^9.0.0",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
+    "escape-html": "^1.0.3",
     "gettext-parser": "^9.1.1",
     "lefthook": "^2.1.6",
     "markdown-it": "^14.1.0",

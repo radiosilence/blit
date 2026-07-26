@@ -42,6 +42,7 @@ const written = await Promise.all(
         cv,
         styleHref,
         path: url(locale, page.slug),
+        canonicalUrl: `https://blit.cc${url(locale, page.slug)}`,
         urls: Object.fromEntries(pages.map(({ slug }) => [slug || "home", url(locale, slug)])),
         localeLinks: locales.map((code) => ({
           code,
@@ -94,8 +95,11 @@ await prune(dist);
 const pageFiles = new Set(written);
 const broken: string[] = [];
 
-for (const file of written) {
-  const html = await readFile(file, "utf8");
+const rendered = await Promise.all(
+  written.map(async (file) => [file, await readFile(file, "utf8")] as const),
+);
+
+for (const [file, html] of rendered) {
   const walkLinks = (node: { childNodes?: unknown[] }) => {
     for (const child of (node.childNodes ?? []) as {
       tagName?: string;
