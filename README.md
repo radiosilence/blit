@@ -67,9 +67,11 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 You need [mise](https://mise.jdx.dev) and a container runtime. `mise install` reads
 `mise.toml` and fetches node, aube and dagger; Docker or OrbStack has to be running,
-because every step happens in a container. Nothing else is installed on the host —
-there is no `npm install` step, and `node_modules` on your machine is not used by
-any command below.
+because every step happens in a container.
+
+Nothing below touches `node_modules` on your machine — dependencies are installed
+inside the build container. Run `aube install` anyway if you want editor tooling,
+since the TypeScript server resolves types from the local tree.
 
 ```bash
 dagger call serve up --ports=3000:3000        # the real image, on :3000

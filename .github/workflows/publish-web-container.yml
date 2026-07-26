@@ -1,7 +1,10 @@
 name: Build and Deploy Blit
 
-# Every step is a Dagger function, so anything here can be reproduced locally
-# with the same command. Keep this file thin — logic belongs in dagger/src.
+# Every step is a Dagger function, so anything here can be reproduced locally with
+# the same call. Keep this file thin — logic belongs in dagger/src.
+#
+# The runner installs nothing but Dagger: node and aube live inside the build
+# container, provisioned from mise.toml by the module itself.
 
 permissions:
   contents: read
@@ -24,23 +27,31 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # mise.toml is the single source of truth for node, aube and dagger.
-      - name: Install toolchain
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
-
       - name: Check
-        run: dagger call check
+        uses: dagger/dagger-for-github@27b130bf0f79a7f6fbbbe0fbca6760dc9bb40a77 # v8.4.1
+        with:
+          version: v0.21.7
+          call: check
+          enable-github-summary: true
 
+      # deploy builds on its way to publishing, so this only earns its keep on a PR.
       - name: Build
-        run: dagger call build
+        if: github.event_name == 'pull_request'
+        uses: dagger/dagger-for-github@27b130bf0f79a7f6fbbbe0fbca6760dc9bb40a77 # v8.4.1
+        with:
+          version: v0.21.7
+          call: build
 
       # Publishes the image and points the deployment config at the new tag.
       - name: Deploy
         if: github.ref == 'refs/heads/main'
-        run: |
-          dagger call deploy \
-            --sha=${{ github.sha }} \
-            --ghcr-token=env://GITHUB_TOKEN \
+        uses: dagger/dagger-for-github@27b130bf0f79a7f6fbbbe0fbca6760dc9bb40a77 # v8.4.1
+        with:
+          version: v0.21.7
+          call: >-
+            deploy
+            --sha=${{ github.sha }}
+            --ghcr-token=env://GITHUB_TOKEN
             --deploy-token=env://DEPLOYMENT_PAT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
