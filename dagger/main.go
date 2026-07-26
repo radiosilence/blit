@@ -62,17 +62,20 @@ func (m *Blit) Deps() *dagger.Container {
 		WithFile("/src/aube-workspace.yaml", m.Source.File("aube-workspace.yaml")).
 		WithMountedCache("/root/.cache/aube", dag.CacheVolume("aube")).
 		WithExec([]string{"aube", "install", "--frozen-lockfile"}).
-		WithDirectory("/src", m.Source)
+		// Fonts and icons are merged into the output directly, so keeping them out
+		// here means changing one does not invalidate the generator.
+		WithDirectory("/src", m.Source.WithoutDirectory("src/static"))
 }
 
 // The generated site.
 func (m *Blit) Build() *dagger.Directory {
-	return m.Deps().
+	rendered := m.Deps().
 		// generate.ts digests the compiled stylesheet into its URL, so css comes first.
 		WithExec([]string{"tailwindcss", "--input", "src/styles/app.css", "--output", "dist/style.css", "--minify"}).
 		WithExec([]string{"node", "scripts/generate.ts"}).
-		WithExec([]string{"cp", "-R", "src/static/.", "dist/"}).
 		Directory("/src/dist")
+
+	return rendered.WithDirectory(".", m.Source.Directory("src/static"))
 }
 
 func (m *Blit) Lint(ctx context.Context) (string, error) {
