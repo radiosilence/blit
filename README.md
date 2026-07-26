@@ -64,15 +64,18 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## Commands
 
-| Command          | Notes                                              |
-| ---------------- | -------------------------------------------------- |
-| `task dev`       | Rebuild on change, serve on :3000                  |
-| `task build`     | Generate, compile CSS and copy assets into `dist/` |
-| `task generate`  | Render the 72 pages only                           |
-| `task i18n:sync` | Sync locale catalogues against the source          |
-| `task clean`     | Drop `dist/` and Task's checksum cache             |
+| Command             | Notes                                              |
+| ------------------- | -------------------------------------------------- |
+| `task dev`          | Rebuild on change, serve on :3000                  |
+| `task build`        | Generate, compile CSS and copy assets into `dist/` |
+| `task generate`     | Render the 72 pages only                           |
+| `task check`        | Lint, formatting and types                         |
+| `task ci`           | Exactly what CI runs — `check`, then `build`       |
+| `task docker:build` | Build the container image                          |
+| `task i18n:sync`    | Sync locale catalogues against the source          |
+| `task clean`        | Drop `dist/` and Task's checksum cache             |
 
-`task --list` shows the rest (lint, format, typecheck).
+`task --list` shows the rest.
 
 ## Adding things
 
@@ -82,6 +85,21 @@ then run `task i18n:sync`. A **page**: add a template and an entry in
 
 ## Deployment
 
-Docker image → microk8s → CloudFlare Tunnel, via Pulumi in a separate IaC repo. CI
-builds `dist/` on the runner and the publish job layers it onto
-[nano-web](https://github.com/radiosilence/nano-web).
+Docker image → microk8s → CloudFlare Tunnel, via Pulumi in a separate IaC repo.
+`dist/` is layered onto [nano-web](https://github.com/radiosilence/nano-web) and the
+image tag is written into the IaC repo's Pulumi config, which Pulumi then rolls out.
+
+GitHub Actions only supplies the environment — a checkout, the mise toolchain,
+registry credentials and a build cache. Each step is a Taskfile target, so the same
+pipeline runs on a laptop:
+
+```bash
+task ci                                # what the build job runs
+task docker:build                      # what it publishes, minus the push
+task deploy:update SHA=$(git rev-parse HEAD)   # what points prod at it
+```
+
+Anything a runner has and a laptop doesn't arrives as environment rather than as
+workflow logic: `CI` selects `--frozen-lockfile`, `CACHE_FROM`/`CACHE_TO` select
+GitHub's buildx cache over the local one, `GH_TOKEN` authorises the push to the IaC
+repo. Unset, each falls back to the local equivalent.

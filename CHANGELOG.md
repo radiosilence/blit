@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+### CI moved into the Taskfile
+
+GitHub Actions now supplies only an environment — checkout, mise toolchain, registry
+credentials, build cache — and every step of substance is a Taskfile target. The
+pipeline is reproducible on a laptop, and a CI failure is debuggable without pushing
+a commit to watch it.
+
+- `task ci` (checks then build), `task docker:build` and `task deploy:update` replace
+  the inline `run:` steps, `docker/metadata-action`, `docker/build-push-action` and
+  the yq-and-git shell block that rewrote the IaC repo's Pulumi config.
+- **Runner-only capabilities arrive as environment, not workflow logic**: `CI`
+  selects `--frozen-lockfile`, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache,
+  `GH_TOKEN` authorises the deployment push. Unset, each falls back to the local
+  equivalent, so the command doesn't change shape between the two.
+- **OCI labels moved to the Dockerfile**, which is where the constant ones belong;
+  `revision`, `created` and `version` still come from the build. Output matches what
+  `docker/metadata-action` emitted, except `version`, which is now the image's own tag
+  rather than always `latest`. `image.licenses` is pinned empty so the image stops
+  inheriting the base image's MIT claim.
+- **The image tag is defined once**, in the Taskfile, and derived from `SHA`. Both the
+  build and the deployment job read the same definition instead of the workflow
+  trimming `sha-$GITHUB_SHA` to 11 characters by hand.
+- **The build and publish jobs merged.** They existed to hand `dist/` over as an
+  artifact; `docker:build` depends on `build`, so the round trip was pure latency. The
+  artifact upload stays, for downloading a PR's output.
+- Dropped `setup-qemu-action` — the only platform built is `linux/amd64` and the
+  runner is already amd64.
+- `gh` and `yq` are pinned in `mise.toml` alongside node, aube and task.
+- `install` and `css` are `run: once`, so the now-parallel checks can't race each
+  other into `node_modules`.
+
 ### Rewritten as a static generator — no framework, no bundler, no client JS
 
 The site is two pages, six translated strings and a markdown CV, and its only

@@ -2,3 +2,6 @@
 node = "24"
 aube = "1"
 task = "3"
+# Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
+gh = "2"
+yq = "4"

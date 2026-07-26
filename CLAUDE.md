@@ -8,6 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 task dev          # Rebuild on change, serve on :3000
 task build        # generate + css + static into dist/
 task generate     # Render the 72 pages only
+task check        # lint + format:check + typecheck, in parallel
+task ci           # What CI runs: check, then build
+task docker:build # Build the container image (PUSH/LATEST to publish)
 task i18n:sync    # Propagate source-locale keys to every catalogue
 task clean        # Drop dist/ and Task's checksum cache
 task lint         # oxlint  (task lint -- --fix to autofix)
@@ -61,3 +64,8 @@ Key decisions:
 - `/style.css` carries a content digest as a query string. nano-web serves CSS
   `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
 - Adding a page means a template plus an entry in `src/i18n/routes.ts`.
+- GitHub Actions is an environment, not a pipeline: it checks out, installs mise,
+  supplies credentials and a cache, then calls Taskfile targets. Anything a runner has
+  and a laptop doesn't must arrive as an environment variable the Taskfile reads
+  (`CI`, `CACHE_FROM`/`CACHE_TO`, `GH_TOKEN`) rather than as logic in the workflow. If
+  a step can't be run locally, it's in the wrong file.
