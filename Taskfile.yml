@@ -3,6 +3,13 @@ version: "3"
 vars:
   DIST: dist
   BIN: ./node_modules/.bin
+  IMAGE: ghcr.io/radiosilence/blit
+  PLATFORMS: linux/amd64
+  # CI passes the commit explicitly; on a pull_request the checked-out HEAD is a
+  # merge commit that nothing downstream knows about.
+  SHA:
+    sh: git rev-parse HEAD
+  TAG: sha-{{trunc 7 .SHA}}
 
 tasks:
   default:
@@ -11,6 +18,7 @@ tasks:
 
   install:
     internal: true
+    run: once
     # Both guards are needed: sources catch a changed manifest, status catches a
     # deleted node_modules (which no fingerprint would notice).
     sources:
@@ -18,7 +26,7 @@ tasks:
       - aube-lock.yaml
     status:
       - test -d node_modules
-    cmd: aube install
+    cmd: aube install {{if .CI}}--frozen-lockfile{{end}}
 
   build:
     desc: Generate the whole site into dist/
@@ -42,6 +50,7 @@ tasks:
   css:
     desc: Compile Tailwind
     deps: [install]
+    run: once
     sources:
       - src/styles/**/*.css
       - src/templates/**/*.html
@@ -99,3 +108,53 @@ tasks:
   i18n:sync:
     desc: Propagate source-locale keys to every catalogue
     cmd: node scripts/sync-locales.ts
+
+  check:
+    desc: Lint, formatting and types
+    deps: [lint, format:check, typecheck]
+
+  ci:
+    desc: Everything CI verifies — checks, then a full build
+    cmds:
+      - task: check
+      - task: build
+
+  # Cache flags come from the environment so the same command runs locally (buildx's
+  # own cache) and on a runner (GitHub's). PUSH and LATEST are compared as strings
+  # because GitHub expressions render booleans as "true"/"false".
+  docker:build:
+    desc: Build the container image — PUSH=true to push, LATEST=true to also tag latest
+    deps: [build]
+    cmd: >-
+      docker buildx build .
+      --platform {{.PLATFORMS}}
+      --tag {{.IMAGE}}:{{.TAG}}
+      {{if eq .LATEST "true"}}--tag {{.IMAGE}}:latest{{end}}
+      {{if .CACHE_FROM}}--cache-from {{.CACHE_FROM}}{{end}}
+      {{if .CACHE_TO}}--cache-to {{.CACHE_TO}}{{end}}
+      {{if eq .PUSH "true"}}--push{{else}}--load{{end}}
+
+  # Pushes to another repo, so it needs a git credential helper: `gh auth setup-git`
+  # locally, GH_TOKEN plus the same command on a runner.
+  deploy:update:
+    desc: Point the jaritanet deployment at a container tag
+    vars:
+      DEPLOY_REPO: radiosilence/jaritanet
+      DEPLOY_DIR: .deploy
+      DEPLOY_CONFIG: packages/infra/Pulumi.main.yaml
+      SERVICE: blit
+      HTTP_PORT: 3000
+    cmds:
+      - rm -rf {{.DEPLOY_DIR}}
+      - gh repo clone {{.DEPLOY_REPO}} {{.DEPLOY_DIR}} -- --depth 1
+      - >-
+        yq -i '.config."jaritanet:services"."{{.SERVICE}}".args |=
+        (.image.tag = "{{.TAG}}" | .httpPort = {{.HTTP_PORT}})'
+        {{.DEPLOY_DIR}}/{{.DEPLOY_CONFIG}}
+      - |
+        if git -C {{.DEPLOY_DIR}} diff --quiet; then
+          echo "{{.SERVICE}} is already on {{.TAG}}"
+        else
+          git -C {{.DEPLOY_DIR}} commit -am "🚀 Update {{.SERVICE}} to {{.TAG}}"
+          git -C {{.DEPLOY_DIR}} push
+        fi
