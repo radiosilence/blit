@@ -1,94 +1,119 @@
 /**
- * Extracts `__('…')` calls into messages.pot, then propagates the ids to every
- * catalogue — new ones with an empty msgstr, ones no longer in the source
- * dropped. Rendering falls back to the id, so this exists to give translators a
- * visible list of what still needs doing rather than to make the site work.
+ * Extracts `__('…')` from the templates into messages.pot, then merges the ids
+ * into every catalogue. Rendering falls back to the id, so this exists to give
+ * translators a list of what still needs doing rather than to make the site work.
  *
- * Also regenerates the MessageKey union, which is what makes a mistyped id a
- * type error in TypeScript. Templates aren't typechecked, so there it is the
- * fallback-to-English that keeps a typo from rendering blank.
+ * Nothing here pattern-matches source. Eta parses the template into tokens and
+ * hands over the JavaScript inside each tag; gettext-extractor runs TypeScript's
+ * parser over that to find the calls; gettext-parser reads and writes the PO.
+ * The templates are the source of truth for which strings exist — en-GB is an
+ * output of this script, not an input to it.
  */
 import { glob, readFile, writeFile } from "node:fs/promises";
-import { relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { catalogPath, readCatalog } from "#/i18n/catalogs.ts";
+import { Eta } from "eta";
+import { GettextExtractor, JsExtractors } from "gettext-extractor";
+import { po } from "gettext-parser";
+
+import { catalogPath } from "#/i18n/catalogs.ts";
 import { locales, sourceLocale } from "#/i18n/config.ts";
-import { format } from "#/i18n/po.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+const eta = new Eta({ debug: true }); // debug carries lineNo on every token
+const extractor = new GettextExtractor();
+const parser = extractor.createJsParser([
+  JsExtractors.callExpression("__", { arguments: { text: 0 } }),
+]);
 
-/*
- * A regex rather than a parser, which only holds because a call has to be `__(`
- * followed by one plain string literal. Anything else — a variable, a template
- * literal, concatenation — is rejected below rather than skipped, so a string
- * that can't be extracted fails the build instead of silently never reaching a
- * translator.
- */
-const CALL = /__\(\s*(['"])((?:[^\\]|\\.)*?)\1\s*\)/y;
-
-const unquote = (raw: string, quote: string) =>
-  JSON.parse(
-    quote === '"' ? `"${raw}"` : `"${raw.replace(/\\'/g, "'").replace(/"/g, '\\"')}"`,
-  ) as string;
-
-const messages = new Map<string, string[]>();
-
-// Only templates: `__` is a view function, so it exists nowhere else by construction.
 for await (const file of glob("src/templates/**/*.html", { cwd: root })) {
-  const source = await readFile(new URL(file, new URL(root, "file:")), "utf8");
+  const tokens = eta.parse(await readFile(new URL(file, new URL(root, "file:")), "utf8"));
 
-  for (let at = source.indexOf("__("); at !== -1; at = source.indexOf("__(", at + 1)) {
-    // The definition and its own callers in this file are not call sites.
-    if (/[.\w$]/.test(source[at - 1] ?? "")) continue;
-
-    CALL.lastIndex = at;
-    const match = CALL.exec(source);
-    const line = source.slice(0, at).split("\n").length;
-    const where = `${relative(root, file) || file}:${line}`;
-
-    if (!match?.[1] || match[2] === undefined) {
-      throw new Error(
-        `${where}: __() takes one plain string literal, so this call can't be extracted.\n` +
-          `  ${source.slice(at, source.indexOf(")", at) + 1)}`,
-      );
-    }
-
-    const id = unquote(match[2], match[1]);
-    messages.set(id, [...(messages.get(id) ?? []), where]);
+  /*
+   * Reassemble the embedded JavaScript with each expression on the line it came
+   * from, so the positions TypeScript reports are the template's own and the
+   * `#:` references point at something a translator can open.
+   */
+  const lines: string[] = [];
+  for (const token of tokens) {
+    if (typeof token === "string") continue;
+    const at = (token as { lineNo?: number }).lineNo ?? 1;
+    while (lines.length < at) lines.push("");
+    lines[at - 1] = `${lines[at - 1] ?? ""}${token.val};`;
   }
+
+  parser.parseString(lines.join("\n"), file);
 }
 
-const ids = [...messages.keys()];
-if (!ids.length) throw new Error("No __() calls found — that is almost certainly a bug here.");
+// getMessages types text as nullable for the plural-only case, which can't arise here.
+const messages = extractor
+  .getMessages()
+  .filter((message): message is typeof message & { text: string } => Boolean(message.text));
 
-const references = Object.fromEntries(messages);
+if (!messages.length) throw new Error("No __() calls found — that is almost certainly a bug here.");
+
+const header = (locale: string) => ({
+  Language: locale,
+  "MIME-Version": "1.0",
+  "Content-Type": "text/plain; charset=utf-8",
+  "Content-Transfer-Encoding": "8bit",
+});
+
+const compile = (
+  locale: string,
+  translate: (id: string) => string,
+  existing: Record<string, { comments?: object }> = {},
+) =>
+  po.compile({
+    charset: "utf-8",
+    headers: header(locale),
+    translations: {
+      "": Object.fromEntries(
+        messages.map((message) => [
+          message.text,
+          {
+            // Spread both levels: a translator's flags and notes are theirs, and
+            // only the references are ours to rewrite.
+            ...existing[message.text],
+            msgid: message.text,
+            msgstr: [translate(message.text)],
+            comments: {
+              ...existing[message.text]?.comments,
+              reference: message.references.join("\n"),
+            },
+          },
+        ]),
+      ),
+    },
+  });
 
 await writeFile(
   new URL("../src/locales/messages.pot", import.meta.url),
-  format("", Object.fromEntries(ids.map((id) => [id, ""])), references),
+  compile("", () => ""),
 );
 
 await writeFile(
   new URL("../src/i18n/keys.ts", import.meta.url),
   `// Generated from the __() calls by \`task i18n:sync\`. Do not edit.\n` +
-    `export type MessageKey =\n${ids.map((id) => `  | ${JSON.stringify(id)}`).join("\n")};\n`,
+    `export type MessageKey =\n` +
+    `${messages.map((m) => `  | ${JSON.stringify(m.text)}`).join("\n")};\n`,
 );
 
 const untranslated = await Promise.all(
   locales.map(async (locale) => {
-    const existing = await readCatalog(locale);
-    const merged = Object.fromEntries(
-      ids.map((id) => [id, locale === sourceLocale ? id : (existing[id] ?? "")]),
-    );
+    const existing = (po.parse(await readFile(catalogPath(locale))).translations[""] ??
+      {}) as Record<string, { comments?: object; msgstr?: string[] }>;
+    const previous = (id: string) => existing[id]?.msgstr?.[0] ?? "";
 
-    await writeFile(catalogPath(locale), format(locale, merged));
+    // The source locale is the ids themselves, so it is written rather than kept.
+    const translate = locale === sourceLocale ? (id: string) => id : previous;
+    await writeFile(catalogPath(locale), compile(locale, translate, existing));
 
-    return [locale, Object.values(merged).filter((value) => !value).length] as const;
+    return [locale, messages.filter((m) => !translate(m.text)).length] as const;
   }),
 );
 
-console.log(`${ids.length} messages across ${locales.length} locales`);
+console.log(`${messages.length} messages across ${locales.length} locales`);
 for (const [locale, missing] of untranslated) {
   if (missing) console.log(`  ${locale}: ${missing} untranslated`);
 }

@@ -1,14 +1,27 @@
 import { readFile } from "node:fs/promises";
 
+import { po } from "gettext-parser";
+
 import { locales, sourceLocale } from "#/i18n/config.ts";
 import type { MessageKey } from "#/i18n/keys.ts";
-import { parse } from "#/i18n/po.ts";
 
 export const catalogPath = (locale: string) =>
   new URL(`../locales/${locale}/messages.po`, import.meta.url);
 
-export const readCatalog = async (locale: string) =>
-  parse(await readFile(catalogPath(locale), "utf8"));
+/**
+ * Flattened to id → translation. gettext-parser models the parts this project
+ * has no use for yet — contexts, plurals, flags — and reading through it is what
+ * keeps those from being destroyed on the next write.
+ */
+export async function readCatalog(locale: string) {
+  const { translations } = po.parse(await readFile(catalogPath(locale)));
+
+  return Object.fromEntries(
+    Object.values(translations[""] ?? {})
+      .filter((entry) => entry.msgid)
+      .map((entry) => [entry.msgid, entry.msgstr[0] ?? ""]),
+  );
+}
 
 /**
  * The `__` templates call. Message ids are the source text, so an id that no

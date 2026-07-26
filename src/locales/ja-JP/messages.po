@@ -5,20 +5,28 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "james cleveland : senior full stack engineer"
-msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
-
+#: src/templates/base.html:52
 msgid "change language"
 msgstr "言語を変更"
 
+#: src/templates/base.html:56
 msgid "close"
 msgstr "閉じる"
 
-msgid "james cleveland"
-msgstr "ジェームス・クリーブランド"
-
+#: src/templates/index.html:13
 msgid "cv-2025.01"
 msgstr "履歴書-2025.01"
 
+#: src/templates/index.html:16
 msgid "github"
 msgstr "ギットハブ"
+
+#: src/templates/index.html:10
+msgid "james cleveland"
+msgstr "ジェームス・クリーブランド"
+
+#: src/templates/base.html:6
+#: src/templates/base.html:15
+#: src/templates/index.html:11
+msgid "james cleveland : senior full stack engineer"
+msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
