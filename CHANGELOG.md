@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Templates use layouts, and the Proxy now survives the boundary
+
+A page declares the frame it slots into (`<% layout("./base") %>`) instead of `base`
+including a page named by the view. The frame no longer needs to be told what it
+wraps, and `content` is gone from the view.
+
+- **The strict-view Proxy is applied to `eta.render` rather than the outermost call.**
+  Eta crosses into a layout — and into `include()` — by spreading the view into a
+  fresh object, and spreading a Proxy yields a plain one. Top-level keys were
+  therefore unguarded past the first boundary: a mistyped `it.cv` in `cv.html` built
+  green and shipped the string `undefined`. Both paths route through `this.render`, so
+  re-wrapping there closes it for layouts and includes alike.
+- Output is byte-identical across all 72 pages.
+
 ### CI moved into the Taskfile
 
 GitHub Actions now supplies only an environment — checkout, mise toolchain and
