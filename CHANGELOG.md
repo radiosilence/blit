@@ -2,23 +2,62 @@
 
 ## Unreleased
 
+### Rewritten as a static generator — no framework, no bundler, no client JS
+
+The site is two pages, four translated strings and a markdown CV, and its only
+interactivity is the language picker. React, TanStack Start, Vite, MDX and Wrangler
+existed to render that, so they're gone. Output is now HTML, CSS and a font: the
+homepage is 4.3 KB of markup with no `<script>` tag at all.
+
+- **Language picker** is a `<details>` element with one `<a>` per locale, replacing the
+  `<select>` + `useNavigate` handler. No script, keyboard-accessible natively.
+- **Templates** are Mustache (`src/templates/*.html`) — logic-less, so logic can't
+  accumulate in them. `scripts/generate.ts` renders 74 pages in ~40 ms.
+- **Task replaces the npm scripts.** `Taskfile.yml` declares `sources`/`generates` per
+  step, so generate/css/static run in parallel and skip when unchanged.
+- **Node 24 runs the `.ts` scripts directly** via built-in type stripping — no
+  transpiler in the pipeline.
+- **Removed 13 direct dependencies**; `dependencies` is now empty and the 12 remaining
+  devDeps are all build-time. Dropped `tailwindcss-logical` — v4's native `mx-*`/`end-*`
+  emit the same logical properties, verified against the RTL locales.
+
+### i18n
+
+- **Lingui replaced by `src/i18n/po.ts`**, a ~40-line gettext reader/writer. The `.po`
+  files stay the source of truth and all 37 catalogues are unchanged in content.
+- **Message ids are now short keys** (`tagline`) rather than English sentences, so
+  templates read `{{t.tagline}}` with no indirection. These were already explicit ids
+  under Lingui, not source text, so nothing is lost.
+- **Untranslated keys fall back to `en-GB`** instead of rendering blank.
+- `task i18n:sync` replaces `lingui extract`, propagating source-locale keys to every
+  catalogue and reporting what's outstanding.
+- `/en-GB/*` is no longer generated; the source locale lives only at `/` and `/cv`,
+  which removes the redirect the router used to perform.
+
+### Deployment
+
+- **Cloudflare/Wrangler removed.** `wrangler.jsonc` and `@cloudflare/vite-plugin` were
+  a second, unused deploy target — the live path is Docker → ghcr → microk8s → Pulumi.
+- Build output moved from `dist/client/` to `dist/`; Dockerfile and CI updated.
+- CI installs node, aube and task from `mise.toml` via `jdx/mise-action`, replacing
+  `endevco/aube-action`, so the runner and local dev share one toolchain definition.
+
 ### Dependencies
 
-- **@lingui/cli + @lingui/vite-plugin → v6.0.1** (major): ESM-only distribution, requires Node 22.19+. Dropped explicit `format: "po"` from `lingui.config.ts` — v6 defaults to the `po` formatter when no format is specified. No catalog format change for our setup (no `formatOptions` were in use). Refreshed `.po` source-location comments via `lingui extract` to reflect current file layout.
-- **@tanstack/devtools-vite → v0.7.0** (major): in-place, no API breakage for our `vite.config.ts` usage.
-- Within-semver batch: `@cloudflare/vite-plugin`, `@tanstack/router-plugin`, `@tanstack/react-devtools`, `@tanstack/react-router`, `@tanstack/react-start`, `@vitejs/plugin-react`, `oxlint`, `oxfmt`, `react`, `react-dom`, `vite`, `wrangler`.
+- Within-semver bumps to `oxlint` and `oxfmt`. The rest of that batch — Lingui,
+  TanStack, Vite, Wrangler, React — was removed by the rewrite above before it shipped.
 
 ### Tooling
 
 - Switched package manager from Bun to [aube](https://aube.en.dev) (pnpm-style isolated `node_modules`, `aube-lock.yaml`)
-- Build-script allowlist moved from bun's `trustedDependencies` to aube's `allowBuilds` (sharp, workerd, esbuild, lefthook)
+- Build-script allowlist moved from bun's `trustedDependencies` to aube's `allowBuilds` (now just `lefthook`)
 - Docker base image: `oven/bun:latest` → `node:24-alpine` with aube installed via npm — aube does not bundle a runtime
 - Added `aube-workspace.yaml` with security-focused defaults: `minimumReleaseAge: 10080` (7-day install delay), `trustPolicy: no-downgrade`, explicit `blockExoticSubdeps`. Build-script allowlist consolidated here (moved out of `package.json`).
 
 ### CI
 
-- CI now installs aube via [`endevco/aube-action`](https://github.com/endevco/aube-action) (SHA-pinned to v1.0.0) and runs lint + typecheck + build on the runner
-- Docker pipeline split: runner builds `dist/client/` and uploads it as an artifact; the publish job downloads it and packages a thin image (just `FROM nano-web` + `COPY dist/client /public`)
+- CI runs lint + typecheck + build on the runner (toolchain now from `mise.toml`, see above)
+- Docker pipeline split: runner builds the site and uploads it as an artifact; the publish job downloads it and packages a thin image (just `FROM nano-web` + `COPY dist /public`)
 - Dockerfile no longer needs Node, npm, or aube — final image is just static assets on top of nano-web
 
 ## 4.0.0 — 2026-04-11

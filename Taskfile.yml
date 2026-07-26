@@ -1,0 +1,93 @@
+version: "3"
+
+vars:
+  DIST: dist
+  BIN: ./node_modules/.bin
+
+tasks:
+  default:
+    cmd: task --list
+    silent: true
+
+  install:
+    internal: true
+    status:
+      - test -d node_modules
+    cmd: aube install
+
+  build:
+    desc: Generate the whole site into dist/
+    deps: [generate, css, static]
+
+  generate:
+    desc: Render every locale × page to dist/
+    deps: [install]
+    sources:
+      - scripts/generate.ts
+      - src/content/**/*.md
+      - src/i18n/*.ts
+      - src/locales/**/*.po
+      - src/templates/*.html
+    generates:
+      - "{{.DIST}}/**/index.html"
+    cmd: node scripts/generate.ts
+
+  css:
+    desc: Compile Tailwind
+    deps: [install]
+    sources:
+      - src/styles/*.css
+      - src/templates/*.html
+    generates:
+      - "{{.DIST}}/style.css"
+    cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
+
+  static:
+    desc: Copy fonts, icons and manifest
+    sources:
+      - src/static/**/*
+    cmds:
+      - mkdir -p {{.DIST}}
+      - cp -R src/static/. {{.DIST}}/
+
+  dev:
+    desc: Rebuild on change, serve on :3000
+    deps: [watch, serve]
+
+  watch:
+    internal: true
+    cmd: task --watch build
+
+  serve:
+    internal: true
+    cmd: node scripts/serve.ts {{.DIST}} 3000
+
+  clean:
+    desc: Remove generated output
+    # .task holds the source checksums; leaving it makes the next build skip
+    # steps whose output was just deleted.
+    cmd: rm -rf {{.DIST}} .task
+
+  lint:
+    desc: Lint with oxlint
+    deps: [install]
+    cmd: "{{.BIN}}/oxlint {{.CLI_ARGS}}"
+
+  format:
+    desc: Format with oxfmt
+    deps: [install]
+    cmd: "{{.BIN}}/oxfmt --write {{.CLI_ARGS}}"
+
+  format:check:
+    desc: Check formatting
+    deps: [install]
+    cmd: "{{.BIN}}/oxfmt --check"
+
+  typecheck:
+    desc: Typecheck with tsc
+    deps: [install]
+    cmd: "{{.BIN}}/tsc --noEmit"
+
+  i18n:sync:
+    desc: Propagate source-locale keys to every catalogue
+    cmd: node scripts/sync-locales.ts

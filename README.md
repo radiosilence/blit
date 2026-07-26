@@ -2,35 +2,65 @@
 
 ![publish-web-container](https://github.com/radiosilence/blit/actions/workflows/publish-web-container.yml/badge.svg)
 
-## What this does
+Static site for [blit.cc](https://blit.cc) — a homepage and a CV, in 37 locales.
+Nothing is shipped to the browser but HTML, CSS and a font.
 
-Builds and deploys [blit.cc](https://blit.cc) — a personal website and CV.
+## Why there's no framework
 
-### Stack
+The site is two pages, four translated strings and a markdown CV. Its only piece of
+interactivity is the language picker, which is a `<details>` element containing one
+link per locale — no script, keyboard-accessible for free. That left nothing for a
+client-side framework to do, so there isn't one.
 
-- [TanStack Start](https://tanstack.com/start) with React 19 — SSG via prerendering, SSR capable
-- [Lingui](https://lingui.dev) + `@lingui/vite-plugin` for i18n (37 locales, RTL) — server-side rendering, zero client flash
-- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono variable font
-- [Vite 8](https://vite.dev) (rolldown-vite) for bundling
-- [aube](https://aube.en.dev) as package manager (Node 24 runtime via mise)
-- [oxlint](https://oxc.rs/docs/guide/usage/linter) + [oxfmt](https://oxc.rs/docs/guide/usage/formatter) for linting/formatting
+## Stack
 
-### i18n
+- [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
+  nothing re-runs without cause
+- [Mustache](https://mustache.github.io) renders `src/templates/*.html` — logic-less
+  by design, so logic can't accumulate in the templates
+- [markdown-it](https://github.com/markdown-it/markdown-it) renders the CV, passing
+  through the inline HTML it already contained
+- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono, compiled by its own CLI
+- [aube](https://aube.en.dev) for packages, Node 24 via [mise](https://mise.jdx.dev)
 
-Locale catalogs live in `src/locales/{locale}/messages.po`. The `@lingui/vite-plugin` compiles them at import time — no manual `lingui compile` step. All 37 locale catalogs are loaded eagerly via `import.meta.glob` for synchronous hydration (zero flash).
+Node runs the `.ts` files under `scripts/` directly via its built-in type stripping,
+so there is no transpiler and no bundler anywhere in the pipeline.
 
-Locale routing uses `$locale` path params (`/ja-JP/`, `/fr-FR/cv`). Default locale (en-GB) also served at `/` and `/cv`. All 76 pages prerendered at build time — a hidden `<nav>` in the root layout seeds the prerender crawler with every locale/page URL.
+## i18n
 
-### Running
+`src/locales/{locale}/messages.po` are the source of truth. Keys are short
+(`tagline`, not the English sentence) so templates read `{{t.tagline}}` with no
+indirection, and `src/i18n/po.ts` — a ~40-line gettext reader/writer — is the entire
+i18n runtime. Untranslated keys fall back to `en-GB` rather than rendering blank, so
+a new string is live everywhere the moment it's added.
 
-| Mode    | Command                              | Notes                               |
-| ------- | ------------------------------------ | ----------------------------------- |
-| Dev     | `aube run dev`                       | Vite dev server with HMR            |
-| Preview | `aube run build && aube run preview` | Preview full build locally          |
-| SSG     | `aube run build`                     | Output in `dist/client/`            |
-| SSR     | `aube run build && aube run serve`   | Standalone Node server on port 3000 |
+`task i18n:sync` propagates the source locale's keys to every catalogue, adding
+missing ones with an empty `msgstr` and reporting what's outstanding.
 
-### Deployment
+The source locale is served at `/` and `/cv`; every other locale is prefixed
+(`/fr-FR`, `/fr-FR/cv`). Pages are written as directory indexes — nano-web resolves
+`/cv` to `/cv/index.html`, so URLs stay extensionless without a redirect.
 
-Docker image → microk8s → CloudFlare Tunnel. Deployed via Pulumi (separate IaC repo).
-SSG output served by [nano-web](https://github.com/radiosilence/nano-web) from `dist/client/`.
+## Commands
+
+| Command          | Notes                                              |
+| ---------------- | -------------------------------------------------- |
+| `task dev`       | Rebuild on change, serve on :3000                  |
+| `task build`     | Generate, compile CSS and copy assets into `dist/` |
+| `task generate`  | Render the 74 pages only                           |
+| `task i18n:sync` | Sync locale catalogues against the source          |
+| `task clean`     | Drop `dist/` and Task's checksum cache             |
+
+`task --list` shows the rest (lint, format, typecheck).
+
+## Adding things
+
+A **string**: add it to `src/locales/en-GB/messages.po`, reference it as `{{t.key}}`,
+then run `task i18n:sync`. A **page**: add a template and an entry in
+`src/i18n/routes.ts`.
+
+## Deployment
+
+Docker image → microk8s → CloudFlare Tunnel, via Pulumi in a separate IaC repo. CI
+builds `dist/` on the runner and the publish job layers it onto
+[nano-web](https://github.com/radiosilence/nano-web).

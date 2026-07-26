@@ -20,10 +20,10 @@ blockExoticSubdeps: true
 # Lifecycle scripts that may run during install. Moved from
 # package.json#aube.allowBuilds.
 allowBuilds:
-  esbuild: true
   lefthook: true
-  sharp: true
-  workerd: true
+  # Pulled in by @tailwindcss/cli for its --watch mode, which we don't use —
+  # task does the watching. Denied rather than unreviewed so installs stay quiet.
+  "@parcel/watcher": false
 
 enableGlobalVirtualStore: false
 

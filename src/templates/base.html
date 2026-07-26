@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="{{locale}}" dir="{{dir}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{t.tagline}}</title>
+
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="application-name" content="blit.cc" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="blit.cc" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <meta property="og:title" content="{{t.tagline}}" />
+    <meta property="og:url" content="https://blit.cc{{path}}" />
+    <meta property="og:image" content="https://blit.cc/logo.png" />
+
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preload" href="/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+
+  <body>
+    {{> content}}
+
+    <nav class="fixed end-2 bottom-2 text-xs">
+      <details class="relative">
+        <summary>{{locale}}</summary>
+        <ul
+          class="absolute end-0 bottom-6 max-h-64 space-y-1 overflow-y-auto border border-brand-mid bg-white p-2 dark:bg-brand-dark"
+        >
+          {{#localeLinks}}
+          <li><a href="{{href}}" hreflang="{{code}}">{{code}}</a></li>
+          {{/localeLinks}}
+        </ul>
+      </details>
+    </nav>
+  </body>
+</html>
