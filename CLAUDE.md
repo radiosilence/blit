@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 task dev          # Rebuild on change, serve on :3000
 task build        # generate + css + static into dist/
-task generate     # Render the 74 pages only
+task generate     # Render the 72 pages only
 task i18n:sync    # Propagate source-locale keys to every catalogue
 task clean        # Drop dist/ and Task's checksum cache
 task lint         # oxlint  (task lint -- --fix to autofix)
@@ -23,35 +23,41 @@ Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
 - **Orchestration**: [Task](https://taskfile.dev); each step declares `sources`/`generates`
-- **Templates**: Mustache over `src/templates/*.html`, rendered by `scripts/generate.ts`
+- **Templates**: Eta over `src/templates/*.html`, rendered via `scripts/render.ts`
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
-- **i18n**: hand-rolled gettext in `src/i18n/po.ts`, 37 locales, `.po` files are the source of truth
+- **i18n**: hand-rolled gettext in `src/i18n/po.ts`, 36 locales, `.po` files are the source of truth
 - **Packages**: aube (`aube-lock.yaml`); toolchain via mise (`mise.toml`)
 - **Deployment**: Docker → microk8s → CloudFlare Tunnel
 
 Key decisions:
 
-- Nothing in `package.json` is a runtime dependency; it is all build-time tooling.
-  The only shipped script is the four lines that open the locale `<dialog>`. Reach for
-  a native element and style it rather than adding script: `<dialog>` earns its keep
-  because it's fully styleable, which an `<input type="date">` is not.
+- Nothing in `package.json` is a runtime dependency; it is all build-time tooling, and
+  no JavaScript is shipped. The locale picker runs on `command`/`commandfor`,
+  `closedby="any"`, `<form method="dialog">` and `autofocus`. Reach for a native
+  element and style it rather than adding script.
 - Base element rules in `app.css` must stay inside `@layer base`. Unlayered CSS beats
   every `@layer` regardless of specificity, so an unlayered `a` silently overrides
   utilities like `no-underline`.
 - Scripts under `scripts/` are `.ts` run directly by Node 24's type stripping — no
   transpiler. Keep them strippable: no enums, no namespaces, explicit `import type`.
-- Templates are logic-less on purpose. Anything conditional belongs in
-  `scripts/generate.ts`, not in a template.
-- oxfmt parses templates as HTML, so a Mustache section can't sit in attribute
-  position (`<a {{#x}}disabled{{/x}}>`). Inside an attribute _value_ is fine. For a
-  conditional boolean attribute, render the value (`aria-current="{{current}}"`) or
-  handle it in the dialog script.
+- Eta permits arbitrary expressions, so keep templates to presentation. Anything that
+  computes a value belongs in `scripts/generate.ts`.
+- oxfmt is pointed away from `src/templates` (`.oxfmtrc.json`): it parses them as HTML
+  and Eta tags aren't valid in attribute position.
+- `scripts/render.ts` wraps the view in a Proxy that throws on unknown keys, so a
+  template typo fails the build with the path and the keys that do exist. Generation
+  time is the only runtime here, so this is the type check.
 - PO keys are short identifiers (`tagline`), not English sentences. Missing keys fall
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
 - `task clean` must remove `.task` as well as `dist` — leaving the checksum cache makes
   the next build skip steps whose output was just deleted.
-- Mustache's default escaper mangles `/` into `&#x2F;`; `generate.ts` overrides it.
+- `generate` prunes orphaned `index.html` files and empty directories. Without it a
+  removed locale keeps its directory in `dist/` and carries on being served.
+- `static` is deliberately unfingerprinted: its output is a directory rather than one
+  named file, so a partially-deleted `dist/` can't be detected. Copying is cheap.
+- `/style.css` carries a content digest as a query string. nano-web serves CSS
+  `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
 - Adding a page means a template plus an entry in `src/i18n/routes.ts`.

@@ -11,23 +11,30 @@ tasks:
 
   install:
     internal: true
+    # Both guards are needed: sources catch a changed manifest, status catches a
+    # deleted node_modules (which no fingerprint would notice).
+    sources:
+      - package.json
+      - aube-lock.yaml
     status:
       - test -d node_modules
     cmd: aube install
 
   build:
     desc: Generate the whole site into dist/
-    deps: [generate, css, static]
+    deps: [generate, static]
 
+  # Depends on css because it fingerprints the compiled stylesheet into the URL.
   generate:
     desc: Render every locale × page to dist/
-    deps: [install]
+    deps: [install, css]
     sources:
       - scripts/generate.ts
       - src/content/**/*.md
-      - src/i18n/*.ts
+      - src/i18n/**/*.ts
       - src/locales/**/*.po
-      - src/templates/*.html
+      - src/templates/**/*.html
+      - "{{.DIST}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
     cmd: node scripts/generate.ts
@@ -36,16 +43,17 @@ tasks:
     desc: Compile Tailwind
     deps: [install]
     sources:
-      - src/styles/*.css
-      - src/templates/*.html
+      - src/styles/**/*.css
+      - src/templates/**/*.html
     generates:
       - "{{.DIST}}/style.css"
     cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
 
+  # Deliberately unfingerprinted: the outputs are a whole directory rather than one
+  # named file, so a partially-deleted dist/ can't be detected. Copying ~1 MB takes
+  # a few ms, which is cheaper than the class of bug where assets silently vanish.
   static:
     desc: Copy fonts, icons and manifest
-    sources:
-      - src/static/**/*
     cmds:
       - mkdir -p {{.DIST}}
       - cp -R src/static/. {{.DIST}}/

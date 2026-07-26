@@ -2,7 +2,6 @@ export const sourceLocale = "en-GB";
 
 export const locales = [
   "en-GB",
-  "am-ET",
   "ar-EG",
   "ar-PS",
   "bn-BD",
@@ -61,6 +60,6 @@ export function describeLocale(locale: string) {
   const [language = locale, region] = locale.split("-");
   return {
     name: new Intl.DisplayNames([locale], { type: "language" }).of(language),
-    place: region ? new Intl.DisplayNames([locale], { type: "region" }).of(region) : undefined,
+    place: region ? new Intl.DisplayNames([locale], { type: "region" }).of(region) : "",
   };
 }

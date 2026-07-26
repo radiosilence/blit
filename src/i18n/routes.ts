@@ -1,8 +1,8 @@
 import { sourceLocale } from "#/i18n/config.ts";
 
 export const pages = [
-  { slug: "", template: "index.html" },
-  { slug: "cv", template: "cv.html" },
+  { slug: "", template: "index" },
+  { slug: "cv", template: "cv" },
 ] as const;
 
 /**

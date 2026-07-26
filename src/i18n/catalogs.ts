@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 import { locales, sourceLocale } from "#/i18n/config.ts";
+import type { MessageKey } from "#/i18n/keys.ts";
 import { parse } from "#/i18n/po.ts";
 
 export const catalogPath = (locale: string) =>
@@ -28,5 +29,5 @@ export async function loadCatalogs() {
         Object.entries(source).map(([key, fallback]) => [key, catalogs[locale]?.[key] || fallback]),
       ),
     ]),
-  );
+  ) as Record<string, Record<MessageKey, string>>;
 }
