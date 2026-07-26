@@ -178,7 +178,8 @@ export class Blit {
    *
    * Dagger's git API is read-only, so the push is a plain git invocation in a
    * container — the one step the engine can neither model nor cache. dryRun
-   * stops short of it and returns the diff instead.
+   * stops short of it and returns the diff instead, which is what makes this
+   * safe to run locally against the real repository.
    */
   @func()
   async deploy(
