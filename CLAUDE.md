@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 dagger call serve up --ports=3000:3000        # Run the real image on :3000
-dagger call build export --path=dist          # Write the site to dist/
+dagger call build export --path=dist --wipe   # Write the site to dist/
 dagger call check                             # lint + typecheck + format check
 dagger call format export --path=.            # Apply formatting
 dagger call sync-locales export --path=src    # Propagate source-locale keys
@@ -65,8 +65,10 @@ Key decisions:
 - The deployment push is a `git` invocation in a container — Dagger's git API is
   read-only. It is the only step with an effect the engine can neither model nor
   cache, which is why it guards on `git diff --quiet` rather than assuming a change.
-- `generate` prunes orphaned `index.html` files and empty directories. Without it a
-  removed locale keeps its directory in `dist/` and carries on being served.
+- `dist/` does not exist in the build container until the build creates it, so there
+  are never stale pages to prune. Staleness now only exists on the host, which is why
+  `build export` passes `--wipe`: export merges by default and would otherwise leave a
+  removed locale's directory behind.
 - `static` is deliberately unfingerprinted: its output is a directory rather than one
   named file, so a partially-deleted `dist/` can't be detected. Copying is cheap.
 - `/style.css` carries a content digest as a query string. nano-web serves CSS

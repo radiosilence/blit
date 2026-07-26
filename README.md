@@ -76,7 +76,7 @@ since the TypeScript server resolves types from the local tree.
 ```bash
 dagger call serve up --ports=3000:3000        # the real image, on :3000
 dagger call check                             # lint + typecheck + format check
-dagger call build export --path=dist          # write the site to dist/
+dagger call build export --path=dist --wipe   # write the site to dist/
 dagger call format export --path=.            # apply formatting
 dagger call sync-locales export --path=src    # sync catalogues, then format
 ```
