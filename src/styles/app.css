@@ -1,10 +1,12 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @plugin "@tailwindcss/typography";
-@plugin "tailwindcss-logical";
+
+/* Utility classes only ever appear in the templates; the CV's markup gets `prose`. */
+@source "../templates";
 
 @font-face {
   font-family: "Geist Mono";
-  src: url("../assets/fonts/GeistMono[wght].woff2") format("woff2-variations");
+  src: url("/geist-mono.woff2") format("woff2-variations");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -15,6 +17,8 @@
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
   --color-brand-dark: #333;
+  /* Raised surfaces (the locale dialog) — brand-dark on brand-dark would vanish. */
+  --color-brand-surface: #3d3d3d;
   --default-font-family: "Geist Mono";
 }
 
@@ -35,53 +39,91 @@
     --tw-prose-pre-bg: inherit;
     @apply max-w-full;
   }
-}
 
-a,
-a:visited,
-a:active {
-  @apply text-brand underline;
-}
+  /*
+   * @tailwindcss/typography wraps its rules in :where(), which has zero specificity,
+   * so the site's element rules used to beat them just by being unlayered. Now that
+   * those live in `base` — a lower layer — the plugin wins inside .prose and the CV
+   * comes out with bold headings and body-coloured links. Restate them here, where
+   * `.prose h1` (0,1,1) outranks `.prose :where(h1)` (0,1,0).
+   */
+  .prose h1 {
+    @apply text-4xl font-extralight;
+  }
 
-a:hover {
-  @apply text-brand-mid;
-}
+  .prose h2 {
+    @apply text-2xl font-thin;
+  }
 
-body {
-  @apply text-brand-dark;
-}
+  .prose h3 {
+    @apply text-sm font-semibold;
+  }
 
-h1,
-h2 {
-  @apply lowercase;
-}
+  .prose strong {
+    @apply font-semibold;
+  }
 
-h1 {
-  @apply text-3xl font-extralight;
-}
+  .prose a,
+  .prose a:visited,
+  .prose a:active {
+    @apply text-brand underline;
+  }
 
-h2 {
-  @apply text-2xl font-thin;
-}
-
-h3 {
-  @apply text-sm font-semibold;
-}
-
-strong {
-  @apply font-semibold;
-}
-
-.prose {
-  h1 {
-    @apply text-4xl;
+  .prose a:hover {
+    @apply text-brand-mid;
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/*
+ * These must sit in `base`. Unlayered rules beat every @layer regardless of
+ * specificity, so an unlayered `a` would override utilities like `no-underline`
+ * on the elements that need to opt out.
+ */
+@layer base {
+  a,
+  a:visited,
+  a:active {
+    @apply text-brand underline;
+  }
+
+  a:hover {
+    @apply text-brand-mid;
+  }
+
   body {
-    @apply bg-brand-dark;
-    @apply text-brand-light;
+    @apply text-brand-dark;
+  }
+
+  h1,
+  h2 {
+    @apply lowercase;
+  }
+
+  h1 {
+    @apply text-3xl font-extralight;
+  }
+
+  h2 {
+    @apply text-2xl font-thin;
+  }
+
+  h3 {
+    @apply text-sm font-semibold;
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  /* The UA default is Chrome blue, which is the one off-brand colour on the site. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-brand-dark text-brand-light;
+    }
   }
 }
 

@@ -6,5 +6,6 @@
   "semi": true,
   "singleQuote": false,
   "trailingComma": "all",
-  "insertFinalNewline": true
+  "insertFinalNewline": true,
+  "ignorePatterns": ["src/templates"]
 }

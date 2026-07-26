@@ -1,21 +1,33 @@
-import { i18n } from "@lingui/core";
+import { readFile } from "node:fs/promises";
 
-type CatalogModule = { messages: Record<string, string> };
+import { locales, sourceLocale } from "#/i18n/config.ts";
+import type { MessageKey } from "#/i18n/keys.ts";
+import { parse } from "#/i18n/po.ts";
 
-const modules = import.meta.glob<CatalogModule>("../locales/*/messages.po", {
-  eager: true,
-});
+export const catalogPath = (locale: string) =>
+  new URL(`../locales/${locale}/messages.po`, import.meta.url);
 
-const catalogs = Object.fromEntries(
-  Object.entries(modules).map(([path, mod]) => [
-    path.match(/\/locales\/(.+?)\/messages\.po$/)?.[1] as string,
-    mod.messages,
-  ]),
-);
+export const readCatalog = async (locale: string) =>
+  parse(await readFile(catalogPath(locale), "utf8"));
 
-export function loadCatalog(locale: string) {
-  const messages = catalogs[locale];
-  if (!messages) throw new Error(`Unknown locale: ${locale}`);
-  i18n.load(locale, messages);
-  i18n.activate(locale);
+/**
+ * Every locale, keyed by the source catalogue's keys. Missing or untranslated
+ * entries fall back to the source locale so a new string renders in English
+ * everywhere the moment it is added, rather than rendering blank.
+ */
+export async function loadCatalogs() {
+  const entries = await Promise.all(
+    locales.map(async (locale) => [locale, await readCatalog(locale)] as const),
+  );
+  const catalogs = Object.fromEntries(entries);
+  const source = catalogs[sourceLocale] ?? {};
+
+  return Object.fromEntries(
+    entries.map(([locale]) => [
+      locale,
+      Object.fromEntries(
+        Object.entries(source).map(([key, fallback]) => [key, catalogs[locale]?.[key] || fallback]),
+      ),
+    ]),
+  ) as Record<string, Record<MessageKey, string>>;
 }
