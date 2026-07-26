@@ -5,13 +5,6 @@ vars:
   BIN: ./node_modules/.bin
   IMAGE: ghcr.io/radiosilence/blit
   PLATFORMS: linux/amd64
-  # CI passes the commit explicitly; on a pull_request the checked-out HEAD is a
-  # merge commit that nothing downstream knows about.
-  SHA:
-    sh: git rev-parse HEAD
-  TAG: sha-{{trunc 7 .SHA}}
-  BUILT_AT:
-    sh: date -u +%Y-%m-%dT%H:%M:%SZ
 
 tasks:
   default:
@@ -121,12 +114,24 @@ tasks:
       - task: check
       - task: build
 
-  # Cache flags come from the environment so the same command runs locally (buildx's
-  # own cache) and on a runner (GitHub's). PUSH and LATEST are compared as strings
+  # Cache flags are read from the environment so a caller can point buildx at a shared
+  # cache; unset, it uses the local one. PUSH and LATEST are compared as strings
   # because GitHub expressions render booleans as "true"/"false".
   docker:build:
     desc: Build the container image — PUSH=true to push, LATEST=true to also tag latest
     deps: [build]
+    # SHA is derived here rather than globally: Task evaluates global `sh:` vars on
+    # every invocation, so `task lint` and the dev watch loop would fork git too. The
+    # self-reference is load-bearing — a plain task-level var outranks a CLI-passed
+    # one, which would silently discard the SHA= the caller supplied. CI supplies it
+    # because on a pull_request the checked-out HEAD is a merge commit that nothing
+    # downstream knows about.
+    vars:
+      SHA:
+        sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
+      TAG: sha-{{trunc 7 .SHA}}
+      BUILT_AT:
+        sh: date -u +%Y-%m-%dT%H:%M:%SZ
     cmd: >-
       docker buildx build .
       --platform {{.PLATFORMS}}
@@ -145,13 +150,26 @@ tasks:
     desc: Point the jaritanet deployment at a container tag
     vars:
       DEPLOY_REPO: radiosilence/jaritanet
+      DEPLOY_BRANCH: main
       DEPLOY_DIR: .deploy
       DEPLOY_CONFIG: packages/infra/Pulumi.main.yaml
       SERVICE: blit
       HTTP_PORT: 3000
+      # See docker:build for why SHA is shaped this way.
+      SHA:
+        sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
+      TAG: sha-{{trunc 7 .SHA}}
     cmds:
       - rm -rf {{.DEPLOY_DIR}}
-      - gh repo clone {{.DEPLOY_REPO}} {{.DEPLOY_DIR}} -- --depth 1
+      # --branch is explicit: cloning whatever the default branch happens to be would
+      # commit the tag bump somewhere nothing deploys from.
+      - gh repo clone {{.DEPLOY_REPO}} {{.DEPLOY_DIR}} -- --depth 1 --branch {{.DEPLOY_BRANCH}}
+      # yq's |= creates a missing path rather than failing on it, so a renamed service
+      # or moved config would write a new node and push it as if it were a deploy.
+      # -e exits non-zero on null, turning that into a failure before anything is written.
+      - >-
+        yq -e '.config."jaritanet:services"."{{.SERVICE}}".args.image.tag'
+        {{.DEPLOY_DIR}}/{{.DEPLOY_CONFIG}} > /dev/null
       - >-
         yq -i '.config."jaritanet:services"."{{.SERVICE}}".args |=
         (.image.tag = "{{.TAG}}" | .httpPort = {{.HTTP_PORT}})'
