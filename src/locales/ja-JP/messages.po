@@ -5,20 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ジェームス・クリーブランド"
-
-msgid "tagline"
+msgid "james cleveland : senior full stack engineer"
 msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
 
-msgid "cv"
-msgstr "履歴書-2025.01"
-
-msgid "github"
-msgstr "ギットハブ"
-
-msgid "language"
+msgid "change language"
 msgstr "言語を変更"
 
 msgid "close"
 msgstr "閉じる"
+
+msgid "james cleveland"
+msgstr "ジェームス・クリーブランド"
+
+msgid "cv-2025.01"
+msgstr "履歴書-2025.01"
+
+msgid "github"
+msgstr "ギットハブ"

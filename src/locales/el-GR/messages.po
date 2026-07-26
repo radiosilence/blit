@@ -5,20 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "Τζέιμς Κλίβελαντ"
-
-msgid "tagline"
+msgid "james cleveland : senior full stack engineer"
 msgstr "Τζέιμς Κλίβελαντ : ανώτερος full stack μηχανικός"
 
-msgid "cv"
-msgstr "cv-2025.01"
-
-msgid "github"
-msgstr "github"
-
-msgid "language"
+msgid "change language"
 msgstr "αλλαγή γλώσσας"
 
 msgid "close"
 msgstr "κλείσιμο"
+
+msgid "james cleveland"
+msgstr "Τζέιμς Κλίβελαντ"
+
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
+
+msgid "github"
+msgstr "github"

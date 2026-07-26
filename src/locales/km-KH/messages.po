@@ -5,20 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ជេមស៍ ឃ្លីវលែនដ៍"
-
-msgid "tagline"
+msgid "james cleveland : senior full stack engineer"
 msgstr "ជេមស៍ ឃ្លីវលែនដ៍ : វិស្វករ Full Stack ជាន់ខ្ពស់"
 
-msgid "cv"
-msgstr "cv-2025.01"
-
-msgid "github"
-msgstr "github"
-
-msgid "language"
+msgid "change language"
 msgstr "ប្តូរភាសា"
 
 msgid "close"
 msgstr "បិទ"
+
+msgid "james cleveland"
+msgstr "ជេមស៍ ឃ្លីវលែនដ៍"
+
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
+
+msgid "github"
+msgstr "github"

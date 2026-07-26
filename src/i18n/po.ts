@@ -42,7 +42,11 @@ export function parse(source: string) {
   return messages;
 }
 
-export function format(locale: string, messages: Record<string, string>) {
+export function format(
+  locale: string,
+  messages: Record<string, string>,
+  references: Record<string, string[]> = {},
+) {
   const header = [
     'msgid ""',
     'msgstr ""',
@@ -52,8 +56,12 @@ export function format(locale: string, messages: Record<string, string>) {
     '"Content-Transfer-Encoding: 8bit\\n"',
   ].join("\n");
 
-  const entries = Object.entries(messages).map(
-    ([id, value]) => `msgid ${JSON.stringify(id)}\nmsgstr ${JSON.stringify(value)}`,
+  const entries = Object.entries(messages).map(([id, value]) =>
+    [
+      ...(references[id] ?? []).map((where) => `#: ${where}`),
+      `msgid ${JSON.stringify(id)}`,
+      `msgstr ${JSON.stringify(value)}`,
+    ].join("\n"),
   );
 
   return `${[header, ...entries].join("\n\n")}\n`;

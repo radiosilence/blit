@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import MarkdownIt from "markdown-it";
 import { render } from "./render.ts";
 
-import { loadCatalogs } from "#/i18n/catalogs.ts";
+import { loadCatalogs, translator } from "#/i18n/catalogs.ts";
 import { describeLocale, isRtl, locales } from "#/i18n/config.ts";
 import { pages, url } from "#/i18n/routes.ts";
 
@@ -37,7 +37,7 @@ const written = await Promise.all(
       const view = {
         locale,
         dir: isRtl(locale) ? "rtl" : "ltr",
-        t: catalogs[locale],
+        __: translator(catalogs[locale] ?? {}),
         cv,
         styleHref,
         path: url(locale, page.slug),

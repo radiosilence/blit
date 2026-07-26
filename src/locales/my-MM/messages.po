@@ -5,20 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ဂျေးမ်စ် ကလီဗလန်ဒ်"
-
-msgid "tagline"
+msgid "james cleveland : senior full stack engineer"
 msgstr "ဂျေးမ်စ် ကလီဗလန်ဒ် : အကြီးတန်း ဖူးလ်စတက် အင်ဂျင်နီယာ"
 
-msgid "cv"
-msgstr "cv-2025.01"
-
-msgid "github"
-msgstr "github"
-
-msgid "language"
+msgid "change language"
 msgstr "ဘာသာစကား ပြောင်းရန်"
 
 msgid "close"
 msgstr "ပိတ်ရန်"
+
+msgid "james cleveland"
+msgstr "ဂျေးမ်စ် ကလီဗလန်ဒ်"
+
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
+
+msgid "github"
+msgstr "github"
