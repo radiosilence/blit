@@ -4,18 +4,38 @@
 
 ### CI moved into the Taskfile
 
-GitHub Actions now supplies only an environment — checkout, mise toolchain, registry
-credentials, build cache — and every step of substance is a Taskfile target. The
+GitHub Actions now supplies only an environment — checkout, mise toolchain and
+registry credentials — and every step of substance is a Taskfile target. The
 pipeline is reproducible on a laptop, and a CI failure is debuggable without pushing
 a commit to watch it.
 
 - `task ci` (checks then build), `task docker:build` and `task deploy:update` replace
   the inline `run:` steps, `docker/metadata-action`, `docker/build-push-action` and
   the yq-and-git shell block that rewrote the IaC repo's Pulumi config.
-- **Runner-only capabilities arrive as environment, not workflow logic**: `CI`
-  selects `--frozen-lockfile`, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache,
-  `GH_TOKEN` authorises the deployment push. Unset, each falls back to the local
-  equivalent, so the command doesn't change shape between the two.
+- **Runner-only capabilities arrive as environment, not workflow logic**: `CI` selects
+  `--frozen-lockfile`, `GH_TOKEN` authorises the deployment push, and
+  `CACHE_FROM`/`CACHE_TO` point buildx at a shared cache. Unset, each falls back to the
+  local equivalent, so the command doesn't change shape between the two.
+- **No build cache is configured.** The image is a `FROM`, a `LABEL` and a `COPY` of
+  `dist/`, whose content changes every build, so `type=gha` imported a manifest and
+  cached zero steps. Dropping it also removes the action that existed only to export
+  `ACTIONS_RUNTIME_TOKEN` for its benefit. The Taskfile keeps the conditionals.
+- **Publishing is gated on the ref, not the event type.** `PUSH` previously keyed on
+  "not a pull_request", which meant main only because the trigger list happened to
+  contain nothing else; adding a `workflow_dispatch` or a second push branch would have
+  started publishing from it silently.
+- **The deploy write asserts before it writes.** `yq`'s `|=` creates a missing path
+  rather than failing, so a renamed service or moved config would have committed an
+  invented node and left prod on the old tag behind a green job. The clone also pins
+  `--branch main` instead of following whatever the IaC repo's default branch is.
+- **The deploy job is serialised.** Two merges in close succession both cloned, edited
+  and pushed; the loser hit a non-fast-forward it couldn't recover from inside a fresh
+  shallow clone.
+- **`SHA`/`TAG`/`BUILT_AT` are scoped to the tasks that use them.** Task evaluates
+  global `sh:` vars on every invocation, so declaring them globally made `task lint`
+  and the watch loop fork `git` and `date`. They resolve to a caller-supplied value
+  first — a plain task-level var outranks one passed on the command line, which would
+  have silently discarded the commit CI passes.
 - **OCI labels moved to the Dockerfile**, which is where the constant ones belong;
   `revision`, `created` and `version` still come from the build. Output matches what
   `docker/metadata-action` emitted, except `version`, which is now the image's own tag
@@ -30,6 +50,8 @@ a commit to watch it.
 - Dropped `setup-qemu-action` — the only platform built is `linux/amd64` and the
   runner is already amd64.
 - `gh` and `yq` are pinned in `mise.toml` alongside node, aube and task.
+- Actions bumped to releases that declare the `node24` runtime; the previous pins all
+  targeted Node 20 and were being forced onto 24 by the runner.
 - `install` and `css` are `run: once`, so the now-parallel checks can't race each
   other into `node_modules`.
 
