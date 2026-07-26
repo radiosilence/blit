@@ -51,6 +51,12 @@ Key decisions:
 - `scripts/render.ts` wraps the view in a Proxy that throws on unknown keys, so a
   template typo fails the build with the path and the keys that do exist. Generation
   time is the only runtime here, so this is the type check.
+- The wrap is applied to `eta.render` itself, not just the outermost call. Eta crosses
+  into a layout by spreading the view to add `body`, and spreading a Proxy yields a
+  plain object — so a top-level key would stop being guarded past the first boundary.
+- Pages declare their frame (`<% layout("./base") %>`) rather than the frame including
+  the page. The rendered child arrives as `it.body`. Eta also has named blocks if a
+  page ever needs to fill more than one slot.
 - PO keys are short identifiers (`tagline`), not English sentences. Missing keys fall
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web

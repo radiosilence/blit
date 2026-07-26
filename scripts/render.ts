@@ -40,6 +40,16 @@ function strict<T>(value: T, path: string): T {
   }) as T;
 }
 
+/*
+ * Eta reaches a layout by spreading the view into a fresh object to add `body`,
+ * and spreading a Proxy yields a plain one. Both `layout()` and `include()` route
+ * through this.render, so re-wrapping here is what keeps a mistyped key throwing
+ * across the boundary instead of rendering "undefined".
+ */
+const inner = eta.render.bind(eta);
+eta.render = ((template, view, meta) =>
+  inner(template, strict(view, "it"), meta)) as typeof eta.render;
+
 export function render(template: string, view: Record<string, unknown>) {
-  return eta.render(template, strict(view, "it"));
+  return eta.render(template, view);
 }
