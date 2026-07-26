@@ -188,8 +188,6 @@ export class Blit {
     deployToken: Secret,
     dryRun = false,
   ): Promise<string> {
-    const ref = await this.publish(sha, ghcrToken);
-
     const repo = dag
       .container()
       .from("alpine/git:latest")
@@ -197,8 +195,10 @@ export class Blit {
       .withDirectory(
         "/repo",
         dag
-          .git(`https://github.com/${ACCOUNT}/${DEPLOY_REPO}`)
-          .withAuthToken(deployToken)
+          .git(`https://github.com/${ACCOUNT}/${DEPLOY_REPO}`, {
+            httpAuthUsername: "x-access-token",
+            httpAuthToken: deployToken,
+          })
           .branch(DEPLOY_BRANCH)
           .tree(),
       )
@@ -218,7 +218,13 @@ export class Blit {
         DEPLOY_CONFIG,
       ]);
 
-    if (dryRun) return `${ref}\n\n${await repo.withExec(["git", "diff"]).stdout()}`;
+    // Before publishing, so the flag means what it says: nothing is pushed anywhere.
+    if (dryRun) {
+      const diff = await repo.withExec(["git", "diff"]).stdout();
+      return `would publish ${IMAGE}:${tag(sha)}\n\n${diff}`;
+    }
+
+    const ref = await this.publish(sha, ghcrToken);
 
     const pushed = repo
       .withSecretVariable("DEPLOY_TOKEN", deployToken)

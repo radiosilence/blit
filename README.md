@@ -91,12 +91,18 @@ wrong, `dagger call build` just produces the directory and discards it.
 ```bash
 dagger call image directory --path=/public entries   # what's actually in the image
 dagger call deps terminal                            # a shell in the build container
-dagger call deploy --sha=$(git rev-parse HEAD) --dry-run \
-  --ghcr-token=env://GITHUB_TOKEN --deploy-token=env://DEPLOYMENT_PAT
 ```
 
-Secrets are URIs — `env://VAR`, `file://path`, `cmd://gh auth token` — and are read
-at call time rather than being baked into any cached layer.
+Secrets are URIs — `env://VAR`, `file://path`, `cmd://…` — read at call time rather
+than baked into any cached layer. Prefer `env://`: `cmd://` keeps the trailing
+newline, and a token with `\n` on the end fails as an invalid password rather than
+as anything that names the real problem.
+
+```bash
+export GH_TOKEN="$(gh auth token)"   # the assignment strips the newline
+dagger call deploy --sha=$(git rev-parse HEAD) --dry-run \
+  --ghcr-token=env://GH_TOKEN --deploy-token=env://GH_TOKEN
+```
 
 **The first run is slow** (a few minutes: image pulls, a cold `aube install`).
 After that the dependency layers stay cached and only what you changed re-runs.
