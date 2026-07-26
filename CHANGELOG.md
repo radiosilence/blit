@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+### Templates are WebC, messages are Lingui
+
+The hand-rolled template engine and gettext extractor are gone. Templates are still
+valid HTML expanded to static HTML at build time — that part was never the problem —
+but the expanding and the extracting are now done by libraries that already handle
+the cases this site had not reached yet.
+
+- **[WebC](https://github.com/11ty/webc) renders the templates.** A custom element is
+  a component, children arrive through `<slot>`, and dynamic values are JavaScript
+  expressions in attributes (`:href`, `@text`, `webc:for`). It also merges `:class`
+  into the static `class` and drops falsy attributes, both of which had been written
+  by hand.
+- **[Lingui](https://lingui.dev) owns the messages.** ICU means plurals, selects and
+  interpolation work now rather than being the next thing to implement: a message can
+  be `{n, plural, one {# locale} other {# locales}}`, and Polish picks its `many` form
+  for 36. Message ids are still the source text.
+- **Extraction reuses Lingui's own Babel extractor.** `scripts/webc-extractor.ts`
+  collects the expressions a template evaluates and hands them over as JavaScript, so
+  nothing here decides what a message looks like. It is ~60 lines and recognises no
+  message syntax of its own.
+- **A missing message now fails the build.** Lingui falls back to the id, which with
+  source-text ids would ship a mistyped `githubb` as itself, so `missing` throws.
+  Untranslated strings still fall back to `en-GB`.
+- Roughly 390 lines of engine, extractor and PO handling deleted, along with the
+  `escape-html` and `gettext-parser` dependencies and the generated `keys.ts`.
+- **Output is structurally identical across all 72 pages and the compiled CSS is
+  byte-identical.** Not byte-identical HTML: WebC re-serialises rather than splicing
+  into the source, so whitespace and void-element syntax are its choice, and
+  `aria-current="false"` is now omitted rather than emitted.
+
 ### Templates use layouts, and the Proxy now survives the boundary
 
 A page declares the frame it slots into (`<% layout("./base") %>`) instead of `base`

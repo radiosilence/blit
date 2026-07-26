@@ -36,7 +36,7 @@ tasks:
       - src/content/**/*.md
       - src/i18n/**/*.ts
       - src/locales/**/*.po
-      - src/templates/**/*.html
+      - src/templates/**/*.webc
       - "{{.DIST}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
@@ -48,7 +48,7 @@ tasks:
     run: once
     sources:
       - src/styles/**/*.css
-      - src/templates/**/*.html
+      - src/templates/**/*.webc
     generates:
       - "{{.DIST}}/style.css"
     cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
@@ -101,8 +101,9 @@ tasks:
     cmd: "{{.BIN}}/tsc --noEmit"
 
   i18n:sync:
-    desc: Extract translatable text to messages.pot and sync every catalogue
-    cmd: node scripts/i18n.ts
+    desc: Extract translatable text from the templates into every catalogue
+    deps: [install]
+    cmd: "{{.BIN}}/lingui extract {{.CLI_ARGS}}"
 
   check:
     desc: Lint, formatting and types
