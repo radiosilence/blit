@@ -41,7 +41,6 @@ const written = await Promise.all(
         cv,
         styleHref,
         path: url(locale, page.slug),
-        content: page.template,
         urls: Object.fromEntries(pages.map(({ slug }) => [slug || "home", url(locale, slug)])),
         localeLinks: locales.map((code) => ({
           code,
@@ -51,7 +50,7 @@ const written = await Promise.all(
         })),
       };
 
-      const html = render("base", view);
+      const html = render(page.template, view);
 
       const file = join(dist, view.path, "index.html");
       await mkdir(dirname(file), { recursive: true });
