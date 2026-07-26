@@ -13,13 +13,14 @@ a commit to watch it.
   the inline `run:` steps, `docker/metadata-action`, `docker/build-push-action` and
   the yq-and-git shell block that rewrote the IaC repo's Pulumi config.
 - **Runner-only capabilities arrive as environment, not workflow logic**: `CI` selects
-  `--frozen-lockfile`, `GH_TOKEN` authorises the deployment push, and
-  `CACHE_FROM`/`CACHE_TO` point buildx at a shared cache. Unset, each falls back to the
-  local equivalent, so the command doesn't change shape between the two.
-- **No build cache is configured.** The image is a `FROM`, a `LABEL` and a `COPY` of
-  `dist/`, whose content changes every build, so `type=gha` imported a manifest and
-  cached zero steps. Dropping it also removes the action that existed only to export
-  `ACTIONS_RUNTIME_TOKEN` for its benefit. The Taskfile keeps the conditionals.
+  `--frozen-lockfile` and `GH_TOKEN` authorises the deployment push. Unset, each falls
+  back to the local equivalent, so the command doesn't change shape between the two.
+- **No build cache.** The image is a `FROM`, a `LABEL` and a `COPY` of `dist/`, whose
+  content changes every build, so `type=gha` imported a manifest and cached zero steps.
+  Dropping it also removes the action that existed only to export
+  `ACTIONS_RUNTIME_TOKEN` for its benefit. `docker:build` still reads
+  `CACHE_FROM`/`CACHE_TO` if something sets them, so turning it back on is one `env:`
+  block if the Dockerfile ever grows a stage worth caching.
 - **Publishing is gated on the ref, not the event type.** `PUSH` previously keyed on
   "not a pull_request", which meant main only because the trigger list happened to
   contain nothing else; adding a `workflow_dispatch` or a second push branch would have
