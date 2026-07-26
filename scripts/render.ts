@@ -11,6 +11,13 @@ const eta = new Eta({
   views: fileURLToPath(new URL("../src/templates", import.meta.url)),
   defaultExtension: ".html",
   autoEscape: true,
+  /*
+   * Templates read `locale` and `__('…')` rather than `it.locale`. An identifier
+   * the view doesn't have falls through to module scope and dies as a plain
+   * ReferenceError instead of the Proxy's message — still a failed build, just a
+   * blunter one. Anything nested still reports the full path.
+   */
+  useWith: true,
 });
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>

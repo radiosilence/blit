@@ -5,20 +5,28 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ"
+#: src/templates/base.html:52
+msgid "change language"
+msgstr "ਭਾਸ਼ਾ ਬਦਲੋ"
 
-msgid "tagline"
-msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ : ਸੀਨੀਅਰ ਫੁਲ ਸਟੈਕ ਇੰਜੀਨੀਅਰ"
+#: src/templates/base.html:56
+msgid "close"
+msgstr "ਬੰਦ ਕਰੋ"
 
-msgid "cv"
+#: src/templates/index.html:13
+msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
+#: src/templates/index.html:16
 msgid "github"
 msgstr "github"
 
-msgid "language"
-msgstr "ਭਾਸ਼ਾ ਬਦਲੋ"
+#: src/templates/index.html:10
+msgid "james cleveland"
+msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ"
 
-msgid "close"
-msgstr "ਬੰਦ ਕਰੋ"
+#: src/templates/base.html:6
+#: src/templates/base.html:15
+#: src/templates/index.html:11
+msgid "james cleveland : senior full stack engineer"
+msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ : ਸੀਨੀਅਰ ਫੁਲ ਸਟੈਕ ਇੰਜੀਨੀਅਰ"

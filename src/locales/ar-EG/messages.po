@@ -5,20 +5,28 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "جيمس كليفلاند"
+#: src/templates/base.html:52
+msgid "change language"
+msgstr "تغيير اللغة"
 
-msgid "tagline"
-msgstr "جيمس كليفلاند : مهندس فول ستاك كبير"
+#: src/templates/base.html:56
+msgid "close"
+msgstr "إغلاق"
 
-msgid "cv"
+#: src/templates/index.html:13
+msgid "cv-2025.01"
 msgstr "السيرة الذاتية-٢٠٢٥.٠١"
 
+#: src/templates/index.html:16
 msgid "github"
 msgstr "غيت هاب"
 
-msgid "language"
-msgstr "تغيير اللغة"
+#: src/templates/index.html:10
+msgid "james cleveland"
+msgstr "جيمس كليفلاند"
 
-msgid "close"
-msgstr "إغلاق"
+#: src/templates/base.html:6
+#: src/templates/base.html:15
+#: src/templates/index.html:11
+msgid "james cleveland : senior full stack engineer"
+msgstr "جيمس كليفلاند : مهندس فول ستاك كبير"
