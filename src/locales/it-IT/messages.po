@@ -4,32 +4,21 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
 
-#. js-lingui-explicit-id
-#: src/routes/__root.tsx:15
-#: src/routes/__root.tsx:23
-#: src/routes/{-$locale}/index.tsx:17
-msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : ingegnere full stack senior"
-
-#. js-lingui-explicit-id
-#: src/routes/{-$locale}/index.tsx:16
-msgid "james cleveland"
+msgid "name"
 msgstr "james cleveland"
 
-#. js-lingui-explicit-id
-#: src/routes/{-$locale}/index.tsx:19
-msgid "cv-2025.01"
+msgid "tagline"
+msgstr "james cleveland : ingegnere full stack senior"
+
+msgid "cv"
 msgstr "curriculum-2025.01"
 
-#. js-lingui-explicit-id
-#: src/routes/{-$locale}/index.tsx:22
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "cambia lingua"
+
+msgid "close"
+msgstr "chiudi"

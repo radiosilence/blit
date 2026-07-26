@@ -5,14 +5,13 @@
     "suspicious": "warn",
     "perf": "warn"
   },
-  "plugins": ["react", "typescript", "unicorn", "oxc"],
+  "plugins": ["typescript", "unicorn", "oxc"],
   "rules": {
-    "react/react-in-jsx-scope": "off",
     "no-ternary": "off",
     "sort-imports": "off",
     "sort-keys": "off",
     "id-length": "off",
     "unicorn/prefer-global-this": "off"
   },
-  "ignorePatterns": ["**/*.gen.*", ".omc", "dist"]
+  "ignorePatterns": ["dist"]
 }

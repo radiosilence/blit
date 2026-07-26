@@ -2,7 +2,6 @@ export const sourceLocale = "en-GB";
 
 export const locales = [
   "en-GB",
-  "am-ET",
   "ar-EG",
   "ar-PS",
   "bn-BD",
@@ -50,4 +49,17 @@ export function isRtl(locale: string): boolean {
 
 export function isValidLocale(locale: string): locale is Locale {
   return (locales as readonly string[]).includes(locale);
+}
+
+/**
+ * Endonyms — how a locale refers to itself. Resolved from ICU at build time, so
+ * the picker shows "日本語 / 日本" rather than "ja-JP" at no runtime cost. The
+ * region line is what separates nl-BE from nl-NL and zh-CN from zh-TW.
+ */
+export function describeLocale(locale: string) {
+  const [language = locale, region] = locale.split("-");
+  return {
+    name: new Intl.DisplayNames([locale], { type: "language" }).of(language),
+    place: region ? new Intl.DisplayNames([locale], { type: "region" }).of(region) : "",
+  };
 }

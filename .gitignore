@@ -1,12 +1,6 @@
 node_modules
 dist
-.output
+.task
 .DS_Store
 .cache
 .env
-.vinxi
-.nitro
-.wrangler
-
-# Generated
-src/locales/**/*.ts
