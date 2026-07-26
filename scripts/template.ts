@@ -1,35 +1,41 @@
 /**
- * A template is valid HTML. Components are custom elements resolved to a file of
- * the same name, children arrive through `<slot>`, and `{dotted.path}` reads the
- * view. Everything is expanded at build time, so the browser gets plain HTML.
+ * A template is valid HTML, so an HTML parser reads it. Components are custom
+ * elements resolved to a file of the same name, children arrive through `<slot>`,
+ * and every dynamic value is an element or an attribute — there is nothing to
+ * scan for, and no regular expression anywhere in this file.
  *
- * Expressions are paths and nothing else — no calls, no operators, no ternaries.
- * That is what lets `scripts/i18n.ts` and `checkPaths` below read a template
- * statically instead of executing it, and it keeps computation in generate.ts
- * where it can be typed.
+ *   <page-base>…</page-base>        a component; children land in its <slot>
+ *   :href="urls.cv"                 bind an attribute to a path
+ *   :class="option.linkClass"       append to the static class already there
+ *   autofocus?="option.current"     emit a bare attribute when truthy
+ *   <x-text of="locale" />          a path as text
+ *   <x-raw of="cv" />               a path as markup, already HTML
+ *   <x-each of="items" as="item">   repeat the children
+ *   <i18n-t>source text</i18n-t>    translate; the id is the text itself
+ *   <title i18n>…</title>           translate an element's text in place
+ *   i18n-content="source text"      translate into an attribute
  *
- * parse5 gives structure; the output is spliced from the original source rather
- * than serialised from the tree, because serialising rewrites `<!doctype html>`,
- * drops self-closing slashes and reflows whitespace.
+ * A value is a dotted path and nothing else. That is what lets scripts/i18n.ts
+ * read a template statically rather than executing it, and a wrong path fail the
+ * build naming what the view does have.
+ *
+ * Output is spliced into the original source by offset rather than serialised
+ * from the tree: serialising uppercases `<!doctype html>`, drops self-closing
+ * slashes and reflows whitespace.
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
+import escapeHtml from "escape-html";
 import { type DefaultTreeAdapterMap, parse, parseFragment } from "parse5";
 
 type Node = DefaultTreeAdapterMap["childNode"];
 type Element = DefaultTreeAdapterMap["element"];
 type View = Record<string, unknown>;
+type Edit = { start: number; end: number; text: string };
 
 const dir = fileURLToPath(new URL("../src/templates/", import.meta.url));
-const PATH = /\{([\w.]+)\}/g;
-
-const escape = (value: string) =>
-  value.replace(
-    /[&<>"']/g,
-    (char) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char] as string,
-  );
+const I18N = "i18n-";
 
 class TemplateError extends Error {
   constructor(where: string, message: string) {
@@ -38,7 +44,7 @@ class TemplateError extends Error {
   }
 }
 
-/** Resolves `a.b.c`, refusing anything the view doesn't have — a typo is a build failure. */
+/** Resolves `a.b.c`. A path the view lacks is a build failure, not an empty string. */
 function resolve(path: string, view: View, where: string): unknown {
   let value: unknown = view;
 
@@ -57,18 +63,23 @@ function resolve(path: string, view: View, where: string): unknown {
 }
 
 const isElement = (node: Node): node is Element => "tagName" in node;
-const attr = (node: Element, name: string) => node.attrs.find((a) => a.name === name)?.value;
-
-/** `{path}` inside text or an attribute value. */
-const interpolate = (text: string, view: View, where: string) =>
-  text.replace(PATH, (_, path: string) => escape(String(resolve(path, view, where))));
+const attrOf = (node: Element, name: string) => node.attrs.find((a) => a.name === name)?.value;
+const isDocument = (source: string) => source.trimStart().toLowerCase().startsWith("<!doctype");
 
 export function render(name: string, view: View): string {
   return expand(readFileSync(`${dir}${name}.html`, "utf8"), view, `${name}.html`);
 }
 
 function expand(source: string, view: View, where: string): string {
-  const edits: { start: number; end: number; text: string }[] = [];
+  const edits: Edit[] = [];
+
+  const translate = (id: string) => {
+    const fn = view["__"];
+    if (typeof fn !== "function") throw new TemplateError(where, "no `__` in the view");
+    return String((fn as (id: string) => string)(id));
+  };
+
+  /** The source between a node's tags — what gets re-expanded, or replaced wholesale. */
   const inner = (node: Element) => {
     const at = node.sourceCodeLocation;
     return at?.startTag && at.endTag
@@ -76,149 +87,125 @@ function expand(source: string, view: View, where: string): string {
       : "";
   };
 
-  function walk(node: Node) {
-    if (node.nodeName === "#text") {
-      const at = node.sourceCodeLocation;
-      const text = (node as { value: string }).value;
-      if (at && PATH.test(text)) {
-        edits.push({
-          start: at.startOffset,
-          end: at.endOffset,
-          text: interpolate(text, view, where),
-        });
-      }
-      return;
-    }
+  const replace = (node: Element, text: string) => {
+    const at = node.sourceCodeLocation;
+    if (at) edits.push({ start: at.startOffset, end: at.endOffset, text });
+  };
 
+  const text = (of: string | undefined, tag: string, escape: boolean) => {
+    if (!of) throw new TemplateError(where, `<${tag}> needs \`of\``);
+    const value = String(resolve(of, view, where));
+    return escape ? escapeHtml(value) : value;
+  };
+
+  function walk(node: Node) {
     if (!isElement(node)) return;
     const at = node.sourceCodeLocation;
     if (!at) return;
 
-    const tag = node.tagName;
-
-    // `<i18n-t>text</i18n-t>` — the message id is the source text.
-    if (tag === "i18n-t") {
-      const translate = view["__"] as ((id: string) => string) | undefined;
-      if (!translate) throw new TemplateError(where, "no `__` in the view for <i18n-t>");
-      edits.push({
-        start: at.startOffset,
-        end: at.endOffset,
-        text: escape(translate(inner(node).trim())),
-      });
-      return;
+    switch (node.tagName) {
+      // Already expanded against the caller's view; re-expanding would use this one.
+      case "slot":
+        return replace(node, String(view["slot"] ?? ""));
+      case "i18n-t":
+        return replace(node, escapeHtml(translate(inner(node).trim())));
+      case "x-text":
+        return replace(node, text(attrOf(node, "of"), "x-text", true));
+      case "x-raw":
+        return replace(node, text(attrOf(node, "of"), "x-raw", false));
+      case "x-each": {
+        const of = attrOf(node, "of");
+        const as = attrOf(node, "as");
+        if (!of || !as) throw new TemplateError(where, "<x-each> needs `of` and `as`");
+        const items = resolve(of, view, where);
+        if (!Array.isArray(items)) throw new TemplateError(where, `\`${of}\` is not an array`);
+        const body = inner(node);
+        return replace(node, items.map((i) => expand(body, { ...view, [as]: i }, where)).join(""));
+      }
     }
 
-    // `<x-raw of="cv" />` — markdown that is already HTML.
-    if (tag === "x-raw") {
-      const of = attr(node, "of");
-      if (!of) throw new TemplateError(where, "<x-raw> needs `of`");
-      edits.push({
-        start: at.startOffset,
-        end: at.endOffset,
-        text: String(resolve(of, view, where)),
-      });
-      return;
+    // A hyphenated element is a component; its children fill the component's slot.
+    if (node.tagName.includes("-")) {
+      const props: View = { ...view, slot: expand(inner(node), view, where).trim() };
+      for (const { name, value } of node.attrs) props[name] = value;
+      return replace(node, render(node.tagName, props));
     }
 
-    // `<x-each of="localeLinks" as="option">`
-    if (tag === "x-each") {
-      const of = attr(node, "of");
-      const as = attr(node, "as");
-      if (!of || !as) throw new TemplateError(where, "<x-each> needs `of` and `as`");
-      const items = resolve(of, view, where);
-      if (!Array.isArray(items)) throw new TemplateError(where, `\`${of}\` is not an array`);
-      const body = inner(node);
-      edits.push({
-        start: at.startOffset,
-        end: at.endOffset,
-        text: items.map((item) => expand(body, { ...view, [as]: item }, where)).join(""),
-      });
-      return;
-    }
-
-    // Any other hyphenated element is a component: <page-base>children</page-base>
-    if (tag.includes("-")) {
-      const props: View = { ...view };
-      for (const { name, value } of node.attrs) props[name] = interpolate(value, view, where);
-      props["slot"] = expand(inner(node), view, where).trim();
-      edits.push({ start: at.startOffset, end: at.endOffset, text: render(tag, props) });
-      return;
-    }
-
-    /*
-     * `<title i18n>` and `<meta i18n-content="…">`. Both exist because an element
-     * cannot appear in an attribute value, nor inside RAWTEXT like <title>, so
-     * <i18n-t> has nowhere to go in either position.
-     */
-    const translate = view["__"] as ((id: string) => string) | undefined;
-
-    if (attr(node, "i18n") !== undefined && at.startTag && at.endTag) {
-      if (!translate) throw new TemplateError(where, "no `__` in the view for i18n");
+    // `<title i18n>` exists because an element cannot appear inside RAWTEXT.
+    if (attrOf(node, "i18n") !== undefined && at.startTag && at.endTag) {
       edits.push({
         start: at.startTag.endOffset,
         end: at.endTag.startOffset,
-        text: escape(translate(inner(node).trim())),
+        text: escapeHtml(translate(inner(node).trim())),
       });
-      const location = at.attrs?.["i18n"];
-      if (location) {
-        // Back over the separating whitespace, or the tag keeps a stray gap.
-        let start = location.startOffset;
-        while (start > 0 && /\s/.test(source[start - 1] ?? "")) start--;
-        edits.push({ start, end: location.endOffset, text: "" });
-      }
     }
+
+    const staticClass = attrOf(node, "class");
 
     for (const { name, value } of node.attrs) {
       const location = at.attrs?.[name.toLowerCase()];
       if (!location) continue;
+      const edit = (replacement: string) =>
+        edits.push({ start: location.startOffset, end: location.endOffset, text: replacement });
 
-      if (name === "i18n") continue;
-
-      if (name.startsWith("i18n-")) {
-        if (!translate) throw new TemplateError(where, "no `__` in the view for i18n");
-        edits.push({
-          start: location.startOffset,
-          end: location.endOffset,
-          text: `${name.slice(5)}="${escape(translate(value))}"`,
-        });
+      // The marker is dropped along with the space that separated it from the tag.
+      if (name === "i18n") {
+        let start = location.startOffset;
+        while (start > 0 && " \t\n\r".includes(source[start - 1] ?? "")) start--;
+        edits.push({ start, end: location.endOffset, text: "" });
         continue;
       }
 
-      // `autofocus?="option.current"` emits a bare `autofocus` when truthy.
+      // `i18n-content="…"` exists because an element cannot appear in an attribute.
+      if (name.startsWith(I18N)) {
+        edit(`${name.slice(I18N.length)}="${escapeHtml(translate(value))}"`);
+        continue;
+      }
+
+      // `autofocus?="path"` — for a boolean attribute, presence is the value.
       if (name.endsWith("?")) {
-        const bare = name.slice(0, -1);
-        edits.push({
-          start: location.startOffset,
-          end: location.endOffset,
-          text: resolve(value, view, where) ? bare : "",
-        });
+        edit(resolve(value, view, where) ? name.slice(0, -1) : "");
         continue;
       }
 
-      if (PATH.test(value)) {
-        edits.push({
-          start: location.startOffset,
-          end: location.endOffset,
-          text: `${name}="${interpolate(value, view, where)}"`,
-        });
+      if (!name.startsWith(":")) continue;
+      const bound = escapeHtml(String(resolve(value, view, where)));
+      const bare = name.slice(1);
+
+      /*
+       * `:class` merges into the static class rather than replacing it, so the
+       * literal utilities stay written in the template — which is the only place
+       * Tailwind looks for them.
+       */
+      const classLocation = bare === "class" && staticClass ? at.attrs?.["class"] : undefined;
+      if (!classLocation) {
+        edit(`${bare}="${bound}"`);
+        continue;
       }
+
+      edit("");
+      edits.push({
+        start: classLocation.startOffset,
+        end: classLocation.endOffset,
+        text: `class="${staticClass} ${bound}"`,
+      });
     }
 
     for (const child of node.childNodes ?? []) walk(child);
   }
 
-  // A document keeps <html>/<head>; a fragment would restructure them away.
-  const root = /^\s*<!doctype/i.test(source)
+  // A document keeps <html> and <head>; a fragment would restructure them away.
+  const root = isDocument(source)
     ? parse(source, { sourceCodeLocationInfo: true })
     : parseFragment(source, { sourceCodeLocationInfo: true });
+
   for (const child of root.childNodes) walk(child);
 
   // Descending, so earlier offsets stay valid as later text is replaced.
   let out = source;
-  for (const edit of edits.sort((a, b) => b.start - a.start)) {
+  for (const edit of edits.toSorted((a, b) => b.start - a.start)) {
     out = out.slice(0, edit.start) + edit.text + out.slice(edit.end);
   }
 
-  // `<slot>` is filled last: its content is already expanded and must not be rescanned.
-  return out.replace(/<slot\s*\/?>(?:<\/slot>)?/g, () => String(view["slot"] ?? ""));
+  return out;
 }

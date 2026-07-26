@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{locale}" dir="{dir}">
+<html :lang="locale" :dir="dir">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -13,10 +13,10 @@
     <meta name="mobile-web-app-capable" content="yes" />
 
     <meta property="og:title" i18n-content="james cleveland : senior full stack engineer" />
-    <meta property="og:url" content="https://blit.cc{path}" />
+    <meta property="og:url" :content="canonicalUrl" />
     <meta property="og:image" content="https://blit.cc/logo.png" />
 
-    <link rel="stylesheet" href="{styleHref}" />
+    <link rel="stylesheet" :href="styleHref" />
     <link rel="preload" href="/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -34,7 +34,7 @@
         commandfor="locale-dialog"
         class="cursor-pointer p-1 underline"
       >
-        {locale}
+        <x-text of="locale" />
       </button>
     </nav>
 
@@ -64,14 +64,14 @@
         <x-each of="localeLinks" as="option">
         <li>
           <a
-            href="{option.href}"
-            hreflang="{option.code}"
-            lang="{option.code}"
-            aria-current="{option.current}" autofocus?="option.current"
-            class="block px-3 py-2 no-underline hover:bg-brand-mid/20 {option.linkClass}"
+            :href="option.href"
+            :hreflang="option.code"
+            :lang="option.code"
+            :aria-current="option.current" autofocus?="option.current"
+            class="block px-3 py-2 no-underline hover:bg-brand-mid/20" :class="option.linkClass"
           >
-            <span class="block truncate text-sm">{option.name}</span>
-            <span class="block truncate text-xs opacity-60">{option.place}</span>
+            <span class="block truncate text-sm"><x-text of="option.name" /></span>
+            <span class="block truncate text-xs opacity-60"><x-text of="option.place" /></span>
           </a>
         </li>
         </x-each>

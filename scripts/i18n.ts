@@ -19,16 +19,16 @@ import { locales, sourceLocale } from "#/i18n/config.ts";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const messages = new Map<string, string[]>();
 
+const text = (node: DefaultTreeAdapterMap["element"]) =>
+  (node.childNodes ?? [])
+    .map((child) => (child.nodeName === "#text" ? (child as { value: string }).value : ""))
+    .join("")
+    .trim();
+
 const add = (id: string, where: string) => messages.set(id, [...(messages.get(id) ?? []), where]);
 
 for await (const file of glob("src/templates/**/*.html", { cwd: root })) {
   const source = await readFile(new URL(file, new URL(root, "file:")), "utf8");
-  const text = (node: DefaultTreeAdapterMap["element"]) =>
-    (node.childNodes ?? [])
-      .map((child) => (child.nodeName === "#text" ? (child as { value: string }).value : ""))
-      .join("")
-      .trim();
-
   (function walk(node: DefaultTreeAdapterMap["parentNode"]) {
     for (const child of node.childNodes ?? []) {
       if (!("tagName" in child)) continue;
@@ -48,7 +48,7 @@ for await (const file of glob("src/templates/**/*.html", { cwd: root })) {
   })(parse(source, { sourceCodeLocationInfo: true }));
 }
 
-const ids = [...messages.keys()].sort();
+const ids = [...messages.keys()].toSorted();
 if (!ids.length)
   throw new Error("No translatable text found — that is almost certainly a bug here.");
 
