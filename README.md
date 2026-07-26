@@ -3,14 +3,22 @@
 ![publish-web-container](https://github.com/radiosilence/blit/actions/workflows/publish-web-container.yml/badge.svg)
 
 Static site for [blit.cc](https://blit.cc) — a homepage and a CV, in 37 locales.
-Nothing is shipped to the browser but HTML, CSS and a font.
+The browser gets HTML, CSS, a font, and 353 bytes of inline JavaScript.
 
 ## Why there's no framework
 
-The site is two pages, four translated strings and a markdown CV. Its only piece of
-interactivity is the language picker, which is a `<details>` element containing one
-link per locale — no script, keyboard-accessible for free. That left nothing for a
-client-side framework to do, so there isn't one.
+The site is two pages, six translated strings and a markdown CV. Its only piece of
+interactivity is the language picker, so there was nothing for a client-side
+framework to do.
+
+The picker is a `<dialog>`: the top layer, focus trapping, Esc-to-close and the
+backdrop are all native, leaving four lines of script for `showModal()` and
+click-outside. The principle is to lean on native elements for _behaviour_ while
+styling them ourselves — `<dialog>` is fully styleable, which is what separates it
+from something like `<input type="date">` and its unstyleable shadow DOM.
+
+Locale names come from ICU via `Intl.DisplayNames` at build time, so the picker
+reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 ## Stack
 

@@ -16,3 +16,9 @@ msgstr "резюме-2025.01"
 
 msgid "github"
 msgstr "гітхаб"
+
+msgid "language"
+msgstr "змінити мову"
+
+msgid "close"
+msgstr "закрити"

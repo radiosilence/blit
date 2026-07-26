@@ -28,16 +28,58 @@
     {{> content}}
 
     <nav class="fixed end-2 bottom-2 text-xs">
-      <details class="relative">
-        <summary>{{locale}}</summary>
-        <ul
-          class="absolute end-0 bottom-6 max-h-64 space-y-1 overflow-y-auto border border-brand-mid bg-white p-2 dark:bg-brand-dark"
-        >
-          {{#localeLinks}}
-          <li><a href="{{href}}" hreflang="{{code}}">{{code}}</a></li>
-          {{/localeLinks}}
-        </ul>
-      </details>
+      <button type="button" id="locale-trigger" class="cursor-pointer p-1 underline">
+        {{locale}}
+      </button>
     </nav>
+
+    <!-- Only the list scrolls; the dialog itself must not, or the UA adds a resize grip. -->
+    <dialog
+      id="locale-dialog"
+      aria-labelledby="locale-heading"
+      class="m-auto flex max-h-[80vh] w-[min(44rem,calc(100vw-2rem))] flex-col overflow-hidden border border-brand-mid/40 bg-white p-0 text-brand-dark backdrop:bg-black/60 backdrop:backdrop-blur-sm dark:bg-brand-surface dark:text-brand-light"
+    >
+      <header class="flex items-center justify-between border-b border-brand-mid/30 px-4 py-3">
+        <h2 id="locale-heading" class="text-sm font-semibold normal-case">{{t.language}}</h2>
+        <form method="dialog">
+          <button
+            class="flex size-8 cursor-pointer items-center justify-center text-xl leading-none opacity-70 hover:opacity-100"
+            aria-label="{{t.close}}"
+          >
+            ×
+          </button>
+        </form>
+      </header>
+
+      <ul class="grid grid-cols-2 overflow-y-auto p-2 sm:grid-cols-3">
+        {{#localeLinks}}
+        <li>
+          <a
+            href="{{href}}"
+            hreflang="{{code}}"
+            lang="{{code}}"
+            aria-current="{{current}}"
+            class="block px-3 py-2 no-underline hover:bg-brand-mid/20 {{#current}}text-brand{{/current}}{{^current}}text-inherit{{/current}}"
+          >
+            <span class="block truncate text-sm">{{name}}</span>
+            <span class="block truncate text-xs opacity-60">{{place}}</span>
+          </a>
+        </li>
+        {{/localeLinks}}
+      </ul>
+    </dialog>
+
+    <script>
+      const dialog = document.getElementById("locale-dialog");
+      document.getElementById("locale-trigger").onclick = () => {
+        dialog.showModal();
+        // Focusing the active locale scrolls it into view for free.
+        dialog.querySelector('[aria-current="true"]').focus();
+      };
+      // <dialog> gives Esc and focus trapping; only click-outside needs wiring.
+      dialog.onclick = (event) => {
+        if (event.target === dialog) dialog.close();
+      };
+    </script>
   </body>
 </html>

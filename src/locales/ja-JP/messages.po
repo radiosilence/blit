@@ -16,3 +16,9 @@ msgstr "履歴書-2025.01"
 
 msgid "github"
 msgstr "ギットハブ"
+
+msgid "language"
+msgstr "言語を変更"
+
+msgid "close"
+msgstr "閉じる"

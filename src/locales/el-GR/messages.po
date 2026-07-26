@@ -16,3 +16,9 @@ msgstr "cv-2025.01"
 
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "αλλαγή γλώσσας"
+
+msgid "close"
+msgstr "κλείσιμο"

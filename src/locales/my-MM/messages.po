@@ -16,3 +16,9 @@ msgstr "cv-2025.01"
 
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "ဘာသာစကား ပြောင်းရန်"
+
+msgid "close"
+msgstr "ပိတ်ရန်"

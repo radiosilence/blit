@@ -16,3 +16,9 @@ msgstr "lebenslauf-2025.01"
 
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "sprache ändern"
+
+msgid "close"
+msgstr "schließen"

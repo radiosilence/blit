@@ -16,3 +16,9 @@ msgstr "履歷-2025.01"
 
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "變更語言"
+
+msgid "close"
+msgstr "關閉"

@@ -17,6 +17,8 @@
   --color-brand-light: #ccc;
   --color-brand-mid: #666666;
   --color-brand-dark: #333;
+  /* Raised surfaces (the locale dialog) — brand-dark on brand-dark would vanish. */
+  --color-brand-surface: #3d3d3d;
   --default-font-family: "Geist Mono";
 }
 
@@ -39,61 +41,62 @@
   }
 }
 
-a,
-a:visited,
-a:active {
-  @apply text-brand underline;
-}
-
-a:hover {
-  @apply text-brand-mid;
-}
-
-body {
-  @apply text-brand-dark;
-}
-
-h1,
-h2 {
-  @apply lowercase;
-}
-
-h1 {
-  @apply text-3xl font-extralight;
-}
-
-h2 {
-  @apply text-2xl font-thin;
-}
-
-h3 {
-  @apply text-sm font-semibold;
-}
-
-strong {
-  @apply font-semibold;
-}
-
-.prose {
-  h1 {
-    @apply text-4xl;
+/*
+ * These must sit in `base`. Unlayered rules beat every @layer regardless of
+ * specificity, so an unlayered `a` would override utilities like `no-underline`
+ * on the elements that need to opt out.
+ */
+@layer base {
+  a,
+  a:visited,
+  a:active {
+    @apply text-brand underline;
   }
-}
 
-/* The language picker is a bare <details>; the disclosure triangle is noise. */
-summary {
-  @apply cursor-pointer;
-  list-style: none;
-}
+  a:hover {
+    @apply text-brand-mid;
+  }
 
-summary::-webkit-details-marker {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
   body {
-    @apply bg-brand-dark;
-    @apply text-brand-light;
+    @apply text-brand-dark;
+  }
+
+  h1,
+  h2 {
+    @apply lowercase;
+  }
+
+  h1 {
+    @apply text-3xl font-extralight;
+  }
+
+  h2 {
+    @apply text-2xl font-thin;
+  }
+
+  h3 {
+    @apply text-sm font-semibold;
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  /* The UA default is Chrome blue, which is the one off-brand colour on the site. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+
+  .prose {
+    h1 {
+      @apply text-4xl;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-brand-dark text-brand-light;
+    }
   }
 }
 

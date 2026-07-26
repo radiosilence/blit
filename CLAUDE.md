@@ -33,12 +33,20 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
 Key decisions:
 
 - Nothing in `package.json` is a runtime dependency; it is all build-time tooling.
-  Keep the output free of JavaScript — the language picker is a `<details>` element
-  and interactivity should stay declarative.
+  The only shipped script is the four lines that open the locale `<dialog>`. Reach for
+  a native element and style it rather than adding script: `<dialog>` earns its keep
+  because it's fully styleable, which an `<input type="date">` is not.
+- Base element rules in `app.css` must stay inside `@layer base`. Unlayered CSS beats
+  every `@layer` regardless of specificity, so an unlayered `a` silently overrides
+  utilities like `no-underline`.
 - Scripts under `scripts/` are `.ts` run directly by Node 24's type stripping — no
   transpiler. Keep them strippable: no enums, no namespaces, explicit `import type`.
 - Templates are logic-less on purpose. Anything conditional belongs in
   `scripts/generate.ts`, not in a template.
+- oxfmt parses templates as HTML, so a Mustache section can't sit in attribute
+  position (`<a {{#x}}disabled{{/x}}>`). Inside an attribute _value_ is fine. For a
+  conditional boolean attribute, render the value (`aria-current="{{current}}"`) or
+  handle it in the dialog script.
 - PO keys are short identifiers (`tagline`), not English sentences. Missing keys fall
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web

@@ -6,7 +6,7 @@ import MarkdownIt from "markdown-it";
 import Mustache from "mustache";
 
 import { loadCatalogs } from "#/i18n/catalogs.ts";
-import { isRtl, locales } from "#/i18n/config.ts";
+import { describeLocale, isRtl, locales } from "#/i18n/config.ts";
 import { pages, url } from "#/i18n/routes.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -37,7 +37,12 @@ await Promise.all(
         cv,
         path: url(locale, page.slug),
         urls: Object.fromEntries(pages.map(({ slug }) => [slug || "home", url(locale, slug)])),
-        localeLinks: locales.map((code) => ({ code, href: url(code, page.slug) })),
+        localeLinks: locales.map((code) => ({
+          code,
+          href: url(code, page.slug),
+          current: code === locale,
+          ...describeLocale(code),
+        })),
       };
 
       const html = Mustache.render(base, view, { content: templates[index] ?? "" });

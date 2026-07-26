@@ -16,3 +16,9 @@ msgstr "curriculum-2025.01"
 
 msgid "github"
 msgstr "github"
+
+msgid "language"
+msgstr "cambia lingua"
+
+msgid "close"
+msgstr "chiudi"

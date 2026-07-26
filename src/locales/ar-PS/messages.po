@@ -16,3 +16,9 @@ msgstr "السيرة الذاتية-2025.01"
 
 msgid "github"
 msgstr "غيت هاب"
+
+msgid "language"
+msgstr "تغيير اللغة"
+
+msgid "close"
+msgstr "إغلاق"

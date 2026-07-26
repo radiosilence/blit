@@ -16,3 +16,9 @@ msgstr "რეზიუმე-2025.01"
 
 msgid "github"
 msgstr "გითჰაბი"
+
+msgid "language"
+msgstr "ენის შეცვლა"
+
+msgid "close"
+msgstr "დახურვა"

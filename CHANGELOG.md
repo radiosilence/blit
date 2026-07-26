@@ -4,13 +4,20 @@
 
 ### Rewritten as a static generator — no framework, no bundler, no client JS
 
-The site is two pages, four translated strings and a markdown CV, and its only
+The site is two pages, six translated strings and a markdown CV, and its only
 interactivity is the language picker. React, TanStack Start, Vite, MDX and Wrangler
-existed to render that, so they're gone. Output is now HTML, CSS and a font: the
-homepage is 4.3 KB of markup with no `<script>` tag at all.
+existed to render that, so they're gone. The homepage is now 4.6 KB of markup, CSS, a
+font, and 353 bytes of inline script.
 
-- **Language picker** is a `<details>` element with one `<a>` per locale, replacing the
-  `<select>` + `useNavigate` handler. No script, keyboard-accessible natively.
+- **Language picker** is a `<dialog>` modal replacing the `<select>` + `useNavigate`
+  handler. Top layer, focus trapping, Esc and the backdrop are native; four lines of
+  script cover `showModal()` and click-outside. Locale names are resolved from ICU
+  via `Intl.DisplayNames` **at build time**, so it reads "日本語 / 日本" rather than
+  "ja-JP" at no runtime cost, and the region line disambiguates nl-BE from nl-NL.
+  Opening it focuses the current locale, which scrolls it into view for free.
+- **Base styles moved into `@layer base`.** Unlayered CSS outranks every `@layer`
+  regardless of specificity, so the bare `a` rule was overriding utilities like
+  `no-underline` wherever an element needed to opt out.
 - **Templates** are Mustache (`src/templates/*.html`) — logic-less, so logic can't
   accumulate in them. `scripts/generate.ts` renders 74 pages in ~40 ms.
 - **Task replaces the npm scripts.** `Taskfile.yml` declares `sources`/`generates` per
@@ -29,6 +36,9 @@ homepage is 4.3 KB of markup with no `<script>` tag at all.
   templates read `{{t.tagline}}` with no indirection. These were already explicit ids
   under Lingui, not source text, so nothing is lost.
 - **Untranslated keys fall back to `en-GB`** instead of rendering blank.
+- Two new strings (`language`, `close`) for the picker, translated across all 37
+  catalogues. The Tibetan, Dhivehi and Odia renderings are the least confident and
+  are worth a native-speaker check.
 - `task i18n:sync` replaces `lingui extract`, propagating source-locale keys to every
   catalogue and reporting what's outstanding.
 - `/en-GB/*` is no longer generated; the source locale lives only at `/` and `/cv`,
