@@ -1,0 +1,17 @@
+import { html, raw } from "hono/html";
+
+export const cv = ({ body, urls }: { body: string; urls: { home: string } }) =>
+  html`<div class="mx-4 flex flex-col items-center lg:mx-0">
+    <section class="mb-12 max-w-5xl">
+      <a href="${urls.home}">
+        <img
+          src="/logo.png"
+          alt="blit.cc logo"
+          width="128"
+          height="128"
+          class="mt-16 mb-8 lg:mt-32"
+        />
+      </a>
+      <article class="prose prose-sm">${raw(body)}</article>
+    </section>
+  </div>`;

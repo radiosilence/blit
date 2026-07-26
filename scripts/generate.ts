@@ -4,11 +4,13 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import MarkdownIt from "markdown-it";
-import { render } from "./render.ts";
 
 import { loadCatalogs } from "#/i18n/catalogs.ts";
 import { describeLocale, isRtl, locales } from "#/i18n/config.ts";
 import { pages, url } from "#/i18n/routes.ts";
+import { cv } from "#/templates/cv.ts";
+import { index } from "#/templates/index.ts";
+import { layout } from "#/templates/layout.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const dist = join(root, "dist");
@@ -26,39 +28,45 @@ const styleHref = await readFile(join(dist, "style.css")).then(
   (css) => `/style.css?v=${createHash("sha256").update(css).digest("hex").slice(0, 8)}`,
 );
 
-const [catalogs, cv] = await Promise.all([
+const [catalogs, cvBody] = await Promise.all([
   loadCatalogs(),
   read("src/content/cv.md").then((source) => markdown.render(source)),
 ]);
 
 const written = await Promise.all(
-  locales.flatMap((locale) =>
-    pages.map(async (page) => {
-      const view = {
-        locale,
-        dir: isRtl(locale) ? "rtl" : "ltr",
-        t: catalogs[locale],
-        cv,
-        styleHref,
-        path: url(locale, page.slug),
-        content: page.template,
-        urls: Object.fromEntries(pages.map(({ slug }) => [slug || "home", url(locale, slug)])),
-        localeLinks: locales.map((code) => ({
-          code,
-          href: url(code, page.slug),
-          current: code === locale,
-          ...describeLocale(code),
-        })),
-      };
+  locales.flatMap((locale) => {
+    const t = catalogs[locale];
+    const urls = { home: url(locale, ""), cv: url(locale, "cv") };
 
-      const html = render("base", view);
+    // Each template takes only the props it uses, so `tsc` rejects a message key
+    // or a link that no longer exists.
+    const slot = { home: index({ t, urls }), cv: cv({ body: cvBody, urls }) };
 
-      const file = join(dist, view.path, "index.html");
+    return pages.map(async ({ key, slug }) => {
+      const path = url(locale, slug);
+      const html = String(
+        await layout({
+          children: slot[key],
+          dir: isRtl(locale) ? "rtl" : "ltr",
+          locale,
+          localeLinks: locales.map((code) => ({
+            code,
+            href: url(code, slug),
+            current: code === locale,
+            ...describeLocale(code),
+          })),
+          path,
+          styleHref,
+          t,
+        }),
+      );
+
+      const file = join(dist, path, "index.html");
       await mkdir(dirname(file), { recursive: true });
       await writeFile(file, html);
       return file;
-    }),
-  ),
+    });
+  }),
 );
 
 /*

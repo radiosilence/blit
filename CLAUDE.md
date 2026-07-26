@@ -26,7 +26,7 @@ Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
 - **Orchestration**: [Task](https://taskfile.dev); each step declares `sources`/`generates`
-- **Templates**: Eta over `src/templates/*.html`, rendered via `scripts/render.ts`
+- **Templates**: `hono/html` tagged templates in `src/templates/*.ts`
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
 - **i18n**: hand-rolled gettext in `src/i18n/po.ts`, 36 locales, `.po` files are the source of truth
@@ -42,15 +42,21 @@ Key decisions:
 - Base element rules in `app.css` must stay inside `@layer base`. Unlayered CSS beats
   every `@layer` regardless of specificity, so an unlayered `a` silently overrides
   utilities like `no-underline`.
-- Scripts under `scripts/` are `.ts` run directly by Node 24's type stripping — no
-  transpiler. Keep them strippable: no enums, no namespaces, explicit `import type`.
-- Eta permits arbitrary expressions, so keep templates to presentation. Anything that
-  computes a value belongs in `scripts/generate.ts`.
-- oxfmt is pointed away from `src/templates` (`.oxfmtrc.json`): it parses them as HTML
-  and Eta tags aren't valid in attribute position.
-- `scripts/render.ts` wraps the view in a Proxy that throws on unknown keys, so a
-  template typo fails the build with the path and the keys that do exist. Generation
-  time is the only runtime here, so this is the type check.
+- Everything under `scripts/` and `src/` is `.ts` run directly by Node 24's type
+  stripping — no transpiler. Keep it strippable: no enums, no namespaces, explicit
+  `import type`, **and no JSX** — Node strips types but does not compile JSX, which
+  is why templates are `hono/html` tagged literals and not `hono/jsx`.
+- Templates are typed functions, so `task typecheck` is the check that a message key
+  or a link still exists. Each one declares only the props it uses; there is
+  deliberately no shared view type, since a god-object accepts every template's
+  fields and so checks none of them properly.
+- `hono/html` exports `html` and `raw`, nothing else — no slots. `layout.ts` takes a
+  `children` prop holding already-rendered markup, which `html` splices in without
+  re-escaping. Interpolation escapes; `raw()` is the opt-out, used for the CV only.
+- Booleans interpolate as the empty string, not `"true"`/`"false"` — `aria-current`
+  needs `${current ? "true" : "false"}` or it silently renders `aria-current=""`.
+- Template literals permit arbitrary expressions, so keep templates to presentation.
+  Anything that computes a value belongs in `scripts/generate.ts`.
 - PO keys are short identifiers (`tagline`), not English sentences. Missing keys fall
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
@@ -63,7 +69,8 @@ Key decisions:
   named file, so a partially-deleted `dist/` can't be detected. Copying is cheap.
 - `/style.css` carries a content digest as a query string. nano-web serves CSS
   `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
-- Adding a page means a template plus an entry in `src/i18n/routes.ts`.
+- Adding a page means a template, an entry in `src/i18n/routes.ts`, and rendering it
+  into the `slot` map in `scripts/generate.ts`.
 - GitHub Actions is an environment, not a pipeline: it checks out, installs mise,
   supplies credentials and a cache, then calls Taskfile targets. Anything a runner has
   and a laptop doesn't must arrive as an environment variable the Taskfile reads

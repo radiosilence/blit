@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### Templates are typed functions
+
+Eta is replaced by `hono/html`. Templates move from `src/templates/*.html` to
+`*.ts`, which puts them inside `tsconfig.json` — so a mistyped message key or a
+renamed route is a `task typecheck` failure rather than something the generator
+discovers at render time.
+
+- **`scripts/render.ts` is gone.** Its Proxy existed to make an untyped template
+  language fail loudly on an unknown key; the compiler does that now, earlier and
+  with the real name. `eta` leaves `package.json` with it.
+- **No shared view type.** Each template declares only the props it uses — `index`
+  wants `{ t, urls: { cv } }`, `cv` wants `{ body, urls: { home } }`. A god-object
+  passed to every template structurally accepts every field and therefore checks
+  none of them properly, so `generate.ts` wires the props explicitly instead.
+- **`base.html` became `layout.ts` with a `children` prop.** `hono/html` exports
+  `html` and `raw` and nothing else, so a slot is a prop holding already-rendered
+  markup — which is all Eta's `include` was doing.
+- **Tagged literals, not JSX.** Node 24 strips types but does not compile JSX, so
+  `hono/jsx` would put a transpiler back into a pipeline that has none.
+- **oxfmt now formats the templates.** The `ignorePatterns` entry existed because
+  oxfmt parsed `.html` templates as HTML and Eta tags aren't valid in attribute
+  position. They are TypeScript now, so they lint and format like everything else.
+- Output is unchanged: all 72 pages match the previous build modulo whitespace
+  inside a tag.
+
 ### CI moved into the Taskfile
 
 GitHub Actions now supplies only an environment — checkout, mise toolchain and

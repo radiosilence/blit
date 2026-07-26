@@ -36,7 +36,7 @@ tasks:
       - src/content/**/*.md
       - src/i18n/**/*.ts
       - src/locales/**/*.po
-      - src/templates/**/*.html
+      - src/templates/**/*.ts
       - "{{.DIST}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
@@ -48,7 +48,7 @@ tasks:
     run: once
     sources:
       - src/styles/**/*.css
-      - src/templates/**/*.html
+      - src/templates/**/*.ts
     generates:
       - "{{.DIST}}/style.css"
     cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"

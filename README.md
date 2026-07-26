@@ -35,20 +35,23 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 - [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
   nothing re-runs without cause
-- [Eta](https://eta.js.org) renders `src/templates/*.html`, with the view wrapped in
-  a Proxy so a mistyped key stops the build instead of rendering nothing
+- [hono/html](https://hono.dev/docs/helpers/html) renders `src/templates/*.ts` —
+  tagged template literals, so templates are typed functions and `tsc` is what
+  catches a mistyped key
 - [markdown-it](https://github.com/markdown-it/markdown-it) renders the CV, passing
   through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono, compiled by its own CLI
 - [aube](https://aube.en.dev) for packages, Node 24 via [mise](https://mise.jdx.dev)
 
-Node runs the `.ts` files under `scripts/` directly via its built-in type stripping,
-so there is no transpiler and no bundler anywhere in the pipeline.
+Node runs the `.ts` files under `scripts/` and `src/` directly via its built-in type
+stripping, so there is no transpiler and no bundler anywhere in the pipeline. That is
+also why templates are tagged template literals rather than JSX: Node strips types
+but does not compile JSX, and `hono/jsx` would mean putting a transpiler back.
 
 ## i18n
 
 `src/locales/{locale}/messages.po` are the source of truth. Keys are short
-(`tagline`, not the English sentence) so templates read `{{t.tagline}}` with no
+(`tagline`, not the English sentence) so templates read `${t.tagline}` with no
 indirection, and `src/i18n/po.ts` — a ~40-line gettext reader/writer — is the entire
 i18n runtime. Untranslated keys fall back to `en-GB` rather than rendering blank, so
 a new string is live everywhere the moment it's added.
@@ -56,7 +59,7 @@ a new string is live everywhere the moment it's added.
 `task i18n:sync` propagates the source locale's keys to every catalogue, adding
 missing ones with an empty `msgstr` and reporting what's outstanding. It also
 regenerates `src/i18n/keys.ts`, the `MessageKey` union, so a bad key is a type error
-in the generator and a build failure in a template.
+wherever it appears — generator and template alike.
 
 The source locale is served at `/` and `/cv`; every other locale is prefixed
 (`/fr-FR`, `/fr-FR/cv`). Pages are written as directory indexes — nano-web resolves
@@ -79,9 +82,11 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## Adding things
 
-A **string**: add it to `src/locales/en-GB/messages.po`, reference it as `{{t.key}}`,
-then run `task i18n:sync`. A **page**: add a template and an entry in
-`src/i18n/routes.ts`.
+A **string**: add it to `src/locales/en-GB/messages.po`, reference it as `${t.key}`,
+then run `task i18n:sync`. A **page**: add a template under `src/templates/`, an
+entry in `src/i18n/routes.ts`, and render it into the `slot` map in
+`scripts/generate.ts` — the template declares the props it wants, so the compiler
+points at the third step if you forget it.
 
 ## Deployment
 

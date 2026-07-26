@@ -10,7 +10,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
-    "eta": "^4.6.0",
+    "hono": "^4.12.31",
     "lefthook": "^2.1.6",
     "markdown-it": "^14.1.0",
     "oxfmt": "^0.49.0",
