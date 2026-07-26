@@ -1,12 +1,7 @@
+# Runs the function CI runs, so a green hook means a green pipeline. Dagger has
+# no host filesystem access, so this checks rather than fixes: autofix is
+# `dagger call format export --path=.`.
 pre-commit:
-  parallel: true
   commands:
-    oxlint:
-      glob: "*.{ts,js,mjs,cjs}"
-      run: task lint -- --fix {staged_files}
-      stage_fixed: true
-    oxfmt:
-      run: task format -- {staged_files} --no-error-on-unmatched-pattern
-      stage_fixed: true
-    typecheck:
-      run: task typecheck
+    check:
+      run: dagger call check

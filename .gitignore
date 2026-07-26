@@ -1,6 +1,5 @@
 node_modules
 dist
-.task
 .DS_Store
 .cache
 .env

@@ -5,24 +5,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-task dev          # Rebuild on change, serve on :3000
-task build        # generate + css + static into dist/
-task generate     # Render the 72 pages only
-task i18n:sync    # Propagate source-locale keys to every catalogue
-task clean        # Drop dist/ and Task's checksum cache
-task lint         # oxlint  (task lint -- --fix to autofix)
-task format       # oxfmt --write
-task typecheck    # tsc --noEmit
+dagger call serve up --ports=3000:3000        # Run the real image on :3000
+dagger call build export --path=dist          # Write the site to dist/
+dagger call check                             # lint + typecheck + format check
+dagger call format export --path=.            # Apply formatting
+dagger call sync-locales export --path=src    # Propagate source-locale keys
+dagger call deploy --sha=… --dry-run          # Show the deployment diff
 ```
 
-`task --list` is authoritative; prefer it over this list going stale.
+`dagger functions` is authoritative; prefer it over this list going stale.
 
 ## Architecture Overview
 
 Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
-- **Orchestration**: [Task](https://taskfile.dev); each step declares `sources`/`generates`
+- **Orchestration**: [Dagger](https://dagger.io); every step is a function in `dagger/src`
 - **Templates**: Eta over `src/templates/*.html`, rendered via `scripts/render.ts`
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
@@ -52,8 +50,17 @@ Key decisions:
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
-- `task clean` must remove `.task` as well as `dist` — leaving the checksum cache makes
-  the next build skip steps whose output was just deleted.
+- The module's constructor `ignore` list replaces `.dockerignore`, and is load-bearing
+  beyond that: because the source carries no `node_modules`, the full-source overlay
+  can sit on top of the install layer without clobbering it. Editing a template leaves
+  `mise install` and `aube install` cached.
+- Dagger cannot touch the host filesystem, so anything that rewrites files returns a
+  `Directory` and the caller applies it with `export`. Omitting `export` is a dry run.
+- `sync-locales` emits the `MessageKey` union one key per line; oxfmt collapses it.
+  Run `format` after it or the next `check` fails.
+- The deployment push is a `git` invocation in a container — Dagger's git API is
+  read-only. It is the only step with an effect the engine can neither model nor
+  cache, which is why it guards on `git diff --quiet` rather than assuming a change.
 - `generate` prunes orphaned `index.html` files and empty directories. Without it a
   removed locale keeps its directory in `dist/` and carries on being served.
 - `static` is deliberately unfingerprinted: its output is a directory rather than one
