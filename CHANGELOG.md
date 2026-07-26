@@ -16,6 +16,11 @@ a commit to watch it.
   selects `--frozen-lockfile`, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache,
   `GH_TOKEN` authorises the deployment push. Unset, each falls back to the local
   equivalent, so the command doesn't change shape between the two.
+- **OCI labels moved to the Dockerfile**, which is where the constant ones belong;
+  `revision`, `created` and `version` still come from the build. Output matches what
+  `docker/metadata-action` emitted, except `version`, which is now the image's own tag
+  rather than always `latest`. `image.licenses` is pinned empty so the image stops
+  inheriting the base image's MIT claim.
 - **The image tag is defined once**, in the Taskfile, and derived from `SHA`. Both the
   build and the deployment job read the same definition instead of the workflow
   trimming `sha-$GITHUB_SHA` to 11 characters by hand.

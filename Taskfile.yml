@@ -10,6 +10,8 @@ vars:
   SHA:
     sh: git rev-parse HEAD
   TAG: sha-{{trunc 7 .SHA}}
+  BUILT_AT:
+    sh: date -u +%Y-%m-%dT%H:%M:%SZ
 
 tasks:
   default:
@@ -130,6 +132,9 @@ tasks:
       --platform {{.PLATFORMS}}
       --tag {{.IMAGE}}:{{.TAG}}
       {{if eq .LATEST "true"}}--tag {{.IMAGE}}:latest{{end}}
+      --label org.opencontainers.image.revision={{.SHA}}
+      --label org.opencontainers.image.created={{.BUILT_AT}}
+      --label org.opencontainers.image.version={{.TAG}}
       {{if .CACHE_FROM}}--cache-from {{.CACHE_FROM}}{{end}}
       {{if .CACHE_TO}}--cache-to {{.CACHE_TO}}{{end}}
       {{if eq .PUSH "true"}}--push{{else}}--load{{end}}
