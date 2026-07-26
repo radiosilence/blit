@@ -33,7 +33,7 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 ## Stack
 
-- [Dagger](https://dagger.io) orchestrates: every step is a function in `dagger/src`,
+- [Dagger](https://dagger.io) orchestrates: every step is a function in `dagger/main.go`,
   running in a container, cached on its inputs
 - [Eta](https://eta.js.org) renders `src/templates/*.html`, with the view wrapped in
   a Proxy so a mistyped key stops the build instead of rendering nothing
@@ -109,11 +109,17 @@ dagger call deploy --sha=$(git rev-parse HEAD) --dry-run \
 **The first run is slow** (a few minutes: image pulls, a cold `aube install`).
 After that the dependency layers stay cached and only what you changed re-runs.
 
-**There is no watch, and a rebuild costs seconds rather than milliseconds** — every
-call is a container round-trip. The trade is that `dagger call check` on a laptop is
-the same execution CI performs, so "passes locally, fails in CI" stops being a class
-of problem. If that trade ever stops being worth it, the answer is a watcher calling
-`dagger call`, not a second build path.
+**There is no watch, and an edit-to-rebuild is about 2.4s** — every call is a
+container round-trip, and roughly half of that is engine overhead rather than the
+build, which finishes in well under a second. The trade is that `dagger call check`
+on a laptop is the same execution CI performs, so "passes locally, fails in CI"
+stops being a class of problem. If it ever stops being worth it, the answer is a
+watcher calling `dagger call`, not a second build path.
+
+The module is Go rather than TypeScript for that reason alone: the TypeScript SDK
+boots a node runtime and re-evaluates the module on every call, which measured at
+6.5s per rebuild against Go's 2.4s. Nothing else in the repository is Go, and
+`gofmt-check` exists so the build definition is not the one unchecked thing in it.
 
 **Dagger Cloud is optional.** The engine runs locally without an account; Cloud only
 adds a web UI for traces. `DAGGER_NO_NAG=1` silences the prompt.

@@ -7,5 +7,5 @@
   "singleQuote": false,
   "trailingComma": "all",
   "insertFinalNewline": true,
-  "ignorePatterns": ["src/templates", "dagger/package.json", "dagger/tsconfig.json"]
+  "ignorePatterns": ["src/templates"]
 }

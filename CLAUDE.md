@@ -20,7 +20,7 @@ dagger call deploy --sha=… --dry-run          # Show the deployment diff
 Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
-- **Orchestration**: [Dagger](https://dagger.io); every step is a function in `dagger/src`
+- **Orchestration**: [Dagger](https://dagger.io); every step is a function in `dagger/main.go`
 - **Templates**: Eta over `src/templates/*.html`, rendered via `scripts/render.ts`
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
@@ -50,6 +50,10 @@ Key decisions:
   back to `en-GB`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
+- The module is Go purely for cold-start: the TypeScript SDK re-evaluates the module in
+  a node runtime on every call, measured at 6.5s per rebuild against Go's 2.4s. It is
+  the only Go in the repository, so `gofmt-check` runs in `check` to stop the build
+  definition being the one unchecked thing here.
 - The module's constructor `ignore` list replaces `.dockerignore`, and is load-bearing
   beyond that: because the source carries no `node_modules`, the full-source overlay
   can sit on top of the install layer without clobbering it. Editing a template leaves
