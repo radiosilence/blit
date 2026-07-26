@@ -50,8 +50,7 @@ no JavaScript at all, and no `<script>` tag on any page.
   mistyped `it.t.taglinne` fails the build naming the path and the keys that exist,
   rather than silently rendering nothing. Generation time is the only runtime, so
   that is the type check.
-- **Task replaces the npm scripts.** `Taskfile.yml` declares `sources`/`generates` per
-  step, so generate/css/static run in parallel and skip when unchanged.
+- **The npm scripts are gone**; orchestration is the Dagger module described above.
 - **Node 24 runs the `.ts` scripts directly** via built-in type stripping — no
   transpiler in the pipeline.
 - **Removed 14 direct dependencies**; `dependencies` is now empty and the 11 remaining
@@ -69,11 +68,11 @@ no JavaScript at all, and no `<script>` tag on any page.
 - Two new strings (`language`, `close`) for the picker, translated across every
   catalogue. The Tibetan, Dhivehi and Odia renderings are the least confident and are
   worth a native-speaker check.
-- **`task i18n:sync` generates `src/i18n/keys.ts`**, a `MessageKey` union derived from
+- **`sync-locales` generates `src/i18n/keys.ts`**, a `MessageKey` union derived from
   the source catalogue, so a bad key is a type error in the generator.
 - **Dropped `am-ET`.** Geist Mono has no Ethiopic glyphs and the stack has no fallback,
   so it rendered as tofu. 36 locales remain.
-- `task i18n:sync` replaces `lingui extract`, propagating source-locale keys to every
+- `sync-locales` replaces `lingui extract`, propagating source-locale keys to every
   catalogue and reporting what's outstanding.
 - `/en-GB/*` is no longer generated; the source locale lives only at `/` and `/cv`,
   which removes the redirect the router used to perform.
@@ -94,9 +93,9 @@ no JavaScript at all, and no `<script>` tag on any page.
   after a deploy — a cache-busting regression against the old Vite build.
 - **`generate` prunes orphaned pages.** It only ever wrote files, so a removed locale
   kept its directory in `dist/` and carried on being served locally.
-- **`task clean` also clears `.task`**, and `static` is no longer fingerprinted.
-  Deleting `dist/` by hand left the checksum cache claiming the copy was current, so
-  fonts and icons silently 404'd.
+- **`static` is no longer fingerprinted.** Its output is a directory rather than one
+  named file, so a partially-deleted `dist/` could not be detected and fonts and icons
+  silently 404'd.
 - **`install` re-runs when `package.json` changes.** It was guarded only by whether
   `node_modules` existed.
 
@@ -105,7 +104,7 @@ no JavaScript at all, and no `<script>` tag on any page.
 - **Cloudflare/Wrangler removed.** `wrangler.jsonc` and `@cloudflare/vite-plugin` were
   a second, unused deploy target — the live path is Docker → ghcr → microk8s → Pulumi.
 - Build output moved from `dist/client/` to `dist/`; Dockerfile and CI updated.
-- CI installs node, aube and task from `mise.toml` via `jdx/mise-action`, replacing
+- CI installs node, aube and dagger from `mise.toml` via `jdx/mise-action`, replacing
   `endevco/aube-action`, so the runner and local dev share one toolchain definition.
 
 ### Dependencies
