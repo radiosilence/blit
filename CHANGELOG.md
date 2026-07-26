@@ -55,6 +55,12 @@ no JavaScript at all, and no `<script>` tag on any page.
 
 ### Fixed
 
+- **The CV lost its typography.** Moving the base element rules into `@layer base`
+  (see above) let `@tailwindcss/typography` win inside `.prose`, since its rules are
+  wrapped in `:where()` and were previously beaten for free by unlayered CSS — headings
+  came out bold, links took the body colour, spacing shifted. The site's typography is
+  now restated at `.prose h1` etc., which outranks `.prose :where(h1)`. Verified
+  against the live site: pixel-identical over the upper half, 1px of rounding below.
 - **Closed dialogs leaked into the page.** An unconditional `flex` utility overrode the
   UA's `dialog:not([open]) { display: none }`, so the picker rendered inline after
   navigating. Now `open:flex`.

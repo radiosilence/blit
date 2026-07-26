@@ -39,6 +39,39 @@
     --tw-prose-pre-bg: inherit;
     @apply max-w-full;
   }
+
+  /*
+   * @tailwindcss/typography wraps its rules in :where(), which has zero specificity,
+   * so the site's element rules used to beat them just by being unlayered. Now that
+   * those live in `base` — a lower layer — the plugin wins inside .prose and the CV
+   * comes out with bold headings and body-coloured links. Restate them here, where
+   * `.prose h1` (0,1,1) outranks `.prose :where(h1)` (0,1,0).
+   */
+  .prose h1 {
+    @apply text-4xl font-extralight;
+  }
+
+  .prose h2 {
+    @apply text-2xl font-thin;
+  }
+
+  .prose h3 {
+    @apply text-sm font-semibold;
+  }
+
+  .prose strong {
+    @apply font-semibold;
+  }
+
+  .prose a,
+  .prose a:visited,
+  .prose a:active {
+    @apply text-brand underline;
+  }
+
+  .prose a:hover {
+    @apply text-brand-mid;
+  }
 }
 
 /*
@@ -85,12 +118,6 @@
   /* The UA default is Chrome blue, which is the one off-brand colour on the site. */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-brand;
-  }
-
-  .prose {
-    h1 {
-      @apply text-4xl;
-    }
   }
 
   @media (prefers-color-scheme: dark) {
