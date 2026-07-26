@@ -101,7 +101,7 @@ tasks:
     cmd: "{{.BIN}}/tsc --noEmit"
 
   i18n:sync:
-    desc: Extract __() calls to messages.pot and sync every catalogue
+    desc: Extract translatable text to messages.pot and sync every catalogue
     cmd: node scripts/i18n.ts
 
   check:

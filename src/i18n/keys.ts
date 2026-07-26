@@ -1,4 +1,4 @@
-// Generated from the __() calls by `task i18n:sync`. Do not edit.
+// Generated from the templates by `task i18n:sync`. Do not edit.
 export type MessageKey =
   | "change language"
   | "close"

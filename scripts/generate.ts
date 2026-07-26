@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto";
 import { glob, mkdir, readdir, readFile, rm, rmdir, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import MarkdownIt from "markdown-it";
-import { render } from "./render.ts";
+import { parse } from "parse5";
+import { render } from "./template.ts";
 
 import { loadCatalogs, translator } from "#/i18n/catalogs.ts";
 import { describeLocale, isRtl, locales } from "#/i18n/config.ts";
@@ -46,6 +47,8 @@ const written = await Promise.all(
           code,
           href: url(code, page.slug),
           current: code === locale,
+          // Templates read paths, never expressions, so the choice is made here.
+          linkClass: code === locale ? "text-brand" : "text-inherit",
           ...describeLocale(code),
         })),
       };
@@ -82,5 +85,38 @@ const prune = async (dir: string) => {
 };
 
 await prune(dist);
+
+/*
+ * Every internal link, resolved against what was actually written. Pages are
+ * directory indexes and the templates build hrefs from routes.ts, so a link that
+ * misses is a routing bug that would otherwise ship as a 404 nobody clicks.
+ */
+const pageFiles = new Set(written);
+const broken: string[] = [];
+
+for (const file of written) {
+  const html = await readFile(file, "utf8");
+  const walkLinks = (node: { childNodes?: unknown[] }) => {
+    for (const child of (node.childNodes ?? []) as {
+      tagName?: string;
+      attrs?: { name: string; value: string }[];
+      childNodes?: unknown[];
+    }[]) {
+      const href = child.attrs?.find((a) => a.name === "href")?.value;
+      if (child.tagName === "a" && href?.startsWith("/")) {
+        const target = join(dist, href.split(/[?#]/)[0] ?? "", "index.html");
+        if (!pageFiles.has(target)) broken.push(`${relative(dist, file)} -> ${href}`);
+      }
+      walkLinks(child);
+    }
+  };
+  walkLinks(parse(html));
+}
+
+if (broken.length) {
+  throw new Error(`Links with no page behind them:\n  ${[...new Set(broken)].join("\n  ")}`);
+}
+
+console.log(`Checked internal links across ${written.length} pages`);
 
 console.log(`Generated ${locales.length * pages.length} pages in ${dist}`);

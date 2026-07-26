@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="<%= locale %>" dir="<%= dir %>">
+<html lang="{locale}" dir="{dir}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><%= __('james cleveland : senior full stack engineer') %></title>
+    <title i18n>james cleveland : senior full stack engineer</title>
 
     <meta name="theme-color" content="#ffffff" />
     <meta name="application-name" content="blit.cc" />
@@ -12,11 +12,11 @@
     <meta name="apple-mobile-web-app-title" content="blit.cc" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <meta property="og:title" content="<%= __('james cleveland : senior full stack engineer') %>" />
-    <meta property="og:url" content="https://blit.cc<%= path %>" />
+    <meta property="og:title" i18n-content="james cleveland : senior full stack engineer" />
+    <meta property="og:url" content="https://blit.cc{path}" />
     <meta property="og:image" content="https://blit.cc/logo.png" />
 
-    <link rel="stylesheet" href="<%= styleHref %>" />
+    <link rel="stylesheet" href="{styleHref}" />
     <link rel="preload" href="/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -25,7 +25,7 @@
   </head>
 
   <body>
-    <%~ body %>
+    <slot></slot>
 
     <nav class="fixed end-2 bottom-2 text-xs">
       <button
@@ -34,7 +34,7 @@
         commandfor="locale-dialog"
         class="cursor-pointer p-1 underline"
       >
-        <%= locale %>
+        {locale}
       </button>
     </nav>
 
@@ -49,11 +49,11 @@
       class="m-auto max-h-[80vh] w-[min(44rem,calc(100vw-2rem))] flex-col overflow-hidden bg-white p-0 text-brand-dark open:flex backdrop:bg-black/60 backdrop:backdrop-blur-sm dark:bg-brand-surface dark:text-brand-light"
     >
       <header class="flex items-center justify-between px-4 py-3">
-        <h2 id="locale-heading" class="text-sm font-semibold normal-case"><%= __('change language') %></h2>
+        <h2 id="locale-heading" class="text-sm font-semibold normal-case"><i18n-t>change language</i18n-t></h2>
         <form method="dialog">
           <button
             class="flex size-8 cursor-pointer items-center justify-center text-xl leading-none opacity-70 hover:opacity-100"
-            aria-label="<%= __('close') %>"
+            i18n-aria-label="close"
           >
             ×
           </button>
@@ -61,20 +61,20 @@
       </header>
 
       <ul class="grid grid-cols-2 overflow-y-auto p-2 sm:grid-cols-3">
-        <% localeLinks.forEach(function (option) { %>
+        <x-each of="localeLinks" as="option">
         <li>
           <a
-            href="<%= option.href %>"
-            hreflang="<%= option.code %>"
-            lang="<%= option.code %>"
-            aria-current="<%= option.current %>" <%= option.current ? "autofocus" : "" %>
-            class="block px-3 py-2 no-underline hover:bg-brand-mid/20 <%= option.current ? 'text-brand' : 'text-inherit' %>"
+            href="{option.href}"
+            hreflang="{option.code}"
+            lang="{option.code}"
+            aria-current="{option.current}" autofocus?="option.current"
+            class="block px-3 py-2 no-underline hover:bg-brand-mid/20 {option.linkClass}"
           >
-            <span class="block truncate text-sm"><%= option.name %></span>
-            <span class="block truncate text-xs opacity-60"><%= option.place %></span>
+            <span class="block truncate text-sm">{option.name}</span>
+            <span class="block truncate text-xs opacity-60">{option.place}</span>
           </a>
         </li>
-        <% }) %>
+        </x-each>
       </ul>
     </dialog>
   </body>

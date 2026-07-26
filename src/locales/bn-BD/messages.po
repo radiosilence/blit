@@ -5,11 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/templates/base.html:52
+#: src/templates/page-base.html:52
 msgid "change language"
 msgstr "ভাষা পরিবর্তন করুন"
 
-#: src/templates/base.html:56
+#: src/templates/page-base.html:54
 msgid "close"
 msgstr "বন্ধ করুন"
 
@@ -25,8 +25,8 @@ msgstr "github"
 msgid "james cleveland"
 msgstr "জেমস ক্লিভল্যান্ড"
 
-#: src/templates/base.html:6
-#: src/templates/base.html:15
 #: src/templates/index.html:11
+#: src/templates/page-base.html:6
+#: src/templates/page-base.html:15
 msgid "james cleveland : senior full stack engineer"
 msgstr "জেমস ক্লিভল্যান্ড : সিনিয়র ফুল স্ট্যাক ইঞ্জিনিয়ার"
