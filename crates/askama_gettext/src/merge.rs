@@ -2,14 +2,21 @@
 //!
 //! Merging rather than generating: a catalogue is a translator's work, and the
 //! templates only get to say which messages exist and where they are written. An
-//! existing translation, comment or flag survives; a message that has left the
-//! templates is marked obsolete rather than deleted, so its translation is still
-//! there if the string comes back.
+//! existing translation, comment or flag survives.
+//!
+//! A message that has left the templates is removed. gettext writes one as an
+//! obsolete `#~` entry, which keeps the translation without pretending the message
+//! still exists — but polib has no way to write those, and the only flag it does
+//! have is `fuzzy`, which already means something else: a translation that needs
+//! review. Marking one obsolete that way makes it indistinguishable from the other
+//! and leaves it referencing a file it is no longer in. Removing it says the true
+//! thing, and the removal is reported by id and lands in a diff, so the translation
+//! is a `git revert` away rather than a mystery in a file nobody reads.
 
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use polib::message::{Message, MessageMutView, MessageView};
+use polib::message::Message;
 use polib::po_file;
 
 use crate::error::{Error, Result};
@@ -17,14 +24,18 @@ use crate::extract::Message as Extracted;
 use crate::plural::Forms;
 
 /// What changed, for reporting to whoever ran the extraction.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Summary {
     /// Messages in the templates.
     pub total: usize,
     /// Messages this catalogue has no translation for.
     pub untranslated: usize,
-    /// Messages that were in the catalogue but are no longer in any template.
-    pub obsolete: usize,
+    /// Ids that were in the catalogue, are in no template, and have been deleted.
+    ///
+    /// By id rather than by count: this is the one thing a merge does that destroys
+    /// a translator's work, so it should be possible to see what went without
+    /// reading a diff of 36 files.
+    pub removed: Vec<String>,
 }
 
 /// Merges extracted messages into the catalogue at `path`, writing it back.
@@ -123,18 +134,31 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         catalog.append_or_update(builder.done());
     }
 
-    // Anything the templates no longer mention. Marked, not deleted: a string that
-    // comes back should come back translated.
-    for mut message in catalog.messages_mut() {
-        let key = (
-            message.msgctxt().map(str::to_owned),
-            message.msgid().to_owned(),
-        );
-        if !wanted.contains_key(&key) && !message.is_fuzzy() {
-            summary.obsolete += 1;
-            message.flags_mut().add_flag("fuzzy");
-        }
+    // Anything the templates no longer mention. Gathered before anything is deleted,
+    // because removing through the iterator would be changing what is being read.
+    let gone: Vec<(Option<String>, String, Option<String>)> = catalog
+        .messages()
+        .filter(|message| {
+            let key = (
+                message.msgctxt().map(str::to_owned),
+                message.msgid().to_owned(),
+            );
+            !wanted.contains_key(&key)
+        })
+        .map(|message| {
+            (
+                message.msgctxt().map(str::to_owned),
+                message.msgid().to_owned(),
+                message.msgid_plural().ok().map(str::to_owned),
+            )
+        })
+        .collect();
+
+    for (context, id, plural) in &gone {
+        catalog.delete_message(context.as_deref(), id, plural.as_deref());
     }
+
+    summary.removed = gone.into_iter().map(|(_, id, _)| id).collect();
 
     write_atomically(&catalog, path)?;
 
@@ -224,6 +248,41 @@ mod tests {
         into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
 
         assert!(std::fs::read_to_string(&path).unwrap().contains("zamknij"));
+    }
+
+    #[test]
+    fn a_message_that_left_the_templates_is_removed_and_named() {
+        let path = catalogue(&format!(
+            "{PL_HEADER}\n#: t.html:1\nmsgid \"stays\"\nmsgstr \"zostaje\"\n\n\
+             #: t.html:2\nmsgid \"went\"\nmsgstr \"poszło\"\n"
+        ));
+
+        let summary = into_catalog(&path, "pl-PL", &[site("stays", None)]).unwrap();
+
+        assert_eq!(summary.removed, ["went"]);
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(!after.contains("poszło"), "not removed:\n{after}");
+        assert!(after.contains("zostaje"), "took the wrong one:\n{after}");
+        // The header is metadata rather than a message, and must not be swept up
+        // with them — without it a catalogue has no Plural-Forms to check.
+        assert!(after.contains("Plural-Forms:"), "header lost:\n{after}");
+    }
+
+    #[test]
+    fn a_fuzzy_message_is_left_alone_while_it_is_still_in_a_template() {
+        // fuzzy means a translation that needs review. Extraction has no opinion
+        // on that, and removal is about the id being gone, not the flag.
+        let path = catalogue(&format!(
+            "{PL_HEADER}\n#: t.html:1\n#, fuzzy\nmsgid \"here\"\nmsgstr \"tutaj\"\n"
+        ));
+
+        let summary = into_catalog(&path, "pl-PL", &[site("here", None)]).unwrap();
+
+        assert!(summary.removed.is_empty());
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(after.contains("fuzzy"), "flag lost:\n{after}");
+        assert!(after.contains("tutaj"), "translation lost:\n{after}");
     }
 
     #[test]
