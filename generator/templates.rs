@@ -43,6 +43,8 @@ macro_rules! page {
             pub cv: &'a str,
             pub urls: &'a Urls,
             pub locale_links: &'a [LocaleLink],
+            /// Counts the scratch i18n page renders plural forms for.
+            pub counts: &'a [u64],
         }
 
         impl Translate for $name<'_> {
@@ -61,3 +63,4 @@ macro_rules! page {
 
 page!(Index, "index.html");
 page!(Cv, "cv.html");
+page!(I18nTest, "i18n-test.html");
