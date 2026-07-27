@@ -6,27 +6,28 @@ msgstr ""
 "Language: hi-IN\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 
-#: src/templates/page-base.html:50
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "भाषा बदलें"
 
 #: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "बंद करें"
 
-#: src/templates/index.html:8
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.html:10
+#: src/templates/index.html:11
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:5
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "जेम्स क्लीवलैंड"
 
-#: src/templates/index.html:6 src/templates/page-base.html:6 src/templates/page-base.html:15
+#: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
 msgstr "जेम्स क्लीवलैंड : सीनियर फुल स्टैक इंजीनियर"
 
@@ -48,7 +49,7 @@ msgstr "मेरा <cv>बायोडेटा</cv> या <gh>गिटह�
 msgid "showing %{shown} of %{total}"
 msgstr "%{total} में से %{shown} दिखा रहे हैं"
 
-#: src/templates/i18n-test.html:14
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "बंद करें"
@@ -57,4 +58,8 @@ msgstr "बंद करें"
 msgctxt "Search results: how near a salon is"
 msgid "close"
 msgstr "पास में"
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "सीनियर फुल स्टैक इंजीनियर"
 

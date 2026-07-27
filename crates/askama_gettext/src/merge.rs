@@ -136,12 +136,32 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         }
     }
 
-    po_file::write_to_file(&catalog, path).map_err(|e| Error::Catalog {
+    write_atomically(&catalog, path)?;
+
+    Ok(summary)
+}
+
+/// Writes through a temporary file and renames it into place.
+///
+/// A catalogue is a translator's work, and writing it in place means truncating it
+/// first: anything that stops the process between the truncate and the write — a
+/// signal, a full disk, a panic in the next locale — leaves an empty file where the
+/// translations were. A rename on the same directory is atomic, so the worst case
+/// becomes a stray temporary rather than a lost catalogue.
+fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()> {
+    let temporary = path.with_extension("po.tmp");
+
+    po_file::write_to_file(catalog, &temporary).map_err(|e| Error::Catalog {
+        path: temporary.clone(),
+        message: e.to_string(),
+    })?;
+
+    std::fs::rename(&temporary, path).map_err(|e| Error::Catalog {
         path: path.to_owned(),
         message: e.to_string(),
     })?;
 
-    Ok(summary)
+    Ok(())
 }
 
 #[cfg(test)]
@@ -210,5 +230,41 @@ mod tests {
 
         assert_eq!(summary.total, 2);
         assert_eq!(summary.untranslated, 1);
+    }
+}
+
+#[cfg(test)]
+mod atomicity {
+    use super::*;
+    use crate::extract::Message as Extracted;
+
+    #[test]
+    fn a_failed_merge_leaves_the_catalogue_intact() {
+        // The header says two forms; CLDR gives Polish three, so this fails the
+        // check — after the point where an in-place write would have truncated.
+        let path = std::env::temp_dir().join("agt-atomic.po");
+        let original = concat!(
+            "msgid \"\"\nmsgstr \"\"\n",
+            "\"Language: pl-PL\\n\"\n",
+            "\"MIME-Version: 1.0\\n\"\n",
+            "\"Content-Type: text/plain; charset=utf-8\\n\"\n",
+            "\"Content-Transfer-Encoding: 8bit\\n\"\n",
+            "\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"\n",
+            "\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n",
+        );
+        std::fs::write(&path, original).unwrap();
+
+        let sites = [Extracted {
+            id: "close".to_owned(),
+            context: None,
+            plural: None,
+            file: "t.html".to_owned(),
+            line: 1,
+        }];
+        assert!(into_catalog(&path, "pl-PL", &sites).is_err());
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(after.contains("zamknij"), "translation lost on a failed merge");
+        assert!(!path.with_extension("po.tmp").exists() || after == original);
     }
 }

@@ -65,7 +65,27 @@ tasks:
 
   watch:
     internal: true
-    cmd: task --watch build
+    cmd: task --watch dev:build
+
+  # Extraction is kept out of `build` because it writes to src/, and a CI build that
+  # mutates its own input leaves a dirty tree. In dev that is exactly what you want:
+  # edit a string, and every catalogue has it by the time the page reloads.
+  #
+  # This watches the catalogues it also writes, which settles rather than loops —
+  # the second pass produces identical bytes, so the checksum stops matching a change.
+  dev:build:
+    desc: Sync catalogues then build — dev only, since it writes to src/
+    sources:
+      - crates/**/*.rs
+      - generator/**/*.rs
+      - src/content/**/*.md
+      - src/locales/**/*.po
+      - src/static/**/*
+      - src/styles/**/*.css
+      - src/templates/**/*.html
+    cmds:
+      - task: i18n:sync
+      - task: build
 
   # The same server the image runs, so dev resolves URLs exactly as production does.
   # --dev drops the year-long caching it serves with, so a rebuild is picked up.

@@ -6,27 +6,28 @@ msgstr ""
 "Language: my-MM\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/templates/page-base.html:50
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "ဘာသာစကား ပြောင်းရန်"
 
 #: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "ပိတ်ရန်"
 
-#: src/templates/index.html:8
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.html:10
+#: src/templates/index.html:11
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:5
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "ဂျေးမ်စ် ကလီဗလန်ဒ်"
 
-#: src/templates/index.html:6 src/templates/page-base.html:6 src/templates/page-base.html:15
+#: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
 msgstr "ဂျေးမ်စ် ကလီဗလန်ဒ် : အကြီးတန်း ဖူးလ်စတက် အင်ဂျင်နီယာ"
 
@@ -47,7 +48,7 @@ msgstr "ကျွန်ုပ်၏ <cv>ကိုယ်ရေးရာဇဝင�
 msgid "showing %{shown} of %{total}"
 msgstr "%{total} အနက် %{shown} ပြသနေသည်"
 
-#: src/templates/i18n-test.html:14
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "ပိတ်ရန်"
@@ -56,4 +57,8 @@ msgstr "ပိတ်ရန်"
 msgctxt "Search results: how near a salon is"
 msgid "close"
 msgstr "အနီးအနား"
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "အကြီးတန်း ဖူးလ်စတက် အင်ဂျင်နီယာ"
 

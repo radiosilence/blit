@@ -6,27 +6,28 @@ msgstr ""
 "Language: si-LK\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 
-#: src/templates/page-base.html:50
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "භාෂාව වෙනස් කරන්න"
 
 #: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "වසන්න"
 
-#: src/templates/index.html:8
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.html:10
+#: src/templates/index.html:11
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:5
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "ජේම්ස් ක්ලීව්ලන්ඩ්"
 
-#: src/templates/index.html:6 src/templates/page-base.html:6 src/templates/page-base.html:15
+#: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
 msgstr "ජේම්ස් ක්ලීව්ලන්ඩ් : සීනියර් ෆුල් ස්ටැක් ඉංජිනේරු"
 
@@ -48,7 +49,7 @@ msgstr "මගේ <cv>ජීව දත්ත</cv> හෝ <gh>ගිට්හබ�
 msgid "showing %{shown} of %{total}"
 msgstr "%{total} කින් %{shown} ක් පෙන්වයි"
 
-#: src/templates/i18n-test.html:14
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "වසන්න"
@@ -57,4 +58,8 @@ msgstr "වසන්න"
 msgctxt "Search results: how near a salon is"
 msgid "close"
 msgstr "ආසන්න"
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "සීනියර් ෆුල් ස්ටැක් ඉංජිනේරු"
 

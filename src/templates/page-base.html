@@ -1,9 +1,23 @@
+{#
+  Values used inside attributes are bound first: an Askama string literal has to
+  use double quotes, and nesting those inside a double-quoted attribute ends the
+  attribute early as far as any HTML formatter is concerned.
+#}
+{%- let tagline = __("james cleveland : senior full stack engineer") %}
+{%- let logo = asset("logo.png") %}
+{%- let stylesheet = asset("style.css") %}
+{%- let font = asset("geist-mono.woff2") %}
+{%- let touch_icon = asset("apple-touch-icon.png") %}
+{%- let icon_32 = asset("favicon-32x32.png") %}
+{%- let icon_16 = asset("favicon-16x16.png") %}
+{%- let manifest = asset("manifest.json") %}
+{%- let close_label = __p("Locale dialog: the button that dismisses it", "close") %}
 <!doctype html>
 <html lang="{{ locale }}" dir="{{ dir }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ __("james cleveland : senior full stack engineer") }}</title>
+    <title>{{ tagline }}</title>
 
     <meta name="theme-color" content="#ffffff" />
     <meta name="application-name" content="blit.cc" />
@@ -12,16 +26,16 @@
     <meta name="apple-mobile-web-app-title" content="blit.cc" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <meta property="og:title" content="{{ __("james cleveland : senior full stack engineer") }}" />
+    <meta property="og:title" content="{{ tagline }}" />
     <meta property="og:url" content="{{ canonical_url }}" />
-    <meta property="og:image" content="https://blit.cc{{ asset("logo.png") }}" />
+    <meta property="og:image" content="https://blit.cc{{ logo }}" />
 
-    <link rel="stylesheet" href="{{ asset("style.css") }}" />
-    <link rel="preload" href="{{ asset("geist-mono.woff2") }}" as="font" type="font/woff2" crossorigin />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset("apple-touch-icon.png") }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset("favicon-32x32.png") }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset("favicon-16x16.png") }}" />
-    <link rel="manifest" href="{{ asset("manifest.json") }}" />
+    <link rel="stylesheet" href="{{ stylesheet }}" />
+    <link rel="preload" href="{{ font }}" as="font" type="font/woff2" crossorigin />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ touch_icon }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ icon_32 }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ icon_16 }}" />
+    <link rel="manifest" href="{{ manifest }}" />
   </head>
 
   <body>
@@ -51,7 +65,7 @@
         <form method="dialog">
           <button
             class="flex size-8 cursor-pointer items-center justify-center text-xl leading-none opacity-70 hover:opacity-100"
-            aria-label="{{ __("close") }}"
+            aria-label="{{ close_label }}"
           >
             ×
           </button>

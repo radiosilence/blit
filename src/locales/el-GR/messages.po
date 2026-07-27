@@ -6,27 +6,28 @@ msgstr ""
 "Language: el-GR\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: src/templates/page-base.html:50
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "αλλαγή γλώσσας"
 
 #: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "κλείσιμο"
 
-#: src/templates/index.html:8
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.html:10
+#: src/templates/index.html:11
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:5
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "Τζέιμς Κλίβελαντ"
 
-#: src/templates/index.html:6 src/templates/page-base.html:6 src/templates/page-base.html:15
+#: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
 msgstr "Τζέιμς Κλίβελαντ : ανώτερος full stack μηχανικός"
 
@@ -48,7 +49,7 @@ msgstr "διάβασε το <cv>βιογραφικό</cv> μου ή το <gh>Git
 msgid "showing %{shown} of %{total}"
 msgstr "εμφάνιση %{shown} από %{total}"
 
-#: src/templates/i18n-test.html:14
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "κλείσιμο"
@@ -57,4 +58,8 @@ msgstr "κλείσιμο"
 msgctxt "Search results: how near a salon is"
 msgid "close"
 msgstr "κοντά"
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "ανώτερος full stack μηχανικός"
 
