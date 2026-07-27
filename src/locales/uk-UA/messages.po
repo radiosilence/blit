@@ -26,11 +26,11 @@ msgstr "github"
 
 #: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
-msgstr "джеймс клівленд"
+msgstr "Джеймс Клівленд"
 
 #: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
-msgstr "джеймс клівленд : старший full stack інженер"
+msgstr "Джеймс Клівленд : старший full stack інженер"
 
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"

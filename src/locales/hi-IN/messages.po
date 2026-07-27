@@ -43,7 +43,7 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr "मेरा <cv>बायोडेटा</cv> या <gh>गिटहब</gh> देखें"
+msgstr "मेरा <cv>बायोडाटा</cv> या <gh>गिटहब</gh> देखें"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
