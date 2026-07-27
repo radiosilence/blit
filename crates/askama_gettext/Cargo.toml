@@ -17,6 +17,7 @@ askama = "0.16"
 
 [dependencies]
 askama_parser = "0.16"
+icu_locale = "2"
 icu_locale_core = "2"
 icu_plurals = "2"
 polib = "0.3"
