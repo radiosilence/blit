@@ -10,6 +10,11 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/radiosilence/blit"
 readme = "README.md"
 
+# Askama is not a dependency: the crate is what a template calls, and never calls
+# it. Rendering one is how the tests check that, so it is needed only there.
+[dev-dependencies]
+askama = "0.16"
+
 [dependencies]
 askama_parser = "0.16"
 icu_locale_core = "2"
