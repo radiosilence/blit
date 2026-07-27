@@ -46,6 +46,34 @@ const CANONICAL: [PluralCategory; 6] = [
 /// see [`Forms::index`].
 const COUNTED: std::ops::RangeInclusive<u64> = 0..=200;
 
+/// Expressions gettext tooling already understands, offered rather than trusted.
+///
+/// This is not a table keyed by language, which would be wrong — English and French
+/// share a form count and a category set and need different expressions. Nothing
+/// here is indexed by anything. Each is tried against CLDR for the locale in hand
+/// and kept only if it selects the same form for every count checked, so a wrong
+/// guess in this list cannot become a wrong header. That is what makes it safe to
+/// write down expressions copied from thirty years of `.po` files.
+///
+/// Ordered simplest first, so a language that several fit gets the plainest one.
+const CANDIDATES: &[&str] = &[
+    "0",
+    "n != 1",
+    "n > 1",
+    "n==1 ? 0 : n==2 ? 1 : 2",
+    "n==1 ? 0 : n>=2 && n<=4 ? 1 : 2",
+    "n==1 ? 0 : n==0 || (n%100 > 0 && n%100 < 20) ? 1 : 2",
+    "n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2",
+    "n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2",
+    "n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2",
+    "n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2",
+    "n==1 ? 0 : n==2 ? 1 : n != 8 && n != 11 ? 2 : 3",
+    "n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3",
+    "n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4",
+    "n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5",
+    "n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n==3 ? 3 : n==6 ? 4 : 5",
+];
+
 /// The plural categories a whole number can land in, in CLDR order.
 ///
 /// The position of a category in this list is its `msgstr[n]` index, which is what
@@ -126,6 +154,27 @@ impl Forms {
         slot(category)
             .or_else(|| slot(PluralCategory::Other))
             .unwrap_or(0)
+    }
+
+    /// A `plural=` expression that selects the forms CLDR does.
+    ///
+    /// Found by trying [`CANDIDATES`] and keeping the first CLDR confirms, so the
+    /// answer is verified rather than looked up. A language none of them fits is an
+    /// error: writing an expression that has not been checked is the one thing this
+    /// is here to avoid.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`Error::NoPluralExpression`] when no candidate agrees.
+    pub fn expression(&self, locale: &str) -> Result<&'static str> {
+        CANDIDATES
+            .iter()
+            .copied()
+            .find(|candidate| self.check_expression(locale, candidate).is_ok())
+            .ok_or_else(|| Error::NoPluralExpression {
+                locale: locale.to_owned(),
+                forms: self.count(),
+            })
     }
 
     /// Confirms a catalogue's declared `nplurals` matches CLDR.

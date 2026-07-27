@@ -38,6 +38,7 @@ fn main() -> Result<()> {
 
     // Which locales a removal touched, rather than a line per locale: the templates
     // decide what goes, so the same ids leave all 36 catalogues at once.
+    let mut created: Vec<&str> = Vec::new();
     let mut removed: BTreeMap<String, usize> = BTreeMap::new();
     let mut reworded: BTreeMap<(String, String), usize> = BTreeMap::new();
 
@@ -46,6 +47,14 @@ fn main() -> Result<()> {
             .join("src/locales")
             .join(locale.code)
             .join("messages.po");
+        // A locale added to config.rs has no catalogue until something writes one,
+        // and the header it needs is derivable, so adding a locale is one step.
+        if merge::create_catalog(&path, locale.code)
+            .with_context(|| format!("creating {}", path.display()))?
+        {
+            created.push(locale.code);
+        }
+
         let summary = merge::into_catalog(&path, locale.code, &messages)
             .with_context(|| format!("merging into {}", path.display()))?;
 
@@ -62,6 +71,10 @@ fn main() -> Result<()> {
         } else if summary.untranslated > 0 {
             println!("  {} — {} untranslated", locale.code, summary.untranslated);
         }
+    }
+
+    if !created.is_empty() {
+        println!("\ncatalogues created: {}", created.join(", "));
     }
 
     // Both loud, because between them they are everything extraction does to a

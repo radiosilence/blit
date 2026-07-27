@@ -314,6 +314,61 @@ impl Departed {
     }
 }
 
+/// Creates an empty catalogue for a locale, with a header CLDR agrees with.
+///
+/// The reason this could not exist before was that a `Plural-Forms` header needs a
+/// C expression and CLDR does not hand one out. It is now found by offering known
+/// gettext expressions and keeping the one CLDR confirms — see
+/// [`Forms::expression`] — so what gets written has been checked rather than
+/// believed. A locale no candidate fits is an error, not an approximation.
+///
+/// Does nothing if the file already exists, so it is safe to call before a merge.
+///
+/// # Errors
+///
+/// Fails if CLDR has no rules for the locale, if no known expression matches them,
+/// or if the file cannot be written.
+pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
+    if path.exists() {
+        return Ok(false);
+    }
+
+    let forms = Forms::new(locale)?;
+    let expression = forms.expression(locale)?;
+
+    // Written as text because a new catalogue is nothing but its header, and the
+    // one field that matters is the one polib does not expose a way to build.
+    let header = format!(
+        "msgid \"\"\nmsgstr \"\"\n\
+         \"MIME-Version: 1.0\\n\"\n\
+         \"Content-Type: text/plain; charset=utf-8\\n\"\n\
+         \"Content-Transfer-Encoding: 8bit\\n\"\n\
+         \"Language: {locale}\\n\"\n\
+         \"Plural-Forms: nplurals={}; plural={expression};\\n\"\n",
+        forms.count(),
+    );
+
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+
+    let temporary = path.with_extension("po.tmp");
+    std::fs::write(&temporary, header)?;
+
+    // Read back before it is put in place: what was written has to be a catalogue
+    // this crate would accept, and the cheapest way to know is to accept it.
+    let written = po_file::parse(&temporary).map_err(|e| Error::Catalog {
+        path: temporary.clone(),
+        message: e.to_string(),
+    })?;
+    forms.check(locale, written.metadata.plural_rules.nplurals)?;
+    forms.check_expression(locale, &written.metadata.plural_rules.expr)?;
+
+    std::fs::rename(&temporary, path)?;
+
+    Ok(true)
+}
+
 /// Writes through a temporary file and renames it into place.
 ///
 /// A catalogue is a translator's work, and writing it in place means truncating it
@@ -424,6 +479,44 @@ mod tests {
         // The header is metadata rather than a message, and must not be swept up
         // with them — without it a catalogue has no Plural-Forms to check.
         assert!(after.contains("Plural-Forms:"), "header lost:\n{after}");
+    }
+
+    #[test]
+    fn a_created_catalogue_is_one_this_crate_would_accept() {
+        for locale in ["fr-FR", "en-GB", "pl-PL", "ar-EG", "ja-JP", "uk-UA"] {
+            let path = std::env::temp_dir().join(format!("agt-created-{locale}.po"));
+            let _ = std::fs::remove_file(&path);
+
+            assert!(create_catalog(&path, locale).unwrap(), "{locale}");
+
+            // The point of the exercise: a header nothing had to be told.
+            let forms = Forms::new(locale).unwrap();
+            let written = po_file::parse(&path).unwrap();
+            forms
+                .check(locale, written.metadata.plural_rules.nplurals)
+                .unwrap();
+            forms
+                .check_expression(locale, &written.metadata.plural_rules.expr)
+                .unwrap();
+
+            // And a merge into it works, which is the reason to have one.
+            let summary = into_catalog(&path, locale, &[site("hello", None)]).unwrap();
+            assert_eq!(summary.total, 1);
+            assert_eq!(summary.untranslated, 1);
+
+            std::fs::remove_file(&path).unwrap();
+        }
+    }
+
+    #[test]
+    fn an_existing_catalogue_is_left_alone() {
+        let path = catalogue(
+            "an_existing_catalogue_is_left_alone",
+            &format!("{PL_HEADER}\n#: t.html:1\nmsgid \"here\"\nmsgstr \"tutaj\"\n"),
+        );
+
+        assert!(!create_catalog(&path, "pl-PL").unwrap());
+        assert!(std::fs::read_to_string(&path).unwrap().contains("tutaj"));
     }
 
     #[test]

@@ -85,6 +85,12 @@ while the site selects them another. So the expression is parsed and evaluated
 against CLDR for every count up to a thousand, and the build names the smallest one
 they differ on.
 
+Adding a locale is a line in `generator/config.rs` and `task i18n:sync`, which writes
+the catalogue. The `Plural-Forms` header it needs is found rather than looked up:
+known gettext expressions are offered to CLDR one at a time and the first it confirms
+is kept, so what's written has been checked against the same source that decides
+which form renders. A language none of them fits is an error rather than a guess.
+
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
 outstanding. Extraction walks Askama's own AST, so it recognises no template syntax
 of its own and can't drift from what Askama accepts. Translations, translator
