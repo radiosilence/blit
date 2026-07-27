@@ -1,4 +1,5 @@
-//! Finds `__`, `__p`, `__n` and `__h` calls in Askama templates.
+//! Finds the `__` family — `__`, `__p`, `__n`, `__np` and their `h` variants — in
+//! Askama templates.
 //!
 //! The templates are parsed by Askama's own parser, so this recognises no template
 //! syntax of its own: if Askama's grammar changes, extraction follows rather than
@@ -38,8 +39,8 @@ fn shape(name: &str) -> Option<(bool, bool)> {
         // (takes a context first, takes a plural second)
         "__" | "__h" => Some((false, false)),
         "__p" | "__ph" => Some((true, false)),
-        "__n" => Some((false, true)),
-        "__np" => Some((true, true)),
+        "__n" | "__nh" => Some((false, true)),
+        "__np" | "__nph" => Some((true, true)),
         _ => None,
     }
 }
@@ -278,6 +279,31 @@ mod tests {
         assert_eq!(found[2].plural.as_deref(), Some("%{count} locales"));
         assert_eq!(found[0].line, 1);
         assert_eq!(found[4].line, 5);
+    }
+
+    #[test]
+    fn finds_every_method_the_trait_offers() {
+        // Translate has eight methods and this match has to know all of them: one
+        // it does not recognise renders correctly in the source language and is
+        // never extracted, so it can never be translated.
+        let found = extract(
+            r#"{{ __("a") }}
+{{ __p("ctx", "b") }}
+{{ __n("c", "cs", n) }}
+{{ __np("ctx", "d", "ds", n) }}
+{{ __h("e") }}
+{{ __ph("ctx", "f") }}
+{{ __nh("g", "gs", n) }}
+{{ __nph("ctx", "h", "hs", n) }}"#,
+        );
+
+        let ids: Vec<&str> = found.iter().map(|m| m.id.as_str()).collect();
+        assert_eq!(ids, ["a", "b", "c", "d", "e", "f", "g", "h"]);
+
+        // The h variants carry the same context and plural as their plain twins.
+        assert_eq!(found[6].plural.as_deref(), Some("gs"));
+        assert_eq!(found[7].plural.as_deref(), Some("hs"));
+        assert_eq!(found[7].context.as_deref(), Some("ctx"));
     }
 
     #[test]
