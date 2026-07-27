@@ -156,6 +156,11 @@ Docker image → microk8s → CloudFlare Tunnel, via Pulumi in a separate IaC re
 `dist/` is layered onto [nano-web](https://github.com/radiosilence/nano-web) and the
 image tag is written into the IaC repo's Pulumi config, which Pulumi then rolls out.
 
+The published tag is a manifest list for `linux/amd64` and `linux/arm64`, built in one
+pass — the image is a `COPY` onto a base that already covers both, so there is nothing
+to emulate. A local `task docker:build` loads the host's architecture only, since
+`--load` takes a single image rather than a list.
+
 GitHub Actions only supplies the environment — a checkout, the mise toolchain,
 registry credentials and a build cache. Each step is a Taskfile target, so the same
 pipeline runs on a laptop:
