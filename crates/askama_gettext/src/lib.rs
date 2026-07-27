@@ -61,6 +61,7 @@
 
 pub mod catalog;
 pub mod error;
+pub mod expression;
 pub mod extract;
 pub mod interpolate;
 pub mod merge;
@@ -71,6 +72,7 @@ pub mod translate;
 
 pub use catalog::{Catalog, Catalogs, Fuzzy};
 pub use error::{Error, Result};
+pub use expression::Expression;
 pub use extract::Message as ExtractedMessage;
 pub use interpolate::interpolate;
 pub use message::{Markup, Message};

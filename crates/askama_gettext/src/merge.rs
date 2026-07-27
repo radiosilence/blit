@@ -72,6 +72,7 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
 
     let forms = Forms::new(locale)?;
     forms.check(locale, catalog.metadata.plural_rules.nplurals)?;
+    forms.check_expression(locale, &catalog.metadata.plural_rules.expr)?;
 
     // One entry per (context, id): the same string used in three templates is one
     // message with three references, not three messages.
