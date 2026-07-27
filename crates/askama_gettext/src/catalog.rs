@@ -152,8 +152,8 @@ impl Catalogs {
         self.by_locale.get(locale)
     }
 
-    /// gettext's `gettext`: the translation, else the source locale's, else the
-    /// English — which the id already is.
+    /// gettext's `gettext`: the translation, else the language's, else the source
+    /// locale's, else the English — which the id already is.
     #[must_use]
     pub fn gettext<'a>(&'a self, locale: &str, msgid: &'a str) -> &'a str {
         self.lookup(locale, None, msgid).unwrap_or(msgid)
@@ -198,15 +198,33 @@ impl Catalogs {
             .unwrap_or(if count == 1 { msgid } else { plural })
     }
 
-    fn lookup(&self, locale: &str, context: Option<&str>, msgid: &str) -> Option<&str> {
-        self.get(locale)
-            .and_then(|catalog| catalog.get(context, msgid))
-            .or_else(|| {
-                self.get(&self.source)
-                    .and_then(|catalog| catalog.get(context, msgid))
-            })
+    /// The catalogues to try, in order: the locale, the language on its own, then
+    /// the source.
+    ///
+    /// `pt-BR` before `pt` before `en-GB` — a catalogue for the whole language is a
+    /// better answer than another language entirely, and a reader of one region's
+    /// dialect can read the other's. A locale set written only as `xx-YY`, which is
+    /// what this site has, never finds the middle step and the chain costs nothing.
+    fn chain<'a>(&'a self, locale: &'a str) -> impl Iterator<Item = &'a str> {
+        let language = locale.split('-').next().unwrap_or(locale);
+
+        [
+            Some(locale),
+            (language != locale).then_some(language),
+            Some(self.source.as_str()),
+        ]
+        .into_iter()
+        .flatten()
     }
 
+    fn lookup(&self, locale: &str, context: Option<&str>, msgid: &str) -> Option<&str> {
+        self.chain(locale)
+            .find_map(|locale| self.get(locale)?.get(context, msgid))
+    }
+
+    // Walks the same chain as the singular: a plural the locale lacks and the source
+    // has was previously ignored, which meant falling all the way back to the two
+    // English forms while a translated set sat in the catalogue next door.
     fn lookup_plural(
         &self,
         locale: &str,
@@ -214,7 +232,7 @@ impl Catalogs {
         msgid: &str,
         count: u64,
     ) -> Option<&str> {
-        self.get(locale)
-            .and_then(|catalog| catalog.get_plural(context, msgid, count))
+        self.chain(locale)
+            .find_map(|locale| self.get(locale)?.get_plural(context, msgid, count))
     }
 }
