@@ -27,7 +27,9 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
 - **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
 - **Content**: pulldown-cmark renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
-- **Toolchain**: mise (`mise.toml`) — rust, task, tailwind, nano-web, gh, yq
+- **Toolchain**: mise (`mise.toml`) — rust, task, tailwind, gh, yq. nano-web is not
+  pinned there: it serves `dist/` for `task dev`, and nothing the build does needs a
+  server
 - **Deployment**: Docker → microk8s → CloudFlare Tunnel
 
 Key decisions:
