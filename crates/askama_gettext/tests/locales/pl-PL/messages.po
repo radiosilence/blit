@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl-PL\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+
+msgid "Book now"
+msgstr "Zarezerwuj teraz"
+
+msgctxt "A button that dismisses a dialog"
+msgid "close"
+msgstr "zamknij"
+
+msgctxt "How near something is"
+msgid "close"
+msgstr "blisko"
+
+msgid "%{count} file"
+msgid_plural "%{count} files"
+msgstr[0] "%{count} plik"
+msgstr[1] "%{count} pliki"
+msgstr[2] "%{count} plików"
+
+msgid "showing %{shown} of %{total}"
+msgstr "pokazano %{shown} z %{total}"
+
+# The link has moved to the front, which is the point of naming it rather than
+# handing a translator two fragments and an <a>.
+msgid "read my <cv>CV</cv>"
+msgstr "mój <cv>życiorys</cv> jest tutaj"
+
+# A hostile catalogue. Neither of these is markup the code allowed.
+msgid "<script>alert(1)</script>"
+msgstr "<script>alert(2)</script>"
+
+msgid "<script>alert(1)</script> and <b>not bold</b>"
+msgstr "<img src=x onerror=alert(3)> i <b>nie pogrubione</b>"

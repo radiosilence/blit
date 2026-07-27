@@ -1,0 +1,24 @@
+{#
+  Every shape the crate offers, rendered by Askama the way a page would.
+
+  Kept out of any site's own template directory on purpose: extraction walks the
+  templates a site declares, and these ids are fixtures rather than copy.
+#}
+<p id="translated">{{ __("Book now") }}</p>
+<p id="from-source">{{ __("Sign in") }}</p>
+<p id="untranslated">{{ __("Nobody has translated this") }}</p>
+
+<p id="context-dialog">{{ __p("A button that dismisses a dialog", "close") }}</p>
+<p id="context-distance">{{ __p("How near something is", "close") }}</p>
+
+<p id="one">{{ __n("%{count} file", "%{count} files", 1) }}</p>
+<p id="few">{{ __n("%{count} file", "%{count} files", 2) }}</p>
+<p id="many">{{ __n("%{count} file", "%{count} files", 5) }}</p>
+
+<p id="interpolated">{{ __("showing %{shown} of %{total}").with("shown", 3).with("total", 36) }}</p>
+
+<p id="markup">{{ __h("read my <cv>CV</cv>").link("cv", cv)|safe }}</p>
+
+{# A catalogue is data, so neither of these may reach the page as markup. #}
+<p id="hostile-text">{{ __("<script>alert(1)</script>") }}</p>
+<p id="hostile-markup">{{ __h("<script>alert(1)</script> and <b>not bold</b>")|safe }}</p>
