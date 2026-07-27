@@ -19,7 +19,10 @@ importers:
       "@lingui/core":
         specifier: ^6.6.0
         version: 6.6.0
-      "@lingui/format-po":
+      "@lingui/format-po-gettext":
+        specifier: ^6.6.0
+        version: 6.6.0
+      "@lingui/message-utils":
         specifier: ^6.6.0
         version: 6.6.0
       "@tailwindcss/cli":
@@ -293,6 +296,13 @@ packages:
     peerDependenciesMeta:
       babel-plugin-macros:
         optional: true
+
+  "@lingui/format-po-gettext@6.6.0":
+    resolution:
+      {
+        integrity: sha512-yzL/rS6QmrME4tBNTkAeRXzXG/Y25+XFGpG47cE+eWLOOEjRE0MNjBG0dXOczpu7JElS5lAH/tgaXurE97/bPw==,
+      }
+    engines: { node: ">=22.19.0" }
 
   "@lingui/format-po@6.6.0":
     resolution:
@@ -1919,6 +1929,14 @@ snapshots:
     dependencies:
       "@lingui/babel-plugin-lingui-macro": 6.6.0(@babel/core@7.29.7)(@babel/types@7.29.7)
       "@lingui/message-utils": 6.6.0
+
+  "@lingui/format-po-gettext@6.6.0":
+    dependencies:
+      "@lingui/conf": 6.6.0
+      "@lingui/format-po": 6.6.0
+      "@lingui/message-utils": 6.6.0
+      "@messageformat/parser": 5.1.1
+      pofile-ts: 4.0.3
 
   "@lingui/format-po@6.6.0":
     dependencies:
