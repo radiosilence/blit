@@ -1,39 +1,70 @@
 msgid ""
 msgstr ""
-"Language: ar-PS\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language: ar-PS\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 
-#: src/templates/page-base.html:57
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "تغيير اللغة"
 
-#: src/templates/page-base.html:62
+#: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "إغلاق"
 
-#: src/templates/index.html:7
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "السيرة الذاتية-2025.01"
 
-#: src/templates/index.html:13
+#: src/templates/index.html:11
 msgid "github"
-msgstr "غيت هاب"
+msgstr "github"
 
-#: src/templates/index.html:4
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "جيمس كليفلاند"
 
-#: src/templates/index.html:5
 #: src/templates/page-base.html:6
-#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "جيمس كليفلاند : مهندس فول ستاك كبير"
+
+#: src/templates/i18n-test.html:20
+msgid "%{count} locale"
+msgid_plural "%{count} locales"
+msgstr[0] "لا لغات"
+msgstr[1] "لغة واحدة"
+msgstr[2] "لغتان"
+msgstr[3] "%{count} لغات"
+msgstr[4] "%{count} لغة"
+msgstr[5] "%{count} لغة"
+
+#: src/templates/i18n-test.html:33
+msgid "<script>alert(1)</script> and <b>not bold</b>"
+msgstr ""
+
+#: src/templates/i18n-test.html:28
+msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
+msgstr "اقرأ <cv>سيرتي الذاتية</cv> أو <gh>جيت هاب</gh>"
+
+#: src/templates/i18n-test.html:25
+msgid "showing %{shown} of %{total}"
+msgstr "عرض %{shown} من %{total}"
+
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "إغلاق"
+
+#: src/templates/i18n-test.html:15
+msgctxt "Search results: how near a salon is"
+msgid "close"
+msgstr "قريب"
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "مهندس فول ستاك كبير"
+

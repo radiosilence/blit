@@ -1,39 +1,65 @@
 msgid ""
 msgstr ""
-"Language: en-GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language: en-GB\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: src/templates/page-base.html:57
+#: src/templates/page-base.html:64
 msgid "change language"
 msgstr "change language"
 
-#: src/templates/page-base.html:62
+#: src/templates/page-base.html:54
+#, fuzzy
 msgid "close"
 msgstr "close"
 
-#: src/templates/index.html:7
+#: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.html:13
+#: src/templates/index.html:11
 msgid "github"
 msgstr "github"
 
-#: src/templates/index.html:4
+#: src/templates/i18n-test.html:11 src/templates/index.html:6
 msgid "james cleveland"
 msgstr "james cleveland"
 
-#: src/templates/index.html:5
 #: src/templates/page-base.html:6
-#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "james cleveland : senior full stack engineer"
+
+#: src/templates/i18n-test.html:20
+msgid "%{count} locale"
+msgid_plural "%{count} locales"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/templates/i18n-test.html:33
+msgid "<script>alert(1)</script> and <b>not bold</b>"
+msgstr ""
+
+#: src/templates/i18n-test.html:28
+msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
+msgstr ""
+
+#: src/templates/i18n-test.html:25
+msgid "showing %{shown} of %{total}"
+msgstr ""
+
+#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr ""
+
+#: src/templates/i18n-test.html:15
+msgctxt "Search results: how near a salon is"
+msgid "close"
+msgstr ""
+
+#: src/templates/index.html:7
+msgid "senior full stack engineer"
+msgstr "senior full stack engineer"
+

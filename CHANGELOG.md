@@ -2,6 +2,69 @@
 
 ## Unreleased
 
+### The generator is Rust
+
+The build is a single binary. `generator/` renders the site, `crates/askama_gettext`
+handles the messages, and `src/` is what they read.
+
+- **[Askama](https://askama.rs) renders the templates**, bound to a struct at compile
+  time — a field a template names but the struct lacks fails `cargo build` rather
+  than rendering blank. That replaces the runtime Proxy the TypeScript needed.
+- **`askama_gettext` is a package, not a helper**: `__`/`__p`/`__n`/`__np` mirroring
+  gettext, each with a markup variant, `%{name}` interpolation, extraction through
+  Askama's own parser, and `.po` writing that keeps translations, comments, flags and
+  header metadata. Kept in this repo for now; nothing about it is site-specific.
+- **Plurals come from CLDR**, not from evaluating a `Plural-Forms` expression. The
+  header is still checked against CLDR and a disagreement fails the build — which
+  caught Dhivehi immediately, where the gettext table's default of two forms
+  disagrees with CLDR's one.
+- **No `package.json`, no `aube`, no `node_modules`.** Tailwind is the only
+  JavaScript left — its compiler is TypeScript and Oxide is only the scanner — and it
+  arrives as a pinned mise tool with its typography plugin linked into place.
+- Output matches the TypeScript across all 72 pages once fingerprints are normalised.
+
+Two bugs worth recording, both found by rendering rather than by reasoning:
+
+- **`PluralCategory::all()` yields alphabetically** — `[Few, Many, One, Other, Two,
+  Zero]` — and position in that list is the `msgstr[n]` index. Arabic's `zero` was
+  being filed under `msgstr[5]`. Now spelled out in CLDR order, with a test per
+  language shape.
+- **`find_message` keys on the plural too.** Looking a countable message up without
+  it found nothing, so re-extraction rebuilt the entry with empty forms and silently
+  discarded the translation. Caught because Polish stopped pluralising on a page
+  built to show exactly that.
+
+## Unreleased
+
+### Assets are content-hashed and published on demand
+
+`dist/` is now built from what the templates referenced rather than copied out of
+`src/static/`, and every asset carries its content hash in its filename.
+
+- **`asset('logo.png')` returns `/logo.4d453d58.png`** and records the reference.
+  A name nothing provides fails the build listing what exists; a path written by hand
+  instead of through the helper fails too, because the link check now resolves `src`
+  as well as `href` against what was actually written.
+- **The hashing fixes a live staleness bug.** nano-web picks caching from the MIME
+  type alone — `is_asset()` matches `image/*` and `font/*`, not just CSS — so
+  `/logo.png` was being served `immutable, max-age=1y` at a stable URL. Replacing the
+  logo would have left returning visitors on the old one for a year.
+- **The stylesheet and the manifest are derived, not copied.** Both name other assets,
+  so they are rewritten before their own hash is taken; otherwise the font and the
+  icons would be fetched at a second, unhashed URL cached just as hard. Tailwind now
+  compiles to `.build` so that rewrite has a fixed input — rewriting in place appended
+  a second hash whenever Tailwind's output was already up to date.
+- **`favicon.ico` and `robots.txt` stay unhashed and always ship.** Their URLs are a
+  convention rather than ours to choose. This is where nano-web's MIME-based caching
+  bites: `/favicon.ico` is an image, so it is immutable for a year despite needing a
+  fixed path.
+- **`dist/` is pruned to exactly what was written**, so a superseded hash or a removed
+  locale's directory stops being served. The `static` copy task is gone.
+- Rendered pages are unchanged apart from the asset URLs: identical across all 72
+  pages once fingerprints are normalised.
+
+## Unreleased
+
 ### Templates are WebC, messages are Lingui
 
 The hand-rolled template engine and gettext extractor are gone. Templates are still
