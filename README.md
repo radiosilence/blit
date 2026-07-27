@@ -49,15 +49,28 @@ so there is no transpiler and no bundler anywhere in the pipeline.
 
 ## i18n
 
-`src/locales/{locale}/messages.po` are the source of truth. A message id is its
-English source text, so a template reads `i18n._('change language')` and the English
-is visible where it is used rather than behind a key. Untranslated messages fall back
-to `en-GB` rather than rendering blank, so a new string is live everywhere the moment
-it's added — and an id no catalogue has fails the build, since with source-text ids
-the alternative is shipping a typo as itself.
+`src/locales/{locale}/messages.po` are the source of truth. A template passes the
+English source text — `i18n._('change language')` — so the English is visible where
+it's used rather than behind a key, and that text is the `msgid` a translator reads.
+Untranslated messages fall back to `en-GB` rather than rendering blank, so a new
+string is live everywhere the moment it's added; a message no catalogue has fails the
+build, since the alternative is shipping a typo as itself.
 
-Messages are ICU, so plurals and interpolation are available without anything new:
-`{n, plural, one {# locale} other {# locales}}` picks Polish's `many` form for 36.
+Messages are ICU, so plurals and interpolation come for free, and they're written the
+way gettext writes them — one `msgstr[n]` per form the language actually has, which is
+what makes Poedit and Weblate show one input box per form:
+
+```po
+msgid "# locale"
+msgid_plural "# locales"
+msgstr[0] "# język"
+msgstr[1] "# języki"
+msgstr[2] "# języków"
+```
+
+Three boxes for Polish, two for French, one for Japanese. Catalogues are keyed by
+Lingui's hash of the source text rather than the text itself, because po-gettext only
+writes native plurals for ids it generated.
 
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
 outstanding. Templates are valid HTML and every dynamic value is a JavaScript

@@ -15,15 +15,31 @@ the cases this site had not reached yet.
   into the static `class` and drops falsy attributes, both of which had been written
   by hand.
 - **[Lingui](https://lingui.dev) owns the messages.** ICU means plurals, selects and
-  interpolation work now rather than being the next thing to implement: a message can
-  be `{n, plural, one {# locale} other {# locales}}`, and Polish picks its `many` form
-  for 36. Message ids are still the source text.
+  interpolation work now rather than being the next thing to implement: a template can
+  say `{n, plural, one {# locale} other {# locales}}`, and Polish picks its `many` form
+  for 36. Templates still pass the English source text.
+- **Plurals are written the way gettext writes them**, so a translator's tooling offers
+  one box per form — three for Polish, two for French, one for Japanese:
+
+  ```po
+  msgid "# locale"
+  msgid_plural "# locales"
+  msgstr[0] "# język"
+  msgstr[1] "# języki"
+  msgstr[2] "# języków"
+  ```
+
+  po-gettext only produces that shape for generated ids, so catalogues are keyed by
+  Lingui's hash of the source text rather than by the text itself. The msgid a
+  translator reads is still the English. `Plural-Forms` is left empty: Lingui reads the
+  forms from CLDR without it, and Poedit and Weblate write it on first save.
+
 - **Extraction reuses Lingui's own Babel extractor.** `scripts/webc-extractor.ts`
   collects the expressions a template evaluates and hands them over as JavaScript, so
   nothing here decides what a message looks like. It is ~60 lines and recognises no
   message syntax of its own.
-- **A missing message now fails the build.** Lingui falls back to the id, which with
-  source-text ids would ship a mistyped `githubb` as itself, so `missing` throws.
+- **A missing message now fails the build**, naming the text rather than its hash.
+  Lingui falls back to the id, which would ship a mistyped `githubb` as itself.
   Untranslated strings still fall back to `en-GB`.
 - Roughly 390 lines of engine, extractor and PO handling deleted, along with the
   `escape-html` and `gettext-parser` dependencies and the generated `keys.ts`.

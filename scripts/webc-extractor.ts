@@ -13,6 +13,7 @@
  */
 import { extractFromFileWithBabel } from "@lingui/cli/api";
 import type { ExtractorType } from "@lingui/conf";
+import { generateMessageId } from "@lingui/message-utils/generateMessageId";
 import { type DefaultTreeAdapterMap, parse } from "parse5";
 
 /** Attributes WebC evaluates as JavaScript, beyond the `:` prefix it uses for bindings. */
@@ -59,7 +60,27 @@ export const webcExtractor: ExtractorType = {
       script.join("\n"),
       (message) => {
         const [file, line, column] = message.origin ?? [filename, 1, 0];
-        onMessageExtracted({ ...message, origin: [file, origins[line - 1] ?? 1, column] });
+        const origin: [string, number, number?] = [file, origins[line - 1] ?? 1, column];
+
+        /*
+         * `i18n._('text')` reads to Babel as an id with no message, which makes it an
+         * explicit id — and gettext plurals are only written for generated ones, so a
+         * plural would land as `msgid_plural "<the whole ICU string>_plural"`. In this
+         * dialect the string is the source text, so it is re-stated as the message and
+         * keyed by Lingui's hash of it, which is what `isGeneratedId` compares against.
+         */
+        if (message.message === undefined) {
+          const text = message.id;
+          onMessageExtracted({
+            ...message,
+            id: generateMessageId(text, message.context),
+            message: text,
+            origin,
+          });
+          return;
+        }
+
+        onMessageExtracted({ ...message, origin });
       },
       ctx,
       { plugins: [] },
