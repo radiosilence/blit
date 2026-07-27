@@ -10,6 +10,12 @@ msgstr ""
 msgid "Book now"
 msgstr "Zarezerwuj teraz"
 
+# Flagged by a translator, which is the only way the flag arrives — extraction
+# deletes what has left the templates rather than marking it.
+#, fuzzy
+msgid "This translation needs review"
+msgstr "To tłumaczenie wymaga sprawdzenia"
+
 msgctxt "A button that dismisses a dialog"
 msgid "close"
 msgstr "zamknij"
