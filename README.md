@@ -35,7 +35,7 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 - [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
   nothing re-runs without cause
-- [WebC](https://github.com/11ty/webc) expands `src/templates/*.webc` — valid HTML in,
+- [WebC](https://github.com/11ty/webc) expands `src/templates/*.html` — valid HTML in,
   static HTML out, with the view behind a Proxy so a mistyped path stops the build
   instead of rendering nothing
 - [Lingui](https://lingui.dev) extracts and compiles the messages

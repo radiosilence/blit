@@ -1,9 +1,8 @@
 @import "tailwindcss" source(none);
 @plugin "@tailwindcss/typography";
 
-/* Utility classes only ever appear in the templates; the CV's markup gets `prose`.
-   Spelled as a glob because .webc is not an extension Tailwind scans by default. */
-@source "../templates/*.webc";
+/* Utility classes only ever appear in the templates; the CV's markup gets `prose`. */
+@source "../templates";
 
 @font-face {
   font-family: "Geist Mono";

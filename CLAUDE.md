@@ -26,7 +26,9 @@ Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
 - **Orchestration**: [Task](https://taskfile.dev); each step declares `sources`/`generates`
-- **Templates**: [WebC](https://github.com/11ty/webc) over `src/templates/*.webc`
+- **Templates**: [WebC](https://github.com/11ty/webc) over `src/templates/*.html`; the
+  `.html` extension is deliberate — WebC only requires `.webc` for `npm:` imports, and
+  an editor treats these as what they are
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
 - **i18n**: [Lingui](https://lingui.dev) — ICU messages in `.po`, 36 locales, catalogues are the source of truth
@@ -80,9 +82,8 @@ Key decisions:
 - `/style.css` carries a content digest as a query string. nano-web serves CSS
   `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
 - Adding a page means a template plus an entry in `src/i18n/routes.ts`.
-- Tailwind scans `src/templates/*.webc` as an explicit glob — `.webc` is not an
-  extension it picks up from a bare directory. A class chosen in `generate.ts` rather
-  than written in a template is invisible to it.
+- Tailwind scans `src/templates`, so a class chosen in `generate.ts` rather than
+  written in a template is invisible to it.
 - GitHub Actions is an environment, not a pipeline: it checks out, installs mise,
   supplies credentials and a cache, then calls Taskfile targets. Anything a runner has
   and a laptop doesn't must arrive as an environment variable the Taskfile reads

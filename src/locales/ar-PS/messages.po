@@ -14,33 +14,33 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/templates/index.webc:4
+#: src/templates/index.html:4
 msgid "james cleveland"
 msgstr "جيمس كليفلاند"
 
 #. js-lingui-explicit-id
-#: src/templates/index.webc:5
-#: src/templates/page-base.webc:6
-#: src/templates/page-base.webc:17
+#: src/templates/index.html:5
+#: src/templates/page-base.html:6
+#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "جيمس كليفلاند : مهندس فول ستاك كبير"
 
 #. js-lingui-explicit-id
-#: src/templates/index.webc:7
+#: src/templates/index.html:7
 msgid "cv-2025.01"
 msgstr "السيرة الذاتية-2025.01"
 
 #. js-lingui-explicit-id
-#: src/templates/index.webc:13
+#: src/templates/index.html:13
 msgid "github"
 msgstr "غيت هاب"
 
 #. js-lingui-explicit-id
-#: src/templates/page-base.webc:57
+#: src/templates/page-base.html:57
 msgid "change language"
 msgstr "تغيير اللغة"
 
 #. js-lingui-explicit-id
-#: src/templates/page-base.webc:62
+#: src/templates/page-base.html:62
 msgid "close"
 msgstr "إغلاق"

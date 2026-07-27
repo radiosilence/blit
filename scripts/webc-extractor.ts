@@ -1,5 +1,5 @@
 /**
- * Teaches `lingui extract` to read .webc templates.
+ * Teaches `lingui extract` to read the templates.
  *
  * A template is valid HTML and every dynamic value in it is a JavaScript
  * expression in an attribute, so this collects those expressions and hands them
@@ -25,7 +25,7 @@ const EVALUATED = new Set(["@text", "@html", "@raw", "webc:if", "webc:elseif"]);
 const isEvaluated = (name: string) => name.startsWith(":") || EVALUATED.has(name);
 
 export const webcExtractor: ExtractorType = {
-  match: (filename) => filename.endsWith(".webc"),
+  match: (filename) => filename.endsWith(".html"),
 
   async extract(filename, code, onMessageExtracted, ctx) {
     const script: string[] = [];

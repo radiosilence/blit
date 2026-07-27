@@ -86,8 +86,8 @@ const written = await Promise.all(
       const path = url(locale, page.slug);
 
       const template = new WebC();
-      template.setInputPath(join(root, "src/templates", `${page.template}.webc`));
-      template.defineComponents(join(root, "src/templates/*.webc"));
+      template.setInputPath(join(root, "src/templates", `${page.template}.html`));
+      template.defineComponents(join(root, "src/templates/*.html"));
       // A helper is unscoped, so it reaches nested components; page data does not.
       template.setHelper("i18n", i18n);
 
