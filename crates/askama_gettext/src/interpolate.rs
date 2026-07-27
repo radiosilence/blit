@@ -73,10 +73,7 @@ mod tests {
     #[test]
     fn a_value_is_not_itself_interpolated() {
         // Otherwise a value containing a placeholder could pull in another value.
-        assert_eq!(
-            interpolate("%{a}", &[("a", "%{b}"), ("b", "boom")]),
-            "%{b}"
-        );
+        assert_eq!(interpolate("%{a}", &[("a", "%{b}"), ("b", "boom")]), "%{b}");
     }
 
     #[test]

@@ -35,9 +35,7 @@ pub enum Error {
     /// A catalogue's `Plural-Forms` header disagrees with CLDR about how many
     /// forms the language has. Filling in the extra slot would be wasted work and
     /// writing to it would be a silent bug, so this stops rather than guessing.
-    #[error(
-        "{locale}: catalogue declares nplurals={declared}, CLDR gives {actual} ({categories})"
-    )]
+    #[error("{locale}: catalogue declares nplurals={declared}, CLDR gives {actual} ({categories})")]
     PluralMismatch {
         /// The locale in question.
         locale: String,

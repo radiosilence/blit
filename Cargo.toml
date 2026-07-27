@@ -8,6 +8,10 @@ edition = "2024"
 
 # The generator lives beside the site rather than under it: `src/` is what the site
 # is made of, `generator/` is the program that turns it into `dist/`.
+[lib]
+name = "blit"
+path = "generator/lib.rs"
+
 [[bin]]
 name = "blit"
 path = "generator/main.rs"

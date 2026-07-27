@@ -31,8 +31,13 @@ pub struct Context<'a> {
     pub assets: &'a Assets,
 }
 
+/// Declares a page template.
+///
+/// `{% extends %}` requires a child to carry every field the layout names, so the
+/// shared ones are listed once here and each page adds only what it uses itself —
+/// which keeps an genuinely unused field a warning rather than noise.
 macro_rules! page {
-    ($name:ident, $path:literal) => {
+    ($name:ident, $path:literal $(, $field:ident: $ty:ty)* $(,)?) => {
         #[derive(Template)]
         #[template(path = $path)]
         pub struct $name<'a> {
@@ -40,11 +45,9 @@ macro_rules! page {
             pub locale: &'a str,
             pub dir: &'a str,
             pub canonical_url: String,
-            pub cv: &'a str,
             pub urls: &'a Urls,
             pub locale_links: &'a [LocaleLink],
-            /// Counts the scratch i18n page renders plural forms for.
-            pub counts: &'a [u64],
+            $(pub $field: $ty,)*
         }
 
         impl Translate for $name<'_> {
@@ -62,5 +65,5 @@ macro_rules! page {
 }
 
 page!(Index, "index.html");
-page!(Cv, "cv.html");
-page!(I18nTest, "i18n-test.html");
+page!(Cv, "cv.html", cv: &'a str);
+page!(I18nTest, "i18n-test.html", counts: &'a [u64]);

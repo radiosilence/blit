@@ -10,14 +10,26 @@ pub struct Page {
 }
 
 pub const PAGES: &[Page] = &[
-    Page { slug: "", template: "index" },
-    Page { slug: "cv", template: "cv" },
+    Page {
+        slug: "",
+        template: "index",
+    },
+    Page {
+        slug: "cv",
+        template: "cv",
+    },
     // Scratch page for exercising i18n against real catalogues. Delete before merge.
-    Page { slug: "i18n-test", template: "i18n-test" },
+    Page {
+        slug: "i18n-test",
+        template: "i18n-test",
+    },
 ];
 
 pub fn url(locale: &str, slug: &str) -> String {
     let prefix = if locale == SOURCE { "" } else { locale };
-    let parts: Vec<&str> = [prefix, slug].into_iter().filter(|p| !p.is_empty()).collect();
+    let parts: Vec<&str> = [prefix, slug]
+        .into_iter()
+        .filter(|p| !p.is_empty())
+        .collect();
     format!("/{}", parts.join("/"))
 }

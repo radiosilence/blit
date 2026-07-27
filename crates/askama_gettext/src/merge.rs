@@ -122,7 +122,10 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
     // Anything the templates no longer mention. Marked, not deleted: a string that
     // comes back should come back translated.
     for mut message in catalog.messages_mut() {
-        let key = (message.msgctxt().map(str::to_owned), message.msgid().to_owned());
+        let key = (
+            message.msgctxt().map(str::to_owned),
+            message.msgid().to_owned(),
+        );
         if !wanted.contains_key(&key) && !message.is_fuzzy() {
             summary.obsolete += 1;
             message.flags_mut().add_flag("fuzzy");

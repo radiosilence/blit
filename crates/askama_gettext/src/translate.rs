@@ -86,8 +86,11 @@ pub trait Translate {
     /// `npgettext`: [`Self::__n`] with a context.
     fn __np(&self, context: &str, msgid: &str, plural: &str, count: u64) -> Message {
         let t = self.translator();
-        Message::new(t.catalogs.npgettext(t.locale, context, msgid, plural, count))
-            .with("count", count)
+        Message::new(
+            t.catalogs
+                .npgettext(t.locale, context, msgid, plural, count),
+        )
+        .with("count", count)
     }
 
     /// [`Self::__`] for a sentence carrying inline markup.
@@ -111,7 +114,10 @@ pub trait Translate {
     /// [`Self::__np`] for a sentence carrying inline markup.
     fn __nph(&self, context: &str, msgid: &str, plural: &str, count: u64) -> Markup {
         let t = self.translator();
-        Markup::new(t.catalogs.npgettext(t.locale, context, msgid, plural, count))
-            .with("count", count)
+        Markup::new(
+            t.catalogs
+                .npgettext(t.locale, context, msgid, plural, count),
+        )
+        .with("count", count)
     }
 }

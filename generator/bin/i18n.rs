@@ -3,16 +3,13 @@
 //! Separate from the renderer because it writes the files the renderer reads: a
 //! build that did both would be rewriting its own input.
 
-#[path = "../config.rs"]
-mod config;
-
 use std::path::Path;
 
 use anyhow::{Context, Result};
 use askama_gettext::{extract, merge};
 use askama_parser::Syntax;
 
-use crate::config::{LOCALES, SOURCE};
+use blit::config::{LOCALES, SOURCE};
 
 fn main() -> Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -39,7 +36,10 @@ fn main() -> Result<()> {
     println!("{} calls across {} templates", messages.len(), files.len());
 
     for locale in LOCALES {
-        let path = root.join("src/locales").join(locale.code).join("messages.po");
+        let path = root
+            .join("src/locales")
+            .join(locale.code)
+            .join("messages.po");
         let summary = merge::into_catalog(&path, locale.code, &messages)
             .with_context(|| format!("merging into {}", path.display()))?;
 

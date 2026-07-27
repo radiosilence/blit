@@ -8,7 +8,9 @@
 use std::path::Path;
 
 use crate::error::{Error, Result};
-use askama_parser::node::{BlockDef, FilterBlock, If, Let, LetValueOrBlock, Loop, Macro, Match, Node};
+use askama_parser::node::{
+    BlockDef, FilterBlock, If, Let, LetValueOrBlock, Loop, Macro, Match, Node,
+};
 use askama_parser::{Ast, Expr, Syntax, WithSpan};
 
 /// One `__`-family call found in a template.
@@ -72,7 +74,11 @@ pub fn from_str(source: &str, file: &str, syntax: &Syntax<'_>) -> Result<Vec<Mes
 
 /// Byte offset to 1-based line, so a `#:` reference points where it was written.
 fn line_of(source: &str, offset: usize) -> usize {
-    source[..offset.min(source.len())].bytes().filter(|b| *b == b'\n').count() + 1
+    source[..offset.min(source.len())]
+        .bytes()
+        .filter(|b| *b == b'\n')
+        .count()
+        + 1
 }
 
 fn walk_node(node: &Node<'_>, source: &str, file: &str, out: &mut Vec<Message>) {
@@ -114,7 +120,9 @@ fn walk_node(node: &Node<'_>, source: &str, file: &str, out: &mut Vec<Message>) 
             }
         }
         Node::Loop(inner) => {
-            let Loop { body, else_nodes, .. } = &**inner;
+            let Loop {
+                body, else_nodes, ..
+            } = &**inner;
             for node in body.iter().chain(else_nodes) {
                 walk_node(node, source, file, out);
             }
@@ -166,14 +174,21 @@ fn walk_expr(expr: &WithSpan<Box<Expr<'_>>>, source: &str, file: &str, out: &mut
             // A non-literal id cannot be extracted, and a caller that passes one has
             // moved the English out of the template — which is the thing to avoid.
             if let Some(id) = args.next().and_then(literal) {
-                let plural = if has_plural { args.next().and_then(literal) } else { None };
+                let plural = if has_plural {
+                    args.next().and_then(literal)
+                } else {
+                    None
+                };
 
                 out.push(Message {
                     id,
                     context,
                     plural,
                     file: file.to_owned(),
-                    line: expr.span().byte_range().map_or(1, |r| line_of(source, r.start)),
+                    line: expr
+                        .span()
+                        .byte_range()
+                        .map_or(1, |r| line_of(source, r.start)),
                 });
             }
         }
@@ -256,7 +271,10 @@ mod tests {
             ]
         );
 
-        assert_eq!(found[1].context.as_deref(), Some("Nav: language picker button"));
+        assert_eq!(
+            found[1].context.as_deref(),
+            Some("Nav: language picker button")
+        );
         assert_eq!(found[2].plural.as_deref(), Some("%{count} locales"));
         assert_eq!(found[0].line, 1);
         assert_eq!(found[4].line, 5);

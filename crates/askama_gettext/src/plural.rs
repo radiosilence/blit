@@ -160,7 +160,10 @@ mod tests {
 
     #[test]
     fn a_region_subtag_does_not_change_the_rules() {
-        assert_eq!(Forms::new("nl-BE").unwrap().count(), Forms::new("nl-NL").unwrap().count());
+        assert_eq!(
+            Forms::new("nl-BE").unwrap().count(),
+            Forms::new("nl-NL").unwrap().count()
+        );
     }
 
     #[test]
@@ -169,7 +172,11 @@ mod tests {
         assert!(pl.check("pl-PL", 3).is_ok());
         assert!(matches!(
             pl.check("pl-PL", 2),
-            Err(Error::PluralMismatch { declared: 2, actual: 3, .. })
+            Err(Error::PluralMismatch {
+                declared: 2,
+                actual: 3,
+                ..
+            })
         ));
     }
 

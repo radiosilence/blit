@@ -213,8 +213,7 @@ mod tests {
 
     #[test]
     fn markup_from_a_catalogue_is_escaped() {
-        let out = Markup::new(r"hi <script>alert(1)</script> <img src=x onerror=y>")
-            .to_string();
+        let out = Markup::new(r"hi <script>alert(1)</script> <img src=x onerror=y>").to_string();
         assert!(!out.contains("<script"), "{out}");
         assert!(!out.contains("<img"), "{out}");
         assert!(out.contains("&lt;script&gt;"), "{out}");
@@ -246,7 +245,9 @@ mod tests {
 
     #[test]
     fn an_unterminated_tag_stays_well_formed() {
-        let out = Markup::new("oops <cv>unclosed").link("cv", "/cv").to_string();
+        let out = Markup::new("oops <cv>unclosed")
+            .link("cv", "/cv")
+            .to_string();
         assert_eq!(out, r#"oops <a href="/cv">unclosed</a>"#);
     }
 }

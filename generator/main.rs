@@ -1,11 +1,6 @@
 //! Renders every locale × page into dist/, publishes the assets they referenced,
 //! and checks that every absolute reference resolves to something written.
 
-mod assets;
-mod config;
-mod routes;
-mod templates;
-
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -14,11 +9,11 @@ use anyhow::{Context as _, Result, bail};
 use askama::Template;
 use pulldown_cmark::{Options, Parser, html};
 
-use crate::assets::Assets;
-use crate::config::{LOCALES, SOURCE};
 use askama_gettext::Catalogs;
-use crate::routes::{PAGES, url};
-use crate::templates::{Context, Cv, I18nTest, Index, LocaleLink, Urls};
+use blit::assets::Assets;
+use blit::config::{LOCALES, SOURCE};
+use blit::routes::{PAGES, url};
+use blit::templates::{Context, Cv, I18nTest, Index, LocaleLink, Urls};
 
 fn main() -> Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).to_owned();
@@ -84,10 +79,8 @@ fn main() -> Result<()> {
                     locale: locale.code,
                     dir,
                     canonical_url,
-                    cv: &cv,
                     urls: &urls,
                     locale_links: &locale_links,
-                    counts,
                 }
                 .render()?,
                 "cv" => Cv {
@@ -95,10 +88,9 @@ fn main() -> Result<()> {
                     locale: locale.code,
                     dir,
                     canonical_url,
-                    cv: &cv,
                     urls: &urls,
                     locale_links: &locale_links,
-                    counts,
+                    cv: &cv,
                 }
                 .render()?,
                 "i18n-test" => I18nTest {
@@ -106,7 +98,6 @@ fn main() -> Result<()> {
                     locale: locale.code,
                     dir,
                     canonical_url,
-                    cv: &cv,
                     urls: &urls,
                     locale_links: &locale_links,
                     counts,
