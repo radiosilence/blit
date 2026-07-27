@@ -99,7 +99,7 @@ tasks:
         msg: |
           nano-web is not on PATH. It serves dist/ for `task dev` and is not part of
           the build toolchain, so it is not pinned in mise.toml.
-          Install it with: mise use -g nano-web
+          https://github.com/radiosilence/nano-web
     cmd: nano-web serve {{.DIST}} --port 3000 --dev
 
   clean:

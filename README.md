@@ -7,7 +7,7 @@ The browser gets HTML, CSS and a font. No JavaScript at all.
 
 ## Why there's no framework
 
-The site is a couple of pages, a dozen translated strings and a markdown CV. Its only piece of
+The site is two pages, seven translated strings and a markdown CV. Its only piece of
 interactivity is the language picker, so there was nothing for a client-side
 framework to do.
 
