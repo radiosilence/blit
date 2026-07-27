@@ -5,6 +5,8 @@
 //! `icu_experimental`, and this is data that changes about as often as a language
 //! renames itself. Regenerate with `task i18n:locales`.
 
+use askama_gettext::Fuzzy;
+
 pub struct Locale {
     pub code: &'static str,
     pub name: &'static str,
@@ -13,6 +15,18 @@ pub struct Locale {
 }
 
 pub const SOURCE: &str = "en-GB";
+
+/// What a `fuzzy` translation does here.
+///
+/// `msgfmt` would drop it. This site serves it: the flag means a translation may
+/// have drifted from an English that changed, and most of a sentence in your own
+/// language beats all of one in someone else's. Nothing sets the flag — extraction
+/// deletes what has left the templates rather than marking it — so it only ever
+/// arrives from a translator or from Poedit, and their judgement is not overridden.
+///
+/// Switch to [`Fuzzy::Skip`] to hold a drifted translation back until it is
+/// reviewed, at the cost of showing English in the meantime.
+pub const FUZZY: Fuzzy = Fuzzy::Serve;
 
 pub const LOCALES: &[Locale] = &[
     Locale {
