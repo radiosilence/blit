@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+### Assets are content-hashed and published on demand
+
+`dist/` is now built from what the templates referenced rather than copied out of
+`src/static/`, and every asset carries its content hash in its filename.
+
+- **`asset('logo.png')` returns `/logo.4d453d58.png`** and records the reference.
+  A name nothing provides fails the build listing what exists; a path written by hand
+  instead of through the helper fails too, because the link check now resolves `src`
+  as well as `href` against what was actually written.
+- **The hashing fixes a live staleness bug.** nano-web picks caching from the MIME
+  type alone — `is_asset()` matches `image/*` and `font/*`, not just CSS — so
+  `/logo.png` was being served `immutable, max-age=1y` at a stable URL. Replacing the
+  logo would have left returning visitors on the old one for a year.
+- **The stylesheet and the manifest are derived, not copied.** Both name other assets,
+  so they are rewritten before their own hash is taken; otherwise the font and the
+  icons would be fetched at a second, unhashed URL cached just as hard. Tailwind now
+  compiles to `.build` so that rewrite has a fixed input — rewriting in place appended
+  a second hash whenever Tailwind's output was already up to date.
+- **`favicon.ico` and `robots.txt` stay unhashed and always ship.** Their URLs are a
+  convention rather than ours to choose. This is where nano-web's MIME-based caching
+  bites: `/favicon.ico` is an image, so it is immutable for a year despite needing a
+  fixed path.
+- **`dist/` is pruned to exactly what was written**, so a superseded hash or a removed
+  locale's directory stops being served. The `static` copy task is gone.
+- Rendered pages are unchanged apart from the asset URLs: identical across all 72
+  pages once fingerprints are normalised.
+
+## Unreleased
+
 ### Templates are WebC, messages are Lingui
 
 The hand-rolled template engine and gettext extractor are gone. Templates are still

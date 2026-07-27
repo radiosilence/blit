@@ -2,6 +2,9 @@ version: "3"
 
 vars:
   DIST: dist
+  # Tailwind's output is an input to generate, which rewrites it; keeping it out of
+  # dist gives that rewrite a fixed input and leaves dist owned by generate alone.
+  BUILD: .build
   BIN: ./node_modules/.bin
   IMAGE: ghcr.io/radiosilence/blit
   PLATFORMS: linux/amd64
@@ -25,7 +28,7 @@ tasks:
 
   build:
     desc: Generate the whole site into dist/
-    deps: [generate, static]
+    deps: [generate]
 
   # Depends on css because it fingerprints the compiled stylesheet into the URL.
   generate:
@@ -36,8 +39,9 @@ tasks:
       - src/content/**/*.md
       - src/i18n/**/*.ts
       - src/locales/**/*.po
+      - src/static/**/*
       - src/templates/**/*.html
-      - "{{.DIST}}/style.css"
+      - "{{.BUILD}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
     cmd: node scripts/generate.ts
@@ -50,17 +54,8 @@ tasks:
       - src/styles/**/*.css
       - src/templates/**/*.html
     generates:
-      - "{{.DIST}}/style.css"
-    cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
-
-  # Deliberately unfingerprinted: the outputs are a whole directory rather than one
-  # named file, so a partially-deleted dist/ can't be detected. Copying ~1 MB takes
-  # a few ms, which is cheaper than the class of bug where assets silently vanish.
-  static:
-    desc: Copy fonts, icons and manifest
-    cmds:
-      - mkdir -p {{.DIST}}
-      - cp -R src/static/. {{.DIST}}/
+      - "{{.BUILD}}/style.css"
+    cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.BUILD}}/style.css --minify"
 
   dev:
     desc: Rebuild on change, serve on :3000
@@ -80,7 +75,7 @@ tasks:
     desc: Remove generated output
     # .task holds the source checksums; leaving it makes the next build skip
     # steps whose output was just deleted.
-    cmd: rm -rf {{.DIST}} .task
+    cmd: rm -rf {{.DIST}} {{.BUILD}} .task
 
   lint:
     desc: Lint with oxlint

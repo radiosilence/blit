@@ -6,13 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 task dev          # Rebuild on change, serve on :3000
-task build        # generate + css + static into dist/
+task build        # css into .build, then generate the site into dist/
 task generate     # Render the 72 pages only
 task check        # lint + format:check + typecheck, in parallel
 task ci           # What CI runs: check, then build
 task docker:build # Build the container image (PUSH/LATEST to publish)
 task i18n:sync    # Extract messages from the templates into every catalogue
-task clean        # Drop dist/ and Task's checksum cache
+task clean        # Drop dist/, .build/ and Task's checksum cache
 task lint         # oxlint  (task lint -- --fix to autofix)
 task format       # oxfmt --write
 task typecheck    # tsc --noEmit
@@ -80,14 +80,26 @@ Key decisions:
   syntax are its choice, not the template's. Compare renders structurally.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
-- `task clean` must remove `.task` as well as `dist` — leaving the checksum cache makes
-  the next build skip steps whose output was just deleted.
-- `generate` prunes orphaned `index.html` files and empty directories. Without it a
-  removed locale keeps its directory in `dist/` and carries on being served.
-- `static` is deliberately unfingerprinted: its output is a directory rather than one
-  named file, so a partially-deleted `dist/` can't be detected. Copying is cheap.
-- `/style.css` carries a content digest as a query string. nano-web serves CSS
-  `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
+- `task clean` must remove `.task` and `.build` as well as `dist` — leaving the
+  checksum cache makes the next build skip steps whose output was just deleted.
+- Every asset reaches a page through `asset('logo.png')`, which publishes it under a
+  content hash (`/logo.4d453d58.png`) and records the reference. Writing the path by
+  hand instead fails the build, because the link check resolves `href` and `src`
+  against what was actually written.
+- Hashing is not decoration. nano-web picks caching by MIME type alone, so CSS,
+  images and fonts are all served `immutable, max-age=1y` — a stable URL is a promise
+  the build can't keep. `favicon.ico` and `robots.txt` are the exceptions: their URLs
+  are a convention, so they publish unhashed and always, and replacing one means
+  waiting the cache out.
+- `dist/` is written entirely by `generate`, which is what lets it delete anything
+  that is not a page or a referenced asset — a removed locale's directory, or the
+  previous hash of a file that has changed.
+- The stylesheet and the manifest are derived rather than copied: both name other
+  assets, so they are rewritten before their own hash is taken. Otherwise the font
+  and the icons get fetched at a second, unhashed URL that is cached just as hard.
+- Tailwind compiles to `.build`, not `dist`, so that rewrite has a fixed input.
+  Rewriting in place would append a second hash on any run where Tailwind's output
+  was already up to date.
 - Adding a page means a template plus an entry in `src/i18n/routes.ts`.
 - Tailwind scans `src/templates`, so a class chosen in `generate.ts` rather than
   written in a template is invisible to it.
