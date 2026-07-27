@@ -1,12 +1,9 @@
 @import "tailwindcss" source(none);
 @plugin "@tailwindcss/typography";
 
-/* Utility classes only ever appear in the templates; the CV's markup gets `prose`. */
-@source "../templates";
-/* Chosen in generate.ts rather than written in a template, so Tailwind cannot
-   see them. Listed rather than scanning scripts/, which picks up identifiers
-   like `relative` from imports and emits utilities for them. */
-@source inline("text-brand text-inherit");
+/* Utility classes only ever appear in the templates; the CV's markup gets `prose`.
+   Spelled as a glob because .webc is not an extension Tailwind scans by default. */
+@source "../templates/*.webc";
 
 @font-face {
   font-family: "Geist Mono";
