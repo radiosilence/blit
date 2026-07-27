@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { WebC } from "@11ty/webc";
 import { setupI18n } from "@lingui/core";
+import { generateMessageId } from "@lingui/message-utils/generateMessageId";
 import MarkdownIt from "markdown-it";
 import { parse } from "parse5";
 
@@ -40,17 +41,32 @@ const [catalogs, cv] = await Promise.all([
  * that was never extracted, and both should stop the build.
  */
 const translator = (locale: string) => {
-  const i18n = setupI18n({
-    missing: (where, id) => {
-      throw new Error(`No message \`${id}\` in ${where}. If it is new, run \`task i18n:sync\`.`);
-    },
-  });
+  const messages = catalogs[locale] ?? {};
+  const i18n = setupI18n();
 
   // One instance per locale rather than one activated in turn, so pages render
   // in parallel without sharing which locale is currently switched on.
-  i18n.load(locale, catalogs[locale] ?? {});
+  i18n.load(locale, messages);
   i18n.activate(locale);
-  return i18n;
+
+  return {
+    /**
+     * Templates pass the English source text. Catalogues are keyed by Lingui's hash
+     * of it — which is what makes a plural serialise as gettext's `msgid_plural`
+     * rather than an opaque id — so both sides derive the key the same way instead
+     * of one of them assuming.
+     *
+     * An id no catalogue has stops the build: ids are source text, so Lingui's own
+     * fallback would ship a mistyped `githubb` as itself.
+     */
+    _(message: string, values?: Record<string, unknown>) {
+      const id = generateMessageId(message);
+      if (!(id in messages)) {
+        throw new Error(`No message \`${message}\`. If it is new, run \`task i18n:sync\`.`);
+      }
+      return i18n._(id, values);
+    },
+  };
 };
 
 /**

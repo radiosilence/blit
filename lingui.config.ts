@@ -1,15 +1,16 @@
-import { formatter } from "@lingui/format-po";
+import { formatter } from "@lingui/format-po-gettext";
 
 import { webcExtractor } from "./scripts/webc-extractor.ts";
 import { locales, sourceLocale } from "./src/i18n/config.ts";
 
 /*
- * Plain po rather than po-gettext. Message ids are the source text, and
- * po-gettext only reaches gettext's `msgid_plural` when a message is supplied
- * alongside the id — which for a plural means writing the same ICU string twice
- * in the template, to land a `msgid_plural` of `<the whole ICU string>_plural`.
- * Here a plural is one entry whose msgstr is ICU, which is what a translator
- * edits either way.
+ * po-gettext writes a plural the way gettext does — `msgid`/`msgid_plural` and one
+ * `msgstr[n]` per form the language actually has — so a translator's tooling offers
+ * three boxes for Polish and two for French rather than one box of raw ICU. It
+ * converts back to ICU on read, so nothing downstream sees the difference.
+ *
+ * This only applies to generated ids, which is why the extractor keys messages by
+ * Lingui's hash of the source text rather than by the text itself.
  */
 export default {
   locales: [...locales],

@@ -55,12 +55,19 @@ Key decisions:
 - The extractor recognises no message syntax of its own. It collects the expressions
   and hands them to Lingui's Babel extractor, so `i18n._()`, plurals, comments and
   contexts are Lingui's to define and stay correct when Lingui's rules change.
-- Message ids are the source text (`i18n._('github')`), so `missing` is wired to throw
-  in `scripts/generate.ts` — Lingui's default of falling back to the id would ship a
-  mistyped `githubb` as itself. Untranslated strings still fall back to `en-GB`.
-- Plurals are ICU inside the message, not gettext's `msgid_plural`. `po-gettext` only
-  reaches that shape when a message accompanies the id, which with source-text ids
-  means writing the same ICU string twice per plural.
+- Templates pass the English source text (`i18n._('github')`); catalogues are keyed by
+  Lingui's hash of it. Both the extractor and the render-time helper call
+  `generateMessageId`, so neither side assumes the other's key. A message no catalogue
+  has stops the build, because with source text as the message Lingui's own fallback
+  would ship a mistyped `githubb` as itself. Untranslated strings still fall back to
+  `en-GB`.
+- The hash keying is what makes plurals write as gettext's `msgid`/`msgid_plural` with
+  one `msgstr[n]` per form. po-gettext only does that for generated ids; hand it an
+  explicit id and a plural degrades to `msgid_plural "<the whole ICU string>_plural"`.
+  This is why `scripts/webc-extractor.ts` restates the extracted id as the message.
+- `Plural-Forms` is left empty. Lingui derives the forms from CLDR when the header is
+  absent, and Poedit and Weblate write it on first save; the alternative is hand-
+  maintaining a C expression for all 36 locales.
 - `generate.ts` wraps the view in a Proxy that throws on unknown keys, because WebC
   renders an unknown path as nothing. Generation time is the only runtime here, so
   this is the type check. `then` and array indexes are exempt — WebC awaits every
