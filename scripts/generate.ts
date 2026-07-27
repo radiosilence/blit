@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { glob, mkdir, readdir, readFile, rm, rmdir, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,30 +8,51 @@ import { generateMessageId } from "@lingui/message-utils/generateMessageId";
 import MarkdownIt from "markdown-it";
 import { parse } from "parse5";
 
+import { loadAssets } from "./assets.ts";
+
 import { loadCatalogs } from "#/i18n/catalogs.ts";
 import { describeLocale, isRtl, locales } from "#/i18n/config.ts";
 import { pages, url } from "#/i18n/routes.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const dist = join(root, "dist");
+const build = join(root, ".build");
 
 const read = (...path: string[]) => readFile(join(root, ...path), "utf8");
 
 const markdown = MarkdownIt({ html: true });
 
-/*
- * nano-web serves CSS as `immutable, max-age=1y`, so a stable /style.css would
- * strand returning visitors on old styles after a deploy. The digest changes the
- * URL whenever the CSS does, which is what makes that caching safe.
- */
-const styleHref = await readFile(join(dist, "style.css")).then(
-  (css) => `/style.css?v=${createHash("sha256").update(css).digest("hex").slice(0, 8)}`,
-);
-
-const [catalogs, cv] = await Promise.all([
+const [assets, catalogs, cv] = await Promise.all([
+  loadAssets(join(root, "src/static")),
   loadCatalogs(),
   read("src/content/cv.md").then((source) => markdown.render(source)),
 ]);
+
+/*
+ * The stylesheet and the manifest name other assets, so both are rewritten before
+ * anything asks for their own URL — a hashed name inside them is what stops the
+ * font and the icons being fetched at a second, unhashed URL that is cached just
+ * as immutably.
+ *
+ * Tailwind compiles to .build rather than dist so that this rewrite has a fixed
+ * input. Reading and rewriting in place would append a second hash on any run
+ * where Tailwind's own output was up to date and therefore not regenerated.
+ */
+const fontUrl = assets.href("geist-mono.woff2");
+assets.derive(
+  "style.css",
+  Buffer.from(
+    (await readFile(join(build, "style.css"), "utf8")).replaceAll("/geist-mono.woff2", fontUrl),
+  ),
+);
+
+const manifest = JSON.parse(await read("src/static/manifest.json")) as {
+  icons?: { src: string }[];
+};
+for (const icon of manifest.icons ?? []) {
+  icon.src = assets.href(icon.src.startsWith("/") ? icon.src.slice(1) : icon.src);
+}
+assets.derive("manifest.json", Buffer.from(JSON.stringify(manifest, null, 2)));
 
 /*
  * Message ids are the source text, so Lingui's default of falling back to the id
@@ -106,13 +126,13 @@ const written = await Promise.all(
       template.defineComponents(join(root, "src/templates/*.html"));
       // A helper is unscoped, so it reaches nested components; page data does not.
       template.setHelper("i18n", i18n);
+      template.setHelper("asset", assets.href);
 
       const { html } = await template.compile({
         data: strict({
           locale,
           dir: isRtl(locale) ? "rtl" : "ltr",
           cv,
-          styleHref,
           canonicalUrl: `https://blit.cc${path}`,
           urls: Object.fromEntries(pages.map(({ slug }) => [slug || "home", url(locale, slug)])),
           localeLinks: locales.map((code) => ({
@@ -132,17 +152,22 @@ const written = await Promise.all(
   }),
 );
 
+const publishedAssets = await assets.publish(dist);
+
 /*
- * Drop pages from earlier builds. Without this a removed locale keeps its
- * directory in dist/ and carries on being served. Only index.html files are
- * touched, which is exactly the set this script owns.
+ * Drop everything from earlier builds. dist/ is written entirely by this script, so
+ * anything in it that is not a page or a referenced asset is left over — a removed
+ * locale's directory, or the previous hash of a file that has since changed, both
+ * of which would otherwise carry on being served.
  */
-const current = new Set(written);
+const current = new Set([...written, ...publishedAssets]);
 const stale: string[] = [];
-for await (const page of glob("*/**/index.html", { cwd: dist })) {
-  if (!current.has(join(dist, page))) stale.push(join(dist, page));
+for await (const entry of glob("**/*", { cwd: dist, withFileTypes: true })) {
+  if (!entry.isFile()) continue;
+  const file = join(entry.parentPath, entry.name);
+  if (!current.has(file)) stale.push(file);
 }
-await Promise.all(stale.map((page) => rm(page)));
+await Promise.all(stale.map((file) => rm(file)));
 
 // Depth-first: children have to be gone before a directory can be judged empty.
 const prune = async (dir: string) => {
@@ -156,9 +181,11 @@ const prune = async (dir: string) => {
 await prune(dist);
 
 /*
- * Every internal link, resolved against what was actually written. Pages are
- * directory indexes and the templates build hrefs from routes.ts, so a link that
- * misses is a routing bug that would otherwise ship as a 404 nobody clicks.
+ * Every absolute reference a page makes, resolved against what was actually
+ * written. A link that misses is a routing bug and an `src` that misses is an asset
+ * written by hand instead of through `asset()`; both would ship as a 404 nobody
+ * clicks. Pages are directory indexes, so a link resolves to that directory's
+ * index.html while an asset resolves to the file itself.
  */
 const broken: string[] = [];
 
@@ -173,11 +200,16 @@ for (const [file, html] of rendered) {
       attrs?: { name: string; value: string }[];
       childNodes?: unknown[];
     }[]) {
-      const href = child.attrs?.find((a) => a.name === "href")?.value;
-      if (child.tagName === "a" && href?.startsWith("/")) {
-        const [path] = href.split("?");
-        const target = join(dist, path?.split("#")[0] ?? "", "index.html");
-        if (!current.has(target)) broken.push(`${relative(dist, file)} -> ${href}`);
+      for (const { name, value } of child.attrs ?? []) {
+        if ((name !== "href" && name !== "src") || !value.startsWith("/")) continue;
+
+        const [withoutQuery] = value.split("?");
+        const path = withoutQuery?.split("#")[0] ?? "";
+        const target = join(dist, path);
+
+        if (!current.has(target) && !current.has(join(target, "index.html"))) {
+          broken.push(`${relative(dist, file)} -> ${value}`);
+        }
       }
       walkLinks(child);
     }
@@ -186,8 +218,10 @@ for (const [file, html] of rendered) {
 }
 
 if (broken.length) {
-  throw new Error(`Links with no page behind them:\n  ${[...new Set(broken)].join("\n  ")}`);
+  throw new Error(`References with nothing behind them:\n  ${[...new Set(broken)].join("\n  ")}`);
 }
 
-console.log(`Checked internal links across ${written.length} pages`);
+console.log(
+  `Checked links and assets across ${written.length} pages; published ${publishedAssets.size} assets`,
+);
 console.log(`Generated ${locales.length * pages.length} pages in ${dist}`);

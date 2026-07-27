@@ -78,6 +78,24 @@ expression in an attribute, so extraction is a parse5 tree walk that hands those
 expressions to Lingui's own Babel extractor — nothing in this repo decides what
 counts as a message.
 
+## Assets
+
+Every asset reaches a page through `asset('logo.png')`, which publishes it under a
+content hash — `/logo.4d453d58.png` — and records that something wanted it. `dist/`
+is built from what was referenced rather than copied wholesale, so a file nothing
+points at stops shipping, a name nothing provides fails the build, and a path written
+by hand instead of through the helper fails too.
+
+The hashing is load-bearing rather than decorative: nano-web chooses caching by MIME
+type alone, so CSS, images and fonts are all served `immutable, max-age=1y`. A stable
+URL is a promise the build cannot keep. `favicon.ico` and `robots.txt` are the
+exceptions — their URLs are a convention, not ours to choose, so they publish unhashed
+and unconditionally.
+
+The stylesheet and the web app manifest name other assets, so both are rewritten
+before their own hash is taken; otherwise the font and the icons would also be fetched
+at a second, unhashed URL that is cached just as hard.
+
 The source locale is served at `/` and `/cv`; every other locale is prefixed
 (`/fr-FR`, `/fr-FR/cv`). Pages are written as directory indexes — nano-web resolves
 `/cv` to `/cv/index.html`, so URLs stay extensionless without a redirect.
@@ -99,9 +117,9 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## Adding things
 
-A **string**: add it to `src/locales/en-GB/messages.po`, reference it as `{{t.key}}`,
-then run `task i18n:sync`. A **page**: add a template and an entry in
-`src/i18n/routes.ts`.
+A **string**: write it in a template as `i18n._('the english text')`, then run
+`task i18n:sync`. A **page**: add a template and an entry in `src/i18n/routes.ts`.
+An **asset**: drop it in `src/static/` and reference it with `asset('name.ext')`.
 
 ## Deployment
 
