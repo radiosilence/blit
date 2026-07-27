@@ -11,11 +11,6 @@ msgstr ""
 msgid "change language"
 msgstr "تغيير اللغة"
 
-#: src/templates/page-base.html:54
-#, fuzzy
-msgid "close"
-msgstr "إغلاق"
-
 #: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "السيرة الذاتية-٢٠٢٥.٠١"

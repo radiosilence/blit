@@ -11,11 +11,6 @@ msgstr ""
 msgid "change language"
 msgstr "змінити мову"
 
-#: src/templates/page-base.html:54
-#, fuzzy
-msgid "close"
-msgstr "закрити"
-
 #: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "резюме-2025.01"

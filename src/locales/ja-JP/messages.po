@@ -10,11 +10,6 @@ msgstr ""
 msgid "change language"
 msgstr "言語を変更"
 
-#: src/templates/page-base.html:54
-#, fuzzy
-msgid "close"
-msgstr "閉じる"
-
 #: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "履歴書-2025.01"
