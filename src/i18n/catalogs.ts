@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-import { formatter } from "@lingui/format-po";
+import { formatter } from "@lingui/format-po-gettext";
 
 import { locales, sourceLocale } from "#/i18n/config.ts";
 
