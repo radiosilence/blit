@@ -66,4 +66,3 @@ macro_rules! page {
 
 page!(Index, "index.html");
 page!(Cv, "cv.html", cv: &'a str);
-page!(I18nTest, "i18n-test.html", counts: &'a [u64]);

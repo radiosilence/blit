@@ -23,7 +23,7 @@ msgstr "履歷-2025.01"
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:6
+#: src/templates/index.html:6
 msgid "james cleveland"
 msgstr "詹姆斯·克利夫蘭"
 
@@ -31,32 +31,10 @@ msgstr "詹姆斯·克利夫蘭"
 msgid "james cleveland : senior full stack engineer"
 msgstr "詹姆斯·克利夫蘭：資深全端工程師"
 
-#: src/templates/i18n-test.html:20
-msgid "%{count} locale"
-msgid_plural "%{count} locales"
-msgstr[0] "%{count} 種語言"
-
-#: src/templates/i18n-test.html:33
-msgid "<script>alert(1)</script> and <b>not bold</b>"
-msgstr ""
-
-#: src/templates/i18n-test.html:28
-msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr "看看我的 <cv>履歷</cv> 或 <gh>GitHub</gh>"
-
-#: src/templates/i18n-test.html:25
-msgid "showing %{shown} of %{total}"
-msgstr "顯示 %{total} 中的 %{shown}"
-
-#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
+#: src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "關閉"
-
-#: src/templates/i18n-test.html:15
-msgctxt "Search results: how near a salon is"
-msgid "close"
-msgstr "附近"
 
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
