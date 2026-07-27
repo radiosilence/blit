@@ -66,6 +66,7 @@ pub mod interpolate;
 pub mod merge;
 pub mod message;
 pub mod plural;
+mod similar;
 pub mod translate;
 
 pub use catalog::{Catalog, Catalogs, Fuzzy};

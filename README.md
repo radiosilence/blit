@@ -81,10 +81,15 @@ of leaving a slot nobody will translate.
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
 outstanding. Extraction walks Askama's own AST, so it recognises no template syntax
 of its own and can't drift from what Askama accepts. Translations, translator
-comments, flags and header metadata all survive a round trip. A message that's left
-the templates is deleted and named in the output, rather than flagged — `fuzzy`
-already means a translation needing review, and an obsolete entry wearing that flag
-is indistinguishable from one a translator set.
+comments, flags and header metadata all survive a round trip.
+
+Reword a string and its translations follow it. A message that's left the templates
+is offered to one that's arrived, and if they're the same sentence with a few words
+changed the translation moves across and is flagged `fuzzy` — reworded English is
+the same message with a new id, and the alternative is asking 36 languages for a
+string they already have. What finds nowhere to go is deleted. Both are named in the
+output, because between them they're everything extraction does to a translator's
+work and `task dev` runs it on every save.
 
 Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
 `generator/config.rs` decides what to do with one. This site serves them: most of a

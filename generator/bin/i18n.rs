@@ -39,6 +39,7 @@ fn main() -> Result<()> {
     // Which locales a removal touched, rather than a line per locale: the templates
     // decide what goes, so the same ids leave all 36 catalogues at once.
     let mut removed: BTreeMap<String, usize> = BTreeMap::new();
+    let mut reworded: BTreeMap<(String, String), usize> = BTreeMap::new();
 
     for locale in LOCALES {
         let path = root
@@ -52,6 +53,10 @@ fn main() -> Result<()> {
             *removed.entry(id).or_default() += 1;
         }
 
+        for pair in summary.reworded {
+            *reworded.entry(pair).or_default() += 1;
+        }
+
         if locale.code == SOURCE {
             println!("  {} — {} messages", locale.code, summary.total);
         } else if summary.untranslated > 0 {
@@ -59,8 +64,15 @@ fn main() -> Result<()> {
         }
     }
 
-    // Loud, because this is the one thing extraction does that destroys a
+    // Both loud, because between them they are everything extraction does to a
     // translator's work — and `task dev` runs it on every save.
+    if !reworded.is_empty() {
+        println!("\ncarried onto reworded English, now fuzzy:");
+        for ((was, is), catalogues) in &reworded {
+            println!("  {was:?} → {is:?} — in {catalogues} catalogues");
+        }
+    }
+
     if !removed.is_empty() {
         println!("\nremoved, no longer in any template:");
         for (id, catalogues) in &removed {
