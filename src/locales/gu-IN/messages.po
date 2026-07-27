@@ -33,8 +33,8 @@ msgstr "જેમ્સ ક્લીવલેન્ડ : વરિષ્ઠ ફ�
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{count} ભાષા"
+msgstr[1] "%{count} ભાષાઓ"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"
@@ -42,19 +42,19 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr ""
+msgstr "મારો <cv>બાયોડેટા</cv> અથવા <gh>ગિટહબ</gh> જુઓ"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
-msgstr ""
+msgstr "%{total} માંથી %{shown} બતાવી રહ્યા છીએ"
 
 #: src/templates/i18n-test.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
-msgstr ""
+msgstr "બંધ કરો"
 
 #: src/templates/i18n-test.html:15
 msgctxt "Search results: how near a salon is"
 msgid "close"
-msgstr ""
+msgstr "નજીક"
 

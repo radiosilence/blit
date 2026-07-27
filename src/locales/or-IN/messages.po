@@ -33,8 +33,8 @@ msgstr "ଜେମ୍ସ କ୍ଲିଭଲ୍ୟାଣ୍ଡ : ସିନିଅ�
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{count} ଭାଷା"
+msgstr[1] "%{count} ଭାଷା"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"
@@ -42,19 +42,19 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr ""
+msgstr "ମୋର <cv>ଜୀବନବୃତ୍ତାନ୍ତ</cv> କିମ୍ବା <gh>ଗିଟହବ୍</gh> ଦେଖନ୍ତୁ"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
-msgstr ""
+msgstr "%{total} ମଧ୍ୟରୁ %{shown} ଦେଖାଉଛି"
 
 #: src/templates/i18n-test.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
-msgstr ""
+msgstr "ବନ୍ଦ କରନ୍ତୁ"
 
 #: src/templates/i18n-test.html:15
 msgctxt "Search results: how near a salon is"
 msgid "close"
-msgstr ""
+msgstr "ନିକଟରେ"
 

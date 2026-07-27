@@ -33,8 +33,8 @@ msgstr "james cleveland : senior full stack ingenieur"
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{count} taal"
+msgstr[1] "%{count} talen"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"
@@ -42,19 +42,19 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr ""
+msgstr "lees mijn <cv>cv</cv> of mijn <gh>GitHub</gh>"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
-msgstr ""
+msgstr "%{shown} van %{total} weergegeven"
 
 #: src/templates/i18n-test.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
-msgstr ""
+msgstr "sluiten"
 
 #: src/templates/i18n-test.html:15
 msgctxt "Search results: how near a salon is"
 msgid "close"
-msgstr ""
+msgstr "dichtbij"
 

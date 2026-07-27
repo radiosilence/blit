@@ -33,7 +33,7 @@ msgstr "제임스 클리블랜드 : 시니어 풀스택 엔지니어"
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
+msgstr[0] "%{count}개 언어"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"
@@ -41,19 +41,19 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr ""
+msgstr "제 <cv>이력서</cv> 또는 <gh>GitHub</gh>을 봐주세요"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
-msgstr ""
+msgstr "%{total}개 중 %{shown}개 표시"
 
 #: src/templates/i18n-test.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
-msgstr ""
+msgstr "닫기"
 
 #: src/templates/i18n-test.html:15
 msgctxt "Search results: how near a salon is"
 msgid "close"
-msgstr ""
+msgstr "가까움"
 

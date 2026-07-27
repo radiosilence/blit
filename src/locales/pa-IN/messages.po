@@ -33,8 +33,8 @@ msgstr "ਜੇਮਸ ਕਲੀਵਲੈਂਡ : ਸੀਨੀਅਰ ਫੁਲ ਸ
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{count} ਭਾਸ਼ਾ"
+msgstr[1] "%{count} ਭਾਸ਼ਾਵਾਂ"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"
@@ -42,19 +42,19 @@ msgstr ""
 
 #: src/templates/i18n-test.html:28
 msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr ""
+msgstr "ਮੇਰਾ <cv>ਜੀਵਨੀ</cv> ਜਾਂ <gh>ਗਿੱਟਹੱਬ</gh> ਵੇਖੋ"
 
 #: src/templates/i18n-test.html:25
 msgid "showing %{shown} of %{total}"
-msgstr ""
+msgstr "%{total} ਵਿੱਚੋਂ %{shown} ਦਿਖਾ ਰਹੇ ਹਾਂ"
 
 #: src/templates/i18n-test.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
-msgstr ""
+msgstr "ਬੰਦ ਕਰੋ"
 
 #: src/templates/i18n-test.html:15
 msgctxt "Search results: how near a salon is"
 msgid "close"
-msgstr ""
+msgstr "ਨੇੜੇ"
 
