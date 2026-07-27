@@ -12,28 +12,28 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/templates/page-base.webc:57
+#: src/templates/page-base.html:57
 msgid "change language"
 msgstr "更改语言"
 
-#: src/templates/page-base.webc:62
+#: src/templates/page-base.html:62
 msgid "close"
 msgstr "关闭"
 
-#: src/templates/index.webc:7
+#: src/templates/index.html:7
 msgid "cv-2025.01"
 msgstr "简历-2025.01"
 
-#: src/templates/index.webc:13
+#: src/templates/index.html:13
 msgid "github"
 msgstr "github"
 
-#: src/templates/index.webc:4
+#: src/templates/index.html:4
 msgid "james cleveland"
 msgstr "詹姆斯·克利夫兰"
 
-#: src/templates/index.webc:5
-#: src/templates/page-base.webc:6
-#: src/templates/page-base.webc:17
+#: src/templates/index.html:5
+#: src/templates/page-base.html:6
+#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "詹姆斯·克利夫兰：高级全栈工程师"

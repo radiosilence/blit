@@ -12,28 +12,28 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/templates/page-base.webc:57
+#: src/templates/page-base.html:57
 msgid "change language"
 msgstr "ଭାଷା ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
 
-#: src/templates/page-base.webc:62
+#: src/templates/page-base.html:62
 msgid "close"
 msgstr "ବନ୍ଦ କରନ୍ତୁ"
 
-#: src/templates/index.webc:7
+#: src/templates/index.html:7
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
 
-#: src/templates/index.webc:13
+#: src/templates/index.html:13
 msgid "github"
 msgstr "github"
 
-#: src/templates/index.webc:4
+#: src/templates/index.html:4
 msgid "james cleveland"
 msgstr "ଜେମ୍ସ କ୍ଲିଭଲ୍ୟାଣ୍ଡ"
 
-#: src/templates/index.webc:5
-#: src/templates/page-base.webc:6
-#: src/templates/page-base.webc:17
+#: src/templates/index.html:5
+#: src/templates/page-base.html:6
+#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "ଜେମ୍ସ କ୍ଲିଭଲ୍ୟାଣ୍ଡ : ସିନିଅର ଫୁଲ ଷ୍ଟାକ ଇଞ୍ଜିନିଅର"
