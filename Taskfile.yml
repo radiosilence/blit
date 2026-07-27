@@ -36,7 +36,7 @@ tasks:
       - src/content/**/*.md
       - src/i18n/**/*.ts
       - src/locales/**/*.po
-      - src/templates/**/*.webc
+      - src/templates/**/*.html
       - "{{.DIST}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
@@ -48,7 +48,7 @@ tasks:
     run: once
     sources:
       - src/styles/**/*.css
-      - src/templates/**/*.webc
+      - src/templates/**/*.html
     generates:
       - "{{.DIST}}/style.css"
     cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
@@ -70,9 +70,11 @@ tasks:
     internal: true
     cmd: task --watch build
 
+  # The same server the image runs. --dev drops the aggressive caching it serves with
+  # in production, so a rebuild is picked up without a restart.
   serve:
     internal: true
-    cmd: node scripts/serve.ts {{.DIST}} 3000
+    cmd: nano-web serve {{.DIST}} --port 3000 --dev
 
   clean:
     desc: Remove generated output

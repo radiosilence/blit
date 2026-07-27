@@ -12,28 +12,28 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/templates/page-base.webc:57
+#: src/templates/page-base.html:57
 msgid "change language"
 msgstr "言語を変更"
 
-#: src/templates/page-base.webc:62
+#: src/templates/page-base.html:62
 msgid "close"
 msgstr "閉じる"
 
-#: src/templates/index.webc:7
+#: src/templates/index.html:7
 msgid "cv-2025.01"
 msgstr "履歴書-2025.01"
 
-#: src/templates/index.webc:13
+#: src/templates/index.html:13
 msgid "github"
 msgstr "ギットハブ"
 
-#: src/templates/index.webc:4
+#: src/templates/index.html:4
 msgid "james cleveland"
 msgstr "ジェームス・クリーブランド"
 
-#: src/templates/index.webc:5
-#: src/templates/page-base.webc:6
-#: src/templates/page-base.webc:17
+#: src/templates/index.html:5
+#: src/templates/page-base.html:6
+#: src/templates/page-base.html:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"

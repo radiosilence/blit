@@ -1,7 +1,12 @@
 [tools]
 node = "24"
-aube = "1"
-task = "3"
+aube = "latest"
+task = "latest"
 # Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
-gh = "2"
-yq = "4"
+gh = "latest"
+yq = "latest"
+# The server the image runs, so `task dev` resolves URLs exactly as production does.
+nano-web = "latest"
+
+[tool_alias]
+nano-web = "github:radiosilence/nano-web"
