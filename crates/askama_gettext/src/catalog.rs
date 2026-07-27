@@ -8,6 +8,9 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use icu_locale::LocaleFallbacker;
+use icu_locale::fallback::LocaleFallbackConfig;
+use icu_locale_core::Locale;
 use polib::po_file;
 
 use crate::error::{Error, Result};
@@ -123,7 +126,50 @@ impl Catalog {
 /// Every locale, with the source locale behind each of them.
 pub struct Catalogs {
     by_locale: HashMap<String, Catalog>,
+    /// Each locale's catalogues to try, in order, ending at the source. Resolved
+    /// once at load: the walk is the same for every message and there are a lot of
+    /// messages.
+    chains: HashMap<String, Vec<String>>,
     source: String,
+}
+
+/// The catalogues to try for a locale, in order, ending at the source.
+///
+/// CLDR's own fallback rather than a guess at it, because the guess is wrong in the
+/// cases that matter. `zh-TW` falls back to `zh-Hant` and never to `zh` — `zh` is
+/// Simplified, and handing a Traditional reader Simplified text is worse than
+/// handing them English. `sr-Latn-RS` likewise stops at `sr-Latn` rather than
+/// reaching Cyrillic `sr`, and `en-AU` goes through `en-001` before `en`. Splitting
+/// on the first dash gets all three wrong, and silently.
+///
+/// Steps nobody loaded a catalogue for are dropped rather than looked up and missed.
+fn chain_for(locale: &str, loaded: &[&str], source: &str) -> Vec<String> {
+    // The locale's own catalogue is first whatever CLDR makes of the tag, so an
+    // unparseable one still reads the file it was named for.
+    let mut chain = vec![locale.to_owned()];
+
+    if let Ok(parsed) = locale.parse::<Locale>() {
+        let fallbacker = LocaleFallbacker::new();
+        let mut steps = fallbacker
+            .for_config(LocaleFallbackConfig::default())
+            .fallback_for(parsed.id.into());
+
+        while !steps.get().is_unknown() {
+            let step = steps.get().to_string();
+
+            if loaded.contains(&step.as_str()) && !chain.contains(&step) {
+                chain.push(step);
+            }
+
+            steps.step();
+        }
+    }
+
+    if !chain.iter().any(|step| step == source) {
+        chain.push(source.to_owned());
+    }
+
+    chain
 }
 
 impl Catalogs {
@@ -140,10 +186,26 @@ impl Catalogs {
             by_locale.insert((*locale).to_owned(), Catalog::load(&path, locale, fuzzy)?);
         }
 
+        let chains = locales
+            .iter()
+            .map(|locale| ((*locale).to_owned(), chain_for(locale, locales, source)))
+            .collect();
+
         Ok(Self {
             by_locale,
+            chains,
             source: source.to_owned(),
         })
+    }
+
+    /// What a locale falls back through, in order.
+    ///
+    /// Empty of anything but the source for a locale that was never loaded.
+    #[must_use]
+    pub fn chain(&self, locale: &str) -> &[String] {
+        self.chains
+            .get(locale)
+            .map_or(std::slice::from_ref(&self.source), Vec::as_slice)
     }
 
     /// One locale's catalogue.
@@ -152,7 +214,7 @@ impl Catalogs {
         self.by_locale.get(locale)
     }
 
-    /// gettext's `gettext`: the translation, else the language's, else the source
+    /// gettext's `gettext`: the translation, else what CLDR falls back to, else the source
     /// locale's, else the English — which the id already is.
     #[must_use]
     pub fn gettext<'a>(&'a self, locale: &str, msgid: &'a str) -> &'a str {
@@ -198,27 +260,9 @@ impl Catalogs {
             .unwrap_or(if count == 1 { msgid } else { plural })
     }
 
-    /// The catalogues to try, in order: the locale, the language on its own, then
-    /// the source.
-    ///
-    /// `pt-BR` before `pt` before `en-GB` — a catalogue for the whole language is a
-    /// better answer than another language entirely, and a reader of one region's
-    /// dialect can read the other's. A locale set written only as `xx-YY`, which is
-    /// what this site has, never finds the middle step and the chain costs nothing.
-    fn chain<'a>(&'a self, locale: &'a str) -> impl Iterator<Item = &'a str> {
-        let language = locale.split('-').next().unwrap_or(locale);
-
-        [
-            Some(locale),
-            (language != locale).then_some(language),
-            Some(self.source.as_str()),
-        ]
-        .into_iter()
-        .flatten()
-    }
-
     fn lookup(&self, locale: &str, context: Option<&str>, msgid: &str) -> Option<&str> {
         self.chain(locale)
+            .iter()
             .find_map(|locale| self.get(locale)?.get(context, msgid))
     }
 
@@ -233,6 +277,88 @@ impl Catalogs {
         count: u64,
     ) -> Option<&str> {
         self.chain(locale)
+            .iter()
             .find_map(|locale| self.get(locale)?.get_plural(context, msgid, count))
+    }
+}
+
+#[cfg(test)]
+mod chains {
+    use super::chain_for;
+
+    /// Everything loaded, so the chain shows every step CLDR takes.
+    const ALL: &[&str] = &[
+        "en-GB",
+        "en-AU",
+        "en-001",
+        "en",
+        "zh",
+        "zh-Hant",
+        "zh-CN",
+        "zh-TW",
+        "pt",
+        "pt-BR",
+        "sr",
+        "sr-Latn",
+        "sr-Latn-RS",
+        "pl",
+        "pl-PL",
+    ];
+
+    #[test]
+    fn a_script_is_not_crossed_to_reach_a_language() {
+        // The one that matters here: zh is Simplified, so a Traditional reader is
+        // better served English than zh. Splitting on the dash hands them zh.
+        assert_eq!(
+            chain_for("zh-TW", ALL, "en-GB"),
+            ["zh-TW", "zh-Hant", "en-GB"]
+        );
+        assert_eq!(chain_for("zh-CN", ALL, "en-GB"), ["zh-CN", "zh", "en-GB"]);
+
+        // Same shape, Cyrillic against Latin.
+        assert_eq!(
+            chain_for("sr-Latn-RS", ALL, "en-GB"),
+            ["sr-Latn-RS", "sr-Latn", "en-GB"]
+        );
+    }
+
+    #[test]
+    fn a_chain_can_be_longer_than_one_step() {
+        assert_eq!(
+            chain_for("en-AU", ALL, "en-GB"),
+            ["en-AU", "en-001", "en", "en-GB"]
+        );
+    }
+
+    #[test]
+    fn the_plain_cases_are_still_plain() {
+        assert_eq!(chain_for("pt-BR", ALL, "en-GB"), ["pt-BR", "pt", "en-GB"]);
+        assert_eq!(chain_for("pl-PL", ALL, "en-GB"), ["pl-PL", "pl", "en-GB"]);
+    }
+
+    #[test]
+    fn a_step_nobody_loaded_is_not_in_the_chain() {
+        // What this site has: full codes only, so every chain is the locale and
+        // the source and the walk costs nothing.
+        let loaded = &["en-GB", "pl-PL", "zh-TW"];
+        assert_eq!(chain_for("pl-PL", loaded, "en-GB"), ["pl-PL", "en-GB"]);
+        assert_eq!(chain_for("zh-TW", loaded, "en-GB"), ["zh-TW", "en-GB"]);
+    }
+
+    #[test]
+    fn the_source_appears_once_and_is_not_a_full_stop() {
+        // en-GB is the source here and also has a chain of its own. It carries on
+        // through it rather than being appended a second time — everything past it
+        // is a loaded catalogue too, and a more specific English than the id.
+        assert_eq!(chain_for("en-GB", ALL, "en-GB"), ["en-GB", "en-001", "en"]);
+        assert_eq!(chain_for("en", ALL, "en"), ["en"]);
+    }
+
+    #[test]
+    fn a_tag_cldr_cannot_parse_still_reads_its_own_catalogue() {
+        assert_eq!(
+            chain_for("not a locale", ALL, "en-GB"),
+            ["not a locale", "en-GB"]
+        );
     }
 }

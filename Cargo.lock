@@ -45,6 +45,7 @@ version = "0.1.0"
 dependencies = [
  "askama",
  "askama_parser",
+ "icu_locale",
  "icu_locale_core",
  "icu_plurals",
  "polib",
