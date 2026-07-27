@@ -11,7 +11,7 @@ task generate     # Render the 72 pages only
 task check        # lint + format:check + typecheck, in parallel
 task ci           # What CI runs: check, then build
 task docker:build # Build the container image (PUSH/LATEST to publish)
-task i18n:sync    # Propagate source-locale keys to every catalogue
+task i18n:sync    # Extract messages from the templates into every catalogue
 task clean        # Drop dist/ and Task's checksum cache
 task lint         # oxlint  (task lint -- --fix to autofix)
 task format       # oxfmt --write
@@ -26,10 +26,10 @@ Personal website for [blit.cc](https://blit.cc). A static site generator with no
 framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
 
 - **Orchestration**: [Task](https://taskfile.dev); each step declares `sources`/`generates`
-- **Templates**: Eta over `src/templates/*.html`, rendered via `scripts/render.ts`
+- **Templates**: [WebC](https://github.com/11ty/webc) over `src/templates/*.webc`
 - **Content**: markdown-it renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
-- **i18n**: hand-rolled gettext in `src/i18n/po.ts`, 36 locales, `.po` files are the source of truth
+- **i18n**: [Lingui](https://lingui.dev) — ICU messages in `.po`, 36 locales, catalogues are the source of truth
 - **Packages**: aube (`aube-lock.yaml`); toolchain via mise (`mise.toml`)
 - **Deployment**: Docker → microk8s → CloudFlare Tunnel
 
@@ -44,21 +44,31 @@ Key decisions:
   utilities like `no-underline`.
 - Scripts under `scripts/` are `.ts` run directly by Node 24's type stripping — no
   transpiler. Keep them strippable: no enums, no namespaces, explicit `import type`.
-- Eta permits arbitrary expressions, so keep templates to presentation. Anything that
-  computes a value belongs in `scripts/generate.ts`.
+- A template is valid HTML with no template language in it. A custom element is a
+  component resolved to the file of the same name, children arrive through `<slot>`,
+  and every dynamic value is a JavaScript expression in an attribute — `:href`,
+  `@text`, `@html`, `webc:for`, `webc:if`. Page data is under `$data`; WebC scopes
+  globals away from nested components, so `locale` alone works only at the top level.
+- Everything WebC evaluates is an attribute, which is why extraction is a parse5 tree
+  walk. Keep it that way: a value computed in a `<script webc:setup>` block would be
+  invisible to `scripts/webc-extractor.ts`.
+- The extractor recognises no message syntax of its own. It collects the expressions
+  and hands them to Lingui's Babel extractor, so `i18n._()`, plurals, comments and
+  contexts are Lingui's to define and stay correct when Lingui's rules change.
+- Message ids are the source text (`i18n._('github')`), so `missing` is wired to throw
+  in `scripts/generate.ts` — Lingui's default of falling back to the id would ship a
+  mistyped `githubb` as itself. Untranslated strings still fall back to `en-GB`.
+- Plurals are ICU inside the message, not gettext's `msgid_plural`. `po-gettext` only
+  reaches that shape when a message accompanies the id, which with source-text ids
+  means writing the same ICU string twice per plural.
+- `generate.ts` wraps the view in a Proxy that throws on unknown keys, because WebC
+  renders an unknown path as nothing. Generation time is the only runtime here, so
+  this is the type check. `then` and array indexes are exempt — WebC awaits every
+  expression, and a throwing `then` makes the view look like a rejected promise.
 - oxfmt is pointed away from `src/templates` (`.oxfmtrc.json`): it parses them as HTML
-  and Eta tags aren't valid in attribute position.
-- `scripts/render.ts` wraps the view in a Proxy that throws on unknown keys, so a
-  template typo fails the build with the path and the keys that do exist. Generation
-  time is the only runtime here, so this is the type check.
-- The wrap is applied to `eta.render` itself, not just the outermost call. Eta crosses
-  into a layout by spreading the view to add `body`, and spreading a Proxy yields a
-  plain object — so a top-level key would stop being guarded past the first boundary.
-- Pages declare their frame (`<% layout("./base") %>`) rather than the frame including
-  the page. The rendered child arrives as `it.body`. Eta also has named blocks if a
-  page ever needs to fill more than one slot.
-- PO keys are short identifiers (`tagline`), not English sentences. Missing keys fall
-  back to `en-GB`.
+  and reflows attributes WebC treats as significant.
+- WebC re-serialises rather than splicing, so output whitespace and void-element
+  syntax are its choice, not the template's. Compare renders structurally.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
 - `task clean` must remove `.task` as well as `dist` — leaving the checksum cache makes
@@ -70,6 +80,9 @@ Key decisions:
 - `/style.css` carries a content digest as a query string. nano-web serves CSS
   `immutable, max-age=1y`, so a stable URL would strand visitors on old styles.
 - Adding a page means a template plus an entry in `src/i18n/routes.ts`.
+- Tailwind scans `src/templates/*.webc` as an explicit glob — `.webc` is not an
+  extension it picks up from a bare directory. A class chosen in `generate.ts` rather
+  than written in a template is invisible to it.
 - GitHub Actions is an environment, not a pipeline: it checks out, installs mise,
   supplies credentials and a cache, then calls Taskfile targets. Anything a runner has
   and a laptop doesn't must arrive as an environment variable the Taskfile reads

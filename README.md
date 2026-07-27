@@ -35,8 +35,10 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 - [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
   nothing re-runs without cause
-- [Eta](https://eta.js.org) renders `src/templates/*.html`, with the view wrapped in
-  a Proxy so a mistyped key stops the build instead of rendering nothing
+- [WebC](https://github.com/11ty/webc) expands `src/templates/*.webc` — valid HTML in,
+  static HTML out, with the view behind a Proxy so a mistyped path stops the build
+  instead of rendering nothing
+- [Lingui](https://lingui.dev) extracts and compiles the messages
 - [markdown-it](https://github.com/markdown-it/markdown-it) renders the CV, passing
   through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono, compiled by its own CLI
@@ -47,16 +49,21 @@ so there is no transpiler and no bundler anywhere in the pipeline.
 
 ## i18n
 
-`src/locales/{locale}/messages.po` are the source of truth. Keys are short
-(`tagline`, not the English sentence) so templates read `{{t.tagline}}` with no
-indirection, and `src/i18n/po.ts` — a ~40-line gettext reader/writer — is the entire
-i18n runtime. Untranslated keys fall back to `en-GB` rather than rendering blank, so
-a new string is live everywhere the moment it's added.
+`src/locales/{locale}/messages.po` are the source of truth. A message id is its
+English source text, so a template reads `i18n._('change language')` and the English
+is visible where it is used rather than behind a key. Untranslated messages fall back
+to `en-GB` rather than rendering blank, so a new string is live everywhere the moment
+it's added — and an id no catalogue has fails the build, since with source-text ids
+the alternative is shipping a typo as itself.
 
-`task i18n:sync` propagates the source locale's keys to every catalogue, adding
-missing ones with an empty `msgstr` and reporting what's outstanding. It also
-regenerates `src/i18n/keys.ts`, the `MessageKey` union, so a bad key is a type error
-in the generator and a build failure in a template.
+Messages are ICU, so plurals and interpolation are available without anything new:
+`{n, plural, one {# locale} other {# locales}}` picks Polish's `many` form for 36.
+
+`task i18n:sync` extracts from the templates into every catalogue and reports what's
+outstanding. Templates are valid HTML and every dynamic value is a JavaScript
+expression in an attribute, so extraction is a parse5 tree walk that hands those
+expressions to Lingui's own Babel extractor — nothing in this repo decides what
+counts as a message.
 
 The source locale is served at `/` and `/cv`; every other locale is prefixed
 (`/fr-FR`, `/fr-FR/cv`). Pages are written as directory indexes — nano-web resolves

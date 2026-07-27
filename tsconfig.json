@@ -1,5 +1,5 @@
 {
-  "include": ["scripts/**/*.ts", "src/**/*.ts"],
+  "include": ["lingui.config.ts", "scripts/**/*.ts", "src/**/*.ts"],
   "compilerOptions": {
     "target": "ES2023",
     "module": "nodenext",

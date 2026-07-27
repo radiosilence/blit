@@ -1,32 +1,46 @@
 msgid ""
 msgstr ""
-"Language: bo-CN\n"
+"POT-Creation-Date: 2026-07-27 00:41+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: bo-CN\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
-#: src/templates/base.html:52
-msgid "change language"
-msgstr "སྐད་རིགས་བརྗེ་བ།"
-
-#: src/templates/base.html:56
-msgid "close"
-msgstr "ཁ་རྒྱག"
-
-#: src/templates/index.html:13
-msgid "cv-2025.01"
-msgstr "cv-2025.01"
-
-#: src/templates/index.html:16
-msgid "github"
-msgstr "github"
-
-#: src/templates/index.html:10
+#. js-lingui-explicit-id
+#: src/templates/index.webc:4
 msgid "james cleveland"
 msgstr "ཇེམས་ཀི་ལིཝ་ལེནཌ་"
 
-#: src/templates/base.html:6
-#: src/templates/base.html:15
-#: src/templates/index.html:11
+#. js-lingui-explicit-id
+#: src/templates/index.webc:5
+#: src/templates/page-base.webc:6
+#: src/templates/page-base.webc:17
 msgid "james cleveland : senior full stack engineer"
 msgstr "ཇེམས་ཀི་ལིཝ་ལེནཌ་ : སིནིཡར་ཕུལ་སི་ཊེཀ་ ཨིན་ཇི་ནིཡར་"
+
+#. js-lingui-explicit-id
+#: src/templates/index.webc:7
+msgid "cv-2025.01"
+msgstr "cv-2025.01"
+
+#. js-lingui-explicit-id
+#: src/templates/index.webc:13
+msgid "github"
+msgstr "github"
+
+#. js-lingui-explicit-id
+#: src/templates/page-base.webc:57
+msgid "change language"
+msgstr "སྐད་རིགས་བརྗེ་བ།"
+
+#. js-lingui-explicit-id
+#: src/templates/page-base.webc:62
+msgid "close"
+msgstr "ཁ་རྒྱག"
