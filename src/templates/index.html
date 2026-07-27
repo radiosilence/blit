@@ -1,17 +1,14 @@
-<page-base>
-  <section class="m-12 flex flex-col items-center space-y-4 text-center">
-    <img src="/logo.png" alt="blit.cc logo" width="256" height="256" class="mt-12 mb-8" />
-    <h1 @text="i18n._('james cleveland')"></h1>
-    <p class="text-sm" @text="i18n._('james cleveland : senior full stack engineer')"></p>
-    <p>
-      <a :href="$data.urls.cv" @text="i18n._('cv-2025.01')"></a>
-      /
-      <a
-        href="https://github.com/radiosilence"
-        target="_blank"
-        rel="noopener"
-        @text="i18n._('github')"
-      ></a>
-    </p>
-  </section>
-</page-base>
+{% extends "page-base.html" %}
+{% block content %}
+{%- let logo = asset("logo.png") %}
+<section class="m-12 flex flex-col items-center space-y-4 text-center">
+  <img src="{{ logo }}" alt="blit.cc logo" width="256" height="256" class="mt-12 mb-8" />
+  <h1>{{ __("james cleveland") }}</h1>
+  <p class="text-sm">{{ __("senior full stack engineer") }}</p>
+  <p>
+    <a href="{{ urls.cv }}">{{ __("cv-2025.01") }}</a>
+    /
+    <a href="https://github.com/radiosilence" target="_blank" rel="noopener">{{ __("github") }}</a>
+  </p>
+</section>
+{% endblock %}

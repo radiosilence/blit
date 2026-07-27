@@ -1,0 +1,41 @@
+[workspace]
+members = ["crates/askama_gettext"]
+
+[package]
+name = "blit"
+version = "0.1.0"
+edition = "2024"
+
+# The generator lives beside the site rather than under it: `src/` is what the site
+# is made of, `generator/` is the program that turns it into `dist/`.
+[lib]
+name = "blit"
+path = "generator/lib.rs"
+
+[[bin]]
+name = "blit"
+path = "generator/main.rs"
+
+# Extraction is a separate binary because it writes the catalogues the renderer
+# reads; running it during a build would make the build rewrite its own input.
+[[bin]]
+name = "blit-i18n"
+path = "generator/bin/i18n.rs"
+
+[dependencies]
+askama = "0.16"
+# Askama's own template parser, so extraction recognises no syntax of its own and
+# inherits whatever the renderer understands.
+askama_parser = "0.16"
+askama_gettext = { path = "crates/askama_gettext" }
+anyhow = "1"
+icu_locale_core = "2"
+icu_plurals = "2"
+polib = "0.3"
+pulldown-cmark = "0.13"
+sha2 = "0.10"
+walkdir = "2"
+
+[profile.release]
+opt-level = 3
+lto = true

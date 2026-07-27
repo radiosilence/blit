@@ -5,3 +5,5 @@ dist
 .cache
 .env
 .deploy
+.build
+target

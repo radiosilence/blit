@@ -1,12 +1,16 @@
 [tools]
-node = "24"
-aube = "latest"
-task = "latest"
-# Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
-gh = "latest"
-yq = "latest"
+# The generator and the extractor.
+rust = "1.97"
+task = "3"
+# Tailwind is the one part of the build that is still JavaScript — its compiler is
+# TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
+# than as a package manifest and a node_modules tree.
+"npm:@tailwindcss/cli" = "4"
+# The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
+# next to the stylesheet, so `task css` links it into place from here.
+"npm:@tailwindcss/typography" = "0.5"
 # The server the image runs, so `task dev` resolves URLs exactly as production does.
-nano-web = "latest"
-
-[tool_alias]
-nano-web = "github:radiosilence/nano-web"
+nano-web = "1"
+# Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
+gh = "2"
+yq = "4"

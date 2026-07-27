@@ -2,65 +2,62 @@ version: "3"
 
 vars:
   DIST: dist
-  BIN: ./node_modules/.bin
+  # Tailwind's output is an input to generate, which rewrites it; keeping it out of
+  # dist gives that rewrite a fixed input and leaves dist owned by generate alone.
+  BUILD: .build
   IMAGE: ghcr.io/radiosilence/blit
   PLATFORMS: linux/amd64
+  # Debug builds compile several times faster, which is what the watch loop wants.
+  # CI sets CI=true and gets an optimised binary.
+  PROFILE: '{{if .CI}}--release{{end}}'
 
 tasks:
   default:
     cmd: task --list
     silent: true
 
-  install:
-    internal: true
-    run: once
-    # Both guards are needed: sources catch a changed manifest, status catches a
-    # deleted node_modules (which no fingerprint would notice).
-    sources:
-      - package.json
-      - aube-lock.yaml
-    status:
-      - test -d node_modules
-    cmd: aube install {{if .CI}}--frozen-lockfile{{end}}
-
   build:
     desc: Generate the whole site into dist/
-    deps: [generate, static]
+    deps: [generate]
 
-  # Depends on css because it fingerprints the compiled stylesheet into the URL.
+  # Depends on css because it hashes the compiled stylesheet into its filename.
   generate:
     desc: Render every locale × page to dist/
-    deps: [install, css]
+    deps: [css]
     sources:
-      - scripts/generate.ts
+      - Cargo.toml
+      - Cargo.lock
+      - crates/**/*.rs
+      - generator/**/*.rs
       - src/content/**/*.md
-      - src/i18n/**/*.ts
       - src/locales/**/*.po
+      - src/static/**/*
       - src/templates/**/*.html
-      - "{{.DIST}}/style.css"
+      - "{{.BUILD}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
-    cmd: node scripts/generate.ts
+    cmd: cargo run {{.PROFILE}} --quiet --bin blit
 
   css:
     desc: Compile Tailwind
-    deps: [install]
     run: once
+    deps: [plugins]
     sources:
       - src/styles/**/*.css
       - src/templates/**/*.html
     generates:
-      - "{{.DIST}}/style.css"
-    cmd: "{{.BIN}}/tailwindcss --input src/styles/app.css --output {{.DIST}}/style.css --minify"
+      - "{{.BUILD}}/style.css"
+    cmd: tailwindcss --input src/styles/app.css --output {{.BUILD}}/style.css --minify
 
-  # Deliberately unfingerprinted: the outputs are a whole directory rather than one
-  # named file, so a partially-deleted dist/ can't be detected. Copying ~1 MB takes
-  # a few ms, which is cheaper than the class of bug where assets silently vanish.
-  static:
-    desc: Copy fonts, icons and manifest
-    cmds:
-      - mkdir -p {{.DIST}}
-      - cp -R src/static/. {{.DIST}}/
+  # Tailwind resolves `@plugin "@tailwindcss/typography"` through node_modules beside
+  # the stylesheet, and the plugin is a mise tool rather than a project dependency.
+  # A symlink lets the stylesheet keep saying what it means without a package.json.
+  plugins:
+    internal: true
+    run: once
+    status:
+      - test -L node_modules
+    cmd: ln -sfn "$(mise where npm:@tailwindcss/typography)/node_modules" node_modules
 
   dev:
     desc: Rebuild on change, serve on :3000
@@ -68,48 +65,63 @@ tasks:
 
   watch:
     internal: true
-    cmd: task --watch build
+    cmd: task --watch dev:build
 
-  # The same server the image runs. --dev drops the aggressive caching it serves with
-  # in production, so a rebuild is picked up without a restart.
+  # Extraction is kept out of `build` because it writes to src/, and a CI build that
+  # mutates its own input leaves a dirty tree. In dev that is exactly what you want:
+  # edit a string, and every catalogue has it by the time the page reloads.
+  #
+  # This watches the catalogues it also writes, which settles rather than loops —
+  # the second pass produces identical bytes, so the checksum stops matching a change.
+  dev:build:
+    desc: Sync catalogues then build — dev only, since it writes to src/
+    sources:
+      - crates/**/*.rs
+      - generator/**/*.rs
+      - src/content/**/*.md
+      - src/locales/**/*.po
+      - src/static/**/*
+      - src/styles/**/*.css
+      - src/templates/**/*.html
+    cmds:
+      - task: i18n:sync
+      - task: build
+
+  # The same server the image runs, so dev resolves URLs exactly as production does.
+  # --dev drops the year-long caching it serves with, so a rebuild is picked up.
   serve:
     internal: true
     cmd: nano-web serve {{.DIST}} --port 3000 --dev
 
   clean:
     desc: Remove generated output
-    # .task holds the source checksums; leaving it makes the next build skip
-    # steps whose output was just deleted.
-    cmd: rm -rf {{.DIST}} .task
+    # .task holds the source checksums; leaving it makes the next build skip steps
+    # whose output was just deleted.
+    cmd: rm -rf {{.DIST}} {{.BUILD}} .task target
+
+  i18n:sync:
+    desc: Extract messages from the templates into every catalogue
+    cmd: cargo run --quiet --bin blit-i18n
 
   lint:
-    desc: Lint with oxlint
-    deps: [install]
-    cmd: "{{.BIN}}/oxlint {{.CLI_ARGS}}"
+    desc: Lint with clippy
+    cmd: cargo clippy --workspace --all-targets -- -D warnings
 
   format:
-    desc: Format with oxfmt
-    deps: [install]
-    cmd: "{{.BIN}}/oxfmt --write {{.CLI_ARGS}}"
+    desc: Format with rustfmt
+    cmd: cargo fmt --all
 
   format:check:
     desc: Check formatting
-    deps: [install]
-    cmd: "{{.BIN}}/oxfmt --check"
+    cmd: cargo fmt --all --check
 
-  typecheck:
-    desc: Typecheck with tsc
-    deps: [install]
-    cmd: "{{.BIN}}/tsc --noEmit"
-
-  i18n:sync:
-    desc: Extract translatable text from the templates into every catalogue
-    deps: [install]
-    cmd: "{{.BIN}}/lingui extract {{.CLI_ARGS}}"
+  test:
+    desc: Run the test suite
+    cmd: cargo test --workspace
 
   check:
-    desc: Lint, formatting and types
-    deps: [lint, format:check, typecheck]
+    desc: Lint, formatting and tests
+    deps: [lint, format:check, test]
 
   ci:
     desc: Everything CI verifies — checks, then a full build

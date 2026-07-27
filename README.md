@@ -35,30 +35,32 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 
 - [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
   nothing re-runs without cause
-- [WebC](https://github.com/11ty/webc) expands `src/templates/*.html` — valid HTML in,
-  static HTML out, with the view behind a Proxy so a mistyped path stops the build
-  instead of rendering nothing
-- [Lingui](https://lingui.dev) extracts and compiles the messages
-- [markdown-it](https://github.com/markdown-it/markdown-it) renders the CV, passing
-  through the inline HTML it already contained
-- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono, compiled by its own CLI
-- [aube](https://aube.en.dev) for packages, Node 24 via [mise](https://mise.jdx.dev)
+- [Askama](https://askama.rs) renders `src/templates/*.html`, bound to a struct at
+  compile time — a field a template names but the struct lacks fails `cargo build`
+- `crates/askama_gettext` handles the messages: `__`/`__p`/`__n` in the template,
+  extraction through Askama's own parser, plural selection from CLDR
+- [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) renders the CV,
+  passing through the inline HTML it already contained
+- [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
+- Everything is pinned in [mise](https://mise.jdx.dev): rust, task, tailwind,
+  nano-web, gh, yq
 
-Node runs the `.ts` files under `scripts/` directly via its built-in type stripping,
-so there is no transpiler and no bundler anywhere in the pipeline.
+The build is a Rust binary. Tailwind is the only JavaScript left in it — its
+compiler genuinely is TypeScript, and Oxide is only the scanner — so it arrives as a
+pinned tool rather than as a `package.json` and a `node_modules` tree.
 
 ## i18n
 
 `src/locales/{locale}/messages.po` are the source of truth. A template passes the
-English source text — `i18n._('change language')` — so the English is visible where
-it's used rather than behind a key, and that text is the `msgid` a translator reads.
+English source text — `__("change language")` — so the English is visible where it's
+used rather than behind a key, and that text is the `msgid` a translator reads.
 Untranslated messages fall back to `en-GB` rather than rendering blank, so a new
 string is live everywhere the moment it's added; a message no catalogue has fails the
 build, since the alternative is shipping a typo as itself.
 
-Messages are ICU, so plurals and interpolation come for free, and they're written the
-way gettext writes them — one `msgstr[n]` per form the language actually has, which is
-what makes Poedit and Weblate show one input box per form:
+Plurals are written the way gettext writes them — one `msgstr[n]` per form the
+language actually has, which is what makes Poedit and Weblate show one input box per
+form:
 
 ```po
 msgid "# locale"
@@ -68,15 +70,33 @@ msgstr[1] "# języki"
 msgstr[2] "# języków"
 ```
 
-Three boxes for Polish, two for French, one for Japanese. Catalogues are keyed by
-Lingui's hash of the source text rather than the text itself, because po-gettext only
-writes native plurals for ids it generated.
+Three boxes for Polish, two for French, one for Japanese. Which one a count selects
+comes from CLDR rather than from evaluating the `Plural-Forms` expression — and the
+header is checked against CLDR, so a catalogue that disagrees fails the build instead
+of leaving a slot nobody will translate.
 
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
-outstanding. Templates are valid HTML and every dynamic value is a JavaScript
-expression in an attribute, so extraction is a parse5 tree walk that hands those
-expressions to Lingui's own Babel extractor — nothing in this repo decides what
-counts as a message.
+outstanding. Extraction walks Askama's own AST, so it recognises no template syntax
+of its own and can't drift from what Askama accepts. Translations, translator
+comments, flags and header metadata all survive a round trip.
+
+## Assets
+
+Every asset reaches a page through `asset('logo.png')`, which publishes it under a
+content hash — `/logo.4d453d58.png` — and records that something wanted it. `dist/`
+is built from what was referenced rather than copied wholesale, so a file nothing
+points at stops shipping, a name nothing provides fails the build, and a path written
+by hand instead of through the helper fails too.
+
+The hashing is load-bearing rather than decorative: nano-web chooses caching by MIME
+type alone, so CSS, images and fonts are all served `immutable, max-age=1y`. A stable
+URL is a promise the build cannot keep. `favicon.ico` and `robots.txt` are the
+exceptions — their URLs are a convention, not ours to choose, so they publish unhashed
+and unconditionally.
+
+The stylesheet and the web app manifest name other assets, so both are rewritten
+before their own hash is taken; otherwise the font and the icons would also be fetched
+at a second, unhashed URL that is cached just as hard.
 
 The source locale is served at `/` and `/cv`; every other locale is prefixed
 (`/fr-FR`, `/fr-FR/cv`). Pages are written as directory indexes — nano-web resolves
@@ -99,9 +119,10 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## Adding things
 
-A **string**: add it to `src/locales/en-GB/messages.po`, reference it as `{{t.key}}`,
-then run `task i18n:sync`. A **page**: add a template and an entry in
-`src/i18n/routes.ts`.
+A **string**: write it in a template as `__("the english text")`, then run
+`task i18n:sync`. A **page**: add a template, a `page!` entry in
+`generator/templates.rs` and a route in `generator/routes.rs`. An **asset**: drop it
+in `src/static/` and reference it with `asset("name.ext")`.
 
 ## Deployment
 
