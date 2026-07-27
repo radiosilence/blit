@@ -1,6 +1,9 @@
 [tools]
-# The generator and the extractor.
-rust = "1"
+# The generator and the extractor. `task check` needs clippy and rustfmt, and an
+# unset profile means whatever rustup the host already had is configured for — which
+# on a GitHub runner is minimal, so neither is there. Naming both makes the toolchain
+# the same everywhere rather than the same as the machine.
+rust = { version = "1", profile = "minimal", components = ["clippy", "rustfmt"] }
 task = "latest"
 # Tailwind is the one part of the build that is still JavaScript — its compiler is
 # TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
