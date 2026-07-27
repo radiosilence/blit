@@ -6,5 +6,7 @@
 //! need but nothing here evaluates.
 
 pub mod extract;
+pub mod html;
 
 pub use extract::Message;
+pub use html::Interpolated;

@@ -7,6 +7,7 @@
 //! deliberately `__`, `__n` and `__v`: a template holds the English, never an id.
 
 use askama::Template;
+use askama_gettext::Interpolated;
 
 use crate::assets::Assets;
 use crate::i18n::Catalogs;
@@ -65,6 +66,14 @@ macro_rules! page {
             #[allow(dead_code)]
             fn __v(&self, msgid: &str, value: &str) -> String {
                 self.__(msgid).replacen("{}", value, 1)
+            }
+
+            /// A sentence carrying inline markup. The names in the message are
+            /// placeholders; the caller says what each becomes, so a catalogue can
+            /// move a link but never choose where it points.
+            #[allow(dead_code)]
+            fn __h(&self, msgid: &str) -> Interpolated {
+                Interpolated::new(self.ctx.catalogs.t(self.locale, msgid))
             }
 
             fn asset(&self, name: &str) -> String {

@@ -162,6 +162,9 @@ fn walk_expr(expr: &WithSpan<Box<Expr<'_>>>, source: &str, file: &str, out: &mut
             }
         }
 
+        // The receiver as well as the arguments: `__("x").link(...)` parses as a
+        // call whose path is a method access on the call we are looking for.
+        walk_expr(&call.path, source, file, out);
         for arg in &call.args {
             walk_expr(arg, source, file, out);
         }
@@ -181,6 +184,14 @@ fn walk_expr(expr: &WithSpan<Box<Expr<'_>>>, source: &str, file: &str, out: &mut
         }
         Expr::Group(inner) | Expr::Unary(_, inner) | Expr::Try(inner) => {
             walk_expr(inner, source, file, out)
+        }
+        // `a.b`, `a[b]`, `a as T`, `name = value` — each can wrap a call.
+        Expr::AssociatedItem(inner, _) | Expr::As(inner, _) | Expr::NamedArgument(_, inner) => {
+            walk_expr(inner, source, file, out)
+        }
+        Expr::Index(lhs, rhs) => {
+            walk_expr(lhs, source, file, out);
+            walk_expr(rhs, source, file, out);
         }
         Expr::Array(items) | Expr::Tuple(items) | Expr::Concat(items) => {
             for item in items {
@@ -232,6 +243,14 @@ mod tests {
         assert_eq!(found[2].plural.as_deref(), Some("%{count} locales"));
         assert_eq!(found[0].line, 1);
         assert_eq!(found[4].line, 5);
+    }
+
+    #[test]
+    fn finds_a_call_used_as_a_receiver() {
+        // `__h(...).link(...)` is a method call whose receiver is the message.
+        let found = extract(r#"{{ __h("read my <cv>CV</cv>").link("cv", urls.cv)|safe }}"#);
+        assert_eq!(found.len(), 1, "{found:?}");
+        assert_eq!(found[0].id, "read my <cv>CV</cv>");
     }
 
     #[test]
