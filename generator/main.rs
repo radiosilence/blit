@@ -3,7 +3,6 @@
 
 mod assets;
 mod config;
-mod i18n;
 mod routes;
 mod templates;
 
@@ -17,7 +16,7 @@ use pulldown_cmark::{Options, Parser, html};
 
 use crate::assets::Assets;
 use crate::config::{LOCALES, SOURCE};
-use crate::i18n::Catalogs;
+use askama_gettext::Catalogs;
 use crate::routes::{PAGES, url};
 use crate::templates::{Context, Cv, Index, LocaleLink, Urls};
 

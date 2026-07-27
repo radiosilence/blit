@@ -7,10 +7,9 @@
 //! deliberately `__`, `__n` and `__v`: a template holds the English, never an id.
 
 use askama::Template;
-use askama_gettext::Interpolated;
+use askama_gettext::{Catalogs, Translate, Translator};
 
 use crate::assets::Assets;
-use crate::i18n::Catalogs;
 
 pub struct LocaleLink {
     pub code: String,
@@ -46,36 +45,13 @@ macro_rules! page {
             pub locale_links: &'a [LocaleLink],
         }
 
+        impl Translate for $name<'_> {
+            fn translator(&self) -> Translator<'_> {
+                Translator::new(self.ctx.catalogs, self.locale)
+            }
+        }
+
         impl $name<'_> {
-            /// gettext's `gettext()`. The argument is the English, which is the msgid.
-            fn __(&self, msgid: &str) -> String {
-                self.ctx.catalogs.t(self.locale, msgid).to_owned()
-            }
-
-            /// gettext's `ngettext()`, with the form chosen from CLDR.
-            #[allow(dead_code)]
-            fn __n(&self, msgid: &str, plural: &str, count: usize) -> String {
-                self.ctx
-                    .catalogs
-                    .tn(self.locale, msgid, plural, count)
-                    .to_owned()
-            }
-
-            /// A sentence with a value in the middle, so the whole thing is one msgid
-            /// and a translator can move the placeholder where the language needs it.
-            #[allow(dead_code)]
-            fn __v(&self, msgid: &str, value: &str) -> String {
-                self.__(msgid).replacen("{}", value, 1)
-            }
-
-            /// A sentence carrying inline markup. The names in the message are
-            /// placeholders; the caller says what each becomes, so a catalogue can
-            /// move a link but never choose where it points.
-            #[allow(dead_code)]
-            fn __h(&self, msgid: &str) -> Interpolated {
-                Interpolated::new(self.ctx.catalogs.t(self.locale, msgid))
-            }
-
             fn asset(&self, name: &str) -> String {
                 self.ctx.assets.href(name)
             }

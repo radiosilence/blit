@@ -7,17 +7,22 @@
 
 use std::path::Path;
 
-use anyhow::{Context, Result};
+use crate::error::{Error, Result};
 use askama_parser::node::{BlockDef, FilterBlock, If, Let, LetValueOrBlock, Loop, Macro, Match, Node};
 use askama_parser::{Ast, Expr, Syntax, WithSpan};
 
-/// One call site. `context` is gettext's msgctxt, `plural` its msgid_plural.
+/// One `__`-family call found in a template.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Message {
+    /// The English, which is also the `msgid`.
     pub id: String,
+    /// gettext's `msgctxt`, when the call supplied one.
     pub context: Option<String>,
+    /// gettext's `msgid_plural`, for the countable forms.
     pub plural: Option<String>,
+    /// The template it was written in.
     pub file: String,
+    /// The 1-based line, for the `#:` reference.
     pub line: usize,
 }
 
@@ -37,15 +42,26 @@ fn shape(name: &str) -> Option<(bool, bool)> {
     }
 }
 
+/// Extracts every message from one template file.
+///
+/// # Errors
+///
+/// Fails if the file cannot be read or Askama cannot parse it.
 pub fn from_file(path: &Path, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
-    let source = std::fs::read_to_string(path)
-        .with_context(|| format!("reading template {}", path.display()))?;
+    let source = std::fs::read_to_string(path)?;
     from_str(&source, &path.to_string_lossy(), syntax)
 }
 
+/// Extracts every message from template source.
+///
+/// # Errors
+///
+/// Fails if Askama cannot parse the source.
 pub fn from_str(source: &str, file: &str, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
-    let ast = Ast::from_str(source, None, syntax)
-        .map_err(|e| anyhow::anyhow!("parsing {file}: {e}"))?;
+    let ast = Ast::from_str(source, None, syntax).map_err(|e| Error::Template {
+        path: file.into(),
+        message: e.to_string(),
+    })?;
 
     let mut found = Vec::new();
     for node in ast.nodes() {
@@ -182,13 +198,14 @@ fn walk_expr(expr: &WithSpan<Box<Expr<'_>>>, source: &str, file: &str, out: &mut
             walk_expr(&op.lhs, source, file, out);
             walk_expr(&op.rhs, source, file, out);
         }
-        Expr::Group(inner) | Expr::Unary(_, inner) | Expr::Try(inner) => {
-            walk_expr(inner, source, file, out)
-        }
-        // `a.b`, `a[b]`, `a as T`, `name = value` — each can wrap a call.
-        Expr::AssociatedItem(inner, _) | Expr::As(inner, _) | Expr::NamedArgument(_, inner) => {
-            walk_expr(inner, source, file, out)
-        }
+        // Anything holding exactly one sub-expression that could be a call:
+        // a group, a unary operand, a `?`, a field access, a cast, a named argument.
+        Expr::Group(inner)
+        | Expr::Unary(_, inner)
+        | Expr::Try(inner)
+        | Expr::AssociatedItem(inner, _)
+        | Expr::As(inner, _)
+        | Expr::NamedArgument(_, inner) => walk_expr(inner, source, file, out),
         Expr::Index(lhs, rhs) => {
             walk_expr(lhs, source, file, out);
             walk_expr(rhs, source, file, out);
