@@ -9,7 +9,7 @@
 use std::path::Path;
 
 use askama::Template;
-use askama_gettext::{Catalogs, Translate, Translator};
+use askama_gettext::{Catalogs, Fuzzy, Translate, Translator};
 
 #[derive(Template)]
 #[template(path = "i18n.html")]
@@ -26,8 +26,12 @@ impl Translate for Page<'_> {
 }
 
 fn render(locale: &str) -> String {
+    render_with(locale, Fuzzy::Serve)
+}
+
+fn render_with(locale: &str, fuzzy: Fuzzy) -> String {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/locales");
-    let catalogs = Catalogs::load(&dir, &["en-GB", "pl-PL"], "en-GB").unwrap();
+    let catalogs = Catalogs::load(&dir, &["en-GB", "pl-PL"], "en-GB", fuzzy).unwrap();
 
     Page {
         catalogs: &catalogs,
@@ -60,6 +64,22 @@ fn an_untranslated_string_renders_as_its_own_english() {
         part(&render("pl-PL"), "untranslated"),
         "Nobody has translated this"
     );
+}
+
+#[test]
+fn serving_fuzzy_uses_a_translation_that_may_have_drifted() {
+    assert_eq!(
+        part(&render_with("pl-PL", Fuzzy::Serve), "needs-review"),
+        "To tłumaczenie wymaga sprawdzenia"
+    );
+}
+
+#[test]
+fn skipping_fuzzy_falls_back_as_if_it_were_untranslated() {
+    let html = render_with("pl-PL", Fuzzy::Skip);
+    assert_eq!(part(&html, "needs-review"), "This translation needs review");
+    // Only the flagged one goes; its neighbours in the same catalogue stay.
+    assert_eq!(part(&html, "translated"), "Zarezerwuj teraz");
 }
 
 #[test]

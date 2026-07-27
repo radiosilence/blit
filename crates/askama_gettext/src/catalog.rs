@@ -23,6 +23,27 @@ fn key(context: Option<&str>, msgid: &str) -> String {
     }
 }
 
+/// What to do with a translation a translator has flagged as needing review.
+///
+/// gettext's own tools skip them: `msgfmt` leaves a fuzzy entry out of the compiled
+/// catalogue, so the message falls back. That is the safer default where a msgid is
+/// a key, because it is the difference between a stale sentence and `nav.close` on
+/// the page.
+///
+/// Here a msgid is the English, so both answers render a real sentence and neither
+/// is obviously right — [`Serve`](Self::Serve) shows a reader a translation that may
+/// have drifted, [`Skip`](Self::Skip) shows them a language they may not read. Which
+/// is worse depends on the audience, so it is a choice the caller makes rather than
+/// one this crate makes for them.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Fuzzy {
+    /// Use it anyway. A translation that has drifted is usually still closer than
+    /// the source language.
+    Serve,
+    /// Leave it out, as `msgfmt` does, and fall back as if it were untranslated.
+    Skip,
+}
+
 /// One locale's messages.
 pub struct Catalog {
     singular: HashMap<String, String>,
@@ -37,7 +58,7 @@ impl Catalog {
     ///
     /// Fails if the file cannot be parsed, if CLDR has no rules for the locale, or
     /// if the catalogue's `Plural-Forms` disagrees with CLDR — see [`Forms::check`].
-    pub fn load(path: &Path, locale: &str) -> Result<Self> {
+    pub fn load(path: &Path, locale: &str, fuzzy: Fuzzy) -> Result<Self> {
         let parsed = po_file::parse(path).map_err(|e| Error::Catalog {
             path: path.to_owned(),
             message: e.to_string(),
@@ -50,6 +71,12 @@ impl Catalog {
         let mut plural = HashMap::new();
 
         for message in parsed.messages() {
+            // Skipped rather than stored-and-ignored, so a fuzzy message is missing
+            // from the map and falls back the same way an untranslated one does.
+            if fuzzy == Fuzzy::Skip && message.is_fuzzy() {
+                continue;
+            }
+
             let id = key(message.msgctxt(), message.msgid());
 
             if let Ok(translations) = message.msgstr_plural() {
@@ -105,12 +132,12 @@ impl Catalogs {
     /// # Errors
     ///
     /// Fails if any catalogue fails to load.
-    pub fn load(dir: &Path, locales: &[&str], source: &str) -> Result<Self> {
+    pub fn load(dir: &Path, locales: &[&str], source: &str, fuzzy: Fuzzy) -> Result<Self> {
         let mut by_locale = HashMap::new();
 
         for locale in locales {
             let path: PathBuf = dir.join(locale).join("messages.po");
-            by_locale.insert((*locale).to_owned(), Catalog::load(&path, locale)?);
+            by_locale.insert((*locale).to_owned(), Catalog::load(&path, locale, fuzzy)?);
         }
 
         Ok(Self {

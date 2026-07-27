@@ -81,7 +81,18 @@ of leaving a slot nobody will translate.
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
 outstanding. Extraction walks Askama's own AST, so it recognises no template syntax
 of its own and can't drift from what Askama accepts. Translations, translator
-comments, flags and header metadata all survive a round trip.
+comments, flags and header metadata all survive a round trip. A message that's left
+the templates is deleted and named in the output, rather than flagged — `fuzzy`
+already means a translation needing review, and an obsolete entry wearing that flag
+is indistinguishable from one a translator set.
+
+Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
+`generator/config.rs` decides what to do with one. This site serves them: most of a
+sentence in your own language beats all of one in someone else's. `msgfmt` would do
+the opposite, and that's the right default where a msgid is a key like `nav.close` —
+here it's the English, so both answers are a real sentence and it's a judgement call
+rather than a rule. Set it to `Fuzzy::Skip` to hold a drifted translation back until
+someone reviews it.
 
 ## Assets
 

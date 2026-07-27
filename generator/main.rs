@@ -11,7 +11,7 @@ use pulldown_cmark::{Options, Parser, html};
 
 use askama_gettext::Catalogs;
 use blit::assets::Assets;
-use blit::config::{LOCALES, SOURCE};
+use blit::config::{FUZZY, LOCALES, SOURCE};
 use blit::routes::{PAGES, url};
 use blit::templates::{Context, Cv, Index, LocaleLink, Urls};
 
@@ -22,7 +22,7 @@ fn main() -> Result<()> {
     let build = root.join(".build");
 
     let codes: Vec<&str> = LOCALES.iter().map(|l| l.code).collect();
-    let catalogs = Catalogs::load(&root.join("src/locales"), &codes, SOURCE)?;
+    let catalogs = Catalogs::load(&root.join("src/locales"), &codes, SOURCE, FUZZY)?;
 
     let mut assets = Assets::load(&root.join("src/static"))?;
 
