@@ -193,9 +193,10 @@ mod tests {
     use super::*;
     use crate::extract::Message as Extracted;
 
-    fn catalogue(body: &str) -> std::path::PathBuf {
-        // A distinct name per test so they can run in parallel.
-        let path = std::env::temp_dir().join(format!("agt-{}.po", body.len()));
+    fn catalogue(name: &str, body: &str) -> std::path::PathBuf {
+        // Named for its test rather than derived from the body: two fixtures of
+        // equal length collided on one path and raced.
+        let path = std::env::temp_dir().join(format!("agt-{name}.po"));
         std::fs::write(&path, body).unwrap();
         path
     }
@@ -221,10 +222,13 @@ mod tests {
 
     #[test]
     fn a_plural_translation_survives_re_extraction() {
-        let path = catalogue(&format!(
-            "{PL_HEADER}\n#: t.html:1\nmsgid \"%{{count}} locale\"\nmsgid_plural \"%{{count}} locales\"\n\
+        let path = catalogue(
+            "a_plural_translation_survives_re_extraction",
+            &format!(
+                "{PL_HEADER}\n#: t.html:1\nmsgid \"%{{count}} locale\"\nmsgid_plural \"%{{count}} locales\"\n\
              msgstr[0] \"%{{count}} język\"\nmsgstr[1] \"%{{count}} języki\"\nmsgstr[2] \"%{{count}} języków\"\n"
-        ));
+            ),
+        );
 
         into_catalog(
             &path,
@@ -241,9 +245,10 @@ mod tests {
 
     #[test]
     fn a_singular_translation_survives_re_extraction() {
-        let path = catalogue(&format!(
-            "{PL_HEADER}\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n"
-        ));
+        let path = catalogue(
+            "a_singular_translation_survives_re_extraction",
+            &format!("{PL_HEADER}\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n"),
+        );
 
         into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
 
@@ -252,10 +257,13 @@ mod tests {
 
     #[test]
     fn a_message_that_left_the_templates_is_removed_and_named() {
-        let path = catalogue(&format!(
-            "{PL_HEADER}\n#: t.html:1\nmsgid \"stays\"\nmsgstr \"zostaje\"\n\n\
+        let path = catalogue(
+            "a_message_that_left_the_templates_is_removed_and_named",
+            &format!(
+                "{PL_HEADER}\n#: t.html:1\nmsgid \"stays\"\nmsgstr \"zostaje\"\n\n\
              #: t.html:2\nmsgid \"went\"\nmsgstr \"poszło\"\n"
-        ));
+            ),
+        );
 
         let summary = into_catalog(&path, "pl-PL", &[site("stays", None)]).unwrap();
 
@@ -273,9 +281,10 @@ mod tests {
     fn a_fuzzy_message_is_left_alone_while_it_is_still_in_a_template() {
         // fuzzy means a translation that needs review. Extraction has no opinion
         // on that, and removal is about the id being gone, not the flag.
-        let path = catalogue(&format!(
-            "{PL_HEADER}\n#: t.html:1\n#, fuzzy\nmsgid \"here\"\nmsgstr \"tutaj\"\n"
-        ));
+        let path = catalogue(
+            "a_fuzzy_message_is_left_alone_while_it_is_still_in_a_template",
+            &format!("{PL_HEADER}\n#: t.html:1\n#, fuzzy\nmsgid \"here\"\nmsgstr \"tutaj\"\n"),
+        );
 
         let summary = into_catalog(&path, "pl-PL", &[site("here", None)]).unwrap();
 
@@ -287,9 +296,10 @@ mod tests {
 
     #[test]
     fn a_new_message_arrives_untranslated_and_is_counted() {
-        let path = catalogue(&format!(
-            "{PL_HEADER}\n#: t.html:1\nmsgid \"old\"\nmsgstr \"stary\"\n "
-        ));
+        let path = catalogue(
+            "a_new_message_arrives_untranslated_and_is_counted",
+            &format!("{PL_HEADER}\n#: t.html:1\nmsgid \"old\"\nmsgstr \"stary\"\n "),
+        );
 
         let summary =
             into_catalog(&path, "pl-PL", &[site("old", None), site("new", None)]).unwrap();
