@@ -33,6 +33,19 @@ const CANONICAL: [PluralCategory; 6] = [
     PluralCategory::Other,
 ];
 
+/// The counts a language's set of forms is taken from.
+///
+/// Bounded on purpose, and the bound is the interesting decision. CLDR gives French
+/// and Italian a `many` category that no count below a million reaches, while
+/// gettext has called both two-form languages for as long as there have been `.po`
+/// files. Sampling far enough to find it would add a slot that every catalogue in
+/// the world lacks and every translator's tool declines to offer — so the form set
+/// stays the one catalogues are actually written against.
+///
+/// What lies past the bound is not ignored, which is the other half of the decision:
+/// see [`Forms::index`].
+const COUNTED: std::ops::RangeInclusive<u64> = 0..=200;
+
 /// The plural categories a whole number can land in, in CLDR order.
 ///
 /// The position of a category in this list is its `msgstr[n]` index, which is what
@@ -73,7 +86,7 @@ impl Forms {
          * whole number is only ever one, few or many — and gettext's three slots
          * are those three. Counting things is what plurals are for here.
          */
-        let reachable: Vec<_> = (0u64..=200).map(|n| rules.category_for(n)).collect();
+        let reachable: Vec<_> = COUNTED.map(|n| rules.category_for(n)).collect();
         let categories = CANONICAL
             .into_iter()
             .filter(|category| reachable.contains(category))
@@ -98,12 +111,20 @@ impl Forms {
     /// assert_eq!(polish.index(36), 2); // many
     /// # Ok::<(), askama_gettext::Error>(())
     /// ```
+    ///
+    /// A count CLDR puts in a category outside the language's form set — see
+    /// [`COUNTED`] — takes the general plural rather than the first slot. French at
+    /// a million is CLDR's `many`, which no French catalogue has a box for; `other`
+    /// is both the right sentence and the one the catalogue's own `plural=`
+    /// expression selects. The first slot is the singular, and would be the one
+    /// answer certain to be wrong.
     #[must_use]
     pub fn index(&self, count: u64) -> usize {
         let category = self.rules.category_for(count);
-        self.categories
-            .iter()
-            .position(|form| *form == category)
+        let slot = |wanted: PluralCategory| self.categories.iter().position(|got| *got == wanted);
+
+        slot(category)
+            .or_else(|| slot(PluralCategory::Other))
             .unwrap_or(0)
     }
 
@@ -140,9 +161,24 @@ impl Forms {
     pub fn check_expression(&self, locale: &str, expression: &str) -> Result<()> {
         let parsed = Expression::parse(expression)?;
 
-        // Enough to cover the mod-10 and mod-100 cycles every CLDR rule turns on,
-        // several times over, plus the small counts they special-case.
-        for count in 0..=1000 {
+        // The low range covers the mod-10 and mod-100 cycles every CLDR rule turns
+        // on, several times over, plus the small counts they special-case. The rest
+        // are there because a category can first appear far above it — French's
+        // `many` arrives at a million, and a check that stopped at a thousand is
+        // why that went unnoticed.
+        let counts = (0..=1000).chain([
+            9_999,
+            10_000,
+            99_999,
+            100_000,
+            999_999,
+            1_000_000,
+            1_000_001,
+            2_000_000,
+            1_000_000_000,
+        ]);
+
+        for count in counts {
             let declared = parsed.form(count).ok_or_else(|| Error::PluralExpression {
                 expression: expression.to_owned(),
                 message: format!("no value for n={count}"),
@@ -187,6 +223,31 @@ mod tests {
         assert_eq!(pl.index(1), 0);
         assert_eq!(pl.index(2), 1);
         assert_eq!(pl.index(5), 2);
+    }
+
+    #[test]
+    fn a_category_outside_the_form_set_takes_the_general_plural() {
+        // CLDR gives French `many` from a million up. No French catalogue has a
+        // third box, so the answer has to be one of the two that exist — and it is
+        // the plural, not the singular. "1000000 fichiers".
+        let fr = Forms::new("fr-FR").unwrap();
+        assert_eq!(fr.count(), 2);
+        assert_eq!(fr.index(2), 1);
+        assert_eq!(fr.index(1_000_000), 1);
+        assert_eq!(fr.index(1_000_000_000), 1);
+        // The singular is still the singular.
+        assert_eq!(fr.index(1), 0);
+
+        let it = Forms::new("it-IT").unwrap();
+        assert_eq!(it.index(1_000_000), it.index(2));
+    }
+
+    #[test]
+    fn the_general_plural_agrees_with_what_the_header_selects() {
+        // The two have to answer the same, or check_expression rejects every
+        // French catalogue in existence over a count nobody renders.
+        let fr = Forms::new("fr-FR").unwrap();
+        fr.check_expression("fr-FR", "n > 1").unwrap();
     }
 
     #[test]
