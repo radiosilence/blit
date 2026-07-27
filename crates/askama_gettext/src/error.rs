@@ -75,6 +75,19 @@ pub enum Error {
         actual: usize,
     },
 
+    /// No known gettext expression selects the forms CLDR gives a locale.
+    ///
+    /// Writing an unverified one is the thing this refuses to do, so a locale that
+    /// reaches here needs its expression supplied by hand and added to the
+    /// candidates once something has checked it.
+    #[error("{locale}: no known plural expression matches CLDR's {forms} forms")]
+    NoPluralExpression {
+        /// The locale in question.
+        locale: String,
+        /// How many forms CLDR gives it, for finding a candidate.
+        forms: usize,
+    },
+
     /// An I/O failure.
     #[error(transparent)]
     Io(#[from] std::io::Error),
