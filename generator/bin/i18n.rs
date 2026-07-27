@@ -3,6 +3,7 @@
 //! Separate from the renderer because it writes the files the renderer reads: a
 //! build that did both would be rewriting its own input.
 
+use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::{Context, Result};
@@ -35,6 +36,10 @@ fn main() -> Result<()> {
 
     println!("{} calls across {} templates", messages.len(), files.len());
 
+    // Which locales a removal touched, rather than a line per locale: the templates
+    // decide what goes, so the same ids leave all 36 catalogues at once.
+    let mut removed: BTreeMap<String, usize> = BTreeMap::new();
+
     for locale in LOCALES {
         let path = root
             .join("src/locales")
@@ -43,13 +48,23 @@ fn main() -> Result<()> {
         let summary = merge::into_catalog(&path, locale.code, &messages)
             .with_context(|| format!("merging into {}", path.display()))?;
 
+        for id in summary.removed {
+            *removed.entry(id).or_default() += 1;
+        }
+
         if locale.code == SOURCE {
             println!("  {} — {} messages", locale.code, summary.total);
-        } else if summary.untranslated > 0 || summary.obsolete > 0 {
-            println!(
-                "  {} — {} untranslated, {} obsolete",
-                locale.code, summary.untranslated, summary.obsolete
-            );
+        } else if summary.untranslated > 0 {
+            println!("  {} — {} untranslated", locale.code, summary.untranslated);
+        }
+    }
+
+    // Loud, because this is the one thing extraction does that destroys a
+    // translator's work — and `task dev` runs it on every save.
+    if !removed.is_empty() {
+        println!("\nremoved, no longer in any template:");
+        for (id, catalogues) in &removed {
+            println!("  {id:?} — from {catalogues} catalogues");
         }
     }
 

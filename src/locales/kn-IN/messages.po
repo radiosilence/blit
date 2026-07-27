@@ -10,11 +10,6 @@ msgstr ""
 msgid "change language"
 msgstr "ಭಾಷೆ ಬದಲಾಯಿಸಿ"
 
-#: src/templates/page-base.html:54
-#, fuzzy
-msgid "close"
-msgstr "ಮುಚ್ಚಿ"
-
 #: src/templates/index.html:9
 msgid "cv-2025.01"
 msgstr "cv-2025.01"
