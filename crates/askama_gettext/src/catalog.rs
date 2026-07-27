@@ -69,6 +69,7 @@ impl Catalog {
 
         let forms = Forms::new(locale)?;
         forms.check(locale, parsed.metadata.plural_rules.nplurals)?;
+        forms.check_expression(locale, &parsed.metadata.plural_rules.expr)?;
 
         let mut singular = HashMap::new();
         let mut plural = HashMap::new();

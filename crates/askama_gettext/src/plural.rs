@@ -5,15 +5,18 @@
 //! evaluates it. CLDR already knows which form a count takes in every language, and
 //! it is kept current in a way a header copied between projects is not.
 //!
-//! What the header is still good for is agreement. It says how many `msgstr[n]`
-//! slots a translator is offered; CLDR says how many the language has. When those
-//! disagree one of them is wrong, and [`Forms::check`] refuses to continue rather
-//! than write to a slot nobody will translate.
+//! What the header is still good for is agreement, in two parts. It says how many
+//! `msgstr[n]` slots a translator is offered, and which one a given count lands in.
+//! CLDR answers both. When either disagrees one of them is wrong, and [`Forms::check`]
+//! and [`Forms::check_expression`] refuse to continue rather than write to a slot
+//! nobody will translate, or number the slots differently from the tool a translator
+//! fills them in with.
 
 use icu_locale_core::Locale;
 use icu_plurals::{PluralCategory, PluralRules};
 
 use crate::error::{Error, Result};
+use crate::expression::Expression;
 
 /// CLDR's canonical order, which is also the order gettext numbers `msgstr[n]`.
 ///
@@ -121,6 +124,43 @@ impl Forms {
             categories: format!("{:?}", self.categories),
         })
     }
+
+    /// Confirms a catalogue's `plural=` expression selects the forms CLDR does.
+    ///
+    /// The count alone is not enough: a header can declare the right number of
+    /// slots and still put a count in the wrong one, which nothing renders but a
+    /// translator's tooling reads. Agreement is checked by evaluating rather than
+    /// by comparing text, so a header written differently from the familiar one is
+    /// fine as long as it means the same thing.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`Error::PluralExpression`] if the expression cannot be read, and
+    /// [`Error::PluralExpressionMismatch`] naming the smallest count they differ on.
+    pub fn check_expression(&self, locale: &str, expression: &str) -> Result<()> {
+        let parsed = Expression::parse(expression)?;
+
+        // Enough to cover the mod-10 and mod-100 cycles every CLDR rule turns on,
+        // several times over, plus the small counts they special-case.
+        for count in 0..=1000 {
+            let declared = parsed.form(count).ok_or_else(|| Error::PluralExpression {
+                expression: expression.to_owned(),
+                message: format!("no value for n={count}"),
+            })?;
+
+            let actual = self.index(count);
+            if usize::try_from(declared) != Ok(actual) {
+                return Err(Error::PluralExpressionMismatch {
+                    locale: locale.to_owned(),
+                    count,
+                    declared,
+                    actual,
+                });
+            }
+        }
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -163,6 +203,37 @@ mod tests {
         assert_eq!(
             Forms::new("nl-BE").unwrap().count(),
             Forms::new("nl-NL").unwrap().count()
+        );
+    }
+
+    #[test]
+    fn an_expression_that_selects_what_cldr_selects_is_accepted() {
+        Forms::new("pl-PL")
+            .unwrap()
+            .check_expression(
+                "pl-PL",
+                "n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;",
+            )
+            .unwrap();
+        Forms::new("fr-FR")
+            .unwrap()
+            .check_expression("fr-FR", "n > 1")
+            .unwrap();
+    }
+
+    #[test]
+    fn the_right_number_of_forms_in_the_wrong_order_is_still_caught() {
+        // English's expression on French. Both are nplurals=2, so the count check
+        // passes and only evaluating them apart tells them apart — at n=0, which
+        // French puts in the singular and English does not.
+        let error = Forms::new("fr-FR")
+            .unwrap()
+            .check_expression("fr-FR", "n != 1")
+            .unwrap_err();
+
+        assert!(
+            matches!(error, Error::PluralExpressionMismatch { count: 0, .. }),
+            "{error}"
         );
     }
 

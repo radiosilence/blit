@@ -74,9 +74,16 @@ msgstr[2] "# języków"
 ```
 
 Three boxes for Polish, two for French, one for Japanese. Which one a count selects
-comes from CLDR rather than from evaluating the `Plural-Forms` expression — and the
-header is checked against CLDR, so a catalogue that disagrees fails the build instead
-of leaving a slot nobody will translate.
+comes from CLDR rather than from evaluating the `Plural-Forms` expression — but the
+header is checked against CLDR both ways, so a catalogue that disagrees fails the
+build instead of leaving a slot nobody will translate.
+
+Both halves of it, because the count alone isn't enough. French and English both have
+two forms, and French puts zero in the singular where English doesn't; a header with
+the right `nplurals` and the wrong expression numbers a translator's boxes one way
+while the site selects them another. So the expression is parsed and evaluated
+against CLDR for every count up to a thousand, and the build names the smallest one
+they differ on.
 
 `task i18n:sync` extracts from the templates into every catalogue and reports what's
 outstanding. Extraction walks Askama's own AST, so it recognises no template syntax

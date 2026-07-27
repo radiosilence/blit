@@ -47,6 +47,34 @@ pub enum Error {
         categories: String,
     },
 
+    /// A catalogue's `plural=` expression could not be read as one.
+    #[error("plural expression `{expression}`: {message}")]
+    PluralExpression {
+        /// The expression as the catalogue wrote it.
+        expression: String,
+        /// What stopped it being understood.
+        message: String,
+    },
+
+    /// A catalogue's `plural=` expression selects a different form from CLDR.
+    ///
+    /// The count that separates them is given rather than the whole expression,
+    /// because that is the input a translator would have to try before noticing
+    /// their boxes are in an order the site does not use.
+    #[error(
+        "{locale}: for n={count} the catalogue's plural expression gives form {declared}, CLDR gives {actual}"
+    )]
+    PluralExpressionMismatch {
+        /// The locale in question.
+        locale: String,
+        /// The count the two disagree on, smallest first.
+        count: u64,
+        /// What the header's expression works out to.
+        declared: i64,
+        /// What CLDR selects.
+        actual: usize,
+    },
+
     /// An I/O failure.
     #[error(transparent)]
     Io(#[from] std::io::Error),
