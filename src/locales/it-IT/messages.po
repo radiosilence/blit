@@ -29,7 +29,7 @@ msgstr "james cleveland"
 
 #: src/templates/page-base.html:6
 msgid "james cleveland : senior full stack engineer"
-msgstr "james cleveland : ingegnere full stack senior"
+msgstr "james cleveland : sviluppatore full stack senior"
 
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
@@ -61,5 +61,5 @@ msgstr "nelle vicinanze"
 
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
-msgstr "ingegnere full stack senior"
+msgstr "sviluppatore full stack senior"
 
