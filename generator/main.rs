@@ -13,7 +13,7 @@ use askama_gettext::Catalogs;
 use blit::assets::Assets;
 use blit::config::{LOCALES, SOURCE};
 use blit::routes::{PAGES, url};
-use blit::templates::{Context, Cv, I18nTest, Index, LocaleLink, Urls};
+use blit::templates::{Context, Cv, Index, LocaleLink, Urls};
 
 fn main() -> Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).to_owned();
@@ -70,8 +70,6 @@ fn main() -> Result<()> {
                 .collect();
 
             let canonical_url = format!("https://blit.cc{path}");
-            // Enough to reach every CLDR category: Arabic uses all six.
-            let counts: &[u64] = &[0, 1, 2, 3, 5, 11, 36, 101];
 
             let html = match page.template {
                 "index" => Index {
@@ -91,16 +89,6 @@ fn main() -> Result<()> {
                     urls: &urls,
                     locale_links: &locale_links,
                     cv: &cv,
-                }
-                .render()?,
-                "i18n-test" => I18nTest {
-                    ctx: &ctx,
-                    locale: locale.code,
-                    dir,
-                    canonical_url,
-                    urls: &urls,
-                    locale_links: &locale_links,
-                    counts,
                 }
                 .render()?,
                 other => bail!("no template named `{other}`"),

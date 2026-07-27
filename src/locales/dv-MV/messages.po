@@ -23,7 +23,7 @@ msgstr "cv-2025.01"
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:6
+#: src/templates/index.html:6
 msgid "james cleveland"
 msgstr "ޖޭމްސް ކްލީވްލޭންޑް"
 
@@ -31,32 +31,10 @@ msgstr "ޖޭމްސް ކްލީވްލޭންޑް"
 msgid "james cleveland : senior full stack engineer"
 msgstr "ޖޭމްސް ކްލީވްލޭންޑް : ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
 
-#: src/templates/i18n-test.html:20
-msgid "%{count} locale"
-msgid_plural "%{count} locales"
-msgstr[0] "%{count} ބަސް"
-
-#: src/templates/i18n-test.html:33
-msgid "<script>alert(1)</script> and <b>not bold</b>"
-msgstr ""
-
-#: src/templates/i18n-test.html:28
-msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr "އަހަރެންގެ <cv>ސީވީ</cv> ނުވަތަ <gh>ގިޓްހަބް</gh> ބައްލަވާ"
-
-#: src/templates/i18n-test.html:25
-msgid "showing %{shown} of %{total}"
-msgstr "%{total} ން %{shown} ދައްކަނީ"
-
-#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
+#: src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "ބަންދުކުރޭ"
-
-#: src/templates/i18n-test.html:15
-msgctxt "Search results: how near a salon is"
-msgid "close"
-msgstr "ކައިރި"
 
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
