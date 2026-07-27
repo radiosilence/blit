@@ -23,7 +23,7 @@ msgstr "cv-2025.01"
 msgid "github"
 msgstr "github"
 
-#: src/templates/i18n-test.html:11 src/templates/index.html:6
+#: src/templates/index.html:6
 msgid "james cleveland"
 msgstr "James Cleveland"
 
@@ -31,32 +31,10 @@ msgstr "James Cleveland"
 msgid "james cleveland : senior full stack engineer"
 msgstr "James Cleveland : kỹ sư full stack cao cấp"
 
-#: src/templates/i18n-test.html:20
-msgid "%{count} locale"
-msgid_plural "%{count} locales"
-msgstr[0] "%{count} ngôn ngữ"
-
-#: src/templates/i18n-test.html:33
-msgid "<script>alert(1)</script> and <b>not bold</b>"
-msgstr ""
-
-#: src/templates/i18n-test.html:28
-msgid "read my <cv>CV</cv> or my <gh>GitHub</gh>"
-msgstr "xem <cv>CV</cv> hoặc <gh>GitHub</gh> của tôi"
-
-#: src/templates/i18n-test.html:25
-msgid "showing %{shown} of %{total}"
-msgstr "hiển thị %{shown} trên %{total}"
-
-#: src/templates/i18n-test.html:14 src/templates/page-base.html:14
+#: src/templates/page-base.html:14
 msgctxt "Locale dialog: the button that dismisses it"
 msgid "close"
 msgstr "đóng"
-
-#: src/templates/i18n-test.html:15
-msgctxt "Search results: how near a salon is"
-msgid "close"
-msgstr "gần đây"
 
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
