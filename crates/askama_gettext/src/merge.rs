@@ -4,7 +4,13 @@
 //! templates only get to say which messages exist and where they are written. An
 //! existing translation, comment or flag survives.
 //!
-//! A message that has left the templates is removed. gettext writes one as an
+//! A message that has left is first offered to one that has arrived: reworded
+//! English is the same message with a new id, and its translation should follow it
+//! rather than be thrown away and asked for again in 36 languages. What follows is
+//! flagged `fuzzy`, which is what the flag is for — a translation nobody has yet
+//! read against the English it now sits under.
+//!
+//! A message that has left and found nowhere to go is removed. gettext writes one as an
 //! obsolete `#~` entry, which keeps the translation without pretending the message
 //! still exists — but polib has no way to write those, and the only flag it does
 //! have is `fuzzy`, which already means something else: a translation that needs
@@ -13,15 +19,21 @@
 //! thing, and the removal is reported by id and lands in a diff, so the translation
 //! is a `git revert` away rather than a mystery in a file nobody reads.
 
-use std::collections::BTreeMap;
+use std::cmp::Ordering;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
-use polib::message::Message;
+use polib::catalog::Catalog;
+use polib::message::{Message, MessageFlags};
 use polib::po_file;
 
 use crate::error::{Error, Result};
 use crate::extract::Message as Extracted;
 use crate::plural::Forms;
+use crate::similar;
+
+/// The messages the templates ask for, one entry per `(context, id)`.
+type Wanted<'a> = BTreeMap<(Option<String>, String), Vec<&'a Extracted>>;
 
 /// What changed, for reporting to whoever ran the extraction.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -36,6 +48,11 @@ pub struct Summary {
     /// a translator's work, so it should be possible to see what went without
     /// reading a diff of 36 files.
     pub removed: Vec<String>,
+    /// `(was, is)` for each message the templates reworded rather than replaced.
+    ///
+    /// The translation moved to the new id and is flagged fuzzy. These are not in
+    /// [`Self::removed`] — nothing was lost, it was carried.
+    pub reworded: Vec<(String, String)>,
 }
 
 /// Merges extracted messages into the catalogue at `path`, writing it back.
@@ -71,6 +88,12 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         ..Summary::default()
     };
 
+    // Worked out before anything is written, because the pairing is between the
+    // catalogue as it arrived and the templates as they are now — and the loop
+    // below is what destroys the first of those.
+    let departed = departures(&catalog, &wanted);
+    let mut carried = rewordings(&catalog, &wanted, &departed);
+
     for ((context, id), sites) in &wanted {
         let references = sites
             .iter()
@@ -85,23 +108,42 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         // silently discards a translator's work rather than failing.
         let existing = catalog.find_message(context.as_deref(), id, plural);
 
+        // A message with no entry of its own may still be one the templates just
+        // reworded, in which case its predecessor's translation comes with it.
+        let reworded = existing
+            .is_none()
+            .then(|| carried.remove(&(context.clone(), id.clone())))
+            .flatten();
+
         // Keep whatever a translator has already done; replace only what the
         // templates are authoritative about, which is the references.
-        let translations: Vec<String> = match (&existing, plural) {
-            (Some(message), Some(_)) => message
+        let translations: Vec<String> = match (&existing, &reworded, plural) {
+            (Some(message), _, Some(_)) => message
                 .msgstr_plural()
                 .cloned()
                 .unwrap_or_else(|_| vec![String::new(); forms.count()]),
-            (Some(message), None) => vec![message.msgstr().unwrap_or_default().to_owned()],
-            (None, Some(_)) => vec![String::new(); forms.count()],
-            (None, None) => vec![String::new()],
+            (Some(message), _, None) => vec![message.msgstr().unwrap_or_default().to_owned()],
+            (None, Some(from), _) => from.translations.clone(),
+            (None, None, Some(_)) => vec![String::new(); forms.count()],
+            (None, None, None) => vec![String::new()],
         };
 
         let comments = existing
             .as_ref()
             .map(|m| m.translator_comments().to_owned())
+            .or_else(|| reworded.as_ref().map(|from| from.comments.clone()))
             .unwrap_or_default();
-        let flags = existing.as_ref().map(|m| m.flags().clone());
+
+        let mut flags = existing.as_ref().map(|m| m.flags().clone());
+
+        if let Some(from) = &reworded {
+            // fuzzy is exactly what this is: a translation carried onto English it
+            // was not written for, which someone has to look at.
+            let mut inherited = from.flags.clone();
+            inherited.add_flag("fuzzy");
+            flags = Some(inherited);
+            summary.reworded.push((from.id.clone(), id.clone()));
+        }
 
         if translations.iter().all(String::is_empty) {
             summary.untranslated += 1;
@@ -134,35 +176,141 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         catalog.append_or_update(builder.done());
     }
 
-    // Anything the templates no longer mention. Gathered before anything is deleted,
-    // because removing through the iterator would be changing what is being read.
-    let gone: Vec<(Option<String>, String, Option<String>)> = catalog
-        .messages()
-        .filter(|message| {
-            let key = (
-                message.msgctxt().map(str::to_owned),
-                message.msgid().to_owned(),
-            );
-            !wanted.contains_key(&key)
-        })
-        .map(|message| {
-            (
-                message.msgctxt().map(str::to_owned),
-                message.msgid().to_owned(),
-                message.msgid_plural().ok().map(str::to_owned),
-            )
-        })
-        .collect();
-
-    for (context, id, plural) in &gone {
-        catalog.delete_message(context.as_deref(), id, plural.as_deref());
+    // Everything that left goes, including whatever was paired — its translation is
+    // on the new message now, and leaving the old one would be keeping a duplicate.
+    for message in &departed {
+        catalog.delete_message(
+            message.context.as_deref(),
+            &message.id,
+            message.plural.as_deref(),
+        );
     }
 
-    summary.removed = gone.into_iter().map(|(_, id, _)| id).collect();
+    let moved: BTreeSet<&str> = summary
+        .reworded
+        .iter()
+        .map(|(from, _)| from.as_str())
+        .collect();
+
+    summary.removed = departed
+        .iter()
+        .filter(|message| !moved.contains(message.id.as_str()))
+        .map(|message| message.id.clone())
+        .collect();
 
     write_atomically(&catalog, path)?;
 
     Ok(summary)
+}
+
+/// A message in the catalogue that the templates no longer ask for.
+///
+/// Read out in full before the merge writes anything, because by the time it is
+/// wanted the catalogue has been overwritten with the templates' idea of itself.
+struct Departed {
+    context: Option<String>,
+    id: String,
+    plural: Option<String>,
+    translations: Vec<String>,
+    comments: String,
+    flags: MessageFlags,
+}
+
+fn departures(catalog: &Catalog, wanted: &Wanted<'_>) -> Vec<Departed> {
+    catalog
+        .messages()
+        .filter(|message| {
+            !wanted.contains_key(&(
+                message.msgctxt().map(str::to_owned),
+                message.msgid().to_owned(),
+            ))
+        })
+        .map(|message| Departed {
+            context: message.msgctxt().map(str::to_owned),
+            id: message.msgid().to_owned(),
+            plural: message.msgid_plural().ok().map(str::to_owned),
+            translations: message
+                .msgstr_plural()
+                .cloned()
+                .unwrap_or_else(|_| vec![message.msgstr().unwrap_or_default().to_owned()]),
+            comments: message.translator_comments().to_owned(),
+            flags: message.flags().clone(),
+        })
+        .collect()
+}
+
+/// How alike two ids must be to be treated as one reworded rather than two.
+///
+/// The same cutoff `difflib` uses for "close enough", and low enough to survive a
+/// clause being rewritten while still refusing two unrelated sentences. Being wrong
+/// in one direction costs a translator a lost string; in the other it hands them
+/// somebody else's sentence to correct. Neither is silent — the pairing is reported
+/// and the result is flagged fuzzy — so the bar sits where a human would agree.
+const SAME_MESSAGE: f64 = 0.6;
+
+/// Pairs a departure with an arrival when the second is the first reworded.
+///
+/// Only messages with no entry of their own are candidates: one the catalogue
+/// already knows has a translation, and does not need somebody else's.
+fn rewordings(
+    catalog: &Catalog,
+    wanted: &Wanted<'_>,
+    departed: &[Departed],
+) -> BTreeMap<(Option<String>, String), Departed> {
+    let arrived: Vec<&(Option<String>, String)> = wanted
+        .iter()
+        .filter(|((context, id), sites)| {
+            let plural = sites.iter().find_map(|site| site.plural.as_deref());
+            catalog
+                .find_message(context.as_deref(), id, plural)
+                .is_none()
+        })
+        .map(|(key, _)| key)
+        .collect();
+
+    let mut pairs = BTreeMap::new();
+    let mut taken = BTreeSet::new();
+
+    // Arrivals in id order and the best match for each, so the same catalogue and
+    // the same templates always pair the same way.
+    for key in arrived {
+        let (context, id) = key;
+
+        let best = departed
+            .iter()
+            .enumerate()
+            .filter(|(index, from)| !taken.contains(index) && &from.context == context)
+            .map(|(index, from)| (index, from, similar::ratio(&from.id, id)))
+            .filter(|(_, _, ratio)| *ratio >= SAME_MESSAGE)
+            .max_by(|(_, a, left), (_, b, right)| {
+                // Ties broken on the id so the choice never depends on catalogue order.
+                left.partial_cmp(right)
+                    .unwrap_or(Ordering::Equal)
+                    .then_with(|| b.id.cmp(&a.id))
+            });
+
+        if let Some((index, from, _)) = best {
+            taken.insert(index);
+            pairs.insert(key.clone(), from.clone_for_carrying());
+        }
+    }
+
+    pairs
+}
+
+impl Departed {
+    /// The parts that follow a reword. Not `Clone`, because the identity of the
+    /// message it came from stays behind.
+    fn clone_for_carrying(&self) -> Self {
+        Self {
+            context: self.context.clone(),
+            id: self.id.clone(),
+            plural: self.plural.clone(),
+            translations: self.translations.clone(),
+            comments: self.comments.clone(),
+            flags: self.flags.clone(),
+        }
+    }
 }
 
 /// Writes through a temporary file and renames it into place.
@@ -275,6 +423,92 @@ mod tests {
         // The header is metadata rather than a message, and must not be swept up
         // with them — without it a catalogue has no Plural-Forms to check.
         assert!(after.contains("Plural-Forms:"), "header lost:\n{after}");
+    }
+
+    #[test]
+    fn a_reworded_message_keeps_its_translation_and_is_flagged() {
+        let path = catalogue(
+            "a_reworded_message_keeps_its_translation_and_is_flagged",
+            &format!(
+                "{PL_HEADER}\n#: t.html:1\nmsgid \"read my CV\"\nmsgstr \"przeczytaj moje CV\"\n"
+            ),
+        );
+
+        // The English was reworded; it is the same sentence and the same page.
+        let summary = into_catalog(&path, "pl-PL", &[site("read my resume", None)]).unwrap();
+
+        assert_eq!(
+            summary.reworded,
+            [("read my CV".to_owned(), "read my resume".to_owned())]
+        );
+        // Carried, not lost — so it does not count as removed.
+        assert!(summary.removed.is_empty());
+        assert_eq!(summary.untranslated, 0);
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(
+            after.contains("przeczytaj moje CV"),
+            "translation lost:\n{after}"
+        );
+        assert!(after.contains("read my resume"), "new id missing:\n{after}");
+        assert!(
+            !after.contains("msgid \"read my CV\""),
+            "old id kept:\n{after}"
+        );
+        assert!(after.contains("fuzzy"), "not flagged for review:\n{after}");
+    }
+
+    #[test]
+    fn an_unrelated_message_is_not_treated_as_a_reword() {
+        let path = catalogue(
+            "an_unrelated_message_is_not_treated_as_a_reword",
+            &format!(
+                "{PL_HEADER}\n#: t.html:1\nmsgid \"change language\"\nmsgstr \"zmień język\"\n"
+            ),
+        );
+
+        let summary =
+            into_catalog(&path, "pl-PL", &[site("senior full stack engineer", None)]).unwrap();
+
+        assert!(summary.reworded.is_empty(), "{:?}", summary.reworded);
+        assert_eq!(summary.removed, ["change language"]);
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(
+            !after.contains("zmień język"),
+            "carried onto a stranger:\n{after}"
+        );
+    }
+
+    #[test]
+    fn a_reword_does_not_steal_from_a_message_that_stayed() {
+        let path = catalogue(
+            "a_reword_does_not_steal_from_a_message_that_stayed",
+            &format!(
+                "{PL_HEADER}\n#: t.html:1\nmsgid \"read my CV\"\nmsgstr \"przeczytaj moje CV\"\n\n\
+                 #: t.html:2\nmsgid \"read my blog\"\nmsgstr \"przeczytaj mój blog\"\n"
+            ),
+        );
+
+        // "read my blog" is still there, so only "read my CV" is free to move.
+        let summary = into_catalog(
+            &path,
+            "pl-PL",
+            &[site("read my blog", None), site("read my resume", None)],
+        )
+        .unwrap();
+
+        assert_eq!(
+            summary.reworded,
+            [("read my CV".to_owned(), "read my resume".to_owned())]
+        );
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(
+            after.contains("przeczytaj mój blog"),
+            "the one that stayed lost its translation:\n{after}"
+        );
+        assert!(after.contains("przeczytaj moje CV"), "{after}");
     }
 
     #[test]
