@@ -202,7 +202,12 @@ mod tests {
              msgstr[0] \"%{{count}} język\"\nmsgstr[1] \"%{{count}} języki\"\nmsgstr[2] \"%{{count}} języków\"\n"
         ));
 
-        into_catalog(&path, "pl-PL", &[site("%{count} locale", Some("%{count} locales"))]).unwrap();
+        into_catalog(
+            &path,
+            "pl-PL",
+            &[site("%{count} locale", Some("%{count} locales"))],
+        )
+        .unwrap();
 
         let after = std::fs::read_to_string(&path).unwrap();
         assert!(after.contains("język\""), "singular form lost:\n{after}");
@@ -223,7 +228,9 @@ mod tests {
 
     #[test]
     fn a_new_message_arrives_untranslated_and_is_counted() {
-        let path = catalogue(&format!("{PL_HEADER}\n#: t.html:1\nmsgid \"old\"\nmsgstr \"stary\"\n "));
+        let path = catalogue(&format!(
+            "{PL_HEADER}\n#: t.html:1\nmsgid \"old\"\nmsgstr \"stary\"\n "
+        ));
 
         let summary =
             into_catalog(&path, "pl-PL", &[site("old", None), site("new", None)]).unwrap();
@@ -264,7 +271,10 @@ mod atomicity {
         assert!(into_catalog(&path, "pl-PL", &sites).is_err());
 
         let after = std::fs::read_to_string(&path).unwrap();
-        assert!(after.contains("zamknij"), "translation lost on a failed merge");
+        assert!(
+            after.contains("zamknij"),
+            "translation lost on a failed merge"
+        );
         assert!(!path.with_extension("po.tmp").exists() || after == original);
     }
 }

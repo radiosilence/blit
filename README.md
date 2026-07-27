@@ -7,7 +7,7 @@ The browser gets HTML, CSS and a font. No JavaScript at all.
 
 ## Why there's no framework
 
-The site is two pages, six translated strings and a markdown CV. Its only piece of
+The site is two pages, seven translated strings and a markdown CV. Its only piece of
 interactivity is the language picker, so there was nothing for a client-side
 framework to do.
 
@@ -28,8 +28,10 @@ principle is to lean on native elements for _behaviour_ and style them ourselves
 This costs pre-2025 browsers: without `command` support the button does nothing.
 Two lines of feature-detected script would buy that back if it ever matters.
 
-Locale names come from ICU via `Intl.DisplayNames` at build time, so the picker
-reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
+Locale names are endonyms — the picker reads "日本語 / 日本" rather than "ja-JP".
+They come from ICU, resolved once into `generator/config.rs` rather than at build
+time, because ICU4X exposes display names only in `icu_experimental` and this is data
+that changes about as often as a language renames itself.
 
 ## Stack
 
@@ -42,8 +44,9 @@ reads "日本語 / 日本" rather than "ja-JP" at no runtime cost.
 - [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) renders the CV,
   passing through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
-- Everything is pinned in [mise](https://mise.jdx.dev): rust, task, tailwind,
-  nano-web, gh, yq
+- Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, task,
+  tailwind, gh, yq. [nano-web](https://github.com/radiosilence/nano-web) serves
+  `dist/` for `task dev` and is yours to install
 
 The build is a Rust binary. Tailwind is the only JavaScript left in it — its
 compiler genuinely is TypeScript, and Oxide is only the scanner — so it arrives as a
@@ -107,13 +110,13 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | Command             | Notes                                              |
 | ------------------- | -------------------------------------------------- |
 | `task dev`          | Rebuild on change, serve on :3000                  |
-| `task build`        | Generate, compile CSS and copy assets into `dist/` |
-| `task generate`     | Render the 72 pages only                           |
-| `task check`        | Lint, formatting and types                         |
+| `task build`        | Compile CSS, then generate the site into `dist/`   |
+| `task generate`     | Render every locale × page only                    |
+| `task check`        | Clippy, rustfmt and tests                          |
 | `task ci`           | Exactly what CI runs — `check`, then `build`       |
 | `task docker:build` | Build the container image                          |
 | `task i18n:sync`    | Sync locale catalogues against the source          |
-| `task clean`        | Drop `dist/` and Task's checksum cache             |
+| `task clean`        | Drop `dist/`, `.build/`, `target/` and the cache   |
 
 `task --list` shows the rest.
 
@@ -141,6 +144,7 @@ task deploy:update SHA=$(git rev-parse HEAD)   # what points prod at it
 ```
 
 Anything a runner has and a laptop doesn't arrives as environment rather than as
-workflow logic: `CI` selects `--frozen-lockfile`, `CACHE_FROM`/`CACHE_TO` select
-GitHub's buildx cache over the local one, `GH_TOKEN` authorises the push to the IaC
-repo. Unset, each falls back to the local equivalent.
+workflow logic: `CI` selects an optimised build over the fast debug one the watch loop
+wants, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache over the local one, and
+`GH_TOKEN` authorises the push to the IaC repo. Unset, each falls back to the local
+equivalent.

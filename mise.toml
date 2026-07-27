@@ -1,6 +1,8 @@
 [tools]
-# The generator and the extractor.
-rust = "1"
+# The generator and the extractor. `task check` runs rustfmt and clippy, which the
+# minimal profile leaves out — a laptop tends to have them from rustup already, a
+# clean runner does not.
+rust = { version = "1", components = "rustfmt,clippy" }
 task = "latest"
 # Tailwind is the one part of the build that is still JavaScript — its compiler is
 # TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
