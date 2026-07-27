@@ -10,3 +10,10 @@ msgstr ""
 # fall back to that is not simply the id.
 msgid "Sign in"
 msgstr "Log in"
+
+# Countable, and again translated only here — and to something other than the id,
+# so a locale reaching these forms is visibly reading this catalogue.
+msgid "%{count} item"
+msgid_plural "%{count} items"
+msgstr[0] "%{count} thing"
+msgstr[1] "%{count} things"
