@@ -22,6 +22,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "askama-gettext"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "askama_parser",
+ "icu_locale_core",
+ "icu_plurals",
+ "polib",
+]
+
+[[package]]
 name = "askama_derive"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -82,6 +93,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "askama",
+ "askama-gettext",
  "askama_parser",
  "icu_locale_core",
  "icu_plurals",

@@ -1,3 +1,6 @@
+[workspace]
+members = ["crates/askama-gettext"]
+
 [package]
 name = "blit"
 version = "0.1.0"
@@ -20,6 +23,7 @@ askama = "0.16"
 # Askama's own template parser, so extraction recognises no syntax of its own and
 # inherits whatever the renderer understands.
 askama_parser = "0.16"
+askama-gettext = { path = "crates/askama-gettext" }
 anyhow = "1"
 icu_locale_core = "2"
 icu_plurals = "2"

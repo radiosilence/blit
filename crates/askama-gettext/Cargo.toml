@@ -1,0 +1,12 @@
+[package]
+name = "askama-gettext"
+version = "0.1.0"
+edition = "2024"
+description = "gettext for Askama templates: __/__p/__n, CLDR plural selection, and extraction via Askama's own parser"
+
+[dependencies]
+askama_parser = "0.16"
+anyhow = "1"
+icu_locale_core = "2"
+icu_plurals = "2"
+polib = "0.3"
