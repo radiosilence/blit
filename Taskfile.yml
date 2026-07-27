@@ -89,8 +89,17 @@ tasks:
 
   # The same server the image runs, so dev resolves URLs exactly as production does.
   # --dev drops the year-long caching it serves with, so a rebuild is picked up.
+  #
+  # Deliberately not in mise.toml: that pins what the build needs, and nothing in
+  # `task build` or CI touches a server. Bring your own.
   serve:
     internal: true
+    preconditions:
+      - sh: command -v nano-web
+        msg: |
+          nano-web is not on PATH. It serves dist/ for `task dev` and is not part of
+          the build toolchain, so it is not pinned in mise.toml.
+          https://github.com/radiosilence/nano-web
     cmd: nano-web serve {{.DIST}} --port 3000 --dev
 
   clean:
