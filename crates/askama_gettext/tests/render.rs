@@ -82,6 +82,44 @@ fn skipping_fuzzy_falls_back_as_if_it_were_untranslated() {
     assert_eq!(part(&html, "translated"), "Zarezerwuj teraz");
 }
 
+/// The same page with a catalogue for the language sitting between the region and
+/// the source, which is the only way the middle step of the chain exists.
+fn render_through_the_language(locale: &str) -> String {
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/locales");
+    let catalogs = Catalogs::load(&dir, &["en-GB", "pl", "pl-PL"], "en-GB", Fuzzy::Serve).unwrap();
+
+    Page {
+        catalogs: &catalogs,
+        locale,
+        cv: "/pl-PL/cv",
+    }
+    .render()
+    .unwrap()
+}
+
+#[test]
+fn the_language_is_tried_before_the_source() {
+    // pl has this and pl-PL does not, so reaching it means the chain stopped at the
+    // language rather than carrying on to English.
+    assert_eq!(
+        part(&render_through_the_language("pl-PL"), "untranslated"),
+        "Nikt tego nie przetłumaczył"
+    );
+
+    // Without a pl catalogue loaded the same lookup passes straight through.
+    assert_eq!(
+        part(&render("pl-PL"), "untranslated"),
+        "Nobody has translated this"
+    );
+}
+
+#[test]
+fn a_plural_falls_back_like_a_singular_does() {
+    // Only en-GB translates this one, and to forms the id does not contain — so
+    // "5 things" is the source catalogue answering rather than the English plural.
+    assert_eq!(part(&render("pl-PL"), "source-plural"), "5 things");
+}
+
 #[test]
 fn the_source_locale_is_what_a_locale_falls_back_to() {
     // "Sign in" is translated only in en-GB, and to something other than itself —
