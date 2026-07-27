@@ -6,7 +6,10 @@ vars:
   # dist gives that rewrite a fixed input and leaves dist owned by generate alone.
   BUILD: .build
   IMAGE: ghcr.io/radiosilence/blit
-  PLATFORMS: linux/amd64
+  # Both architectures come out of one build. Nothing in the image is
+  # architecture-specific — dist/ is bytes and the base image is already a manifest
+  # list — so there is no RUN for qemu to emulate and no second compile to parallelise.
+  PLATFORMS: linux/amd64,linux/arm64
   # Debug builds compile several times faster, which is what the watch loop wants.
   # CI sets CI=true and gets an optimised binary.
   PROFILE: '{{if .CI}}--release{{end}}'
@@ -156,9 +159,12 @@ tasks:
       TAG: sha-{{trunc 7 .SHA}}
       BUILT_AT:
         sh: date -u +%Y-%m-%dT%H:%M:%SZ
+    # --platform only applies to a push: a manifest list is a registry object, and
+    # --load has nowhere to put one, so a local build takes the host's architecture —
+    # which is the only one you could run anyway.
     cmd: >-
       docker buildx build .
-      --platform {{.PLATFORMS}}
+      {{if eq .PUSH "true"}}--platform {{.PLATFORMS}}{{end}}
       --tag {{.IMAGE}}:{{.TAG}}
       {{if eq .LATEST "true"}}--tag {{.IMAGE}}:latest{{end}}
       --label org.opencontainers.image.revision={{.SHA}}

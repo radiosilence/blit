@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### The image publishes for amd64 and arm64
+
+`ghcr.io/radiosilence/blit` is a manifest list covering both architectures, so the
+deployment is no longer tied to x86 hardware.
+
+One `docker buildx build` emits both. Nothing in the image is architecture-specific —
+`dist/` is bytes and nano-web already ships a manifest list — so there is no `RUN` for
+qemu to emulate and no second compile that a build matrix could parallelise; splitting
+it across runners would only add a manifest-merge job. `--platform` is applied on a
+push alone, because `--load` has nowhere to put a manifest list and a local build only
+needs the architecture it can run.
+
+## Unreleased
+
 ### The generator is Rust
 
 The build is a single binary. `generator/` renders the site, `crates/askama_gettext`
