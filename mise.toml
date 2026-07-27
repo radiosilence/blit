@@ -1,7 +1,7 @@
 [tools]
 # The generator and the extractor.
-rust = "1.97"
-task = "3"
+rust = "1"
+task = "latest"
 # Tailwind is the one part of the build that is still JavaScript — its compiler is
 # TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
 # than as a package manifest and a node_modules tree.
@@ -9,8 +9,6 @@ task = "3"
 # The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
 # next to the stylesheet, so `task css` links it into place from here.
 "npm:@tailwindcss/typography" = "0.5"
-# The server the image runs, so `task dev` resolves URLs exactly as production does.
-nano-web = "1"
 # Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
-gh = "2"
-yq = "4"
+gh = "latest"
+yq = "latest"
