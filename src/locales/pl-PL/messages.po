@@ -34,9 +34,9 @@ msgstr "james cleveland : starszy inżynier full stack"
 #: src/templates/i18n-test.html:20
 msgid "%{count} locale"
 msgid_plural "%{count} locales"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%{count} język"
+msgstr[1] "%{count} języki"
+msgstr[2] "%{count} języków"
 
 #: src/templates/i18n-test.html:33
 msgid "<script>alert(1)</script> and <b>not bold</b>"

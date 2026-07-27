@@ -68,7 +68,11 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
             .join(" ");
 
         let plural = sites.iter().find_map(|site| site.plural.as_deref());
-        let existing = catalog.find_message(context.as_deref(), id, None);
+
+        // The plural is part of the key: looking a countable message up without it
+        // finds nothing, and the entry is then rebuilt with empty forms — which
+        // silently discards a translator's work rather than failing.
+        let existing = catalog.find_message(context.as_deref(), id, plural);
 
         // Keep whatever a translator has already done; replace only what the
         // templates are authoritative about, which is the references.
@@ -138,4 +142,73 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
     })?;
 
     Ok(summary)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::extract::Message as Extracted;
+
+    fn catalogue(body: &str) -> std::path::PathBuf {
+        // A distinct name per test so they can run in parallel.
+        let path = std::env::temp_dir().join(format!("agt-{}.po", body.len()));
+        std::fs::write(&path, body).unwrap();
+        path
+    }
+
+    fn site(id: &str, plural: Option<&str>) -> Extracted {
+        Extracted {
+            id: id.to_owned(),
+            context: None,
+            plural: plural.map(str::to_owned),
+            file: "t.html".to_owned(),
+            line: 1,
+        }
+    }
+
+    const PL_HEADER: &str = concat!(
+        "msgid \"\"\nmsgstr \"\"\n",
+        "\"Language: pl-PL\\n\"\n",
+        "\"MIME-Version: 1.0\\n\"\n",
+        "\"Content-Type: text/plain; charset=utf-8\\n\"\n",
+        "\"Content-Transfer-Encoding: 8bit\\n\"\n",
+        "\"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\"\n",
+    );
+
+    #[test]
+    fn a_plural_translation_survives_re_extraction() {
+        let path = catalogue(&format!(
+            "{PL_HEADER}\n#: t.html:1\nmsgid \"%{{count}} locale\"\nmsgid_plural \"%{{count}} locales\"\n\
+             msgstr[0] \"%{{count}} język\"\nmsgstr[1] \"%{{count}} języki\"\nmsgstr[2] \"%{{count}} języków\"\n"
+        ));
+
+        into_catalog(&path, "pl-PL", &[site("%{count} locale", Some("%{count} locales"))]).unwrap();
+
+        let after = std::fs::read_to_string(&path).unwrap();
+        assert!(after.contains("język\""), "singular form lost:\n{after}");
+        assert!(after.contains("języki\""), "few form lost:\n{after}");
+        assert!(after.contains("języków\""), "many form lost:\n{after}");
+    }
+
+    #[test]
+    fn a_singular_translation_survives_re_extraction() {
+        let path = catalogue(&format!(
+            "{PL_HEADER}\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n"
+        ));
+
+        into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
+
+        assert!(std::fs::read_to_string(&path).unwrap().contains("zamknij"));
+    }
+
+    #[test]
+    fn a_new_message_arrives_untranslated_and_is_counted() {
+        let path = catalogue(&format!("{PL_HEADER}\n#: t.html:1\nmsgid \"old\"\nmsgstr \"stary\"\n "));
+
+        let summary =
+            into_catalog(&path, "pl-PL", &[site("old", None), site("new", None)]).unwrap();
+
+        assert_eq!(summary.total, 2);
+        assert_eq!(summary.untranslated, 1);
+    }
 }
