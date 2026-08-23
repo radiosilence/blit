@@ -174,11 +174,11 @@ pipeline runs on a laptop:
 ```bash
 task ci                                # what the build job runs
 task docker:build                      # what it publishes, minus the push
-task deploy:update SHA=$(git rev-parse HEAD)   # what points prod at it
+task deploy:update                     # asks prod to pick the build up
 ```
 
 Anything a runner has and a laptop doesn't arrives as environment rather than as
 workflow logic: `CI` selects an optimised build over the fast debug one the watch loop
 wants, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache over the local one, and
-`GH_TOKEN` authorises the push to the IaC repo. Unset, each falls back to the local
-equivalent.
+`GH_TOKEN` authorises asking the deployment repository to update. Unset, each falls
+back to the local equivalent.
