@@ -13,4 +13,3 @@ task = "latest"
 "npm:@tailwindcss/typography" = "0.5"
 # Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
 gh = "latest"
-yq = "latest"

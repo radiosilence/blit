@@ -174,40 +174,27 @@ tasks:
       {{if .CACHE_TO}}--cache-to {{.CACHE_TO}}{{end}}
       {{if eq .PUSH "true"}}--push{{else}}--load{{end}}
 
-  # Pushes to another repo, so it needs a git credential helper: `gh auth setup-git`
-  # locally, GH_TOKEN plus the same command on a runner.
+  # Asks the deployment to update itself, rather than reaching in and editing it.
+  #
+  # This used to clone jaritanet and rewrite an image tag in its Pulumi config
+  # with yq, which meant this repository had to know where that value lived. It
+  # stopped living there the day that config became TypeScript, and the only
+  # reason nothing shipped broken is that the task checked the path resolved
+  # before writing.
+  #
+  # So the direction is inverted. This says a build exists; what a version is,
+  # where the pin lives and how to write it belong to the deployment, which is
+  # where they were always going to change. Its updater resolves this branch's
+  # head to the tag `docker:build` pushed and moves the pin from there.
+  #
+  # GH_TOKEN needs `actions: write` on the deployment repository — it triggers a
+  # workflow now rather than committing, so `contents: write` is no longer
+  # wanted and should be removed from the token.
   deploy:update:
-    desc: Point the jaritanet deployment at a container tag
+    desc: Ask the jaritanet deployment to pick up the newest build
     vars:
       DEPLOY_REPO: radiosilence/jaritanet
-      DEPLOY_BRANCH: main
-      DEPLOY_DIR: .deploy
-      DEPLOY_CONFIG: packages/infra/Pulumi.main.yaml
-      SERVICE: blit
-      HTTP_PORT: 3000
-      # See docker:build for why SHA is shaped this way.
-      SHA:
-        sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
-      TAG: sha-{{trunc 7 .SHA}}
+      DEPLOY_WORKFLOW: update-apps.yml
     cmds:
-      - rm -rf {{.DEPLOY_DIR}}
-      # --branch is explicit: cloning whatever the default branch happens to be would
-      # commit the tag bump somewhere nothing deploys from.
-      - gh repo clone {{.DEPLOY_REPO}} {{.DEPLOY_DIR}} -- --depth 1 --branch {{.DEPLOY_BRANCH}}
-      # yq's |= creates a missing path rather than failing on it, so a renamed service
-      # or moved config would write a new node and push it as if it were a deploy.
-      # -e exits non-zero on null, turning that into a failure before anything is written.
-      - >-
-        yq -e '.config."jaritanet:services"."{{.SERVICE}}".args.image.tag'
-        {{.DEPLOY_DIR}}/{{.DEPLOY_CONFIG}} > /dev/null
-      - >-
-        yq -i '.config."jaritanet:services"."{{.SERVICE}}".args |=
-        (.image.tag = "{{.TAG}}" | .httpPort = {{.HTTP_PORT}})'
-        {{.DEPLOY_DIR}}/{{.DEPLOY_CONFIG}}
-      - |
-        if git -C {{.DEPLOY_DIR}} diff --quiet; then
-          echo "{{.SERVICE}} is already on {{.TAG}}"
-        else
-          git -C {{.DEPLOY_DIR}} commit -am "🚀 Update {{.SERVICE}} to {{.TAG}}"
-          git -C {{.DEPLOY_DIR}} push
-        fi
+      - gh workflow run {{.DEPLOY_WORKFLOW}} --repo {{.DEPLOY_REPO}}
+      - echo "asked {{.DEPLOY_REPO}} to update; it resolves this branch's head itself"
