@@ -2,9 +2,8 @@
 
 senior full stack engineer
 
-**e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
-**github:** [@radiosilence](https://github.com/radiosilence)<br/>
-**location:** London, or remote
+**e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/> **github:**
+[@radiosilence](https://github.com/radiosilence)<br/> **location:** London, or remote
 
 Experienced polyglot engineer. I've been writing code for 25 years and professionally
 for about 19 of them, across commercial frontend, backend, devops, mobile and embedded.
@@ -14,7 +13,7 @@ it.
 
 Lives for problem solving and optimising. The work I like best is greenfield, where
 nothing has been decided yet, and hard technical problems I can own end to end. Also
-anything where working out what to build matters as much as building it — I freelanced
+anything where working out what to build matters as much as building it—I freelanced
 early and it stuck, so I want to argue about what a thing should be, not just implement
 the ticket.
 
@@ -25,8 +24,8 @@ twenty engineers over the years, and most of it comes back to that.
 
 Big on reproducible, declarative infrastructure using CI/CD and IaC.
 
-I have the experience to get the most out of agentic tooling, and I build my own —
-mostly MCP servers in Rust. I'll also push back on it when that's the right call.
+I have the experience to get the most out of agentic tooling, and I build my own—mostly
+MCP servers in Rust. I'll also push back on it when that's the right call.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting.
@@ -37,8 +36,8 @@ something interesting.
   new Elixir service at Fresha, without taking the marketplace down.
 - **A WebSocket server running on the handset**, because the TV app it talked to was
   stuck inside a browser context and nothing else was fast enough.
-- **[nano-web](https://github.com/radiosilence/nano-web)** — in-memory static file
-  server in Rust, 240+ stars, serving this site.
+- **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
+  in Rust, 240+ stars, serving this site.
 - **Got Microsoft to change Azure Policy**, after arguing it couldn't express what a
   client's compliance checks actually needed.
 - **An Android app and the entire AWS backend behind it**, built from scratch for bike
@@ -49,8 +48,8 @@ something interesting.
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025–Present</small>
 
 <small>
-  World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+
-  partner businesses across 120+ countries
+World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner
+businesses across 120+ countries
 </small>
 
 _Key Skills: Elixir, Phoenix, Ecto, GraphQL, gRPC, Protobuf, TypeScript, Next.js, React
@@ -81,14 +80,15 @@ Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
   everywhere, taking sloppy generated schemas and making them something appropriate to
   the domain, and rewriting eager resolvers to be lazy and batched.
 - Built my own AI tooling and helped colleagues get a lot more out of theirs, while
-  pushing back where it mattered — particularly on treating AI-assisted development as a
+  pushing back where it mattered—particularly on treating AI-assisted development as a
   supply chain risk that needs a deliberate approach rather than trust.
 - Mentored engineers through complex problems, and stayed involved at product level so
   technical decisions accounted for what the business actually wanted.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024–Aug 2024</small>
 
-_Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub Actions_
+_Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub
+Actions_
 
 - Built features in Next.js and TypeScript as part of a migration onto a new
   architecture, and APIs in NestJS behind them.
@@ -99,7 +99,8 @@ _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022–Jan 2024</small>
 
-_Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM, Cloud Foundry, BOSH_
+_Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
+Cloud Foundry, BOSH_
 
 - Consultancy work taking enterprise platforms from hand-tended toward reproducible:
   declarative infrastructure, continuous deployment, and resilience to drift in
@@ -107,7 +108,7 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
 - Implemented Cloud Security Posture Management policy across cloud platforms. Azure
   Policy was badly out of step with how the rest of Azure worked, its JSON was poorly
   documented, and it couldn't express something Credit Suisse needed for their CSPM to
-  work at all — I made the case to Microsoft at their Paddington office and they shipped
+  work at all—I made the case to Microsoft at their Paddington office and they shipped
   the change to the platform a few weeks later.
 - Wrote Python tooling that audited code and deployments across enterprise estates too
   large to inspect by hand.
@@ -121,7 +122,8 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
 
 <small>Concurrent with EngineerBetter and ROXi</small>
 
-_Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway, CloudFront, MobX-State-Tree, BitBucket Pipelines_
+_Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
+CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
 - Built an internal Android app and all of its infrastructure from scratch for bike
   delivery drivers: job viewing, notes and photo upload, training with quizzes and
@@ -137,12 +139,13 @@ _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway, C
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020–Jan 2022</small>
 
-_Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js, AWS, MobX-State-Tree, Vite_
+_Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
+AWS, MobX-State-Tree, Vite_
 
 - Built the Companion App in React Native, solving the TV app's browser-context
   constraints by running a WebSocket server on the phone itself and talking to the
   television directly over the LAN.
-- Wrote the native WebSocket transport for both platforms as React Native modules — Java
+- Wrote the native WebSocket transport for both platforms as React Native modules—Java
   on Android, Swift on iOS, using Grand Central Dispatch to get the threading right.
 - Built the internal curation tooling on MobX-State-Tree, Tailwind and Vite.
 - Designed and built a statically generated e-commerce site with account servicing in
@@ -172,19 +175,19 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   expensive.
 - Kept the codebase well-maintained and up to date, picking up things like hooks as soon
   as it made sense to.
-- Tested it properly — detox and @testing-library/react-native, thoroughly reviewed.
+- Tested it properly—detox and @testing-library/react-native, thoroughly reviewed.
 - Learned the financial products in enough detail to be useful to the analysts and
   backend engineers, and fixed backend bugs where that was the fastest route.
 
 ## Open Source
 
-- **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust · 240+★</small> —
-  in-memory static file server for SPAs and static content. Serves this site.
-- **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust · 65+★</small>
-  — CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with attachment text
-  extraction and masked email.
-- **MCP servers in Rust** —
-  [tfl-mcp](https://github.com/radiosilence/tfl-mcp),
+- **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
+  240+★</small>—in-memory static file server for SPAs and static content. Serves this
+  site.
+- **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
+  65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
+  attachment text extraction and masked email.
+- **MCP servers in Rust**—[tfl-mcp](https://github.com/radiosilence/tfl-mcp),
   [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp),
   [mcp-gateway](https://github.com/radiosilence/mcp-gateway),
   [caldav-cli](https://github.com/radiosilence/caldav-cli),
@@ -192,19 +195,18 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can discover what exists and ask for exactly the
   fields it needs. It costs far fewer tokens and it fails in ways a model can read.
-- **[koan](https://github.com/radiosilence/koan)** <small>Rust · 25★</small> —
-  bit-perfect terminal music player: Ratatui TUI, gapless playback, Subsonic and
-  Navidrome streaming, ReplayGain, spectrum analyser.
-- **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small> — a
+- **[koan](https://github.com/radiosilence/koan)** <small>Rust · 25★</small>—bit-perfect
+  terminal music player: Ratatui TUI, gapless playback, Subsonic and Navidrome
+  streaming, ReplayGain, spectrum analyser.
+- **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>—a
   drop-in watchman replacement that doesn't eat your RAM.
-- **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small> — this site.
-  A static site generator with a content-hashed asset pipeline that fails the build on
-  an unreferenced or hand-written path, and `askama_gettext`, a gettext implementation
-  for Askama covering 36 locales with CLDR plural rules, checked against CLDR at build
-  time so a catalogue can't disagree with it silently. Nothing reaches the browser but
-  HTML, CSS and a font — the locale picker is `command`/`commandfor` and a native
-  `<dialog>`.
-- **Earlier** — [xr](https://github.com/radiosilence/xr) <small>440+★</small>,
+- **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>—this site. A
+  static site generator with a content-hashed asset pipeline that fails the build on an
+  unreferenced or hand-written path, and `askama_gettext`, a gettext implementation for
+  Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
+  so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
+  CSS and a font—the locale picker is `command`/`commandfor` and a native `<dialog>`.
+- **Earlier**—[xr](https://github.com/radiosilence/xr) <small>440+★</small>,
   [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
   [servers.py](https://github.com/radiosilence/servers.py) <small>13★</small>,
   [python-nginx](https://github.com/radiosilence/python-nginx) <small>12★</small>,
@@ -213,44 +215,44 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 ## Skills
 
-**Daily** — TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
+**Daily**—TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
 Docker, Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
 
-**Strong** — Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf,
-Kubernetes, Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
+**Strong**—Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
+Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, i18n, TDD/BDD.
 
-**Worked with** — Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted,
-MySQL, MSSQL, MongoDB, CouchDB, Couchbase, Memcached, Pulumi, ArgoCD, Ansible, Azure and
-Azure Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx,
-Apache, Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS,
-jQuery, SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
+**Worked with**—Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
+MSSQL, MongoDB, CouchDB, Couchbase, Memcached, Pulumi, ArgoCD, Ansible, Azure and Azure
+Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
+Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
+SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
-Some of that last list is archaeology at this point. It's there because that much
-range is worth knowing about, not because I'd pick Marathon for anything today.
+Some of that last list is archaeology at this point. It's there because that much range
+is worth knowing about, not because I'd pick Marathon for anything today.
 
 ## Education
 
-Diploma, Computer Science & Cybernetics — University of Reading.
+Diploma, Computer Science & Cybernetics—University of Reading.
 
 ## Who is James?
 
 I don't see programming and computers as simply a job, but part of who I am. I shoot a
-lot of photography — these days mostly street portraits, which took a while to get
+lot of photography—these days mostly street portraits, which took a while to get
 confident enough to do, and which started out with urban exploration in Berlin. I'm an
 avid cyclist, mainly fixed but also gravel. I'm out at London club nights, and I go out
-of my way to see smaller bands nobody's told me about yet — discovering music by
-wandering into it beats having an algorithm hand it to me, which is most of the reason I
-built my own music player and the homelab it runs on. I'm a keen follower of current
-affairs, especially from a technical standpoint, and I think a lot about where things
-are going.
+of my way to see smaller bands nobody's told me about yet—discovering music by wandering
+into it beats having an algorithm hand it to me, which is most of the reason I built my
+own music player and the homelab it runs on. I'm a keen follower of current affairs,
+especially from a technical standpoint, and I think a lot about where things are going.
 
 ## Less Recent Work
 
 ### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017–Jan 2018</small>
 
-_Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API Gateway, Apigee, Auth0, Swagger_
+_Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
+Gateway, Apigee, Auth0, Swagger_
 
 - Built the allocation UI that controllers used to assign deliveries and bookings to
   couriers.
@@ -260,11 +262,12 @@ _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015–Jan 2017</small>
 
-_Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ, Redis, C++, C#, .NET, Qt_
+_Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ, Redis,
+C++, C#, .NET, Qt_
 
 - Led engineering across the innovation and frontend teams, building and rebuilding
   frontend systems and the internal services behind them.
-- Architected and built three products — shipped and forthcoming — and mentored the
+- Architected and built three products—shipped and forthcoming—and mentored the
   engineers working on them.
 - Set patterns and practices the wider technical team adopted.
 - Worked across database and system architecture, UX and product design wherever that
