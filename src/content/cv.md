@@ -186,8 +186,11 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   censorship-resistant proxy layer—Xray VLESS-REALITY, Hysteria2, unbound,
   tailscale—running as hostNetwork DaemonSets rather than systemd units, so the host
   itself runs k3s and sshd and nothing else. Xray owns `:443` and passes unmatched
-  traffic to Traefik, so the public site and the proxy share a port. It serves this
-  site.
+  traffic to Traefik, so the public site and the proxy share a port. It runs this site,
+  Navidrome, and an MCP gateway with Hydra and Postgres behind it, with VictoriaMetrics
+  and Grafana watching all of it. GitHub Actions previews the stack on a pull request and
+  applies it on merge, and a scheduled job tracks upstream component versions and opens
+  the bump itself.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
   65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
   attachment text extraction and masked email.
