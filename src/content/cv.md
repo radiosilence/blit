@@ -6,8 +6,8 @@ senior full stack engineer
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
 **location:** London, or remote
 
-Experienced polyglot engineer, sixteen years of it, across commercial frontend,
-backend, devops, mobile and embedded. Elixir and Go services, GraphQL gateways, React
+Experienced polyglot engineer. I've been writing code for 25 years and professionally
+for about 19 of them, across commercial frontend, backend, devops, mobile and embedded. Elixir and Go services, GraphQL gateways, React
 and Next.js, native Swift and Kotlin modules, Rust tooling, Terraform and Kubernetes —
 I've built and run things at all of those layers, not just worked next to them.
 
@@ -93,8 +93,8 @@ _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS
   architecture, and APIs in NestJS behind them.
 - Kept legacy React frontends and Express microservices running while the migration
   proceeded around them.
-- Debugged performance problems in services running on Kubernetes.
-- Extended the existing GitHub Actions pipelines.
+- Debugged performance problems in services running on Kubernetes, and extended the
+  existing GitHub Actions pipelines.
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022–Jan 2024</small>
 
@@ -106,7 +106,8 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
 - Implemented Cloud Security Posture Management policy across cloud platforms —
   including convincing Microsoft, in a meeting at their Paddington office, to add scope
   to Azure Policy so that checks we needed could be expressed at all.
-- Wrote Python tooling that audited client code and deployments at enterprise scale.
+- Wrote Python tooling that audited code and deployments across enterprise estates too
+  large to inspect by hand.
 - Built CI in Concourse, GitHub Actions and GitLab, on projects big enough that the
   pipeline was a system in its own right.
 - Contributed to Kubernetes External Secrets Operator, mostly pairing with and bringing
@@ -133,7 +134,7 @@ _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway, C
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020–Jan 2022</small>
 
-_Key Skills: React Native, TypeScript, WebSockets, Java, Swift, Astro, React, Node.js, AWS, MobX-State-Tree, Vite_
+_Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js, AWS, MobX-State-Tree, Vite_
 
 - Built the Companion App in React Native, solving the TV app's browser-context
   constraints by running a WebSocket server on the phone itself and talking to the
@@ -160,11 +161,12 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018–Jan 2020</small>
 
-_Key Skills: React Native, TypeScript, Redux, Swift, Kotlin, Java, Kafka, detox_
+_Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 - Led development of the credit card section of Zopa's app in React Native and Redux.
 - Wrote the native modules in Swift and Kotlin against Stripe's card issuing APIs while
-  those APIs were brand new.
+  those APIs were brand new, in a regulated environment where getting it wrong is
+  expensive.
 - Kept the codebase well-maintained and up to date, picking up things like hooks as soon
   as it made sense to.
 - Tested it properly — detox and @testing-library/react-native, thoroughly reviewed.
@@ -208,10 +210,10 @@ _Key Skills: React Native, TypeScript, Redux, Swift, Kotlin, Java, Kafka, detox_
 
 ## Skills
 
-**Daily** — TypeScript, React, Next.js, Node.js, GraphQL, Rust, PostgreSQL, Docker, Git,
-GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
+**Daily** — TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
+Docker, Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
 
-**Strong** — Elixir, Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf,
+**Strong** — Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf,
 Kubernetes, Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, i18n, TDD/BDD.
@@ -222,7 +224,7 @@ Azure Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Ngin
 Apache, Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS,
 jQuery, SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
-Some of that last list is archaeology at this point. It's there because sixteen years of
+Some of that last list is archaeology at this point. It's there because that much
 range is worth knowing about, not because I'd pick Marathon for anything today.
 
 ## Education
