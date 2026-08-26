@@ -177,6 +177,17 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>—in-memory static file server for SPAs and static content. Serves this
   site.
+- **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>—my
+  own infrastructure as a single Pulumi program: it provisions a Hetzner VPS, installs
+  k3s on it, reads the kubeconfig back as an output of the same run that consumes it,
+  and deploys into the cluster it just built, so there is no secret round-trip and
+  nothing for a human to rotate. Cilium as the CNI so NetworkPolicies are actually
+  enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
+  censorship-resistant proxy layer—Xray VLESS-REALITY, Hysteria2, unbound,
+  tailscale—running as hostNetwork DaemonSets rather than systemd units, so the host
+  itself runs k3s and sshd and nothing else. Xray owns `:443` and passes unmatched
+  traffic to Traefik, so the public site and the proxy share a port. It serves this
+  site.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
   65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
   attachment text extraction and masked email.
