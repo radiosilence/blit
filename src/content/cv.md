@@ -7,15 +7,16 @@ senior full stack engineer
 **location:** London, or remote
 
 Experienced polyglot engineer. I've been writing code for 25 years and professionally
-for about 19 of them, across commercial frontend, backend, devops, mobile and embedded. Elixir and Go services, GraphQL gateways, React
-and Next.js, native Swift and Kotlin modules, Rust tooling, Terraform and Kubernetes —
-I've built and run things at all of those layers, not just worked next to them.
+for about 19 of them, across commercial frontend, backend, devops, mobile and embedded.
+Elixir and Go services, GraphQL gateways, React and Next.js, native Swift and Kotlin
+modules, Rust tooling, Terraform and Kubernetes — I've built and run things at all of
+those layers, not just worked next to them.
 
-Lives for problem solving and optimising. The work I like best is the stuff other people
-would rather not pick up: legacy that has to come apart without losing data, greenfield
-where nothing's been decided yet, and products where working out what to build matters
-as much as building it. I freelanced early and it stuck — I want to argue about what a
-thing should be, not just implement the ticket.
+Lives for problem solving and optimising. The work I like best is greenfield, where
+nothing has been decided yet, and hard technical problems I can own end to end. Also
+anything where working out what to build matters as much as building it — I freelanced
+early and it stuck, so I want to argue about what a thing should be, not just implement
+the ticket.
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way
 they can relate to is key to my approach—if people can't understand what's happening,
@@ -23,9 +24,8 @@ the most appropriate solution is unlikely to be reached.
 
 Big on reproducible, declarative infrastructure using CI/CD and IaC.
 
-I use agentic tooling heavily and I build my own, mostly MCP servers in Rust. I'm also
-happy to say no to it. It makes a good engineer a lot faster and a careless one a lot
-more dangerous, and telling those apart is still a human job.
+I have the experience to get the most out of agentic tooling, and I build my own —
+mostly MCP servers in Rust. I'll also push back on it when that's the right call.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting.
