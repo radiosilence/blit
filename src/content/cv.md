@@ -8,8 +8,7 @@ senior full stack engineer
 Experienced polyglot engineer. I've been writing code for 25 years and professionally
 for about 19 of them, across commercial frontend, backend, devops, mobile and embedded.
 Elixir and Go services, GraphQL gateways, React and Next.js, native Swift and Kotlin
-modules, Rust tooling, Terraform and Kubernetes. I've shipped production code in all of
-it.
+modules, Rust tooling, Terraform and Kubernetes.
 
 Lives for problem solving and optimising. The work I like best is greenfield, where
 nothing has been decided yet, and hard technical problems I can own end to end. Also
