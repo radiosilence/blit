@@ -199,12 +199,16 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
   so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
   CSS and a font—the locale picker is `command`/`commandfor` and a native `<dialog>`.
+- **[pip](https://github.com/pypa/pip)**—opened
+  [#789](https://github.com/pypa/pip/pull/789) in 2013 arguing that pip had to verify
+  SSL certificates, at a point where it fetched packages over plain HTTP and checked
+  nothing. Shipped in pip 1.3 as the fix for CVE-2013-1629, credited by name in the
+  release notes.
 - **Earlier**—[xr](https://github.com/radiosilence/xr) <small>440+★</small>,
   [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
   [servers.py](https://github.com/radiosilence/servers.py) <small>13★</small>,
   [python-nginx](https://github.com/radiosilence/python-nginx) <small>12★</small>,
-  [redux-rx-http](https://github.com/radiosilence/redux-rx-http) <small>12★</small>, and
-  a contribution to pip.
+  [redux-rx-http](https://github.com/radiosilence/redux-rx-http) <small>12★</small>.
 
 ## Skills
 
