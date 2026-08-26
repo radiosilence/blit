@@ -104,7 +104,7 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
   on less experienced engineers, and to Compliance Framework, a verified CSPM auditing
   tool.
 
-### Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021–Apr 2023</small>
+### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021–Apr 2023</small>
 
 <small>Concurrent with EngineerBetter and ROXi</small>
 
@@ -135,7 +135,7 @@ _Key Skills: React Native, TypeScript, WebSockets, Java, Swift, Astro, React, No
 - Designed and built a statically generated e-commerce site with account servicing in
   Astro, when Astro was new.
 
-### Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020–Jan 2024</small>
+### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020–Jan 2024</small>
 
 <small>Concurrent with ROXi, EngineerBetter and Superbike Factory</small>
 
