@@ -131,4 +131,13 @@
   html {
     font-size: 67%;
   }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  li {
+    break-inside: avoid;
+  }
 }

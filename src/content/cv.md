@@ -9,8 +9,8 @@ senior full stack engineer
 Experienced polyglot engineer. I've been writing code for 25 years and professionally
 for about 19 of them, across commercial frontend, backend, devops, mobile and embedded.
 Elixir and Go services, GraphQL gateways, React and Next.js, native Swift and Kotlin
-modules, Rust tooling, Terraform and Kubernetes — I've built and run things at all of
-those layers, not just worked next to them.
+modules, Rust tooling, Terraform and Kubernetes. I've shipped production code in all of
+it.
 
 Lives for problem solving and optimising. The work I like best is greenfield, where
 nothing has been decided yet, and hard technical problems I can own end to end. Also
@@ -32,20 +32,15 @@ something interesting.
 
 ## Selected Work
 
-- **Extracted the reviews domain out of a heavily entangled monolith at Fresha, solo** —
-  27M reviews and 20M replies onto a new Elixir service while the marketplace stayed
-  live, plus the monitoring and backfill tooling to catch and fix what broke on the
-  way.
-- **Ran a WebSocket server on the handset** to get low-latency LAN control of a TV app
-  that was stuck in a browser context, with the native Java and Swift transport written
-  as React Native modules.
+- **27 million reviews and 20 million replies out of an entangled monolith** and onto a
+  new Elixir service at Fresha, without taking the marketplace down.
+- **A WebSocket server running on the handset**, because the TV app it talked to was
+  stuck inside a browser context and nothing else was fast enough.
 - **[nano-web](https://github.com/radiosilence/nano-web)** — in-memory static file
-  server in Rust, 240+ stars, serving this site in production.
-- **Convinced Microsoft to add scope to Azure Policy**, in a meeting at their
-  Paddington office, so we could express compliance checks it couldn't handle.
-- **Built an entire Android app and its AWS backend from scratch**, on my own, for bike
-  delivery drivers at Superbike Factory — CDK, Lambda, DynamoDB, API Gateway, and a
-  pipeline that needs no manual configuration anywhere.
+  server in Rust, 240+ stars, serving this site.
+- **Argued Azure Policy into having scope it didn't have**, in a room at Microsoft.
+- **An Android app and the entire AWS backend behind it**, built from scratch for bike
+  delivery drivers.
 
 ## Recent Work
 
@@ -59,23 +54,23 @@ something interesting.
 _Key Skills: Elixir, Phoenix, Ecto, GraphQL, gRPC, Protobuf, TypeScript, Next.js, React
 Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 
-- Extracted the entire reviews domain out of the monolith as my final project: a new
+- Extracted the entire reviews domain out of the monolith, near single-handedly: a new
   standalone Elixir service with its own schema, gRPC contracts for internal callers,
-  GraphQL gateway surface and the customer-facing frontend — near single-handedly.
+  GraphQL gateway surface, and the customer-facing frontend on top.
 - Moved 27 million reviews and 20 million replies onto it while the marketplace stayed
   live, using a phased cutover that switched reads first and writes second, backed by a
   continuous sync process, so the transition stayed recoverable at every stage.
+- Worked with every codeowning team that touched the old tables to make sure the new
+  system did what they needed it to before anything was switched over.
 - Dug into how the data was actually being used, not how it was supposed to be: found
   undocumented internal tasks that had been mangling review data for years, built
   healing tasks and proper replacements for the CX team to use instead, and wrote
   surgical backfills for every edge case as it turned up.
 - Built Metabase dashboards monitoring discrepancies between the old and new systems, so
   we found the drift before customers did.
-- Talked to every codeowning team that touched the old tables and made sure the new
-  system accommodated what they were doing with it.
 - Joined onto the customer loyalty platform, the largest B2C release to date, working
   mostly across the gateway and frontend and taking the lead on the parts I had context
-  on — while learning Elixir well enough to be trusted with backend work on it.
+  on, and picked up enough Elixir on the way to be doing backend work in it.
 - Pushed general quality across the codebase alongside all of that: Zod for validation
   everywhere, taking sloppy generated schemas and making them something appropriate to
   the domain, and rewriting eager resolvers to be lazy and batched.
@@ -125,7 +120,7 @@ _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway, C
   video, and taking customer payment.
 - Had free rein on a completely greenfield project, and used IaC, CDK, Lambda, DynamoDB
   and API Gateway to make something fast, efficient and cheap to run that slotted into
-  the existing systems rather than replacing them.
+  the existing systems.
 - Wrote the client in React Native with MobX-State-Tree and a thin layer of AWS Amplify.
 - Built a BitBucket pipeline that deploys the infrastructure, reads CloudFront outputs
   back out of it, and builds the app against them, so a new environment needs no manual
