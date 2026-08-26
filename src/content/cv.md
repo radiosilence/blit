@@ -217,6 +217,8 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   [sorl-thumbnail](https://github.com/jazzband/sorl-thumbnail),
   [bowser](https://github.com/bowser-js/bowser).
 - **Earlier**—[xr](https://github.com/radiosilence/xr) <small>440+★</small>,
+  [Ham](https://github.com/radiosilence/Ham) <small>380+★</small>, a PHP microframework
+  from when that was a reasonable thing to write,
   [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
   [servers.py](https://github.com/radiosilence/servers.py) <small>13★</small>,
   [python-nginx](https://github.com/radiosilence/python-nginx) <small>12★</small>,
