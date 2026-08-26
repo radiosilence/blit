@@ -204,6 +204,18 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   SSL certificates, at a point where it fetched packages over plain HTTP and checked
   nothing. Shipped in pip 1.3 as the fix for CVE-2013-1629, credited by name in the
   release notes.
+- **Contributions elsewhere**—[TanStack
+  Router](https://github.com/TanStack/router) (static prerendering fix, and docs),
+  [Django REST Framework](https://github.com/encode/django-rest-framework) (timedelta
+  support in the JSON encoder), [git-absorb](https://github.com/tummychow/git-absorb)
+  (darwin arm64 build target),
+  [react-native-webview](https://github.com/react-native-webview/react-native-webview),
+  [ops](https://github.com/nanovms/ops) (unikernel packaging fixes),
+  [go-buildpack](https://github.com/cloudfoundry/go-buildpack) (take the Go version from
+  `go.mod`), [icu_ex](https://github.com/hansihe/icu_ex) (compact notation and percent
+  styles for Elixir number formatting),
+  [sorl-thumbnail](https://github.com/jazzband/sorl-thumbnail),
+  [bowser](https://github.com/bowser-js/bowser).
 - **Earlier**—[xr](https://github.com/radiosilence/xr) <small>440+★</small>,
   [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
   [servers.py](https://github.com/radiosilence/servers.py) <small>13★</small>,
