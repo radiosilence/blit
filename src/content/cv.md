@@ -2,24 +2,23 @@
 
 senior full stack engineer
 
-**e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/> **github:**
-[@radiosilence](https://github.com/radiosilence)<br/> **location:** London, or remote
+**e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
+**github:** [@radiosilence](https://github.com/radiosilence)<br/>
+**location:** London, or remote
 
-Experienced polyglot engineer. I've been writing code for 25 years and professionally
-for about 19 of them, across commercial frontend, backend, devops, mobile and embedded.
+Polyglot engineer. Writing code for 25 years, professionally for about 19 of them,
+across commercial frontend, backend, devops, mobile and embedded.
 Elixir and Go services, GraphQL gateways, React and Next.js, native Swift and Kotlin
 modules, Rust tooling, Terraform and Kubernetes.
 
-Lives for problem solving and optimising. The work I like best is greenfield, where
-nothing has been decided yet, and hard technical problems I can own end to end. Also
-anything where working out what to build matters as much as building it—I freelanced
-early and it stuck, so I want to argue about what a thing should be, not just implement
-the ticket.
+The work I like best is greenfield, and hard technical problems I can own end to end.
+I freelanced early and it stuck, so I want to argue about what a thing should be, not
+just implement the ticket.
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way
 they can relate to is key to my approach—if people can't understand what's happening,
 the most appropriate solution is unlikely to be reached. I've mentored somewhere around
-twenty engineers over the years, and most of it comes back to that.
+twenty engineers over the years.
 
 Big on declarative infrastructure using CI/CD and IaC. It is one thing to be able to
 build something, it's another to be able to reproduce and scale it in a production
@@ -30,21 +29,18 @@ develop the skills to use them expertly, but also understand that they are not
 necessarily a panacea, or a substitute for lack of skill. I have embraced AI somewhat,
 and have had fun building MCP servers in Rust in order to augment AI's abilities.
 
-As a natural creative, what drives me is a job where I wake up every day and build
-something interesting.
-
 ## Selected Work
 
-- **27 million reviews and 20 million replies out of an entangled monolith** and onto a
-  new Elixir service at Fresha, without taking the marketplace down.
-- **A WebSocket server running on the handset**, because the TV app it talked to was
-  stuck inside a browser context and nothing else was fast enough.
+- **27M reviews and 20M replies out of a monolith** and onto a new Elixir service at
+  Fresha, live, on a phased read-then-write cutover.
+- **A WebSocket server running on the handset**, written in Java and Swift as React
+  Native modules, because the TV app it drove was confined to a browser context.
 - **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
   in Rust, 240+ stars, serving this site.
-- **Got Microsoft to change Azure Policy**, after arguing it couldn't express what a
-  client's compliance checks actually needed.
-- **An Android app and the entire AWS backend behind it**, built from scratch for bike
-  delivery drivers.
+- **Got Microsoft to change Azure Policy**—it could not express a compliance check
+  Credit Suisse's CSPM needed.
+- **An Android app and the whole AWS backend behind it**—React Native, CDK, Lambda,
+  DynamoDB, API Gateway—built from scratch for bike delivery drivers.
 
 ## Recent Work
 
@@ -58,45 +54,40 @@ businesses across 120+ countries
 _Key Skills: Elixir, Phoenix, Ecto, GraphQL, gRPC, Protobuf, TypeScript, Next.js, React
 Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 
-- Extracted the entire reviews domain out of the monolith, near single-handedly: a new
-  standalone Elixir service with its own schema, gRPC contracts for internal callers,
-  GraphQL gateway surface, and the customer-facing frontend on top.
-- Moved 27 million reviews and 20 million replies onto it while the marketplace stayed
-  live, using a phased cutover that switched reads first and writes second, backed by a
-  continuous sync process, so the transition stayed recoverable at every stage.
-- Worked with around ten codeowning teams that touched the old tables to make sure the
-  new system did what each of them needed before anything switched over.
-- Spent several weeks on the thing that kept going wrong: data drifting back out of sync
-  because of undocumented callers and processes still writing to the old tables that
-  nobody had a record of. Found them one at a time and fixed the synchronisation around
-  each.
-- Dug into how the data was actually being used, not how it was supposed to be: found
-  undocumented internal tasks that had been mangling review data for years, built
-  healing tasks and proper replacements for the CX team to use instead, and wrote
-  surgical backfills for every edge case as it turned up.
-- Built Metabase dashboards monitoring discrepancies between the old and new systems, so
-  we found the drift before customers did.
-- Joined onto the customer loyalty platform, the largest B2C release to date, working
-  mostly across the gateway and frontend and taking the lead on the parts I had context
-  on, and picked up enough Elixir on the way to be doing backend work in it.
-- Pushed general quality across the codebase alongside all of that: Zod for validation
-  everywhere, taking sloppy generated schemas and making them something appropriate to
-  the domain, and rewriting eager resolvers to be lazy and batched.
-- Built my own AI tooling and helped colleagues get a lot more out of theirs, while
-  pushing back where it mattered—particularly on treating AI-assisted development as a
-  supply chain risk that needs a deliberate approach rather than trust.
-- Mentored engineers through complex problems, and stayed involved at product level so
-  technical decisions accounted for what the business actually wanted.
+- Extracted the reviews domain out of the monolith into a standalone Elixir service:
+  its own Postgres schema, gRPC and protobuf contracts for internal callers, a GraphQL
+  Yoga gateway surface, and the Next.js frontend on top.
+- Migrated 27M reviews and 20M replies onto it with the marketplace live: a phased
+  cutover switching reads first and writes second, over a continuous sync process,
+  reversible at each stage.
+- Agreed the new service boundary with around ten codeowning teams still reading and
+  writing the old tables.
+- Traced persistent sync drift to undocumented callers and background processes still
+  writing to the old tables. Several weeks finding them one at a time and rebuilding the
+  synchronisation around each.
+- Found undocumented internal tasks that had been corrupting review data for years;
+  wrote healing tasks, supported replacements for the CX team to use instead, and
+  targeted backfills per edge case.
+- Metabase dashboards diffing old against new continuously, so drift surfaced there
+  rather than in support tickets.
+- Loyalty platform, the largest B2C release to date and my first project here: gateway
+  and frontend mostly, leading the areas I had context on, and picking up Elixir on it.
+- Codebase-wide: Zod 4 for validation, replacing generated schemas with ones shaped to
+  the domain, and converting eager resolvers to lazy batched ones.
+- Built my own AI tooling and helped colleagues get more out of theirs, while arguing
+  for treating AI-assisted development as a supply chain risk with a deliberate approach
+  rather than trust.
+- Mentored engineers through complex problems, and worked at product level so technical
+  decisions matched what the business needed.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024–Aug 2024</small>
 
 _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub
 Actions_
 
-- Built features in Next.js and TypeScript as part of a migration onto a new
-  architecture, and APIs in NestJS behind them.
-- Kept legacy React frontends and Express microservices running while the migration
-  proceeded around them.
+- Next.js and TypeScript features for a migration onto a new architecture, with the
+  NestJS APIs behind them.
+- Maintained legacy React frontends and Express microservices through the migration.
 - Debugged performance problems in services running on Kubernetes, and extended the
   existing GitHub Actions pipelines.
 
@@ -105,9 +96,9 @@ Actions_
 _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
 Cloud Foundry, BOSH_
 
-- Consultancy work taking enterprise platforms from hand-tended toward reproducible:
-  declarative infrastructure, continuous deployment, and resilience to drift in
-  preference to GitOps purity where the two conflicted.
+- Cloud native consultancy: moving enterprise platforms onto declarative infrastructure
+  and continuous deployment, with reproducibility and resistance to drift prioritised
+  over strict GitOps where the two conflicted.
 - Implemented Cloud Security Posture Management policy across cloud platforms. Azure
   Policy was badly out of step with how the rest of Azure worked, its JSON was poorly
   documented, and it couldn't express something Credit Suisse needed for their CSPM to
@@ -115,8 +106,8 @@ Cloud Foundry, BOSH_
   the change to the platform a few weeks later.
 - Wrote Python tooling that audited code and deployments across enterprise estates too
   large to inspect by hand.
-- Built CI in Concourse, GitHub Actions and GitLab, on projects big enough that the
-  pipeline was a system in its own right.
+- CI in Concourse, GitHub Actions and GitLab, at a scale where the pipeline is a system
+  in its own right.
 - Contributed to Kubernetes External Secrets Operator, mostly pairing with and bringing
   on less experienced engineers, and to Compliance Framework, a verified CSPM auditing
   tool.
@@ -131,28 +122,26 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
 - Built an internal Android app and all of its infrastructure from scratch for bike
   delivery drivers: job viewing, notes and photo upload, training with quizzes and
   video, and taking customer payment.
-- Had free rein on a completely greenfield project, and used IaC, CDK, Lambda, DynamoDB
-  and API Gateway to make something fast, efficient and cheap to run that slotted into
-  the existing systems.
-- Wrote the client in React Native with MobX-State-Tree and a thin layer of AWS Amplify.
-- Built a BitBucket pipeline that deploys the infrastructure, reads CloudFront outputs
-  back out of it, and builds the app against them, so a new environment needs no manual
-  configuration at all.
-- Audited the existing infrastructure code and shipped the security fixes it needed.
+- Greenfield and serverless throughout—CDK, Lambda, DynamoDB, API Gateway,
+  CloudFront—integrating with the existing systems rather than replacing them.
+- React Native client with MobX-State-Tree and a thin layer of AWS Amplify.
+- BitBucket pipeline deploying the infrastructure, reading CloudFront outputs back out of
+  it and building the app against them: a new environment needs no manual configuration.
+- Audited the existing infrastructure code and shipped the security fixes.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020–Jan 2022</small>
 
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- Built the Companion App in React Native, solving the TV app's browser-context
-  constraints by running a WebSocket server on the phone itself and talking to the
-  television directly over the LAN.
+- Companion App in React Native. The TV app ran inside a browser context, so control
+  went over a WebSocket server running on the phone itself, talking to the television
+  directly across the LAN.
 - Wrote the native WebSocket transport for both platforms as React Native modules—Java
   on Android, Swift on iOS, using Grand Central Dispatch to get the threading right.
-- Built the internal curation tooling on MobX-State-Tree, Tailwind and Vite.
-- Designed and built a statically generated e-commerce site with account servicing in
-  Astro, when Astro was new.
+- Internal curation tooling on MobX-State-Tree, Tailwind and Vite.
+- Statically generated e-commerce site with account servicing in Astro, when Astro was
+  new.
 
 ### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020–Jan 2024</small>
 
@@ -172,13 +161,11 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
-- Led development of the credit card section of Zopa's app in React Native and Redux.
-- Wrote the native modules in Swift and Kotlin against Stripe's card issuing APIs while
-  those APIs were brand new, in a regulated environment where getting it wrong is
-  expensive.
-- Kept the codebase well-maintained and up to date, picking up things like hooks as soon
-  as it made sense to.
-- Tested it properly—detox and @testing-library/react-native, thoroughly reviewed.
+- Led the credit card section of Zopa's app, React Native and Redux.
+- Native modules in Swift and Kotlin against Stripe's card issuing APIs while those APIs
+  were new.
+- Kept the codebase current, picking up hooks once they made sense for it.
+- detox and @testing-library/react-native for coverage.
 - Learned the financial products in enough detail to be useful to the analysts and
   backend engineers, and fixed backend bugs where that was the fastest route.
 
@@ -232,8 +219,8 @@ Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apa
 Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
 SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
-Some of that last list is archaeology at this point. It's there because that much range
-is worth knowing about, not because I'd pick Marathon for anything today.
+Some of that last list is archaeology. It's there for the range, not because I'd pick
+Marathon for anything today.
 
 ## Education
 
