@@ -22,7 +22,9 @@ they can relate to is key to my approach—if people can't understand what's hap
 the most appropriate solution is unlikely to be reached. I've mentored somewhere around
 twenty engineers over the years, and most of it comes back to that.
 
-Big on reproducible, declarative infrastructure using CI/CD and IaC.
+Big on declarative infrastructure using CI/CD and IaC. It is one thing to be able to
+build something, it's another to be able to reproduce and scale it in a production
+environment.
 
 AI and agentic coding are useful tools, like anything else, engineers should be able to
 develop the skills to use them expertly, but also understand that they are not
