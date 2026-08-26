@@ -24,8 +24,10 @@ twenty engineers over the years, and most of it comes back to that.
 
 Big on reproducible, declarative infrastructure using CI/CD and IaC.
 
-I have the experience to get the most out of agentic tooling, and I build my own—mostly
-MCP servers in Rust. I'll also push back on it when that's the right call.
+AI and agentic coding are useful tools, like anything else, engineers should be able to
+develop the skills to use them expertly, but also understand that they are not
+necessarily a panacea, or a substitute for lack of skill. I have embraced AI somewhat,
+and have had fun building MCP servers in Rust in order to augment AI's abilities.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting.
