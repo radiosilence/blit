@@ -20,7 +20,8 @@ the ticket.
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way
 they can relate to is key to my approach—if people can't understand what's happening,
-the most appropriate solution is unlikely to be reached.
+the most appropriate solution is unlikely to be reached. I've mentored somewhere around
+twenty engineers over the years, and most of it comes back to that.
 
 Big on reproducible, declarative infrastructure using CI/CD and IaC.
 
@@ -38,7 +39,8 @@ something interesting.
   stuck inside a browser context and nothing else was fast enough.
 - **[nano-web](https://github.com/radiosilence/nano-web)** — in-memory static file
   server in Rust, 240+ stars, serving this site.
-- **Argued Azure Policy into having scope it didn't have**, in a room at Microsoft.
+- **Got Microsoft to change Azure Policy**, after arguing it couldn't express what a
+  client's compliance checks actually needed.
 - **An Android app and the entire AWS backend behind it**, built from scratch for bike
   delivery drivers.
 
@@ -60,8 +62,12 @@ Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 - Moved 27 million reviews and 20 million replies onto it while the marketplace stayed
   live, using a phased cutover that switched reads first and writes second, backed by a
   continuous sync process, so the transition stayed recoverable at every stage.
-- Worked with every codeowning team that touched the old tables to make sure the new
-  system did what they needed it to before anything was switched over.
+- Worked with around ten codeowning teams that touched the old tables to make sure the
+  new system did what each of them needed before anything switched over.
+- Spent several weeks on the thing that kept going wrong: data drifting back out of sync
+  because of undocumented callers and processes still writing to the old tables that
+  nobody had a record of. Found them one at a time and fixed the synchronisation around
+  each.
 - Dug into how the data was actually being used, not how it was supposed to be: found
   undocumented internal tasks that had been mangling review data for years, built
   healing tasks and proper replacements for the CX team to use instead, and wrote
@@ -74,9 +80,9 @@ Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 - Pushed general quality across the codebase alongside all of that: Zod for validation
   everywhere, taking sloppy generated schemas and making them something appropriate to
   the domain, and rewriting eager resolvers to be lazy and batched.
-- Built AI tooling colleagues picked up and used, and helped people get a lot more out
-  of it — while also pushing back where it mattered, particularly on treating
-  AI-assisted development as a supply chain risk that needs a deliberate approach.
+- Built my own AI tooling and helped colleagues get a lot more out of theirs, while
+  pushing back where it mattered — particularly on treating AI-assisted development as a
+  supply chain risk that needs a deliberate approach rather than trust.
 - Mentored engineers through complex problems, and stayed involved at product level so
   technical decisions accounted for what the business actually wanted.
 
@@ -98,9 +104,11 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
 - Consultancy work taking enterprise platforms from hand-tended toward reproducible:
   declarative infrastructure, continuous deployment, and resilience to drift in
   preference to GitOps purity where the two conflicted.
-- Implemented Cloud Security Posture Management policy across cloud platforms —
-  including convincing Microsoft, in a meeting at their Paddington office, to add scope
-  to Azure Policy so that checks we needed could be expressed at all.
+- Implemented Cloud Security Posture Management policy across cloud platforms. Azure
+  Policy was badly out of step with how the rest of Azure worked, its JSON was poorly
+  documented, and it couldn't express something Credit Suisse needed for their CSPM to
+  work at all — I made the case to Microsoft at their Paddington office and they shipped
+  the change to the platform a few weeks later.
 - Wrote Python tooling that audited code and deployments across enterprise estates too
   large to inspect by hand.
 - Built CI in Concourse, GitHub Actions and GitLab, on projects big enough that the
@@ -224,7 +232,7 @@ range is worth knowing about, not because I'd pick Marathon for anything today.
 
 ## Education
 
-Diploma, Computer Science & Cybernetics.
+Diploma, Computer Science & Cybernetics — University of Reading.
 
 ## Who is James?
 
