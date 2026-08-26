@@ -6,37 +6,46 @@ senior full stack engineer
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
 **location:** London, or remote
 
-Sixteen years of shipping production code at every layer of the stack: Elixir and Go
-services, GraphQL gateways, React and Next.js frontends, native Swift and Kotlin
-modules, Rust tooling, Terraform and Kubernetes. Breadth is easy to claim on a CV. The
-part worth checking is the depth underneath it — I have built and run things at each of
-those layers rather than working next to someone who did.
+Experienced polyglot engineer, sixteen years of it, across commercial frontend,
+backend, devops, mobile and embedded. Elixir and Go services, GraphQL gateways, React
+and Next.js, native Swift and Kotlin modules, Rust tooling, Terraform and Kubernetes —
+I've built and run things at all of those layers, not just worked next to them.
 
-The work I'm best at is the work people would rather avoid: entangled legacy that has to
-come apart without losing data, greenfield where the architecture is still an open
-question, and products where deciding what to build matters as much as building it.
-Freelancing early on made the product instinct permanent — I want to argue about what a
+Lives for problem solving and optimising. The work I like best is the stuff other people
+would rather not pick up: legacy that has to come apart without losing data, greenfield
+where nothing's been decided yet, and products where working out what to build matters
+as much as building it. I freelanced early and it stuck — I want to argue about what a
 thing should be, not just implement the ticket.
 
-I use agentic tooling heavily and build my own, and I'm equally willing to say no to it.
-Generation being cheap makes judgement the scarce part, not the other way round.
+Communicating complex technical solutions to stakeholders and fellow engineers in a way
+they can relate to is key to my approach—if people can't understand what's happening,
+the most appropriate solution is unlikely to be reached.
+
+Big on reproducible, declarative infrastructure using CI/CD and IaC.
+
+I use agentic tooling heavily and I build my own, mostly MCP servers in Rust. I'm also
+happy to say no to it. It makes a good engineer a lot faster and a careless one a lot
+more dangerous, and telling those apart is still a human job.
+
+As a natural creative, what drives me is a job where I wake up every day and build
+something interesting.
 
 ## Selected Work
 
 - **Extracted the reviews domain out of a heavily entangled monolith at Fresha, solo** —
-  27M reviews and 20M replies moved onto a new Elixir service while the marketplace
-  stayed live, with the monitoring and backfill tooling to find and heal what a
-  migration that size inevitably breaks.
+  27M reviews and 20M replies onto a new Elixir service while the marketplace stayed
+  live, plus the monitoring and backfill tooling to catch and fix what broke on the
+  way.
 - **Ran a WebSocket server on the handset** to get low-latency LAN control of a TV app
   that was stuck in a browser context, with the native Java and Swift transport written
   as React Native modules.
 - **[nano-web](https://github.com/radiosilence/nano-web)** — in-memory static file
   server in Rust, 240+ stars, serving this site in production.
-- **Persuaded Microsoft to extend Azure Policy** during an engagement, adding the scope
-  needed to express compliance checks the tool could not previously represent.
-- **Built an Android app and its entire AWS backend from nothing**, alone, for delivery
-  drivers at Superbike Factory — CDK, Lambda, DynamoDB, API Gateway, deployed by a
-  pipeline with no manual configuration anywhere in it.
+- **Convinced Microsoft to add scope to Azure Policy**, in a meeting at their
+  Paddington office, so we could express compliance checks it couldn't handle.
+- **Built an entire Android app and its AWS backend from scratch**, on my own, for bike
+  delivery drivers at Superbike Factory — CDK, Lambda, DynamoDB, API Gateway, and a
+  pipeline that needs no manual configuration anywhere.
 
 ## Recent Work
 
@@ -56,25 +65,25 @@ Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 - Moved 27 million reviews and 20 million replies onto it while the marketplace stayed
   live, using a phased cutover that switched reads first and writes second, backed by a
   continuous sync process, so the transition stayed recoverable at every stage.
-- Worked through the data reality rather than the diagram: found undocumented internal
-  workflows that had been corrupting review data for years, built healing tasks and
-  supported replacements for the CX team, and wrote surgical backfills for each edge
-  case as it surfaced.
-- Built Metabase dashboards that monitored discrepancies between old and new systems
-  continuously, so drift was caught by the dashboard rather than by a customer.
-- Negotiated with every codeowning team that touched the old tables to make sure the new
-  boundary served their use cases instead of breaking them.
+- Dug into how the data was actually being used, not how it was supposed to be: found
+  undocumented internal tasks that had been mangling review data for years, built
+  healing tasks and proper replacements for the CX team to use instead, and wrote
+  surgical backfills for every edge case as it turned up.
+- Built Metabase dashboards monitoring discrepancies between the old and new systems, so
+  we found the drift before customers did.
+- Talked to every codeowning team that touched the old tables and made sure the new
+  system accommodated what they were doing with it.
 - Joined onto the customer loyalty platform, the largest B2C release to date, working
   mostly across the gateway and frontend and taking the lead on the parts I had context
   on — while learning Elixir well enough to be trusted with backend work on it.
-- Rebuilt schema and resolver quality across the codebase: moved validation to Zod,
-  replaced generated-then-abandoned schemas with ones that described the domain, and
-  made existing resolvers lazy and batched instead of eagerly fetching everything.
-- Built AI tooling that colleagues adopted, and argued as hard for the limits as for the
-  uses — particularly for treating AI-assisted development as a supply-chain surface
-  that needs deliberate mitigation rather than trust.
-- Mentored engineers through complex problems, and stayed close enough to the product
-  side to make technical decisions that accounted for what the business actually needed.
+- Pushed general quality across the codebase alongside all of that: Zod for validation
+  everywhere, taking sloppy generated schemas and making them something appropriate to
+  the domain, and rewriting eager resolvers to be lazy and batched.
+- Built AI tooling colleagues picked up and used, and helped people get a lot more out
+  of it — while also pushing back where it mattered, particularly on treating
+  AI-assisted development as a supply chain risk that needs a deliberate approach.
+- Mentored engineers through complex problems, and stayed involved at product level so
+  technical decisions accounted for what the business actually wanted.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024–Aug 2024</small>
 
@@ -98,8 +107,8 @@ _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, C
   including convincing Microsoft, in a meeting at their Paddington office, to add scope
   to Azure Policy so that checks we needed could be expressed at all.
 - Wrote Python tooling that audited client code and deployments at enterprise scale.
-- Built CI in Concourse, GitHub Actions and GitLab for projects large enough that the
-  pipeline was itself a system to be designed.
+- Built CI in Concourse, GitHub Actions and GitLab, on projects big enough that the
+  pipeline was a system in its own right.
 - Contributed to Kubernetes External Secrets Operator, mostly pairing with and bringing
   on less experienced engineers, and to Compliance Framework, a verified CSPM auditing
   tool.
@@ -113,9 +122,9 @@ _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway, C
 - Built an internal Android app and all of its infrastructure from scratch for bike
   delivery drivers: job viewing, notes and photo upload, training with quizzes and
   video, and taking customer payment.
-- Chose a serverless shape — CDK, Lambda, DynamoDB, API Gateway — to keep a low-traffic
-  internal tool cheap to run and cheap to leave alone, integrating with existing systems
-  rather than replacing them.
+- Had free rein on a completely greenfield project, and used IaC, CDK, Lambda, DynamoDB
+  and API Gateway to make something fast, efficient and cheap to run that slotted into
+  the existing systems rather than replacing them.
 - Wrote the client in React Native with MobX-State-Tree and a thin layer of AWS Amplify.
 - Built a BitBucket pipeline that deploys the infrastructure, reads CloudFront outputs
   back out of it, and builds the app against them, so a new environment needs no manual
@@ -145,9 +154,9 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
   restart an earlier one, in React Native and Firebase.
 - Moved the codebase from class components and Redux to functional components with
   hooks, wrapped in mobx-react observers.
-- Came to MobX-State-Tree sceptical — I preferred explicit functional immutability — and
-  changed my mind on the evidence: observables, mutable-style updates and flows for
-  side effects got the same guarantees with far less ceremony.
+- Came to MobX-State-Tree sceptical, because I preferred the explicit functional
+  immutability I was used to in Redux, and it won me over: observables, mutable-style
+  updates and flows for side effects, with a fraction of the boilerplate.
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018–Jan 2020</small>
 
@@ -156,8 +165,8 @@ _Key Skills: React Native, TypeScript, Redux, Swift, Kotlin, Java, Kafka, detox_
 - Led development of the credit card section of Zopa's app in React Native and Redux.
 - Wrote the native modules in Swift and Kotlin against Stripe's card issuing APIs while
   those APIs were brand new.
-- Kept the codebase current, adopting hooks as soon as it was sensible rather than as
-  soon as it was possible.
+- Kept the codebase well-maintained and up to date, picking up things like hooks as soon
+  as it made sense to.
 - Tested it properly — detox and @testing-library/react-native, thoroughly reviewed.
 - Learned the financial products in enough detail to be useful to the analysts and
   backend engineers, and fixed backend bugs where that was the fastest route.
@@ -213,8 +222,8 @@ Azure Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Ngin
 Apache, Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS,
 jQuery, SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
-Sixteen years is long enough that some of that list is archaeology. It's here because
-the range is the point, not because I'd reach for Marathon tomorrow.
+Some of that last list is archaeology at this point. It's there because sixteen years of
+range is worth knowing about, not because I'd pick Marathon for anything today.
 
 ## Education
 
@@ -222,14 +231,15 @@ Diploma, Computer Science & Cybernetics.
 
 ## Who is James?
 
-Programming isn't a job I go to, it's most of how I think. Outside it I shoot
-photography — street and portrait, which took a while to get confident enough for, and
-which started with urban exploration in Berlin. I ride fixed, and gravel when there's
-somewhere to ride it. I go to London club nights, and I go out of my way to see small
-bands nobody has told me about yet: finding music by wandering into it beats having an
-algorithm hand it to me, which is most of why I built my own music player and the
-homelab it runs on. I follow what's happening in the world closely, particularly where
-it collides with technology.
+I don't see programming and computers as simply a job, but part of who I am. I shoot a
+lot of photography — these days mostly street portraits, which took a while to get
+confident enough to do, and which started out with urban exploration in Berlin. I'm an
+avid cyclist, mainly fixed but also gravel. I'm out at London club nights, and I go out
+of my way to see smaller bands nobody's told me about yet — discovering music by
+wandering into it beats having an algorithm hand it to me, which is most of the reason I
+built my own music player and the homelab it runs on. I'm a keen follower of current
+affairs, especially from a technical standpoint, and I think a lot about where things
+are going.
 
 ## Less Recent Work
 
@@ -273,6 +283,6 @@ _Key Skills: Django, PHP, AngularJS, jQuery, Node.js, Express, C#, .NET, Linux, 
 
 _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apache_
 
-- Moved to Brighton and went freelance with more enthusiasm than experience, learning to
-  find work, run projects and stay ahead of what clients needed — which is where the
+- Dropped in at the deep end when I moved to Brighton: learned to network, project
+  manage, and lean on rapidly improving technical skills to meet demand. Where the
   product instinct came from.
