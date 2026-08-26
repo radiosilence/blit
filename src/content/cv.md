@@ -29,6 +29,9 @@ develop the skills to use them expertly, but also understand that they are not
 necessarily a panacea, or a substitute for lack of skill. I have embraced AI somewhat,
 and have had fun building MCP servers in Rust in order to augment AI's abilities.
 
+As a natural creative, what drives me is a job where I wake up every day and build
+something interesting.
+
 ## Selected Work
 
 - **27M reviews and 20M replies out of a monolith** and onto a new Elixir service at
