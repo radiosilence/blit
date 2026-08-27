@@ -74,8 +74,9 @@ tasks:
   # mutates its own input leaves a dirty tree. In dev that is exactly what you want:
   # edit a string, and every catalogue has it by the time the page reloads.
   #
-  # This watches the catalogues it also writes, which settles rather than loops —
-  # the second pass produces identical bytes, so the checksum stops matching a change.
+  # This watches the catalogues it also writes, which settles because extraction
+  # only writes a catalogue it disagrees with. The pass after a change touches
+  # nothing, so there is no event left to wake the watch with.
   dev:build:
     desc: Sync catalogues then build — dev only, since it writes to src/
     sources:

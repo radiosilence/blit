@@ -54,6 +54,8 @@ pub struct Summary {
     /// The translation moved to the new id and is flagged fuzzy. These are not in
     /// [`Self::removed`] — nothing was lost, it was carried.
     pub reworded: Vec<(String, String)>,
+    /// Whether the merge changed the file, rather than agreeing with it.
+    pub written: bool,
 }
 
 /// Merges extracted messages into the catalogue at `path`, writing it back.
@@ -200,7 +202,7 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
         .map(|message| message.id.clone())
         .collect();
 
-    write_atomically(&catalog, path)?;
+    summary.written = write_if_changed(&catalog, path)?;
 
     Ok(summary)
 }
@@ -375,17 +377,41 @@ pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
     placed.map(|()| true)
 }
 
-/// Writes through a temporary file and renames it into place.
+/// Writes the catalogue to `path`, and only if that would change it.
 ///
-/// A catalogue is a translator's work, and writing it in place means truncating it
-/// first: anything that stops the process between the truncate and the write — a
-/// signal, a full disk, a panic in the next locale — leaves an empty file where the
-/// translations were. A rename on the same directory is atomic, so the worst case
-/// becomes a stray temporary rather than a lost catalogue.
-fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()> {
+/// A merge that changed nothing must not touch the file. `task dev` watches these
+/// catalogues and extraction rewrites every one of them, so writing back bytes a
+/// file already held is 36 filesystem events per run — each of which wakes the
+/// watch, which runs extraction, which writes them again. Comparing first is what
+/// lets the loop go quiet, and it keeps mtimes still for everything else that reads
+/// them.
+///
+/// The write itself goes through a temporary and a rename. A catalogue is a
+/// translator's work, and writing it in place means truncating it first: anything
+/// that stops the process between the truncate and the write — a signal, a full
+/// disk, a panic in the next locale — leaves an empty file where the translations
+/// were. A rename within the directory is atomic, so the worst case becomes a stray
+/// temporary rather than a lost catalogue.
+///
+/// Returns whether anything was written.
+fn write_if_changed(catalog: &polib::catalog::Catalog, path: &Path) -> Result<bool> {
+    let mut rendered = std::io::BufWriter::new(Vec::new());
+    po_file::write(catalog, &mut rendered).map_err(|e| Error::Catalog {
+        path: path.to_owned(),
+        message: e.to_string(),
+    })?;
+    let rendered = rendered.into_inner().map_err(|e| Error::Catalog {
+        path: path.to_owned(),
+        message: e.to_string(),
+    })?;
+
+    if std::fs::read(path).is_ok_and(|existing| existing == rendered) {
+        return Ok(false);
+    }
+
     let temporary = temporary(path);
 
-    let written = po_file::write_to_file(catalog, &temporary)
+    let written = std::fs::write(&temporary, &rendered)
         .map_err(|e| Error::Catalog {
             path: temporary.clone(),
             message: e.to_string(),
@@ -403,7 +429,7 @@ fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()
         let _ = std::fs::remove_file(&temporary);
     }
 
-    written
+    written.map(|()| true)
 }
 
 /// The temporary a catalogue is written through, unique to the write that asks.
@@ -729,6 +755,39 @@ mod atomicity {
             "temporary left behind: {:?}",
             strays(&path)
         );
+    }
+
+    #[test]
+    fn a_merge_that_changes_nothing_leaves_the_file_alone() {
+        // `task dev` watches these catalogues and extraction rewrites all 36 on
+        // every run, so a write that changes nothing still wakes the watch — which
+        // runs extraction, which writes them again. The loop never settles.
+        let path = std::env::temp_dir().join("agt-unchanged.po");
+        let _ = std::fs::remove_file(&path);
+        create_catalog(&path, "pl-PL").unwrap();
+
+        let sites = [Extracted {
+            id: "close".to_owned(),
+            context: None,
+            plural: None,
+            file: "t.html".to_owned(),
+            line: 1,
+        }];
+
+        assert!(
+            into_catalog(&path, "pl-PL", &sites).unwrap().written,
+            "the first merge had a message to add"
+        );
+
+        let stamp = |path: &Path| std::fs::metadata(path).unwrap().modified().unwrap();
+        let before = stamp(&path);
+
+        assert!(
+            !into_catalog(&path, "pl-PL", &sites).unwrap().written,
+            "rewrote a catalogue it agreed with"
+        );
+        assert_eq!(before, stamp(&path), "touched a catalogue it agreed with");
+        assert!(strays(&path).is_empty(), "wrote a temporary for nothing");
     }
 
     #[test]

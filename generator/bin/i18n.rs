@@ -39,6 +39,7 @@ fn main() -> Result<()> {
     // Which locales a removal touched, rather than a line per locale: the templates
     // decide what goes, so the same ids leave all 36 catalogues at once.
     let mut created: Vec<&str> = Vec::new();
+    let mut updated = 0usize;
     let mut removed: BTreeMap<String, usize> = BTreeMap::new();
     let mut reworded: BTreeMap<(String, String), usize> = BTreeMap::new();
 
@@ -58,6 +59,8 @@ fn main() -> Result<()> {
         let summary = merge::into_catalog(&path, locale.code, &messages)
             .with_context(|| format!("merging into {}", path.display()))?;
 
+        updated += usize::from(summary.written);
+
         for id in summary.removed {
             *removed.entry(id).or_default() += 1;
         }
@@ -75,6 +78,12 @@ fn main() -> Result<()> {
 
     if !created.is_empty() {
         println!("\ncatalogues created: {}", created.join(", "));
+    }
+
+    // Silent when nothing moved, which after the first run of a session is most of
+    // them — extraction only writes a catalogue it disagrees with.
+    if updated > 0 {
+        println!("\ncatalogues updated: {updated}");
     }
 
     // Both loud, because between them they are everything extraction does to a

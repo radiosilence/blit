@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### `task dev` stops rebuilding forever after one edit
+
+A single template edit put the watch into a loop it never came out of: extraction
+ran, the build ran, and then both ran again, indefinitely.
+
+Extraction rewrote all 36 catalogues on every run, whether or not it had anything to
+say about them. `dev:build` watches those catalogues, so each run handed the watch 36
+filesystem events, which woke it, which ran extraction, which wrote them again. The
+bytes were identical every time — which is why Task kept reporting the task up to
+date while never going quiet, and why it looked like a rebuild with nothing to
+rebuild.
+
+Extraction now renders a catalogue and compares it against the file before writing:
+one that already says the right thing is left alone, mtime and all. Measured over a
+single edit, the watch went from 227 extractions and climbing to 7 and silent. It
+also means the catalogues no longer churn under git and editors between real changes.
+
+`catalogues updated: n` is reported when a run does write, so a save that changed
+nothing is visibly a no-op rather than silently one.
+
 ### Overlapping extractions no longer fail on a catalogue that is there
 
 `task dev` reported `No such file or directory` against a `.po` file sitting in the
