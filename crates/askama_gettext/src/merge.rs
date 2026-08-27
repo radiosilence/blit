@@ -21,7 +21,8 @@
 
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{self, AtomicU64};
 
 use polib::catalog::Catalog;
 use polib::message::{Message, MessageFlags};
@@ -352,21 +353,26 @@ pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
         std::fs::create_dir_all(parent)?;
     }
 
-    let temporary = path.with_extension("po.tmp");
+    let temporary = temporary(path);
     std::fs::write(&temporary, header)?;
 
     // Read back before it is put in place: what was written has to be a catalogue
     // this crate would accept, and the cheapest way to know is to accept it.
-    let written = po_file::parse(&temporary).map_err(|e| Error::Catalog {
-        path: temporary.clone(),
-        message: e.to_string(),
-    })?;
-    forms.check(locale, written.metadata.plural_rules.nplurals)?;
-    forms.check_expression(locale, &written.metadata.plural_rules.expr)?;
+    let placed = (|| {
+        let written = po_file::parse(&temporary).map_err(|e| Error::Catalog {
+            path: temporary.clone(),
+            message: e.to_string(),
+        })?;
+        forms.check(locale, written.metadata.plural_rules.nplurals)?;
+        forms.check_expression(locale, &written.metadata.plural_rules.expr)?;
+        Ok(std::fs::rename(&temporary, path)?)
+    })();
 
-    std::fs::rename(&temporary, path)?;
+    if placed.is_err() {
+        let _ = std::fs::remove_file(&temporary);
+    }
 
-    Ok(true)
+    placed.map(|()| true)
 }
 
 /// Writes through a temporary file and renames it into place.
@@ -377,19 +383,49 @@ pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
 /// translations were. A rename on the same directory is atomic, so the worst case
 /// becomes a stray temporary rather than a lost catalogue.
 fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()> {
-    let temporary = path.with_extension("po.tmp");
+    let temporary = temporary(path);
 
-    po_file::write_to_file(catalog, &temporary).map_err(|e| Error::Catalog {
-        path: temporary.clone(),
-        message: e.to_string(),
-    })?;
+    let written = po_file::write_to_file(catalog, &temporary)
+        .map_err(|e| Error::Catalog {
+            path: temporary.clone(),
+            message: e.to_string(),
+        })
+        .and_then(|()| {
+            std::fs::rename(&temporary, path).map_err(|e| Error::Catalog {
+                path: path.to_owned(),
+                message: e.to_string(),
+            })
+        });
 
-    std::fs::rename(&temporary, path).map_err(|e| Error::Catalog {
-        path: path.to_owned(),
-        message: e.to_string(),
-    })?;
+    // No later run will reuse this name, so one left behind stays in src/ until
+    // somebody deletes it by hand.
+    if written.is_err() {
+        let _ = std::fs::remove_file(&temporary);
+    }
 
-    Ok(())
+    written
+}
+
+/// The temporary a catalogue is written through, unique to the write that asks.
+///
+/// Two extractions overlap routinely: `task dev` watches the catalogues an
+/// extraction writes, so saving a template can start a second one before the first
+/// has finished. Sharing one temporary meant the first rename took the second's
+/// file with it, and the second then failed to rename a path that had just existed —
+/// reported against the catalogue, which made a race look like a missing file.
+///
+/// The pid separates processes and the counter separates writes within one, since
+/// nothing here promises the callers are on the same thread.
+fn temporary(path: &Path) -> PathBuf {
+    static WRITES: AtomicU64 = AtomicU64::new(0);
+
+    let mut name = path.file_name().unwrap_or_default().to_owned();
+    name.push(format!(
+        ".{}.{}.tmp",
+        std::process::id(),
+        WRITES.fetch_add(1, atomic::Ordering::Relaxed)
+    ));
+    path.with_file_name(name)
 }
 
 #[cfg(test)]
@@ -642,6 +678,21 @@ mod atomicity {
     use super::*;
     use crate::extract::Message as Extracted;
 
+    /// Temporaries left beside `path`. Names are unique per write, so the only way
+    /// to look for one is by the shape of the name.
+    fn strays(path: &Path) -> Vec<PathBuf> {
+        let name = path.file_name().unwrap().to_string_lossy().into_owned();
+        std::fs::read_dir(path.parent().unwrap())
+            .unwrap()
+            .filter_map(std::result::Result::ok)
+            .map(|entry| entry.path())
+            .filter(|found| {
+                let found = found.file_name().unwrap_or_default().to_string_lossy();
+                found.starts_with(&name) && found.ends_with(".tmp")
+            })
+            .collect()
+    }
+
     #[test]
     fn a_failed_merge_leaves_the_catalogue_intact() {
         // The header says two forms; CLDR gives Polish three, so this fails the
@@ -672,6 +723,53 @@ mod atomicity {
             after.contains("zamknij"),
             "translation lost on a failed merge"
         );
-        assert!(!path.with_extension("po.tmp").exists() || after == original);
+        assert_eq!(after, original, "a failed merge rewrote the catalogue");
+        assert!(
+            strays(&path).is_empty(),
+            "temporary left behind: {:?}",
+            strays(&path)
+        );
+    }
+
+    #[test]
+    fn merges_of_one_catalogue_do_not_collide() {
+        // `task dev` watches the catalogues an extraction writes, so a save can
+        // start a second extraction over the first. They must not share a
+        // temporary: one rename would take the other's file, and the second would
+        // then fail on a path that had just existed.
+        let path = std::env::temp_dir().join("agt-concurrent.po");
+        std::fs::write(
+            &path,
+            concat!(
+                "msgid \"\"\nmsgstr \"\"\n",
+                "\"Language: pl-PL\\n\"\n",
+                "\"MIME-Version: 1.0\\n\"\n",
+                "\"Content-Type: text/plain; charset=utf-8\\n\"\n",
+                "\"Content-Transfer-Encoding: 8bit\\n\"\n",
+                "\"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\"\n",
+                "\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n",
+            ),
+        )
+        .unwrap();
+
+        let sites = [Extracted {
+            id: "close".to_owned(),
+            context: None,
+            plural: None,
+            file: "t.html".to_owned(),
+            line: 1,
+        }];
+
+        std::thread::scope(|scope| {
+            for _ in 0..8 {
+                scope.spawn(|| {
+                    for _ in 0..20 {
+                        into_catalog(&path, "pl-PL", &sites).unwrap();
+                    }
+                });
+            }
+        });
+
+        assert!(std::fs::read_to_string(&path).unwrap().contains("zamknij"));
     }
 }

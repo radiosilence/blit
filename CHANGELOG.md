@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Overlapping extractions no longer fail on a catalogue that is there
+
+`task dev` reported `No such file or directory` against a `.po` file sitting in the
+working tree, and killed the rebuild.
+
+Every catalogue was written through a temporary named after it, so a second
+extraction picked the same temporary as the first. The first rename moved that file
+into place and the second was left renaming a path that no longer existed — reported
+against the catalogue rather than the temporary, which is what made a race read as a
+missing file. Overlap is the normal case here, not an edge: `dev:build` watches the
+catalogues it also writes, so a save can start a second extraction over the first.
+
+The temporary now carries the pid and a per-write counter, and a failed write removes
+it — a name nothing reuses would otherwise stay in `src/` until somebody noticed it.
+
 ### The image publishes for amd64 and arm64
 
 `ghcr.io/radiosilence/blit` is a manifest list covering both architectures, so the
