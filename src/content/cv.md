@@ -6,34 +6,37 @@ senior full stack engineer
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
 **location:** London, or remote
 
-Polyglot engineer. Writing code for 25 years, professionally for about 19 of them,
-across commercial frontend, backend, devops, mobile and embedded.
-Elixir and Go services, GraphQL gateways, React and Next.js, native Swift and Kotlin
-modules, Rust tooling, Terraform and Kubernetes.
+Polyglot engineer. Writing code for 25 years, professionally for about 20 of them, across
+commercial frontend, backend, devops, mobile, and embedded. Elixir and Go services,
+GraphQL gateways, React and Next.js, native Swift and Kotlin modules, Rust tooling,
+Terraform, Pulumi and Kubernetes. Frankly I'm not super bothered about what language I am
+using, as long as it has high quality libs and std and doesn't actively get in the way of
+achieving the goal.
 
-The work I like best is greenfield, and hard technical problems I can own end to end.
-I freelanced early and it stuck, so I want to argue about what a thing should be, not
-just implement the ticket.
+I do enjoy greenfield work, or even taking something to the next level, and hard technical
+problems I can own end to end. I started out freelancing so had to demonstrably own entire
+products and make sure they worked properly. So, I want to argue about what a thing should
+be, not just implement tickets.
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way
-they can relate to is key to my approach—if people can't understand what's happening,
-the most appropriate solution is unlikely to be reached. I've mentored many people in my career and
-it's important to impress upon them that whilst they may be brilliant, it's about getting everyone
-else on board with what they're thinking and percieving.
+they can relate to is key to my approach—if people can't understand what's happening, the
+most appropriate solution is unlikely to be reached. I've mentored many people in my
+career and it's important to impress upon them that whilst they may be brilliant, it's
+about getting everyone else on board with what they're thinking and perceiving.
 
 Big on declarative infrastructure using CI/CD and IaC. It is one thing to be able to
 build something, it's another to be able to reproduce and scale it in a production
 environment.
 
 AI and agentic coding are useful tools, like anything else, engineers should be able to
-develop the skills to use them expertly, but also understand that they are not
-necessarily a panacea, or a substitute for lack of skill. I have embraced AI somewhat,
-and have had fun building MCP servers + gateways in Rust/GQL in order to augment AI's abilities.
-I think anything like this needs a form of critique and we shouldn't lose our heads, however since
-modern Opus, given the right input, the results can be somewhat impressive.
+develop the skills to use them expertly, but also understand that they are not necessarily
+a panacea, or a substitute for lack of skill. I have embraced AI somewhat, and have had fun
+building MCP servers and gateways in Rust and GraphQL in order to augment AI's abilities. I
+think anything like this needs a form of critique and we shouldn't lose our heads, however
+since modern Opus, given the right input, the results can be somewhat impressive.
 
 As a natural creative, what drives me is a job where I wake up every day and build
-something interesting.
+something interesting. I have a huge amount of pride in what I do and can achieve.
 
 ## Selected Work
 
@@ -69,7 +72,8 @@ the company had any AI tooling worth the name.</small>
 - **Reviews service** — architect and lead engineer of a new Elixir service replacing the
   reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer instance,
   gRPC and protobuf contracts, GraphQL surface, and the frontend on top.
-- **Delivery and rollout** — delivery owner across web, iOS, Android and backend until June 2026. Then production owner through the rollout: reads from a 5% canary to 100% in two
+- **Delivery and rollout** — delivery owner across web, iOS, Android and backend until June
+  2026. Then production owner through the rollout: reads from a 5% canary to 100% in two
   days, carrying the pager for it. Runs at around 157M requests a week.
 - **Migration** — around 90M rows moved with the marketplace live. 30.1M reviews, 3.8M
   replies, 24.7M review-to-account links, 31.2M review-to-employee links. Reads switched
