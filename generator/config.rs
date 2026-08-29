@@ -18,15 +18,20 @@ pub const SOURCE: &str = "en-GB";
 
 /// What a `fuzzy` translation does here.
 ///
-/// `msgfmt` would drop it. This site serves it: the flag means a translation may
-/// have drifted from an English that changed, and most of a sentence in your own
-/// language beats all of one in someone else's. Nothing sets the flag — extraction
-/// deletes what has left the templates rather than marking it — so it only ever
-/// arrives from a translator or from Poedit, and their judgement is not overridden.
+/// `msgfmt` drops it, and so does this site. The flag arrives two ways: from a
+/// translator or Poedit, and from the merge itself, which carries an existing
+/// translation onto an English string that has changed and flags it for review.
+/// The second is the common one, and serving it renders a translation of a sentence
+/// that no longer exists — which is how `cv-2026.08` shipped as `cv-2025.01` in
+/// every locale, English included.
 ///
-/// Switch to [`Fuzzy::Skip`] to hold a drifted translation back until it is
-/// reviewed, at the cost of showing English in the meantime.
-pub const FUZZY: Fuzzy = Fuzzy::Serve;
+/// Skipping costs nothing that a missing translation does not already cost: an
+/// untranslated string falls back to the English in the template, because here the
+/// msgid is the English rather than a key.
+///
+/// Switch to [`Fuzzy::Serve`] to show a drifted translation anyway, on the argument
+/// that most of a sentence in your own language beats all of one in someone else's.
+pub const FUZZY: Fuzzy = Fuzzy::Skip;
 
 pub const LOCALES: &[Locale] = &[
     Locale {
