@@ -30,7 +30,10 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
 - **Toolchain**: mise (`mise.toml`) — rust, task, tailwind, gh, yq. nano-web is not
   pinned there: it serves `dist/` for `task dev`, and nothing the build does needs a
   server
-- **Deployment**: Docker → microk8s → CloudFlare Tunnel
+- **Deployment**: container image → k3s on a Hetzner VPS, behind Traefik terminating
+  Let's Encrypt over DNS-01. Cloudflare serves DNS only, no proxy or tunnel. The
+  cluster and this deployment are one Pulumi program in
+  [jaritanet](https://github.com/radiosilence/jaritanet)
 
 Key decisions:
 
