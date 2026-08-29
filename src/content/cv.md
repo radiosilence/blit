@@ -450,3 +450,10 @@ _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apach
 - Dropped in at the deep end when I moved to Brighton: learned to network, project
   manage, and lean on rapidly improving technical skills to meet demand. Where the
   product instinct came from.
+
+### PHP Developer / Sysadmin, The Escape Committee <small>2007–2009</small>
+
+_Key Skills: PHP, MySQL, Gentoo, Linux, Apache, Asterisk_
+
+- Web development and systems administration, including working out the Asterisk phone
+  systems.
