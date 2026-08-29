@@ -27,7 +27,9 @@ environment.
 AI and agentic coding are useful tools, like anything else, engineers should be able to
 develop the skills to use them expertly, but also understand that they are not
 necessarily a panacea, or a substitute for lack of skill. I have embraced AI somewhat,
-and have had fun building MCP servers in Rust in order to augment AI's abilities.
+and have had fun building MCP servers in Rust in order to augment AI's abilities. I think anything
+like this needs a form of critique and we shouldn't lose our heads, however since modern Opus,
+given the right input, the results can be somewhat impressive.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting.
@@ -279,7 +281,7 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>—in-memory static file server for SPAs and static content. Serves this
-  site.
+  site. From my cupboard.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>—my
   own infrastructure as a single Pulumi program: it provisions a Hetzner VPS, installs
   k3s on it, reads the kubeconfig back as an output of the same run that consumes it,
