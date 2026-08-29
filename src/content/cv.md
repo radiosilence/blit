@@ -4,8 +4,8 @@ senior full stack engineer
 
 **e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
-**location:** London, or remote. But I really do like interacting with humans as long as it is
-genuinely flexible.
+**location:** London, or remote. Happy to be in an office — I like working with people in
+person, where the flexibility is real.
 
 Polyglot engineer. Writing code for 25 years, professionally for about 20 of them, across
 commercial frontend, backend, devops, mobile, and embedded. Elixir and Go services,
@@ -33,8 +33,8 @@ AI and agentic coding are useful tools, like anything else, engineers should be 
 develop the skills to use them expertly, but also understand that they are not necessarily
 a panacea, or a substitute for lack of skill. I have embraced AI somewhat, and have had fun
 building MCP servers and gateways in Rust and GraphQL in order to augment AI's abilities. I
-think anything like this needs a form of critique and we shouldn't lose our heads, however
-since modern Opus, given the right input, the results can be somewhat impressive.
+think anything like this needs a form of critique and we shouldn't lose our heads — but
+given the right input, the results can be genuinely impressive.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting. I have a huge amount of pride in what I do and can achieve, and am
@@ -49,12 +49,11 @@ known as the person you go to if you need something done properly.
   Native modules, because the TV app it drove was confined to a browser context.
 - **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
   in Rust, 240+ stars, serving this site.
-- **Got Microsoft to change Azure Policy**—it could not express a compliance check
-  Credit Suisse's CSPM needed, so I went to their office for a meeting and managed to convince
-  them to change it for the benefit of my client and I guess everyone else.
+- **Got Microsoft to change Azure Policy**—it could not express a compliance check Credit
+  Suisse's CSPM needed, so I made the case at their office and they changed the platform.
+  For my client, and for everyone else using it.
 - **An Android app and the whole AWS backend behind it**—React Native, CDK, Lambda,
   DynamoDB, API Gateway—built from scratch for bike delivery drivers.
-- **This big weird streaming GIF to emails project** I enjoy talking about it because it was mad.
 
 ## Recent Work
 
