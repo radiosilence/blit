@@ -57,7 +57,7 @@ known as the person you go to if you need something done properly.
 
 ## Recent Work
 
-### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>Jan 2025–Present</small>
+### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>2025–Present</small>
 
 <small>
 World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ partner
@@ -208,7 +208,7 @@ the company had any AI tooling worth the name.</small>
   written. Mentored engineers through complex problems, and worked at product level so
   technical decisions matched what the business needed.
 
-### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>Apr 2024–Aug 2024</small>
+### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
 _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub
 Actions_
@@ -219,7 +219,7 @@ Actions_
 - Debugged performance problems in services running on Kubernetes, and extended the
   existing GitHub Actions pipelines.
 
-### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>Jan 2022–Jan 2024</small>
+### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>2022–2024</small>
 
 _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
 Cloud Foundry, BOSH_
@@ -240,7 +240,7 @@ Cloud Foundry, BOSH_
   on less experienced engineers, and to Compliance Framework, a verified CSPM auditing
   tool.
 
-### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>Jan 2021–Apr 2023</small>
+### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>2021–2024</small>
 
 <small>Concurrent with EngineerBetter and ROXi</small>
 
@@ -257,7 +257,7 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
   it and building the app against them: a new environment needs no manual configuration.
 - Audited the existing infrastructure code and shipped the security fixes.
 
-### Lead Developer, [ROXi](https://roxi.tv) <small>Jan 2020–Jan 2022</small>
+### Lead Developer, [ROXi](https://roxi.tv) <small>2020–2022</small>
 
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
@@ -271,7 +271,7 @@ AWS, MobX-State-Tree, Vite_
 - Statically generated e-commerce site with account servicing in Astro, when Astro was
   new.
 
-### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>Jan 2020–Jan 2024</small>
+### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>2019–2024</small>
 
 <small>Concurrent with ROXi, EngineerBetter and Superbike Factory</small>
 
@@ -285,7 +285,7 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
   immutability I was used to in Redux, and it won me over: observables, mutable-style
   updates and flows for side effects, with a fraction of the boilerplate.
 
-### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>Jan 2018–Jan 2020</small>
+### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>2018–2020</small>
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
@@ -386,7 +386,7 @@ SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
 ## Education
 
-Full disclosure I droppped out of a degree in Computer Science & Cybernetics—University of Reading
+Full disclosure I dropped out of a degree in Computer Science & Cybernetics—University of Reading
 despite winning various competitions for my work. Wasn't for me.
 
 ## Who is James?
@@ -405,7 +405,7 @@ I'm a keen follower of current affairs, especially from a technical standpoint.
 
 ## Less Recent Work
 
-### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>Jul 2017–Jan 2018</small>
+### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>2017–2018</small>
 
 _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
 Gateway, Apigee, Auth0, Swagger_
@@ -416,7 +416,7 @@ Gateway, Apigee, Auth0, Swagger_
 - Owned authentication (Auth0), authorisation (Lambda and JWT), user management, and API
   aggregation across Swagger, API Gateway and Apigee.
 
-### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>Mar 2015–Jan 2017</small>
+### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>2015–2017</small>
 
 _Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ, Redis,
 C++, C#, .NET, Qt_
@@ -429,21 +429,21 @@ C++, C#, .NET, Qt_
 - Worked across database and system architecture, UX and product design wherever that
   was what the problem needed.
 
-### Lead Frontend Developer, Bootbag <small>Jan 2014–Jan 2015</small>
+### Lead Frontend Developer, Bootbag <small>2014–2015</small>
 
 _Key Skills: React, flux, WebSockets, CSS, HTML_
 
 - Prototyped and built a startup's frontend in React, early enough that most of the
   patterns didn't exist yet.
 
-### Technical Director, Links Creative <small>Jan 2013–Jan 2015</small>
+### Technical Director, Links Creative <small>2013–2015</small>
 
 _Key Skills: Django, PHP, AngularJS, jQuery, Node.js, Express, C#, .NET, Linux, nginx_
 
 - Technical director of a small Brighton agency, taking client ideas through to shipped
   products in Django, AngularJS, jQuery and PHP.
 
-### Web Developer, Freelance <small>Jan 2010–Jan 2013</small>
+### Web Developer, Freelance <small>2010–2013</small>
 
 _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apache_
 
