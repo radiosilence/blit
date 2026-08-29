@@ -11,10 +11,6 @@ msgstr ""
 msgid "change language"
 msgstr "تغيير اللغة"
 
-#: src/templates/index.html:9
-msgid "cv-2025.01"
-msgstr "السيرة الذاتية-2025.01"
-
 #: src/templates/index.html:11
 msgid "github"
 msgstr "github"
@@ -35,4 +31,9 @@ msgstr "إغلاق"
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
 msgstr "مهندس فول ستاك كبير"
+
+#: src/templates/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "السيرة الذاتية-2025.01"
 
