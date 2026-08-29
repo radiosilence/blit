@@ -74,8 +74,8 @@ reviewed for other people, 648 issues written.</small>
 - Phased the cutover, reads first and writes second, over a continuous sync process,
   reversible at each stage. Production reads went from a 5% rollout to 100% in two days,
   and I was on the pager for it.
-- The service now takes around 157M requests a week, roughly 260/s, across its gRPC and
-  GraphQL surfaces.
+- It runs at around 157M requests a week, roughly 260/s, across its gRPC and GraphQL
+  surfaces.
 - Agreed the new service boundary with around ten codeowning teams still reading and
   writing the old tables.
 - Traced persistent sync drift to undocumented callers and background processes still
@@ -90,9 +90,9 @@ reviewed for other people, 648 issues written.</small>
   230. The new service attributes from the calendar booking.
 - Metabase dashboards diffing old against new, Datadog dashboards with I/O attribution,
   and on-call paging on `reviews-rpc` error rate and latency.
-- Shipped AI-assisted and fully automatic review replies: 2,343 published, 129
-  businesses on full automation. I designed the quota gating, which cancels scheduled
-  replies and stops generating drafts when a business runs out.
+- Shipped AI-assisted and fully automatic review replies, including the quota gating,
+  which cancels scheduled replies and stops generating drafts when a business runs out
+  rather than failing open.
 - Internal AI platform work: LiteLLM proxy and Langfuse model configuration, content
   moderation keys, and an internal Claude plugin marketplace including a `/ticket` skill
   that takes a ticket through to an opened pull request.
@@ -105,7 +105,7 @@ reviewed for other people, 648 issues written.</small>
 - 503 pull requests in the B2C SPA and 436 in the B2C API gateway: resolver and schema
   architecture, Zod 4 for validation, replacing generated schemas with ones shaped to
   the domain, converting eager resolvers to lazy batched ones. 146 more in marketplace
-  search, which serves around 119M requests a week.
+  search, which runs at around 119M requests a week.
 - Loyalty platform, the largest B2C release to date and my first project here: gateway
   and frontend mostly, leading the parts I had context on, and picking up Elixir on it.
 - Developer tooling across the org: custom ESLint rules for the marketplace codebase,
