@@ -34,8 +34,9 @@ something interesting.
 
 ## Selected Work
 
-- **27M reviews and 20M replies out of a monolith** and onto a new Elixir service at
-  Fresha, live, on a phased read-then-write cutover.
+- **Architect and lead engineer of a new Elixir service** replacing the reviews domain in
+  Fresha's monolith: ~90M rows migrated, production reads taken from 5% to 100% in two
+  days, ~157M requests a week now.
 - **A WebSocket server running on the handset**, written in Java and Swift as React
   Native modules, because the TV app it drove was confined to a browser context.
 - **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
@@ -54,15 +55,27 @@ World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ pa
 businesses across 120+ countries
 </small>
 
-_Key Skills: Elixir, Phoenix, Ecto, GraphQL, gRPC, Protobuf, TypeScript, Next.js, React
-Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
+_Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Next.js,
+React Server Components, Zod, PostgreSQL, pgbouncer, Kafka, Datadog, Metabase, LiteLLM,
+GitHub Actions, Docker, Kubernetes_
 
-- Extracted the reviews domain out of the monolith into a standalone Elixir service:
-  its own Postgres schema, gRPC and protobuf contracts for internal callers, a GraphQL
-  Yoga gateway surface, and the Next.js frontend on top.
-- Migrated 27M reviews and 20M replies onto it with the marketplace live: a phased
-  cutover switching reads first and writes second, over a continuous sync process,
-  reversible at each stage.
+<small>2,021 pull requests authored across 58 repositories, 1,544 merged, 615 more
+reviewed for other people, 648 issues written.</small>
+
+- Architect and lead engineer of `app-reviews`, a new Elixir service replacing the
+  reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer pool,
+  gRPC and protobuf contracts for internal callers, a GraphQL Yoga gateway surface, and
+  the Next.js frontend. 405 pull requests in that repo.
+- Delivery owner for Improved Reviews 2026 across web, iOS, Android and backend, until I
+  handed delivery over in June 2026 to concentrate on building the service.
+- Migrated around 90 million rows: 30.1M reviews, 3.8M replies, 24.7M review to account
+  links, 31.2M review to employee links, with parity monitored continuously against the
+  legacy source.
+- Phased the cutover, reads first and writes second, over a continuous sync process,
+  reversible at each stage. Production reads went from a 5% rollout to 100% in two days,
+  and I was on the pager for it.
+- The service now takes around 157M requests a week, roughly 260/s, across its gRPC and
+  GraphQL surfaces.
 - Agreed the new service boundary with around ten codeowning teams still reading and
   writing the old tables.
 - Traced persistent sync drift to undocumented callers and background processes still
@@ -71,15 +84,34 @@ Server Components, Zod, PostgreSQL, Metabase, GitHub Actions, Docker_
 - Found undocumented internal tasks that had been corrupting review data for years;
   wrote healing tasks, supported replacements for the CX team to use instead, and
   targeted backfills per edge case.
-- Metabase dashboards diffing old against new continuously, so drift surfaced there
-  rather than in support tickets.
+- Fixed an attribution bug in the redesign instead of carrying it over. The monolith
+  credited a review to the employee on the invoice line item rather than whoever
+  performed the booking: about 120,000 reviews misattributed all-time, 0.44%, one in
+  230. The new service attributes from the calendar booking.
+- Metabase dashboards diffing old against new, Datadog dashboards with I/O attribution,
+  and on-call paging on `reviews-rpc` error rate and latency.
+- Shipped AI-assisted and fully automatic review replies: 2,343 published, 129
+  businesses on full automation. I designed the quota gating, which cancels scheduled
+  replies and stops generating drafts when a business runs out.
+- Internal AI platform work: LiteLLM proxy and Langfuse model configuration, content
+  moderation keys, and an internal Claude plugin marketplace including a `/ticket` skill
+  that takes a ticket through to an opened pull request.
+- Wrote the supply chain standard for first-party packages: internal packages carved out
+  of the cooldown, exact pins and registry-only, namespace locking kept mandatory.
+- Fixed correctness and resource bugs in the shared Elixir libraries other teams build
+  on: AMQP and Redis connection leaks in health probes, atom table exhaustion in the
+  check runner, atom interning on feature flag cache lookups, gRPC 1.0 support in the
+  shared RPC client, and the toolchain onto Elixir 1.20.2 / OTP 29.
+- 503 pull requests in the B2C SPA and 436 in the B2C API gateway: resolver and schema
+  architecture, Zod 4 for validation, replacing generated schemas with ones shaped to
+  the domain, converting eager resolvers to lazy batched ones. 146 more in marketplace
+  search, which serves around 119M requests a week.
 - Loyalty platform, the largest B2C release to date and my first project here: gateway
-  and frontend mostly, leading the areas I had context on, and picking up Elixir on it.
-- Codebase-wide: Zod 4 for validation, replacing generated schemas with ones shaped to
-  the domain, and converting eager resolvers to lazy batched ones.
-- Built my own AI tooling and helped colleagues get more out of theirs, while arguing
-  for treating AI-assisted development as a supply chain risk with a deliberate approach
-  rather than trust.
+  and frontend mostly, leading the parts I had context on, and picking up Elixir on it.
+- Developer tooling across the org: custom ESLint rules for the marketplace codebase,
+  JSON schema validation and deployment lock guards in the internal CLI, fixes to the
+  Tilt local environment, and CI actions including opt-in signed commits and a flaky
+  test reporter.
 - Mentored engineers through complex problems, and worked at product level so technical
   decisions matched what the business needed.
 
