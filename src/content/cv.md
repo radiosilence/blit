@@ -63,63 +63,81 @@ businesses across 120+ countries
 </small>
 
 _Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Next.js,
-React Server Components, Zod, PostgreSQL, pgbouncer, Kafka, Datadog, Metabase, LiteLLM,
-GitHub Actions, Docker, Kubernetes_
+React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
+Actions, Docker, Kubernetes_
 
 <small>2,021 pull requests authored across 58 repositories, 1,544 merged, 615 more
 reviewed for other people, 648 issues written. The first six months of that was before
 the company had any AI tooling worth the name.</small>
 
-- **Reviews service** — architect and lead engineer of a new Elixir service replacing the
-  reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer instance,
-  gRPC and protobuf contracts, GraphQL surface, and the frontend on top.
+- **Reviews service** — architect and lead engineer of a new Elixir service taking the
+  reviews domain out of the legacy monolith: customers' reviews of venues and of the
+  individual staff who served them, on a marketplace where a venue's rating drives how it
+  ranks. Its own Postgres schema and connection pooler, gRPC and protobuf contracts for
+  other services, a GraphQL surface for clients, and the frontend on top.
 - **Delivery and rollout** — delivery owner across web, iOS, Android and backend until
   June 2026. Then production owner through the rollout: reads from a 5% canary to 100% in
   two days, carrying the pager for it. Runs at around 157M requests a week.
 - **Migration** — around 90M rows moved with the marketplace live. 30.1M reviews, 3.8M
-  replies, 24.7M review-to-account links, 31.2M review-to-employee links. Reads switched
-  first, then writes, over a continuous sync. Parity monitored throughout and every stage
-  reversible. Boundary agreed with around ten codeowning teams still on the old tables.
-- **Backfill engine** — per-shard restart with ETAs. Incremental time-windowed runs and a
-  full-replace mode. An adaptive throttle driven by live RDS health, with named pacing
-  profiles. Per-batch statement timeouts, a circuit breaker, per-row error isolation. A
-  diff mode dumping only the discrepancies between source and mirror. Fed from S3 history,
-  Snowflake dumps and a live Kafka mirror. Dropped Oban for synchronous batching.
-- **Sync drift** — traced to undocumented callers and background jobs still writing the old
-  tables, and to internal tasks that had been corrupting review data for years. Healing
-  tasks and supported replacements for the CX team. Drift-windowed heals, per-employee
-  attribution repair, per-edge-case backfills. Private replies stayed private.
-- **Kafka** — outbox emission and connector through staging and production. Live
-  legacy-topic mirror behind a kill-switch. Dead letter topics with depth monitoring and
-  every ingest drop logged. Out-of-order replies warn and skip. Legacy re-emission gated on
-  publish state, unpublish compensated. Cleared a dead-letter produce that was wedging its
-  own partition. Emitted the rating-change events feeding marketplace ranking and the reply
+  replies, and the join tables tying reviews to customer accounts (24.7M) and to the staff
+  who did the work (31.2M). Reads cut over first, then writes, over a sync that ran
+  continuously so the old system stayed authoritative until it didn't. Parity monitored
+  throughout and every stage reversible. The new boundary agreed with around ten teams
+  whose code still read and wrote the old tables.
+- **Backfill engine** — moving that much data out of a live system needs a tool rather than
+  a script. Restartable partway through with per-partition ETAs, incremental runs over a
+  time window, and a full-replace mode for a clean reload. An adaptive throttle that read
+  the database's own health and backed off before it could hurt production traffic.
+  Per-batch statement timeouts, a circuit breaker, and per-row error isolation so one
+  malformed record couldn't take down a run. A diff mode dumping only the rows where old
+  and new disagreed. Fed from S3 history, Snowflake dumps and a live Kafka mirror; dropped
+  the job queue for synchronous batching.
+- **Sync drift** — the two systems kept diverging. Traced it to undocumented callers and
+  background jobs still writing the old tables, and to internal support tasks that had been
+  corrupting review data for years. Built repair jobs scoped to the window where the drift
+  happened, targeted repair for individual staff records, and one-off backfills per edge
+  case — plus replacement tasks for the support team to use instead of the ones causing it.
+  Private replies stayed private throughout.
+- **Events** — published the service's own changes to Kafka through an outbox, and consumed
+  the monolith's event topics to mirror its writes live while it was still the source of
+  truth, behind a kill switch. Dead letter topics with depth monitoring and every dropped
+  message logged. A reply arriving before its parent review warns and skips rather than
+  crashing the consumer. Re-emission back to the legacy topics gated on publish state, with
+  unpublishing compensated. Cleared a failing dead-letter write that was blocking its own
+  partition. Emitted the rating-change events that feed marketplace ranking, and the reply
   lifecycle events other teams consume.
-- **Warehouse CDC** — Postgres publication and replica identity, DB connector and Snowpipe
-  sink, service attribution mirrored across, poisoned rows excluded.
-- **Postgres** — a denormalised line-item table serving the rating aggregates, facet counts
-  and sorts. Composite and covering indexes, a `btree_gin` composite and a GIN full-text
-  index for search. Index predicates instead of query filters. Searches narrowed to their
-  provider set, each key's first page under its own LIMIT. Autovacuum on a fixed insert
-  threshold. Seven dead or prefix-redundant indexes dropped. Query-level DB monitoring.
-- **API surfaces** — gRPC slimmed to seven scope-keyed calls, O(1) batch reads behind a
-  windowed query, complexity documented per call. GraphQL held to the org pagination
-  standard: cost ceilings, hardened cursor decoding, field-level redaction, role-based
-  authz on reply mutations, and nullable root connections so a partial failure degrades
-  instead of blanking the page. Schema drift and migration versions both gated in CI, each
-  opening its own correcting pull request.
-- **AI replies** — the stack end to end: entitlement gate, generator, ElevenLabs voice
-  built from the business's own description, publish worker. Draft-first create, publish
-  and cancel, so nothing posts straight at a customer. Flag-selected moderation pipeline.
-  Tier gating from model output. Remaining balance read live at every billing decision, and
-  quota exhaustion cancels scheduled replies rather than failing open. Partner side: a
-  replies tab, an enhance action on drafts, a countdown before a scheduled reply goes out.
-  2,343 replies published and 129 businesses on full automation in the first weeks.
-- **Attribution** — the monolith credited a review to the employee on the invoice line item
-  rather than whoever performed the booking. About 120,000 misattributed all-time, 0.44%,
-  one in 230. The new service attributes from the calendar booking: sticky and additive,
-  one row per performing account, siblings preserved across writes, departed professionals
-  surfaced rather than vanishing. Moderation and dispute surfaces built alongside.
+- **Warehouse** — streamed the new tables into the data warehouse: Postgres logical
+  replication, a change-data-capture connector and a Snowflake sink, with poisoned rows
+  excluded so one bad record couldn't stall the pipeline.
+- **Postgres** — a denormalised line-item table so rating aggregates, search facet counts
+  and sorts read from one place instead of joining across the domain. Composite and
+  covering indexes, a `btree_gin` composite, and a GIN index for full-text search over
+  review bodies. Index predicates rather than query filters where the predicate was the
+  win. Searches narrowed to one venue's own set before scanning. Each grouping paginated
+  under its own LIMIT rather than one wide query. Autovacuum on a fixed insert threshold,
+  seven dead or prefix-redundant indexes dropped, query-level monitoring on.
+- **API surfaces** — cut the gRPC surface to seven calls, each scoped to what one caller
+  actually needs, with batch reads made O(1) behind a single windowed query and the cost of
+  each documented. Held the GraphQL side to the company's pagination standard: query cost
+  ceilings, hardened cursor decoding, field-level redaction on anything the caller
+  shouldn't see, role-based authorisation on reply mutations, and nullable root connections
+  so one failing field degrades the page instead of blanking it. Schema drift and colliding
+  migration versions both caught in CI, each opening its own correcting pull request.
+- **AI replies** — the stack end to end: who is entitled to it, the generator, a reply voice
+  built from the business's own description of itself, and the worker that publishes.
+  Drafted first and then published or cancelled, so nothing goes out at a customer unseen.
+  A moderation pipeline with the strategy chosen by flag. The model's own output decides
+  what a review is eligible for. The business's remaining balance read live at every
+  billing decision, and running out cancels scheduled replies rather than failing open.
+  Partner side: a replies tab, an enhance action on drafts, and a countdown before a
+  scheduled reply goes out. 2,343 replies published and 129 businesses on full automation
+  in the first weeks.
+- **Attribution** — the monolith credited a review to whoever was on the invoice line rather
+  than the person who actually did the work: about 120,000 misattributed all-time, 0.44%,
+  one in 230. The new service attributes from the calendar booking, keeps that attribution
+  once made, records a row per person who worked on the appointment, preserves the others
+  when a review is rewritten, and shows that a professional has left rather than dropping
+  them silently. Moderation and dispute handling built alongside.
 - **Operations** — Metabase parity dashboards, Datadog dashboards with I/O attribution, and
   on-call paging on error rate and latency. Progressive canary across all four components.
   Debugged the service into production through PgBouncer CA trust, socket options and IPv6
@@ -132,20 +150,21 @@ the company had any AI tooling worth the name.</small>
   pan and zoom behind a flag, tuned from feature-flag variants. Custom pins with contextual
   icons where a venue had no rating. Radius bounds clamped to stop a crash at full
   zoom-out, and a map-animation race fixed.
-- **Relevance and geo** — edge-level distance on venue results, measured from a stable
-  autocomplete centre and tuned separately for professionals. Venue-centred search narrowed
-  to that venue's taxonomy. Disputed territories handled in country lookup.
-- **Search history** — its own service covering searches, venues, professionals, geo
+- **Relevance and geo** — distance measured to a venue's actual boundary rather than a
+  single point, from a search centre that stays put as you type, and weighted differently
+  for individual professionals than for venues. A search centred on one venue narrowed to
+  the treatments that venue actually offers. Disputed territories handled in country lookup.
+- **Search history** — its own service covering searches, venues, professionals, location
   suggestions and recently viewed. One unified write path replacing several, and Redis
   failures absorbed rather than pushed at the user.
-- **Search service** — 146 pull requests, running at around 119M requests a week.
-  Type-specific paginated autocomplete RPCs, spatial clustering, a batch professionals
-  endpoint, venue-feature filtering and its migration, a service-gender dimension, Turkish
-  locale data.
-- **Loyalty** — the largest B2C release to date, and my first project here. Points-based
-  rewards with configurable-amount discounts, eligibility and applicable-item schemas,
-  tiers and the wallet, taken from schema through gateway resolvers to the UI. Led the
-  parts I had context on, and picked up Elixir on the way.
+- **Search service** — 146 pull requests, running at around 119M requests a week. Separate
+  paginated autocomplete endpoints per result type, spatial clustering, a batch endpoint for
+  professionals, filtering by a venue's facilities and by whether a treatment is offered to
+  men, women or both.
+- **Loyalty** — the largest consumer release to date, and my first project here. Points-based
+  rewards with configurable discount amounts, the rules for which items a reward applies to
+  and who qualifies, tiers, and the wallet — from schema through gateway resolvers to the
+  UI. Led the parts I had context on, and picked up Elixir on the way.
 - **B2C API gateway** — 436 pull requests. Resolver and schema architecture, Zod 4 for
   validation, generated schemas replaced with ones shaped to the domain, eager resolvers
   made lazy and batched. A proper deprecation lifecycle run on legacy fields and types.
@@ -168,13 +187,15 @@ the company had any AI tooling worth the name.</small>
 - **B2B online reputation** — the partner-facing reviews surface: filtering, aggregate
   views, the AI replies tab, and client-side content moderation, on a new data-access
   layer.
-- **Shared Elixir libraries** — fixed correctness and resource bugs in the libraries other
-  teams build on. AMQP and Redis connection leaks in health probes, atom table exhaustion
-  in the check runner, atom interning on feature-flag cache lookups, gRPC 1.0 support in
-  the shared RPC client, and the toolchain onto Elixir 1.20.2 / OTP 29.
-- **Shared taxonomy library** — CLDR and BCP-47 locale handling, pluralisation and gettext
-  PO generation, data validation rules, TypeScript codegen, and CI codegen that regenerates
-  the source data and opens its own pull request.
+- **Shared Elixir libraries** — fixed correctness and resource bugs in the libraries every
+  other service depends on. A broker connection and a Redis process leaked on every failed
+  health probe. Two paths were interning atoms from runtime input, which the BEAM never
+  frees, so given enough traffic the node dies. Plus gRPC 1.0 support in the shared RPC
+  client and the toolchain onto Elixir 1.20.2 / OTP 29.
+- **Shared taxonomy library** — the treatment vocabulary the whole marketplace searches and
+  displays against: CLDR and BCP-47 locale handling, correct pluralisation and gettext
+  catalogue generation, validation rules on the source data, TypeScript codegen, and CI that
+  regenerates it all and opens its own pull request.
 - **AI platform** — LiteLLM proxy and Langfuse model configuration, content moderation
   keys, and an internal Claude plugin marketplace including a skill that takes a ticket
   through to an opened pull request.
