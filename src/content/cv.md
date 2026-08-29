@@ -120,11 +120,10 @@ the company had any AI tooling worth the name.</small>
   one in 230. The new service attributes from the calendar booking: sticky and additive,
   one row per performing account, siblings preserved across writes, departed professionals
   surfaced rather than vanishing. Moderation and dispute surfaces built alongside.
-- **Operations** — Metabase parity dashboards. Datadog dashboards with I/O attribution, and
+- **Operations** — Metabase parity dashboards, Datadog dashboards with I/O attribution, and
   on-call paging on error rate and latency. Progressive canary across all four components.
-  PgBouncer CA trust, Bandit socket options and IPv6 bind, a Helm lockfile so the first
-  deploy rendered at all, and a CPU ceiling that turned out to be the bug rather than tight
-  sizing. sonic-rs for JSON, debian-slim images.
+  Debugged the service into production through PgBouncer CA trust, socket options and IPv6
+  bind, and a CPU ceiling that turned out to be the bug rather than tight sizing.
 - **B2C search** — rebuilt across the SPA, the gateway and the search service. New
   autocomplete on type-specific paginated RPCs, with search history, recently viewed venues
   and professionals, country filtering, stable list keys, infinite scroll, and badge counts
@@ -135,40 +134,40 @@ the company had any AI tooling worth the name.</small>
   zoom-out, and a map-animation race fixed.
 - **Relevance and geo** — edge-level distance on venue results, measured from a stable
   autocomplete centre and tuned separately for professionals. Venue-centred search narrowed
-  to that venue's taxonomy. Grouping and per-service relevance scores exposed for
-  debugging. Disputed territories handled in country lookup.
-- **Search history** — its own service across five dimensions, plus standalone geolocation
-  history and recently viewed locations and professionals. One unified write path replacing
-  several. Redis failures absorbed rather than pushed at the user.
+  to that venue's taxonomy. Disputed territories handled in country lookup.
+- **Search history** — its own service covering searches, venues, professionals, geo
+  suggestions and recently viewed. One unified write path replacing several, and Redis
+  failures absorbed rather than pushed at the user.
 - **Search service** — 146 pull requests, running at around 119M requests a week.
   Type-specific paginated autocomplete RPCs, spatial clustering, a batch professionals
   endpoint, venue-feature filtering and its migration, a service-gender dimension, Turkish
   locale data.
-- **Loyalty** — the largest B2C release to date, and my first project here. Rewards
-  catalogue and claim flow, points-based rewards with configurable-amount discounts,
-  eligibility and applicable-item schemas, tiers, ways to earn points, terms, the wallet.
-  Schema through gateway resolvers to the UI. Led the parts I had context on, and picked up
-  Elixir on the way.
+- **Loyalty** — the largest B2C release to date, and my first project here. Points-based
+  rewards with configurable-amount discounts, eligibility and applicable-item schemas,
+  tiers and the wallet, taken from schema through gateway resolvers to the UI. Led the
+  parts I had context on, and picked up Elixir on the way.
 - **B2C API gateway** — 436 pull requests. Resolver and schema architecture, Zod 4 for
   validation, generated schemas replaced with ones shaped to the domain, eager resolvers
   made lazy and batched. A proper deprecation lifecycle run on legacy fields and types.
-  Marketplace rating badges moved onto the new reviews service.
-- **Test suite** — migrated the gateway from Jest to Vitest, porting the custom reporters
-  onto the Vitest reporter API and modernising the suites behind it.
-- **Dates** — adopted Temporal and `Intl` across the gateway, trimming date-fns back to
-  maths only, with a Temporal-backed date scalar and a memoised `toLocaleString`.
-- **Dependencies** — supply chain hygiene across the marketplace repos: koa
-  (CVE-2026-27959), lodash, protobufjs, ws, tmp, the AWS SDK, Adyen Web 5 to 6. Killed
-  registry-fetch-and-execute patterns out of the install path.
-- **Lint and types** — stricter rules on unused bindings, no default exports, no barrel
-  imports. ESLint plugin upgrades. `tsgo` on the typecheck path.
+  Marketplace rating badges moved onto the new reviews service. Moved it onto Temporal and
+  `Intl`, trimming date-fns back to maths only.
+- **Test suite** — migrated the gateway from Jest to Vitest across the whole codebase,
+  porting the custom reporters onto the Vitest reporter API and modernising the suites
+  behind it.
+- **Supply chain** — pushed the organisation towards being genuinely harder to attack
+  through its dependencies, rather than just patched. SHA-pinned actions, toolchains pinned
+  through mise, a package manager with isolated installs and a build-script allowlist,
+  exact pins and registry-only resolution, namespace locking kept mandatory, and
+  registry-fetch-and-execute patterns killed out of the install path. Wrote the standard
+  that carried it, including the first-party carve-out that stopped the policy being
+  unworkable internally. Ordinary patching alongside it: koa (CVE-2026-27959), lodash,
+  protobufjs, ws, the AWS SDK, Adyen Web 5 to 6.
 - **B2C SPA** — 503 pull requests beyond search: an SSR image gallery on App Router
-  parallel routes, scroll restoration and back-navigation on mobile web, amenities and
-  highlights on venue pages, and analytics including cluster interaction events and an
-  attribution touch client.
-- **B2B online reputation** — KPI strip, reviews histogram with compact counts, rating and
-  content-type filters, the data-access layer behind it, the AI replies tab, and
-  client-side content moderation.
+  parallel routes, scroll restoration and back-navigation on mobile web, and the analytics
+  behind the search funnel.
+- **B2B online reputation** — the partner-facing reviews surface: filtering, aggregate
+  views, the AI replies tab, and client-side content moderation, on a new data-access
+  layer.
 - **Shared Elixir libraries** — fixed correctness and resource bugs in the libraries other
   teams build on. AMQP and Redis connection leaks in health probes, atom table exhaustion
   in the check runner, atom interning on feature-flag cache lookups, gRPC 1.0 support in
@@ -179,13 +178,9 @@ the company had any AI tooling worth the name.</small>
 - **AI platform** — LiteLLM proxy and Langfuse model configuration, content moderation
   keys, and an internal Claude plugin marketplace including a skill that takes a ticket
   through to an opened pull request.
-- **Supply chain standard** — wrote the policy for first-party packages: internal packages
-  carved out of the cooldown, exact pins and registry-only, namespace locking kept
-  mandatory.
 - **Developer tooling** — custom ESLint rules for the marketplace codebase, JSON schema
   validation and deployment lock guards in the internal CLI, CODEOWNERS validation in CI,
-  local dev environment fixes, CI runner sizing, and actions for opt-in signed commits and
-  flaky test reporting.
+  and shared actions for opt-in signed commits and flaky test reporting.
 - **Review and mentoring** — 615 pull requests reviewed for other people, 648 issues
   written. Mentored engineers through complex problems, and worked at product level so
   technical decisions matched what the business needed.
