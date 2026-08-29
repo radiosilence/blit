@@ -300,6 +300,9 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 ## Open Source
 
+Whether it be handwritten like back in the old days or architected manually and written with AI,
+I've always been a proponent of having everything I've produced available to anyone with curiosity.
+
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>—in-memory static file server for SPAs and static content. Serves this
   site. From my cupboard.
@@ -319,8 +322,10 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   the bump itself.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
   65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
-  attachment text extraction and masked email.
-- **MCP servers in Rust**—[tfl-mcp](https://github.com/radiosilence/tfl-mcp),
+  attachment text extraction and masked email. Has many more features and usefulness than the
+  official MCP and I seem to be able to deliver a lot quicker than them.
+- **MCP servers in Rust**—[tfl-mcp](https://github.com/radiosilence/tfl-mcp) - this is neat because
+  it also wraps up their REST API into a fully associated graph. Bots love it.
   [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp),
   [mcp-gateway](https://github.com/radiosilence/mcp-gateway),
   [caldav-cli](https://github.com/radiosilence/caldav-cli),
