@@ -4,7 +4,8 @@ senior full stack engineer
 
 **e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
-**location:** London, or remote
+**location:** London, or remote. But I really do like interacting with humans as long as it is
+genuinely flexible.
 
 Polyglot engineer. Writing code for 25 years, professionally for about 20 of them, across
 commercial frontend, backend, devops, mobile, and embedded. Elixir and Go services,
@@ -13,7 +14,7 @@ Terraform, Pulumi and Kubernetes. Frankly I'm not super bothered about what lang
 using, as long as it has high quality libs and std and doesn't actively get in the way of
 achieving the goal.
 
-I do enjoy greenfield work, or even taking something to the next level, and hard technical
+I enjoy greenfield work, or even taking something to the next level, and hard technical
 problems I can own end to end. I started out freelancing so had to demonstrably own entire
 products and make sure they worked properly. So, I want to argue about what a thing should
 be, not just implement tickets.
@@ -49,9 +50,11 @@ known as the person you go to if you need something done properly.
 - **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
   in Rust, 240+ stars, serving this site.
 - **Got Microsoft to change Azure Policy**—it could not express a compliance check
-  Credit Suisse's CSPM needed.
+  Credit Suisse's CSPM needed, so I went to their office for a meeting and managed to convince
+  them to change it for the benefit of my client and I guess everyone else.
 - **An Android app and the whole AWS backend behind it**—React Native, CDK, Lambda,
   DynamoDB, API Gateway—built from scratch for bike delivery drivers.
+- **This big weird streaming GIF to emails project** I enjoy talking about it because it was mad.
 
 ## Recent Work
 
