@@ -60,58 +60,185 @@ React Server Components, Zod, PostgreSQL, pgbouncer, Kafka, Datadog, Metabase, L
 GitHub Actions, Docker, Kubernetes_
 
 <small>2,021 pull requests authored across 58 repositories, 1,544 merged, 615 more
-reviewed for other people, 648 issues written.</small>
+reviewed for other people, 648 issues written. The first six months of that was before
+the company had any AI tooling worth the name.</small>
+
+**Ownership**
 
 - Architect and lead engineer of `app-reviews`, a new Elixir service replacing the
-  reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer pool,
-  gRPC and protobuf contracts for internal callers, a GraphQL Yoga gateway surface, and
-  the Next.js frontend. 405 pull requests in that repo.
+  reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer instance,
+  gRPC and protobuf contracts for internal callers, a GraphQL gateway surface, and the
+  frontend. 405 pull requests in that repo.
 - Delivery owner for Improved Reviews 2026 across web, iOS, Android and backend, until I
   handed delivery over in June 2026 to concentrate on building the service.
-- Migrated around 90 million rows: 30.1M reviews, 3.8M replies, 24.7M review to account
-  links, 31.2M review to employee links, with parity monitored continuously against the
-  legacy source.
-- Phased the cutover, reads first and writes second, over a continuous sync process,
-  reversible at each stage. Production reads went from a 5% rollout to 100% in two days,
-  and I was on the pager for it.
+- Production owner through the rollout. Reads went from a 5% canary to 100% in two days,
+  and I carried the pager for it.
 - It runs at around 157M requests a week, roughly 260/s, across its gRPC and GraphQL
   surfaces.
 - Agreed the new service boundary with around ten codeowning teams still reading and
   writing the old tables.
+- Loyalty platform, the largest B2C release to date and my first project here: gateway
+  and frontend mostly, leading the parts I had context on, and picking up Elixir on it.
+
+**Migration and backfill**
+
+- Migrated around 90 million rows: 30.1M reviews, 3.8M replies, 24.7M review to account
+  links, 31.2M review to employee links, with parity monitored continuously against the
+  legacy source rather than checked once at the end.
+- Phased the cutover, reads first and writes second, over a continuous sync process, so
+  each stage stayed reversible.
+- Built the backfill as a resumable engine: restartable from a given shard with per-shard
+  ETAs, incremental `--since` windows, a REPLACE mode for clean historical loads, and
+  deterministic reads so a re-run lands the same rows.
+- Gave it an adaptive throttle driven by live RDS health with named pacing profiles, a
+  statement timeout and a timeout circuit breaker per batch, and per-row error isolation
+  so one bad record could not take down a run.
+- Dropped Oban for a synchronous batch backfill once the concurrency was doing more harm
+  than good.
+- Pulled service attribution out of a Snowflake dump, review and reply history out of S3,
+  and added a `--patch` dump mode that emits only the discrepancies between source and
+  mirror.
+- Wrote scoped, idempotent reconciliation: targeted attribution repair for named
+  employees, heals windowed to a drift range, and repair for rows a workspace disconnect
+  had nulled.
 - Traced persistent sync drift to undocumented callers and background processes still
   writing to the old tables. Several weeks finding them one at a time and rebuilding the
   synchronisation around each.
-- Found undocumented internal tasks that had been corrupting review data for years;
-  wrote healing tasks, supported replacements for the CX team to use instead, and
-  targeted backfills per edge case.
+- Found undocumented internal tasks that had been corrupting review data for years; wrote
+  healing tasks, supported replacements for the CX team to use instead, and targeted
+  backfills per edge case.
+- Kept private replies private across the backfill, which the naive path would have
+  exposed.
+
+**Events, Kafka and the warehouse**
+
+- Kafka outbox emission on the reviews stream, with the outbox connector rolled through
+  staging and production.
+- Live mirror of the monolith's writes off the legacy topics, behind an Unleash
+  kill-switch, so the new service stayed current while the old one was still authoritative.
+- Declared the consumers' dead letter topics, monitored DLQ depth, logged every ingest
+  drop, and fixed a failing dead-letter produce that was wedging its own partition.
+- Made out-of-order mirror replies warn and skip instead of erroring, gated legacy
+  re-emission on publish state, and compensated unpublish.
+- Emitted the domain events other teams build on: `location_rating_changed` feeding
+  marketplace ranking, `professional_rating_changed`, and reply lifecycle events carrying
+  the parent review's body, rating, appointment and customer.
+- Stood up the warehouse CDC pipeline: Postgres publication and replica identity, the DB
+  connector and Snowpipe sink, `review_services` mirrored across, and poisoned rows
+  excluded so one bad record could not stall the connector.
+
+**Postgres and performance**
+
+- Added `review_items`, a unified line-item table with rating and customer mirrored onto
+  it, and moved the rating aggregates, facet counts and sorts to read off it.
+- Indexed for the actual queries: composite and covering indexes for filtered provider
+  reads, a `btree_gin` composite for search, a GIN index for full-text review body
+  search, and index predicates instead of query filters where the predicate was the win.
+- Narrowed searches to their provider set, bounded common-term search to the ordered page
+  index, and read each key's first page under its own LIMIT rather than one wide query.
+- Turned the gRPC batch reads O(1) with a windowed `GetReviews`, and documented the
+  complexity of each RPC alongside it.
+- Tuned autovacuum on the large tables, vacuumed on a fixed insert threshold rather than
+  a scale factor, and dropped seven indexes that were dead or prefix-redundant.
+- Enabled DBM query metrics, and alerted on Postgres's own signals where Datadog could
+  not see what mattered.
+
+**API surfaces**
+
+- Slimmed the gRPC surface to seven RPCs, each with its own scope key.
+- Held the GraphQL surface to the org pagination standard, with cost ceilings, hardened
+  cursor decoding, `isEditable` redaction, role-based authz on reply mutations, and
+  nullable root connection fields so a partial failure degrades instead of blanking the
+  page.
+- Enforced `schema.graphql` drift in CI, with the check opening its own correcting pull
+  request.
+- Stitched reviews into the partners gateway: location, provider and appointment onto
+  reviews and replies, and the employee and location rating summaries onto their parents.
+- Gated schema migrations in CI against the base tip so two branches could not land
+  colliding versions.
+
+**AI features**
+
+- Built the AI auto-reply backend end to end: entitlement gate, generator, voice and
+  publish worker.
+- Draft-first write surface, so a reply is created as a draft with its own read fields and
+  then published or cancelled, rather than posting straight to a customer.
+- Reply voice built on ElevenLabs, turning a business's own description into the prompt.
+- AI moderation pipeline with the strategy selected by flag.
+- Review-level tier gating driven by the model's output, the concierge balance read live
+  at every billing decision, and quota gating that cancels scheduled replies and stops
+  generating drafts rather than failing open.
+- 2,343 AI replies published and 129 businesses on full automation in the first weeks
+  after launch.
+- The partner-facing side of it: an AI replies tab, an Enhance action on partner drafts,
+  and a countdown on scheduled replies so a business can cancel before it goes out.
+
+**Correctness**
+
 - Fixed an attribution bug in the redesign instead of carrying it over. The monolith
-  credited a review to the employee on the invoice line item rather than whoever
-  performed the booking: about 120,000 reviews misattributed all-time, 0.44%, one in
-  230. The new service attributes from the calendar booking.
+  credited a review to the employee on the invoice line item rather than whoever performed
+  the booking: about 120,000 reviews misattributed all-time, 0.44%, one in 230. The new
+  service attributes from the calendar booking.
+- Made professional attribution sticky and additive, with one row per account that
+  actually performed a line item, sibling attribution preserved across writes, and a
+  departed professional's disconnection surfaced on the review instead of silently
+  vanishing.
+- Stopped a single NUL byte poisoning an entire summaries object.
+- Built the moderation and dispute surfaces: a moderations table and its index, rejected
+  reviews shown to their author and their venue, every pass audited, and the dispute
+  lifecycle migrated in.
+
+**Operations**
+
 - Metabase dashboards diffing old against new, Datadog dashboards with I/O attribution,
   and on-call paging on `reviews-rpc` error rate and latency.
-- Shipped AI-assisted and fully automatic review replies, including the quota gating,
-  which cancels scheduled replies and stops generating drafts when a business runs out
-  rather than failing open.
+- Got the service booting and staying up in production: PgBouncer CA trust, Bandit socket
+  options and IPv6 bind, a `Chart.lock` so the first deploy rendered at all, and a CPU
+  ceiling that turned out to be the bug rather than merely tight.
+- Progressive canary across all four components, and a health check returning the
+  platform's own `:healthy` contract.
+- Adopted Torque (sonic-rs) as the JSON standard and moved the images to debian-slim.
+
+**Platform work beyond reviews**
+
+- Fixed correctness and resource bugs in the shared Elixir libraries other teams build on:
+  AMQP and Redis connection leaks in health probes, atom table exhaustion in the check
+  runner, atom interning on feature flag cache lookups, gRPC 1.0 support in the shared RPC
+  client, and the toolchain onto Elixir 1.20.2 / OTP 29.
+- Took the shared taxonomy library through CLDR and BCP-47 locale handling, proper
+  pluralisation and gettext PO generation, data validation rules, TypeScript codegen, and
+  CI codegen that regenerates the source data and opens its own pull request.
 - Internal AI platform work: LiteLLM proxy and Langfuse model configuration, content
   moderation keys, and an internal Claude plugin marketplace including a `/ticket` skill
   that takes a ticket through to an opened pull request.
 - Wrote the supply chain standard for first-party packages: internal packages carved out
   of the cooldown, exact pins and registry-only, namespace locking kept mandatory.
-- Fixed correctness and resource bugs in the shared Elixir libraries other teams build
-  on: AMQP and Redis connection leaks in health probes, atom table exhaustion in the
-  check runner, atom interning on feature flag cache lookups, gRPC 1.0 support in the
-  shared RPC client, and the toolchain onto Elixir 1.20.2 / OTP 29.
-- 503 pull requests in the B2C SPA and 436 in the B2C API gateway: resolver and schema
-  architecture, Zod 4 for validation, replacing generated schemas with ones shaped to
-  the domain, converting eager resolvers to lazy batched ones. 146 more in marketplace
-  search, which runs at around 119M requests a week.
-- Loyalty platform, the largest B2C release to date and my first project here: gateway
-  and frontend mostly, leading the parts I had context on, and picking up Elixir on it.
 - Developer tooling across the org: custom ESLint rules for the marketplace codebase,
-  JSON schema validation and deployment lock guards in the internal CLI, fixes to the
-  Tilt local environment, and CI actions including opt-in signed commits and a flaky
-  test reporter.
+  JSON schema validation and deployment lock guards in the internal CLI, CODEOWNERS
+  validation in CI, fixes to the Tilt local environment, and CI actions including opt-in
+  signed commits and a flaky test reporter.
+
+**Frontend and marketplace**
+
+- 503 pull requests in the B2C SPA: the autocomplete rewritten onto the geolocation API
+  with search history, infinite scroll and stable keys, map pins and popovers, the venue
+  and professional toggle in search filters, the loyalty rewards catalogue and claim
+  flow, and amenities and highlights on venue pages.
+- 436 in the B2C API gateway: resolver and schema architecture, Zod 4 for validation,
+  replacing generated schemas with ones shaped to the domain, converting eager resolvers
+  to lazy batched ones, and moving the marketplace's rating badges onto the new service.
+- 146 in marketplace search, itself running at around 119M requests a week: type-specific
+  paginated autocomplete RPCs, spatial clustering, a batch professionals endpoint,
+  location feature filtering and distance sorting.
+- Search history as its own service across five dimensions, with recently viewed
+  locations and professionals, standalone geolocation history, and Redis failures absorbed
+  rather than propagated to the user.
+- The B2B Online Reputation surface: KPI strip, reviews histogram, rating and content-type
+  filters, the ReviewsV2 data-access foundation, and client-side content moderation.
+
+**People**
+
+- Reviewed 615 pull requests for other people and wrote 648 issues.
 - Mentored engineers through complex problems, and worked at product level so technical
   decisions matched what the business needed.
 
