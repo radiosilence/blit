@@ -17,8 +17,9 @@ just implement the ticket.
 
 Communicating complex technical solutions to stakeholders and fellow engineers in a way
 they can relate to is key to my approach—if people can't understand what's happening,
-the most appropriate solution is unlikely to be reached. I've mentored somewhere around
-twenty engineers over the years.
+the most appropriate solution is unlikely to be reached. I've mentored many people in my career and
+it's important to impress upon them that whilst they may be brilliant, it's about getting everyone
+else on board with what they're thinking and percieving.
 
 Big on declarative infrastructure using CI/CD and IaC. It is one thing to be able to
 build something, it's another to be able to reproduce and scale it in a production
