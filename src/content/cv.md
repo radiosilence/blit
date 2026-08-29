@@ -363,17 +363,22 @@ SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
 ## Education
 
-Diploma, Computer Science & Cybernetics—University of Reading.
+Full disclosure I droppped out of a degree in Computer Science & Cybernetics—University of Reading
+despite winning various competitions for my work. Wasn't for me.
 
 ## Who is James?
 
 I don't see programming and computers as simply a job, but part of who I am. I shoot
 photography, mostly street portraits these days, which started out with urban exploration
-in Berlin. I'm an avid cyclist, mainly fixed but also gravel. Music matters to me. I go
-out of my way to find smaller bands nobody has told me about yet, and I'd rather wander
-into something than have an algorithm hand it to me—which is most of the reason I built
-my own music player and the homelab it runs on. I'm a keen follower of current affairs,
-especially from a technical standpoint.
+in Berlin. I love cycling and the freedom it gives people. Music and audio matters to me. I go
+out of my way to find weird little bands nobody has told me about yet, and I'd rather wander
+into somewhere and chat to someone than have an algorithm hand it to me. I think technology can
+still be a force by which you can regain control of your own existence, and people are starting to
+realise this. So I run my own homelab, music collection...I've built my own audio player etc because
+I don't think that humans should be at the behest of large corporations for something so close to
+our hearts. Everyone should have a choice.
+
+I'm a keen follower of current affairs, especially from a technical standpoint.
 
 ## Less Recent Work
 
