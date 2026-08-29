@@ -36,7 +36,8 @@ think anything like this needs a form of critique and we shouldn't lose our head
 since modern Opus, given the right input, the results can be somewhat impressive.
 
 As a natural creative, what drives me is a job where I wake up every day and build
-something interesting. I have a huge amount of pride in what I do and can achieve.
+something interesting. I have a huge amount of pride in what I do and can achieve, and am
+known as the person you go to if you need something done properly.
 
 ## Selected Work
 
@@ -72,9 +73,9 @@ the company had any AI tooling worth the name.</small>
 - **Reviews service** — architect and lead engineer of a new Elixir service replacing the
   reviews domain in the legacy monolith. Its own Postgres schema and pgbouncer instance,
   gRPC and protobuf contracts, GraphQL surface, and the frontend on top.
-- **Delivery and rollout** — delivery owner across web, iOS, Android and backend until June
-  2026. Then production owner through the rollout: reads from a 5% canary to 100% in two
-  days, carrying the pager for it. Runs at around 157M requests a week.
+- **Delivery and rollout** — delivery owner across web, iOS, Android and backend until
+  June 2026. Then production owner through the rollout: reads from a 5% canary to 100% in
+  two days, carrying the pager for it. Runs at around 157M requests a week.
 - **Migration** — around 90M rows moved with the marketplace live. 30.1M reviews, 3.8M
   replies, 24.7M review-to-account links, 31.2M review-to-employee links. Reads switched
   first, then writes, over a continuous sync. Parity monitored throughout and every stage
