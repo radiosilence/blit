@@ -10,10 +10,6 @@ msgstr ""
 msgid "change language"
 msgstr "ބަސް ބަދަލުކުރުން"
 
-#: src/templates/index.html:9
-msgid "cv-2025.01"
-msgstr "cv-2025.01"
-
 #: src/templates/index.html:11
 msgid "github"
 msgstr "github"
@@ -34,4 +30,9 @@ msgstr "ބަންދުކުރޭ"
 #: src/templates/index.html:7
 msgid "senior full stack engineer"
 msgstr "ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
+
+#: src/templates/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "cv-2025.01"
 

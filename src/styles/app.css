@@ -72,6 +72,21 @@
   .prose a:hover {
     @apply text-brand-mid;
   }
+
+  /*
+   * The plugin renders literal backticks around inline code and sets it at 600.
+   * The page is already Geist Mono throughout, so the backticks are noise and the
+   * weight makes `code` indistinguishable from `strong`. Same specificity trick as
+   * above: `.prose code::before` (0,1,2) beats `.prose :where(code)::before` (0,1,1).
+   */
+  .prose code {
+    font-weight: inherit;
+  }
+
+  .prose code::before,
+  .prose code::after {
+    content: none;
+  }
 }
 
 /*
