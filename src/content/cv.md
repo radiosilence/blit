@@ -29,12 +29,11 @@ Big on declarative infrastructure using CI/CD and IaC. It is one thing to be abl
 build something, it's another to be able to reproduce and scale it in a production
 environment.
 
-AI and agentic coding are useful tools, like anything else, engineers should be able to
-develop the skills to use them expertly, but also understand that they are not necessarily
-a panacea, or a substitute for lack of skill. I have embraced AI somewhat, and have had fun
-building MCP servers and gateways in Rust and GraphQL in order to augment AI's abilities. I
-think anything like this needs a form of critique and we shouldn't lose our heads — but
-given the right input, the results can be genuinely impressive.
+AI and agentic coding are tools like any other: worth learning to use expertly, and no
+substitute for knowing what you are doing. I have had a lot of fun building MCP servers and
+gateways in Rust and GraphQL to make them better at their job. Anything like this needs a
+form of critique and we shouldn't lose our heads — but given the right input, the results
+can be genuinely impressive.
 
 As a natural creative, what drives me is a job where I wake up every day and build
 something interesting. I have a huge amount of pride in what I do and can achieve, and am
@@ -52,6 +51,9 @@ known as the person you go to if you need something done properly.
 - **Got Microsoft to change Azure Policy**—it could not express a compliance check Credit
   Suisse's CSPM needed, so I made the case at their office and they changed the platform.
   For my client, and for everyone else using it.
+- **Found the hole in pip**—argued in 2013 that it had to verify SSL certificates, at a
+  point where it fetched packages over plain HTTP and checked nothing. Shipped in pip 1.3
+  as the fix for CVE-2013-1629, credited by name in the release notes.
 - **An Android app and the whole AWS backend behind it**—React Native, CDK, Lambda,
   DynamoDB, API Gateway—built from scratch for bike delivery drivers.
 
@@ -68,38 +70,34 @@ _Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Ne
 React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
 Actions, Docker, Kubernetes_
 
-<small>2,021 pull requests authored across 58 repositories, 1,544 merged, 615 more
-reviewed for other people, 648 issues written. The first six months of that was before
-the company had any AI tooling worth the name.</small>
-
 - **Reviews service** — architect and lead engineer of a new Elixir service taking the
   reviews domain out of the legacy monolith: customers' reviews of venues and of the
   individual staff who served them, on a marketplace where a venue's rating drives how it
   ranks. Its own Postgres schema and connection pooler, gRPC and protobuf contracts for
   other services, a GraphQL surface for clients, and the frontend on top.
 - **Delivery and rollout** — delivery owner across web, iOS, Android and backend until
-  June 2026. Then production owner through the rollout: reads from a 5% canary to 100% in
-  two days, carrying the pager for it. Runs at around 157M requests a week.
+  June 2026, then production owner through the rollout. Reads went from a 5% canary to 100%
+  in two days and I carried the pager for it. Runs at around 157M requests a week.
 - **Migration** — around 90M rows moved with the marketplace live. 30.1M reviews, 3.8M
   replies, and the join tables tying reviews to customer accounts (24.7M) and to the staff
   who did the work (31.2M). Reads cut over first, then writes, over a sync that ran
   continuously so the old system stayed authoritative until it didn't. Parity monitored
-  throughout and every stage reversible. The new boundary agreed with around ten teams
+  throughout and every stage reversible. The new boundary I agreed with around ten teams
   whose code still read and wrote the old tables.
 - **Backfill engine** — moving that much data out of a live system needs a tool rather than
-  a script. Restartable partway through with per-partition ETAs, incremental runs over a
-  time window, and a full-replace mode for a clean reload. An adaptive throttle that read
+  a script, so I built one. Restartable partway through with per-partition ETAs,
+  incremental runs over a time window, and a full-replace mode for a clean reload. An adaptive throttle that read
   the database's own health and backed off before it could hurt production traffic.
   Per-batch statement timeouts, a circuit breaker, and per-row error isolation so one
   malformed record couldn't take down a run. A diff mode dumping only the rows where old
   and new disagreed. Fed from S3 history, Snowflake dumps and a live Kafka mirror; dropped
   the job queue for synchronous batching.
-- **Sync drift** — the two systems kept diverging. Traced it to undocumented callers and
-  background jobs still writing the old tables, and to internal support tasks that had been
-  corrupting review data for years. Built repair jobs scoped to the window where the drift
-  happened, targeted repair for individual staff records, and one-off backfills per edge
-  case — plus replacement tasks for the support team to use instead of the ones causing it.
-  Private replies stayed private throughout.
+- **Sync drift** — the two systems kept diverging, and the interesting part was why. I
+  traced it to undocumented callers and background jobs still writing the old tables, and
+  to internal support tasks that had been corrupting review data for years. Built repair
+  jobs scoped to the window where the drift happened, targeted repair for individual staff
+  records, and one-off backfills per edge case — plus replacement tasks for the support
+  team to use instead of the ones causing it. Private replies stayed private throughout.
 - **Events** — published the service's own changes to Kafka through an outbox, and consumed
   the monolith's event topics to mirror its writes live while it was still the source of
   truth, behind a kill switch. Dead letter topics with depth monitoring and every dropped
@@ -159,7 +157,7 @@ the company had any AI tooling worth the name.</small>
 - **Search history** — its own service covering searches, venues, professionals, location
   suggestions and recently viewed. One unified write path replacing several, and Redis
   failures absorbed rather than pushed at the user.
-- **Search service** — 146 pull requests, running at around 119M requests a week. Separate
+- **Search service** — running at around 119M requests a week. Separate
   paginated autocomplete endpoints per result type, spatial clustering, a batch endpoint for
   professionals, filtering by a venue's facilities and by whether a treatment is offered to
   men, women or both.
@@ -167,7 +165,7 @@ the company had any AI tooling worth the name.</small>
   rewards with configurable discount amounts, the rules for which items a reward applies to
   and who qualifies, tiers, and the wallet — from schema through gateway resolvers to the
   UI. Led the parts I had context on, and picked up Elixir on the way.
-- **B2C API gateway** — 436 pull requests. Resolver and schema architecture, Zod 4 for
+- **B2C API gateway** — resolver and schema architecture, Zod 4 for
   validation, generated schemas replaced with ones shaped to the domain, eager resolvers
   made lazy and batched. A proper deprecation lifecycle run on legacy fields and types.
   Marketplace rating badges moved onto the new reviews service. Moved it onto Temporal and
@@ -179,11 +177,11 @@ the company had any AI tooling worth the name.</small>
   through its dependencies, rather than just patched. SHA-pinned actions, toolchains pinned
   through mise, a package manager with isolated installs and a build-script allowlist,
   exact pins and registry-only resolution, namespace locking kept mandatory, and
-  registry-fetch-and-execute patterns killed out of the install path. Wrote the standard
+  registry-fetch-and-execute patterns killed out of the install path. I wrote the standard
   that carried it, including the first-party carve-out that stopped the policy being
   unworkable internally. Ordinary patching alongside it: koa (CVE-2026-27959), lodash,
   protobufjs, ws, the AWS SDK, Adyen Web 5 to 6.
-- **B2C SPA** — 503 pull requests beyond search: an SSR image gallery on App Router
+- **B2C SPA** — an SSR image gallery on App Router
   parallel routes, scroll restoration and back-navigation on mobile web, and the analytics
   behind the search funnel.
 - **B2B online reputation** — the partner-facing reviews surface: filtering, aggregate
@@ -204,9 +202,9 @@ the company had any AI tooling worth the name.</small>
 - **Developer tooling** — custom ESLint rules for the marketplace codebase, JSON schema
   validation and deployment lock guards in the internal CLI, CODEOWNERS validation in CI,
   and shared actions for opt-in signed commits and flaky test reporting.
-- **Review and mentoring** — 615 pull requests reviewed for other people, 648 issues
-  written. Mentored engineers through complex problems, and worked at product level so
-  technical decisions matched what the business needed.
+- **Review and mentoring** — 615 pull requests reviewed for other people. Mentored
+  engineers through complex problems, and worked at product level so technical decisions
+  matched what the business needed.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
@@ -299,8 +297,9 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 ## Open Source
 
-Whether it be handwritten like back in the old days or architected manually and written with AI,
-I've always been a proponent of having everything I've produced available to anyone with curiosity.
+Whether it be handwritten like back in the old days or architected manually and written
+with AI, I've always been a proponent of having everything I've produced available to
+anyone with curiosity.
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>—in-memory static file server for SPAs and static content. Serves this
@@ -376,12 +375,12 @@ Docker, Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling 
 **Strong**—Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
-Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, i18n, TDD/BDD.
+Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 
 **Worked with**—Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
 MSSQL, MongoDB, CouchDB, Couchbase, Memcached, Pulumi, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
-Kafka, ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
+ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
 SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
 
 ## Education
