@@ -320,8 +320,9 @@ anyone with curiosity.
   the bump itself.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
   65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
-  attachment text extraction and masked email. Predates the official Fastmail MCP. I knew
-  what I wanted out of it.
+  attachment text extraction and masked email. Predates the official Fastmail MCP, largely
+  because I knew what I wanted out of it and couldn't be bothered waiting to find out if
+  they'd want the same.
 - **MCP servers in Rust**—[tfl-mcp](https://github.com/radiosilence/tfl-mcp) - this is neat because
   it also wraps up their REST API into a fully associated graph. Bots love it.
   [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp),
