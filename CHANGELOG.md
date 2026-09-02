@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### The work on the CV reads the way I talk about work
+
+The bullets under each role had been compressed into noun phrases with the verbs and the
+judgements taken out — "Metabase parity dashboards, Datadog dashboards with I/O
+attribution, and on-call paging on error rate and latency". Accurate, and not how I'd say
+any of it. Every fact, figure and date is unchanged; the wording around them is not.
+
+What went back in is the reasoning. An adaptive throttle that reads the database's health
+matters "a great deal more than raw speed when the marketplace is up"; 0.44% of reviews
+misattributed "sounds small until it's your rating"; a supply-chain rule nobody can follow
+"just gets ignored, and then you have neither the rule nor the security". Those are the
+sentences that say why a decision went the way it did, which is the part worth reading.
+
+The intro paragraphs and "Who is James?" are deliberately untouched. They already say what
+I want them to say, and a rewrite there is somebody else putting words in my mouth. The
+three pre-2018 roles stay one-liners until I write something real for them.
+
 ### Overlapping extractions no longer fail on a catalogue that is there
 
 `task dev` reported `No such file or directory` against a `.po` file sitting in the
