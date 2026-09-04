@@ -71,140 +71,94 @@ React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM,
 Actions, Docker, Kubernetes_
 
 - **Reviews service** — architect and lead engineer of a new Elixir service taking the
-  reviews domain out of the legacy monolith: customers' reviews of venues and of the
-  individual staff who served them, on a marketplace where a venue's rating drives how it
-  ranks. Its own Postgres schema and connection pooler, gRPC and protobuf contracts for
-  other services, a GraphQL surface for clients, and the frontend on top.
-- **Delivery and rollout** — delivery owner across web, iOS, Android and backend until
-  June 2026, then production owner through the rollout. Reads went from a 5% canary to 100%
-  in two days and I carried the pager for it. Runs at around 157M requests a week.
-- **Migration** — around 90M rows moved with the marketplace live. 30.1M reviews, 3.8M
-  replies, and the join tables tying reviews to customer accounts (24.7M) and to the staff
-  who did the work (31.2M). Reads cut over first, then writes, over a sync that ran
-  continuously so the old system stayed authoritative until it didn't. Parity monitored
-  throughout and every stage reversible. The new boundary I agreed with around ten teams
-  whose code still read and wrote the old tables.
-- **Backfill engine** — moving that much data out of a live system needs a tool rather than
-  a script, so I built one. Restartable partway through with per-partition ETAs,
-  incremental runs over a time window, and a full-replace mode for a clean reload. An adaptive throttle that read
-  the database's own health and backed off before it could hurt production traffic.
-  Per-batch statement timeouts, a circuit breaker, and per-row error isolation so one
-  malformed record couldn't take down a run. A diff mode dumping only the rows where old
-  and new disagreed. Fed from S3 history, Snowflake dumps and a live Kafka mirror; dropped
-  the job queue for synchronous batching.
+  reviews domain out of the legacy monolith, on a marketplace where a venue's rating
+  decides how it ranks. Its own Postgres schema and connection pooler, gRPC and protobuf
+  contracts for other services, a GraphQL surface for clients, and the frontend on top.
+  Delivery owner across web, iOS, Android and backend, then production owner through the
+  rollout: a progressive canary across all four components, reads from 5% to 100% in two
+  days, and I carried the pager for it. Runs at around 157M requests a week.
+- **Migration** — around 90M rows moved with the marketplace live. Reads cut over first,
+  then writes, over a sync that ran continuously so the old system stayed authoritative
+  until it didn't, parity monitored throughout and every stage reversible. The new
+  boundary I agreed with around ten teams whose code still read and wrote the old tables.
+  Moving that much out of a live system needs a tool rather than a script, so I built
+  one: restartable partway through with per-partition ETAs, a throttle that read the
+  database's own health and backed off before it could hurt production traffic, a circuit
+  breaker, per-row error isolation so one malformed record couldn't take down a run, and a
+  diff mode dumping only the rows where old and new disagreed. Fed from S3 history,
+  Snowflake dumps and a live Kafka mirror.
 - **Sync drift** — the two systems kept diverging, and the interesting part was why. I
   traced it to undocumented callers and background jobs still writing the old tables, and
   to internal support tasks that had been corrupting review data for years. Built repair
   jobs scoped to the window where the drift happened, targeted repair for individual staff
-  records, and one-off backfills per edge case — plus replacement tasks for the support
-  team to use instead of the ones causing it. Private replies stayed private throughout.
-- **Events** — published the service's own changes to Kafka through an outbox, and consumed
-  the monolith's event topics to mirror its writes live while it was still the source of
-  truth, behind a kill switch. Dead letter topics with depth monitoring and every dropped
-  message logged. A reply arriving before its parent review warns and skips rather than
-  crashing the consumer. Re-emission back to the legacy topics gated on publish state, with
-  unpublishing compensated. Cleared a failing dead-letter write that was blocking its own
-  partition. Emitted the rating-change events that feed marketplace ranking, and the reply
-  lifecycle events other teams consume.
-- **Warehouse** — streamed the new tables into the data warehouse: Postgres logical
-  replication, a change-data-capture connector and a Snowflake sink, with poisoned rows
-  excluded so one bad record couldn't stall the pipeline.
-- **Postgres** — a denormalised line-item table so rating aggregates, search facet counts
-  and sorts read from one place instead of joining across the domain. Composite and
-  covering indexes, a `btree_gin` composite, and a GIN index for full-text search over
-  review bodies. Index predicates rather than query filters where the predicate was the
-  win. Searches narrowed to one venue's own set before scanning. Each grouping paginated
-  under its own LIMIT rather than one wide query. Autovacuum on a fixed insert threshold,
-  seven dead or prefix-redundant indexes dropped, query-level monitoring on.
-- **API surfaces** — cut the gRPC surface to seven calls, each scoped to what one caller
-  actually needs, with batch reads made O(1) behind a single windowed query and the cost of
-  each documented. Held the GraphQL side to the company's pagination standard: query cost
-  ceilings, hardened cursor decoding, field-level redaction on anything the caller
-  shouldn't see, role-based authorisation on reply mutations, and nullable root connections
-  so one failing field degrades the page instead of blanking it. Schema drift and colliding
-  migration versions both caught in CI, each opening its own correcting pull request.
-- **AI replies** — the stack end to end: who is entitled to it, the generator, a reply voice
-  built from the business's own description of itself, and the worker that publishes.
-  Drafted first and then published or cancelled, so nothing goes out at a customer unseen.
-  A moderation pipeline with the strategy chosen by flag. The model's own output decides
-  what a review is eligible for. The business's remaining balance read live at every
-  billing decision, and running out cancels scheduled replies rather than failing open.
-  Partner side: a replies tab, an enhance action on drafts, and a countdown before a
-  scheduled reply goes out. 2,343 replies published and 129 businesses on full automation
-  in the first weeks.
-- **Attribution** — the monolith credited a review to whoever was on the invoice line rather
-  than the person who actually did the work: about 120,000 misattributed all-time, 0.44%,
+  records, and gave the support team replacement tasks to use instead of the ones causing
+  it. Private replies stayed private throughout.
+- **Attribution** — the monolith credited a review to whoever was on the invoice line
+  rather than the person who actually did the work: about 120,000 misattributed all-time,
   one in 230. The new service attributes from the calendar booking, keeps that attribution
-  once made, records a row per person who worked on the appointment, preserves the others
-  when a review is rewritten, and shows that a professional has left rather than dropping
-  them silently. Moderation and dispute handling built alongside.
-- **Operations** — Metabase parity dashboards, Datadog dashboards with I/O attribution, and
-  on-call paging on error rate and latency. Progressive canary across all four components.
-  Debugged the service into production through PgBouncer CA trust, socket options and IPv6
-  bind, and a CPU ceiling that turned out to be the bug rather than tight sizing.
-- **B2C search** — rebuilt across the SPA, the gateway and the search service. New
-  autocomplete on type-specific paginated RPCs, with search history, recently viewed venues
-  and professionals, country filtering, stable list keys, infinite scroll, and badge counts
-  that survive a partial failure. Deleted the previous search outright.
-- **Map search** — server-side spatial clustering consumed through GraphQL, streamed during
-  pan and zoom behind a flag, tuned from feature-flag variants. Custom pins with contextual
-  icons where a venue had no rating. Radius bounds clamped to stop a crash at full
-  zoom-out, and a map-animation race fixed.
-- **Relevance and geo** — distance measured to a venue's actual boundary rather than a
-  single point, from a search centre that stays put as you type, and weighted differently
-  for individual professionals than for venues. A search centred on one venue narrowed to
-  the treatments that venue actually offers. Disputed territories handled in country lookup.
-- **Search history** — its own service covering searches, venues, professionals, location
-  suggestions and recently viewed. One unified write path replacing several, and Redis
-  failures absorbed rather than pushed at the user.
-- **Search service** — running at around 119M requests a week. Separate
-  paginated autocomplete endpoints per result type, spatial clustering, a batch endpoint for
-  professionals, filtering by a venue's facilities and by whether a treatment is offered to
-  men, women or both.
-- **Loyalty** — the largest consumer release to date, and my first project here. Points-based
-  rewards with configurable discount amounts, the rules for which items a reward applies to
-  and who qualifies, tiers, and the wallet — from schema through gateway resolvers to the
-  UI. Led the parts I had context on, and picked up Elixir on the way.
-- **B2C API gateway** — resolver and schema architecture, Zod 4 for
-  validation, generated schemas replaced with ones shaped to the domain, eager resolvers
-  made lazy and batched. A proper deprecation lifecycle run on legacy fields and types.
-  Marketplace rating badges moved onto the new reviews service. Moved it onto Temporal and
-  `Intl`, trimming date-fns back to maths only.
-- **Test suite** — migrated the gateway from Jest to Vitest across the whole codebase,
-  porting the custom reporters onto the Vitest reporter API and modernising the suites
-  behind it.
+  once made, records a row per person who worked on the appointment, and shows that a
+  professional has left rather than dropping them silently.
+- **Events and warehouse** — the service's own changes published to Kafka through an
+  outbox, and the monolith's topics consumed to mirror its writes live while it was still
+  the source of truth, behind a kill switch. Dead-letter topics with depth monitoring, and
+  a reply arriving before its parent review warns and skips rather than crashing the
+  consumer. Rating-change events feed marketplace ranking. The new tables streamed into
+  Snowflake through Postgres logical replication and a change-data-capture connector,
+  with poisoned rows excluded so one bad record couldn't stall the pipeline.
+- **Postgres and operations** — a denormalised line-item table so rating aggregates,
+  search facet counts and sorts read from one place instead of joining across the domain.
+  Composite and covering indexes, GIN full-text search over review bodies, index
+  predicates rather than query filters where the predicate was the win, autovacuum on a
+  fixed insert threshold, seven dead or prefix-redundant indexes dropped. Datadog
+  dashboards with I/O attribution, Metabase parity dashboards, paging on error rate and
+  latency. Debugged the service into production through PgBouncer CA trust, IPv6 bind,
+  and a CPU ceiling that turned out to be the bug rather than tight sizing.
+- **API surfaces** — cut the gRPC surface to seven calls, each scoped to what one caller
+  actually needs, with batch reads made O(1) behind a single windowed query. Held the
+  GraphQL side to the company's pagination standard: query cost ceilings, hardened cursor
+  decoding, field-level redaction, role-based authorisation on reply mutations, and
+  nullable root connections so one failing field degrades the page instead of blanking
+  it. Schema drift and colliding migration versions both caught in CI, each opening its
+  own correcting pull request. On the B2C gateway, generated schemas replaced with ones
+  shaped to the domain, eager resolvers made lazy and batched, and a proper deprecation
+  lifecycle run on legacy fields.
+- **AI replies** — the stack end to end: who is entitled to it, the generator, a reply
+  voice built from the business's own description of itself, a moderation pipeline with
+  the strategy chosen by flag, and the worker that publishes. Drafted first and then
+  published or cancelled, so nothing goes out at a customer unseen. The business's
+  remaining balance read live at every billing decision, and running out cancels
+  scheduled replies rather than failing open. Partner side: a replies tab, an enhance
+  action on drafts, and a countdown before a scheduled reply goes out. 2,343 replies
+  published and 129 businesses on full automation in the first weeks.
+- **Search** — rebuilt consumer search across the SPA, the gateway and the search
+  service, and deleted the previous search outright. Type-specific paginated autocomplete,
+  search history as its own service with Redis failures absorbed rather than pushed at
+  the user, server-side spatial clustering streamed during pan and zoom, and distance
+  measured to a venue's actual boundary rather than a single point, weighted differently
+  for professionals than for venues. The search service runs at around 119M requests a
+  week.
+- **Loyalty** — my first project here and the largest consumer release to date:
+  points-based rewards, the rules for which items a reward applies to and who qualifies,
+  tiers, and the wallet, from schema through gateway resolvers to the UI. Led the parts I
+  had context on, and picked up Elixir on the way.
+- **Shared libraries** — fixed correctness and resource bugs in the Elixir libraries
+  every other service depends on. A broker connection and a Redis process leaked on every
+  failed health probe. Two paths were interning atoms from runtime input, which the BEAM
+  never frees, so given enough traffic the node dies. Also the treatment taxonomy the
+  whole marketplace searches against: CLDR and BCP-47 locale handling, correct
+  pluralisation, gettext catalogues and TypeScript codegen, with CI that regenerates it
+  all and opens its own pull request.
 - **Supply chain** — pushed the organisation towards being genuinely harder to attack
-  through its dependencies, rather than just patched. SHA-pinned actions, toolchains pinned
-  through mise, a package manager with isolated installs and a build-script allowlist,
-  exact pins and registry-only resolution, namespace locking kept mandatory, and
-  registry-fetch-and-execute patterns killed out of the install path. I wrote the standard
-  that carried it, including the first-party carve-out that stopped the policy being
-  unworkable internally. Ordinary patching alongside it: koa (CVE-2026-27959), lodash,
-  protobufjs, ws, the AWS SDK, Adyen Web 5 to 6.
-- **B2C SPA** — an SSR image gallery on App Router
-  parallel routes, scroll restoration and back-navigation on mobile web, and the analytics
-  behind the search funnel.
-- **B2B online reputation** — the partner-facing reviews surface: filtering, aggregate
-  views, the AI replies tab, and client-side content moderation, on a new data-access
-  layer.
-- **Shared Elixir libraries** — fixed correctness and resource bugs in the libraries every
-  other service depends on. A broker connection and a Redis process leaked on every failed
-  health probe. Two paths were interning atoms from runtime input, which the BEAM never
-  frees, so given enough traffic the node dies. Plus gRPC 1.0 support in the shared RPC
-  client and the toolchain onto Elixir 1.20.2 / OTP 29.
-- **Shared taxonomy library** — the treatment vocabulary the whole marketplace searches and
-  displays against: CLDR and BCP-47 locale handling, correct pluralisation and gettext
-  catalogue generation, validation rules on the source data, TypeScript codegen, and CI that
-  regenerates it all and opens its own pull request.
-- **AI platform** — LiteLLM proxy and Langfuse model configuration, content moderation
-  keys, and an internal Claude plugin marketplace including a skill that takes a ticket
-  through to an opened pull request.
-- **Developer tooling** — custom ESLint rules for the marketplace codebase, JSON schema
-  validation and deployment lock guards in the internal CLI, CODEOWNERS validation in CI,
-  and shared actions for opt-in signed commits and flaky test reporting.
-- **Review and mentoring** — 615 pull requests reviewed for other people. Mentored
-  engineers through complex problems, and worked at product level so technical decisions
-  matched what the business needed.
+  through its dependencies, rather than just patched: SHA-pinned actions, toolchains
+  pinned through mise, isolated installs with a build-script allowlist, exact pins and
+  registry-only resolution, and registry-fetch-and-execute patterns killed out of the
+  install path. I wrote the standard that carried it, including the first-party
+  carve-out that stopped the policy being unworkable internally.
+- **Other engineers** — 615 pull requests reviewed for other people. Mentored engineers
+  through complex problems, and worked at product level so technical decisions matched
+  what the business needed. Migrated the gateway from Jest to Vitest, wrote custom ESLint
+  rules for the marketplace codebase, and set up an internal Claude plugin marketplace
+  including a skill that takes a ticket through to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
