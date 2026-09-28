@@ -288,9 +288,19 @@ there for anyone with the curiosity to look.
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields it
   needs. Far fewer tokens, and it fails in ways a model can read.
-- **[koan](https://github.com/radiosilence/koan)** <small>Rust · 25★</small>—bit-perfect
-  terminal music player: Ratatui TUI, gapless playback, Subsonic and Navidrome
-  streaming, ReplayGain, spectrum analyser.
+- **[koan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>—a music
+  player and server on one Rust core: native SwiftUI apps for macOS and iOS with the core
+  linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless server with a
+  web UI, public share links, an OpenSubsonic-compatible API and an MCP server. Bit-perfect
+  CoreAudio output, gapless playback, 1TB+ libraries. Local and Subsonic/Navidrome libraries
+  merge into one, streamed through an aggressive local cache. The server pushes a playlist to
+  the linked phone or Mac over WebSocket, so an assistant using the MCP can build one from the
+  library and have it start playing there. Deployed on my own k3s cluster as a versioned
+  Pulumi component package.
+- **[GrogLog](https://github.com/radiosilence/groglog)** <small>Swift</small>—an iOS app: a
+  private, offline drink diary for cutting down, free, with no account, no adverts and
+  nothing sent anywhere. SQLite via GRDB, Lock Screen and Home Screen widgets, Shortcuts
+  integration.
 - **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>—a
   drop-in watchman replacement that doesn't eat your RAM.
 - **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>—this site. A
