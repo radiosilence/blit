@@ -39,22 +39,22 @@ in the work, and I'm the person people come to when something has to be done pro
 
 ## Selected Work
 
-- **Architect and lead engineer of a new Elixir service** replacing the reviews domain in
-  Fresha's monolith. 90M rows moved with the marketplace live, reads from a 5% canary to
-  100% in two days, 157M requests a week now.
-- **A WebSocket server running on the phone**, in Java and Swift as React Native modules,
-  because the television it drove was locked inside a browser and something had to do
-  the talking.
-- **[nano-web](https://github.com/radiosilence/nano-web)**—in-memory static file server
-  in Rust. 240+ stars. Serving this page from a cupboard.
+- **I designed and led a new Elixir service** to replace the reviews domain in Fresha's
+  monolith. I moved 90M rows with the marketplace live and took reads from a 5% canary to
+  100% in two days. It now handles 157M requests a week.
+- **A WebSocket server running on a phone**, written in Java and Swift as React Native
+  modules, because the TV app it controlled was stuck inside a browser and couldn't be
+  reached any other way.
+- **[nano-web](https://github.com/radiosilence/nano-web)**—an in-memory static file
+  server in Rust, 240+ stars. It serves this page, from a cupboard.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check Credit
-  Suisse's CSPM needed, so I went to their office and made the case. They changed the
-  platform. For my client, and for everyone else on it.
+  Suisse's CSPM needed, so I went to their office and made the case, and they changed the
+  platform for my client and everyone else on it.
 - **Found the hole in pip.** In 2013 it fetched packages over plain HTTP and verified
-  nothing. I argued it had to check SSL certificates. Shipped in pip 1.3 as the fix for
-  CVE-2013-1629, credited by name in the release notes.
-- **An Android app and the entire AWS backend behind it**—React Native, CDK, Lambda,
-  DynamoDB, API Gateway—from nothing, for bike delivery drivers.
+  nothing. I argued it had to check SSL certificates, and that shipped in pip 1.3 as the
+  fix for CVE-2013-1629, with me credited by name in the release notes.
+- **An Android app and the entire AWS backend behind it**, built from nothing for bike
+  delivery drivers in React Native, CDK, Lambda, DynamoDB and API Gateway.
 
 ## Recent Work
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>2025–Present</small>
@@ -68,130 +68,114 @@ _Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Ne
 React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
 Actions, Docker, Kubernetes_
 
-- **Reviews service** — a venue's rating decides where it ranks, which makes the reviews
-  table the most load-bearing thing in the building. It lived in the monolith. I designed
-  and led the Elixir service that took it out: its own Postgres schema and connection
-  pooler, gRPC and protobuf contracts for the other services, a GraphQL surface for
-  clients, and the frontend on top. Delivery owner across web, iOS, Android and backend,
-  then production owner through the rollout. A progressive canary across all four
-  components, reads from 5% to 100% in two days, and I held the pager. Around 157M
-  requests a week.
-- **Migration** — around 90M rows, marketplace live, no downtime window because a
-  marketplace doesn't have one. Reads first, then writes, over a sync that kept the old
-  system authoritative until it wasn't needed. Parity monitored throughout. Every stage
-  reversible. Ten teams still had their hands in those tables and each had to agree where
-  the new edge was, which is not engineering, and is most of the job. A script won't move
-  that much out of a live system, so I built the tool: restarts where it stopped with
-  per-partition ETAs, a throttle that reads the database's own vital signs and backs off
-  before production feels it, a circuit breaker, one bad row unable to kill a run, and a
-  diff mode that prints only what the two sides disagree about. Fed from S3 history,
-  Snowflake dumps and a live Kafka mirror.
-- **Sync drift** — the two systems would not stay in step, and why was the interesting
-  part. Undocumented callers. Background jobs nobody remembered. Internal support tasks
-  that had been corrupting review data for years without anyone noticing. I repaired the
-  windows where it happened, built targeted repair for individual staff records, then
-  handed the support team tools that did their job without doing that, because removing
-  a broken thing without replacing it just moves the damage. Private replies stayed
-  private throughout.
-- **Attribution** — the monolith credited a review to whoever was on the invoice line.
-  Not to whoever did the work. About 120,000 reviews all-time, one in 230, went to the
-  wrong person, and on this marketplace the wrong person's rating moved. The new service
-  attributes from the calendar booking, keeps that attribution once made, records a row
-  for everyone who worked on the appointment, and says when a professional has left
-  rather than pretending they were never there.
-- **Events and warehouse** — the service's own changes go out to Kafka through an outbox.
-  While the monolith was still the source of truth, its topics were consumed to mirror
-  every write live, behind a kill switch. Dead-letter topics with depth monitoring. A
-  reply arriving before its parent review warns and skips, because ordering across two
-  systems is not something you get to assume. Rating-change events feed marketplace
-  ranking. The new tables stream into Snowflake through Postgres logical replication and
-  a change-data-capture connector, poisoned rows excluded so one bad record can't stall
-  the pipeline.
-- **Postgres and operations** — a denormalised line-item table so rating aggregates,
-  search facet counts and sorts read from one place instead of joining across the domain.
-  Composite and covering indexes, GIN full-text search over review bodies, index
-  predicates rather than query filters where the predicate was the win, autovacuum on a
-  fixed insert threshold, seven dead or prefix-redundant indexes dropped. Datadog with
-  I/O attribution, Metabase parity dashboards, paging on error rate and latency. Getting
-  it into production meant PgBouncer CA trust, IPv6 bind, and a CPU ceiling that turned
-  out to be the bug rather than the sizing.
-- **API surfaces** — the gRPC surface cut to seven calls, each shaped to what one caller
-  actually needs, with batch reads made O(1) behind a single windowed query. GraphQL held
-  to the company's pagination standard: query cost ceilings, hardened cursor decoding,
-  field-level redaction, role-based authorisation on reply mutations, and nullable root
-  connections so one failing field degrades the page instead of blanking it. Schema drift
-  and colliding migration versions both caught in CI, each opening its own correcting
-  pull request. On the B2C gateway, generated schemas replaced with ones shaped to the
-  domain, eager resolvers made lazy and batched, and a proper deprecation lifecycle run
-  on the legacy fields.
-- **AI replies** — the whole stack. Who's entitled to it, the generator, a reply voice
-  built from the business's own description of itself, moderation with the strategy
-  chosen by flag, and the worker that publishes. Everything is drafted before it is
-  published or cancelled, so nothing goes out at a customer unseen. The business's
-  remaining balance is read live at every billing decision, and running out cancels
-  scheduled replies rather than failing open. Partner side: a replies tab, an enhance
-  action on drafts, and a countdown before a scheduled reply goes out. 2,343 replies
-  published and 129 businesses on full automation in the first weeks.
-- **Search** — consumer search rebuilt across the SPA, the gateway and the search
-  service, and the previous search deleted outright, which is the part people skip.
-  Type-specific paginated autocomplete. Search history as its own service, with Redis
-  failures absorbed rather than handed to the user. Server-side spatial clustering
-  streamed while you pan and zoom. Distance measured to a venue's actual boundary rather
-  than a pin, and weighted differently for a person than for a building. The search
-  service runs at around 119M requests a week.
-- **Loyalty** — my first project here and the largest consumer release to date. Points,
-  tiers, the rules for which items a reward applies to and who qualifies, and the wallet,
-  from schema through gateway resolvers to the UI. I led the parts I had context on and
-  learned Elixir on the way.
-- **Shared libraries** — the Elixir libraries every other service depends on, which is
-  the least glamorous work available and the highest leverage. A broker connection and a
-  Redis process leaked on every failed health probe. Two paths interned atoms from
-  runtime input, which the BEAM never frees, so given enough traffic the node dies. Also
-  the treatment taxonomy the whole marketplace searches against: CLDR and BCP-47 locale
-  handling, correct pluralisation, gettext catalogues and TypeScript codegen, with CI that
-  regenerates the lot and opens its own pull request.
-- **Supply chain** — an organisation that is harder to attack through its dependencies,
-  rather than one that is merely patched. SHA-pinned actions, toolchains pinned through
-  mise, isolated installs with a build-script allowlist, exact pins and registry-only
-  resolution, and registry-fetch-and-execute patterns killed out of the install path. I
-  wrote the standard that carried it, including the first-party carve-out without which
-  nobody could have followed it. A rule nobody can follow is not a rule.
-- **Other engineers** — 615 pull requests reviewed for other people. Mentoring through
-  the hard problems, and working at product level so the technical decisions matched
-  what the business needed rather than what was easiest to build. The gateway migrated
-  from Jest to Vitest, custom ESLint rules for the marketplace codebase, and an internal
-  Claude plugin marketplace including a skill that takes a ticket through to an opened
-  pull request.
+**I designed and led the service that took reviews out of the monolith.** A venue's
+rating decides where it ranks, so on a marketplace this is about as load-bearing as data
+gets. The new service is Elixir with its own Postgres and connection pooler, gRPC and
+protobuf contracts for the other backend services, GraphQL for the apps, and the
+frontend on top. I owned delivery across web, iOS, Android and backend, then owned it in
+production: a progressive canary across all four, reads from 5% to 100% in two days,
+with me on the pager. It handles around 157M requests a week.
+
+**I moved around 90M rows out from under the live marketplace**, with no downtime
+window, because a marketplace doesn't have one. Reads moved first, then writes, over a
+sync that kept the old system authoritative until we no longer needed it, with parity
+monitored and every stage reversible. A script won't move that much data out of a live
+system, so I built a proper tool: it resumes where it stopped with per-partition ETAs,
+watches the database's own load and backs off before production notices, has a circuit
+breaker, can't be killed by one bad row, and has a diff mode that prints only where the
+two sides disagree. It fed from S3 history, Snowflake dumps and a live Kafka mirror. Ten
+teams still touched those tables, and getting all of them to agree on where the new
+boundary sat was as much of the job as the code.
+
+**Keeping the two systems in step turned up years of hidden damage.** Undocumented
+callers, background jobs nobody remembered, and internal support tooling that had been
+quietly corrupting review data for years. I repaired the affected windows and replaced
+the support tools with ones that did the same job safely, rather than switching the old
+ones off and leaving support without them. The same digging found that the monolith
+credited each review to whoever was on the invoice line, not whoever did the work:
+about 120,000 reviews, one in 230, had gone to the wrong person and moved the wrong
+person's rating. The new service attributes from the calendar booking, credits everyone
+who worked on the appointment, and records when a professional has left instead of
+pretending they were never there.
+
+**Underneath, the data plumbing and Postgres work.** The service publishes its changes
+to Kafka through an outbox, and while the monolith was still the source of truth I
+mirrored its writes in live from its topics, behind a kill switch, with dead-letter
+topics and depth monitoring. Rating changes feed marketplace ranking, and the tables
+stream into Snowflake through Postgres logical replication and change data capture, with
+poisoned rows excluded so one bad record can't stall the pipeline. A denormalised
+line-item table lets rating aggregates, search facet counts and sorts read from one
+place instead of joining across the domain, backed by composite and covering indexes,
+partial indexes where the predicate was the win, and GIN full-text search over review
+bodies. I cut the gRPC surface to seven calls, each shaped to what its caller needs,
+with batch reads served by a single windowed query. The GraphQL side has query cost
+ceilings, field-level redaction, role-based authorisation on reply mutations, and
+nullable root connections so one failing field degrades a page instead of blanking it.
+Datadog with I/O attribution, Metabase parity dashboards, and paging on error rate and
+latency.
+
+**I built AI-drafted review replies end to end**: who's entitled to them, the generator,
+a reply voice built from the business's own description of itself, moderation, and the
+worker that publishes. Every reply is a draft until it's published or cancelled, so
+nothing reaches a customer unseen, and the business's remaining balance is read live at
+every billing decision, so running out cancels scheduled replies rather than failing
+open. Partners get a replies tab, an enhance action on drafts, and a countdown before a
+scheduled reply goes out. In the first weeks, 2,343 replies were published and 129
+businesses moved to full automation.
+
+**I rebuilt consumer search** across the web app, the gateway and the search service,
+and deleted the old one outright. Paginated autocomplete by result type, search history
+as its own service that absorbs Redis failures rather than handing them to the user,
+server-side map clustering streamed as you pan and zoom, and distance measured to a
+venue's actual boundary rather than a pin. The search service runs at around 119M
+requests a week. Before that, my first project here was loyalty, Fresha's largest
+consumer release to date: points, tiers, reward eligibility and the wallet, from schema
+through gateway resolvers to the UI. I led the parts I had context on and learned Elixir
+on the way.
+
+**I also work on what everyone else depends on.** In the shared Elixir libraries I fixed
+a broker connection and a Redis process that leaked on every failed health probe, and
+two paths that created atoms from runtime input, which the BEAM never frees, so with
+enough traffic the node dies. I worked on the treatment taxonomy the whole marketplace
+searches against, with CLDR and BCP-47 locale handling, proper pluralisation, gettext
+catalogues and TypeScript codegen that CI regenerates on its own. I wrote the
+organisation's supply chain standard: SHA-pinned actions, toolchains pinned through
+mise, isolated installs with a build-script allowlist, exact pins and registry-only
+resolution, and no fetch-and-execute in the install path, with a first-party carve-out
+so people could follow it. I've reviewed 615 pull requests for other engineers, mentored
+people through hard problems, and worked at product level so technical decisions fit
+what the business needed rather than what was easiest to build. I also built an internal
+Claude plugin marketplace, including a skill that takes a ticket through to an opened
+pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
 _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub
 Actions_
 
-- Next.js and TypeScript features for a migration onto a new architecture, and the
-  NestJS APIs behind them.
-- The legacy React frontends and Express microservices kept alive through the
-  migration. Someone has to.
-- Performance problems debugged in services running on Kubernetes, and the existing
-  GitHub Actions pipelines extended.
+- Built Next.js and TypeScript features for the move to a new architecture, and the
+  NestJS APIs behind them, while keeping the legacy React frontends and Express
+  microservices running through the migration.
+- Debugged performance problems in services on Kubernetes and extended the GitHub
+  Actions pipelines.
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>2022–2024</small>
 
 _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
 Cloud Foundry, BOSH_
 
-- Cloud native consultancy. Enterprise platforms moved onto declarative infrastructure
-  and continuous deployment, with reproducibility and resistance to drift put ahead of
-  strict GitOps where the two disagreed.
-- Cloud Security Posture Management policy across cloud platforms. Azure Policy was
-  badly out of step with the rest of Azure, its JSON was poorly documented, and it
-  couldn't express something Credit Suisse needed for their CSPM to work at all. I made
-  the case to Microsoft at their Paddington office. A few weeks later the platform could.
-- Python tooling that audited code and deployments across enterprise estates too large
+- Cloud native consultancy. I moved enterprise platforms onto declarative
+  infrastructure and continuous deployment, putting reproducibility and resistance to
+  drift ahead of strict GitOps where the two disagreed.
+- Cloud Security Posture Management policy across cloud platforms. Azure Policy lagged
+  badly behind the rest of Azure, its JSON was poorly documented, and it couldn't express
+  something Credit Suisse needed for their CSPM to work at all. I made the case to
+  Microsoft at their Paddington office, and a few weeks later it could.
+- Wrote Python tooling to audit code and deployments across enterprise estates too large
   for anyone to inspect by hand.
-- CI in Concourse, GitHub Actions and GitLab, at a scale where the pipeline is a system
-  in its own right.
-- Contributions to Kubernetes External Secrets Operator, mostly by pairing with less
+- CI in Concourse, GitHub Actions and GitLab for estates where the pipeline is a large
+  system of its own.
+- Contributed to Kubernetes External Secrets Operator, mostly by pairing with less
   experienced engineers and bringing them on, and to Compliance Framework, a verified
   CSPM auditing tool.
 
@@ -202,14 +186,14 @@ Cloud Foundry, BOSH_
 _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
-- An internal Android app and all of its infrastructure, from nothing, for bike delivery
-  drivers: job viewing, notes and photo upload, training with quizzes and video, and
-  taking the customer's payment.
-- Greenfield and serverless throughout—CDK, Lambda, DynamoDB, API Gateway,
-  CloudFront—integrating with what already existed rather than replacing it.
+- Built an internal Android app and all of its infrastructure from nothing, for bike
+  delivery drivers: job viewing, notes and photo upload, training with quizzes and video,
+  and taking the customer's payment.
+- Greenfield and serverless throughout (CDK, Lambda, DynamoDB, API Gateway, CloudFront),
+  integrating with what was already there rather than replacing it.
 - React Native with MobX-State-Tree and a thin layer of AWS Amplify.
-- A BitBucket pipeline that deploys the infrastructure, reads the CloudFront outputs back
-  out of it and builds the app against them. A new environment needs no hands.
+- The BitBucket pipeline deploys the infrastructure, reads the CloudFront outputs back
+  and builds the app against them, so a new environment needs nobody to touch it.
 - Audited the existing infrastructure code and shipped the security fixes.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>2020–2022</small>
@@ -217,14 +201,14 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- Companion app in React Native. The TV app lived inside a browser and couldn't be
-  reached, so the phone ran a WebSocket server and spoke to the television directly
-  across the LAN.
-- The native WebSocket transport for both platforms as React Native modules—Java on
-  Android, Swift on iOS, Grand Central Dispatch to get the threading right.
+- Built the companion app in React Native. The TV app lived inside a browser and
+  couldn't be reached, so I had the phone run a WebSocket server and talk to the
+  television directly over the LAN.
+- Wrote the native WebSocket transport for both platforms as React Native modules: Java
+  on Android, Swift on iOS, with Grand Central Dispatch to get the threading right.
 - Internal curation tooling on MobX-State-Tree, Tailwind and Vite.
-- A statically generated e-commerce site with account servicing in Astro, when Astro was
-  new.
+- A statically generated e-commerce site with account servicing in Astro, back when
+  Astro was new.
 
 ### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>2019–2024</small>
 
@@ -232,26 +216,26 @@ AWS, MobX-State-Tree, Vite_
 
 _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSockets_
 
-- Brought in by a former business partner to build the app for a new venture and restart
+- A former business partner brought me in to build the app for a new venture and restart
   an earlier one, in React Native and Firebase.
-- The codebase moved from class components and Redux to functional components with
+- Moved the codebase from class components and Redux to functional components with
   hooks, wrapped in mobx-react observers.
 - I came to MobX-State-Tree sceptical, because I liked the explicit immutability I knew
-  from Redux, and it won. Observables, mutable-style updates, flows for side effects, a
-  fraction of the boilerplate.
+  from Redux, and it won me over: observables, mutable-style updates, flows for side
+  effects, and a fraction of the boilerplate.
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>2018–2020</small>
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
-- Led the credit card section of Zopa's app, React Native and Redux.
-- Native modules in Swift and Kotlin against Stripe's card issuing APIs while those APIs
-  were new.
-- Kept the codebase current, and picked up hooks when they made sense for it rather than
-  the day they appeared.
-- detox and @testing-library/react-native for coverage.
+- Led the credit card section of Zopa's app, in React Native and Redux.
+- Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while those
+  APIs were still new.
+- Kept the codebase current, picking up hooks when they made sense for it rather than the
+  day they appeared.
+- Test coverage with detox and @testing-library/react-native.
 - Learned the financial products well enough to be useful to the analysts and backend
-  engineers, and fixed backend bugs where that was the shortest route.
+  engineers, and fixed backend bugs myself when that was the quickest route.
 
 ## Open Source
 
@@ -259,13 +243,13 @@ Handwritten the old way, or architected by hand and written with AI: everything 
 there for anyone with the curiosity to look.
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
-  240+★</small>—in-memory static file server for SPAs and static content. Serves this
-  site. From my cupboard.
+  240+★</small>—in-memory static file server for SPAs and static content. It serves
+  this site, from my cupboard.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>—my
   own infrastructure as a single Pulumi program. It provisions a Hetzner VPS, installs
   k3s on it, reads the kubeconfig back as an output of the same run that consumes it, and
-  deploys into the cluster it just built. No secret round-trip, nothing for a human to
-  rotate. Cilium as the CNI so NetworkPolicies are actually enforced, Traefik terminating
+  deploys into the cluster it just built, so there's no secret round-trip and nothing for
+  a human to rotate. Cilium as the CNI so NetworkPolicies are actually enforced, Traefik terminating
   Let's Encrypt TLS over DNS-01, and a censorship-resistant proxy layer—Xray
   VLESS-REALITY, Hysteria2, unbound, tailscale—running as hostNetwork DaemonSets rather
   than systemd units, so the host itself runs k3s and sshd and nothing else. Xray owns
@@ -287,7 +271,7 @@ there for anyone with the curiosity to look.
   [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp). All share a
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields it
-  needs. Far fewer tokens, and it fails in ways a model can read.
+  needs. It uses far fewer tokens, and when it fails, a model can read why.
 - **[koan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>—a music
   player and server on one Rust core: native SwiftUI apps for macOS and iOS with the core
   linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless server with a
@@ -378,45 +362,46 @@ I follow current affairs closely, especially where the technology is.
 _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
 Gateway, Apigee, Auth0, Swagger_
 
-- The allocation UI that controllers used to assign deliveries and bookings to couriers.
-- The codebase modernised onto React 16, Redux and redux-observable for side effects.
+- Built the allocation UI controllers used to assign deliveries and bookings to
+  couriers.
+- Moved the codebase onto React 16, Redux and redux-observable for side effects.
 - Authentication (Auth0), authorisation (Lambda and JWT), user management, and API
-  aggregation across Swagger, API Gateway and Apigee. All mine.
+  aggregation across Swagger, API Gateway and Apigee were all mine.
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>2015–2017</small>
 
 _Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ, Redis,
 C++, C#, .NET, Qt_
 
-- Led engineering across the innovation and frontend teams: frontend systems built and
-  rebuilt, and the internal services behind them.
-- Three products architected and built, shipped and forthcoming, and the engineers on
-  them mentored.
-- Patterns and practices the wider technical team adopted.
-- Database and system architecture, UX and product design, wherever that was what the
-  problem needed.
+- Led engineering across the innovation and frontend teams, building and rebuilding
+  frontend systems and the internal services behind them.
+- Architected and built three products, shipped and forthcoming, and mentored the
+  engineers on them.
+- Set patterns and practices the wider technical team adopted.
+- Worked on database and system architecture, UX and product design, wherever the
+  problem needed it.
 
 ### Lead Frontend Developer, Bootbag <small>2014–2015</small>
 
 _Key Skills: React, flux, WebSockets, CSS, HTML_
 
-- A startup's frontend prototyped and built in React, early enough that most of the
+- Prototyped and built a startup's frontend in React, early enough that most of the
   patterns didn't exist yet.
 
 ### Technical Director, Links Creative <small>2013–2015</small>
 
 _Key Skills: Django, PHP, AngularJS, jQuery, Node.js, Express, C#, .NET, Linux, nginx_
 
-- Technical director of a small Brighton agency. Client ideas taken through to shipped
-  products in Django, AngularJS, jQuery and PHP.
+- Ran the technical side of a small Brighton agency, taking client ideas through to
+  shipped products in Django, AngularJS, jQuery and PHP.
 
 ### Web Developer, Freelance <small>2010–2013</small>
 
 _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apache_
 
-- Moved to Brighton and landed in the deep end. Learned to network, to manage a project,
-  and to lean on technical skills that were improving as fast as the work demanded.
-  That's where the product instinct came from.
+- Moved to Brighton and landed in the deep end. I learned to network, to manage a
+  project, and to lean on technical skills that were improving as fast as the work
+  demanded, and that's where the product instinct came from.
 
 ### PHP Developer / Sysadmin, The Escape Committee <small>2007–2009</small>
 
