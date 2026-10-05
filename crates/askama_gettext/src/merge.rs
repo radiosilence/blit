@@ -572,7 +572,7 @@ mod tests {
             [("read my CV".to_owned(), "read my resume".to_owned())]
         );
         // Carried, not lost — so it does not count as removed.
-        assert!(summary.removed.is_empty());
+        assert_eq!(summary.removed, Vec::<String>::new());
         assert_eq!(summary.untranslated, 0);
 
         let after = std::fs::read_to_string(&path).unwrap();
@@ -652,7 +652,7 @@ mod tests {
 
         let summary = into_catalog(&path, "pl-PL", &[site("here", None)]).unwrap();
 
-        assert!(summary.removed.is_empty());
+        assert_eq!(summary.removed, Vec::<String>::new());
         let after = std::fs::read_to_string(&path).unwrap();
         assert!(after.contains("fuzzy"), "flag lost:\n{after}");
         assert!(after.contains("tutaj"), "translation lost:\n{after}");
