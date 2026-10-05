@@ -316,6 +316,6 @@ mod tests {
 
     #[test]
     fn ignores_a_non_literal_id() {
-        assert!(extract("{{ __(some_variable) }}").is_empty());
+        assert_eq!(extract("{{ __(some_variable) }}"), Vec::<Message>::new());
     }
 }
