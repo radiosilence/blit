@@ -168,21 +168,24 @@ Actions_
 _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
 Cloud Foundry, BOSH_
 
-- Cloud native consultancy. I moved enterprise platforms onto declarative
-  infrastructure and continuous deployment, putting reproducibility and resistance to
-  drift ahead of strict GitOps where the two disagreed. Along the way I wrote Kubernetes
-  controllers in Go.
-- Cloud Security Posture Management policy across cloud platforms. Azure Policy lagged
-  badly behind the rest of Azure, its JSON was poorly documented, and it couldn't express
-  something Credit Suisse needed for their CSPM to work at all. I made the case to
-  Microsoft at their Paddington office, and a few weeks later it could.
+- I wanted to step out of frontend work and broaden my skills, so I joined a small
+  consultancy that helps companies move their infrastructure and processes onto
+  continuous deployment, and their software onto cloud platforms built to run it. We
+  took enterprise projects of real complexity and made them manageable, scalable and
+  declarative, putting reproducibility and resistance to drift ahead of strict GitOps
+  where the two disagreed.
+- Wrote Kubernetes controllers in Go, and CI in Concourse, GitHub Actions and GitLab for
+  estates where the pipeline is a large system of its own.
+- Implemented Cloud Security Posture Management in several different ways for different
+  clients. Azure Policy lagged badly behind the rest of Azure, its JSON was poorly
+  documented, and it couldn't express something Credit Suisse needed for their CSPM to
+  work at all. I went to Microsoft's Paddington office to make the case, and a few weeks
+  later it could.
 - Wrote Python tooling to audit code and deployments across enterprise estates too large
   for anyone to inspect by hand.
-- CI in Concourse, GitHub Actions and GitLab for estates where the pipeline is a large
-  system of its own.
-- Contributed to Kubernetes External Secrets Operator, mostly by pairing with less
-  experienced engineers and bringing them on, and to Compliance Framework, a verified
-  CSPM auditing tool.
+- Between clients I contributed to Kubernetes External Secrets Operator, mostly by
+  pairing with less experienced engineers and bringing them on, and to Compliance
+  Framework, an open source CSPM auditing tool that has since been retired.
 
 ### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>2021–2024</small>
 
@@ -191,30 +194,35 @@ Cloud Foundry, BOSH_
 _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
-- A former manager brought me in because I was the person he trusted to get it built.
-- Built an internal Android app and all of its infrastructure from nothing, for bike
-  delivery drivers: job viewing, notes and photo upload, training with quizzes and video,
-  and taking the customer's payment.
-- Greenfield and serverless throughout (CDK, Lambda, DynamoDB, API Gateway, CloudFront),
-  integrating with what was already there rather than replacing it.
-- React Native with MobX-State-Tree and a thin layer of AWS Amplify.
+- A former manager needed an internal Android app built quickly and for a reasonable
+  cost, and brought me in because I was the person he trusted to get it done well. It
+  let bike delivery drivers view their jobs, upload notes and photos, do training with
+  quizzes and video, and by the end of the project take the customer's payment.
+- I enjoyed it because it was well defined and I was building all of it, app and
+  infrastructure. His existing systems were on AWS, so I chose CDK, Lambda, DynamoDB,
+  API Gateway and CloudFront for the backend and helped him integrate it with the
+  services he already had. It was good to have free rein on a greenfield project again
+  and make something fast, efficient and cheap to run.
+- The frontend is React Native with MobX-State-Tree and a thin layer of AWS Amplify.
 - The BitBucket pipeline deploys the infrastructure, reads the CloudFront outputs back
-  and builds the app against them, so a new environment needs nobody to touch it.
-- Audited the existing infrastructure code and shipped the security fixes.
+  and builds a working app against them. Everything is derived, so the only
+  configuration a new environment needs comes from its own variables.
+- Audited the existing infrastructure code and made it more secure in several places.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>2020–2022</small>
 
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- Built the companion app in React Native. The TV app lived inside a browser and
-  couldn't be reached, so I had the phone run a WebSocket server and talk to the
-  television directly over the LAN.
-- Wrote the native WebSocket transport for both platforms as React Native modules: Java
-  on Android, Swift on iOS, with Grand Central Dispatch to get the threading right.
-- Internal curation tooling on MobX-State-Tree, Tailwind and Vite.
-- A statically generated e-commerce site with account servicing in Astro, back when
-  Astro was new.
+- I built several key projects from scratch and worked on the core product, the
+  companion app in React Native. The TV app had to run inside a browser, so it couldn't
+  host any kind of daemon, and I came up with having the phone run a WebSocket server
+  that talks to the television directly over the LAN with low latency.
+- Wrote the native WebSocket transport for both platforms as React Native modules, Java
+  on Android and Swift on iOS, and made the iOS side thread-safe with Grand Central
+  Dispatch.
+- Built internal curation tools on MobX-State-Tree, Tailwind and Vite, and a statically
+  generated e-commerce and account servicing site in Astro when Astro was new.
 
 ### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>2019–2024</small>
 
@@ -222,26 +230,31 @@ AWS, MobX-State-Tree, Vite_
 
 _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSockets_
 
-- A former business partner brought me in to build the app for a new venture and restart
-  an earlier one, in React Native and Firebase.
-- Moved the codebase from class components and Redux to functional components with
-  hooks, wrapped in mobx-react observers.
-- I came to MobX-State-Tree sceptical, because I liked the explicit immutability I knew
-  from Redux, and it won me over: observables, mutable-style updates, flows for side
-  effects, and a fraction of the boilerplate.
+- A former business partner brought me in to build the app for a new venture and
+  restart an earlier project we'd worked on, in React Native, MobX-State-Tree and
+  Firebase.
+- I came to MobX-State-Tree sceptical, because I preferred the explicit, functional
+  immutability of Redux. I approached it with an open mind, and once I understood MobX's
+  observables and had moved the codebase from class components to functional components
+  with hooks, wrapped in mobx-react observers, the simplicity and elegance won me over:
+  observables for performance, mutable-style updates, flows for side effects, and very
+  little boilerplate.
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>2018–2020</small>
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
-- Led the credit card section of Zopa's app, in React Native and Redux.
+- My move into fintech. I led development of the credit card section of Zopa's app, in
+  React Native with Redux as the data layer.
 - Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while those
   APIs were still new.
-- Kept the codebase current, picking up hooks when they made sense for it rather than the
-  day they appeared.
-- Test coverage with detox and @testing-library/react-native.
-- Learned the financial products well enough to be useful to the analysts and backend
-  engineers, and fixed backend bugs myself when that was the quickest route.
+- I learned a huge amount about React Native there. The team kept the codebase current
+  and picked up new things like hooks as soon as they made sense, and put a heavy
+  emphasis on well-reviewed, well-tested code, with detox and
+  @testing-library/react-native.
+- I worked closely with the analysts and backend engineers, fixing a few of their bugs
+  along the way, and learned the financial products in depth so I could be more useful
+  as an engineer.
 
 ## Open Source
 
@@ -368,24 +381,27 @@ I follow current affairs closely, especially where the technology is.
 _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
 Gateway, Apigee, Auth0, Swagger_
 
-- Built the allocation UI controllers used to assign deliveries and bookings to
-  couriers.
-- Moved the codebase onto React 16, Redux and redux-observable for side effects.
-- Authentication (Auth0), authorisation (Lambda and JWT), user management, and API
-  aggregation across Swagger, API Gateway and Apigee were all mine.
+- Part of the team that owned the frontend, mainly the allocation UI controllers used to
+  assign deliveries and bookings to couriers.
+- Helped refactor the whole codebase onto React 16, Redux and redux-observable for side
+  effects.
+- Started taking on backend projects there, and took ownership of authentication
+  (Auth0), authorisation (Lambda and JWT), user management, and automated API
+  aggregation across Swagger, API Gateway and Apigee.
 
 ### Lead Frontend Developer, [SmartFocus](https://www.actito.com) <small>2015–2017</small>
 
 _Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ, Redis,
 C++, C#, .NET, Qt_
 
-- Led engineering across the innovation and frontend teams, building and rebuilding
-  frontend systems and the internal services behind them.
-- Architected and built three products, shipped and forthcoming, and mentored the
-  engineers on them.
-- Set patterns and practices the wider technical team adopted.
-- Worked on database and system architecture, UX and product design, wherever the
-  problem needed it.
+- Lead engineer in the innovation and frontend teams at a London marketing technology
+  company, where I built and rebuilt a large share of the frontend code and internal
+  services.
+- Architected and built three of their core products, shipped and forthcoming, in React,
+  Redux and Node.js, and mentored the other engineers on them.
+- Set patterns and practices that the wider technical team adopted.
+- Whenever a problem needed solving, whether database architecture, system design, or UX
+  and product design, I used what I knew and learned whatever else it took.
 
 ### Lead Frontend Developer, Bootbag <small>2014–2015</small>
 
@@ -398,8 +414,8 @@ _Key Skills: React, flux, WebSockets, CSS, HTML_
 
 _Key Skills: Django, PHP, AngularJS, jQuery, Node.js, Express, C#, .NET, Linux, nginx_
 
-- Ran the technical side of a small Brighton agency, taking client ideas through to
-  shipped products in Django, AngularJS, jQuery and PHP.
+- Technical director of a small Brighton agency. Mostly Django, AngularJS, jQuery and
+  PHP, taking projects from ideas in clients' heads to fully developed products.
 
 ### Web Developer, Freelance <small>2010–2013</small>
 
