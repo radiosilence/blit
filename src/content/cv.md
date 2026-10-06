@@ -45,11 +45,11 @@ in the work, and I'm the person people come to when something has to be done pro
 - **A WebSocket server running on a phone**, written in Java and Swift as React Native
   modules, because the TV app it controlled was stuck inside a browser and couldn't be
   reached any other way.
-- **[nano-web](https://github.com/radiosilence/nano-web)**—an in-memory static file
-  server in Rust, 240+ stars. It serves this page, from a cupboard.
-- **Got Microsoft to change Azure Policy.** It couldn't express a compliance check Credit
-  Suisse's CSPM needed, so I went to their office and made the case, and they changed the
-  platform for my client and everyone else on it.
+- **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
+  server in Rust with 240+ stars. It serves this page, from a cupboard.
+- **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
+  Credit Suisse's CSPM needed, so I went to their office and made the case, and they
+  changed the platform for my client and everyone else on it.
 - **Found the hole in pip.** In 2013 it fetched packages over plain HTTP and verified
   nothing. I argued it had to check SSL certificates, and that shipped in pip 1.3 as the
   fix for CVE-2013-1629, with me credited by name in the release notes.
@@ -71,60 +71,61 @@ Actions, Docker, Kubernetes_
 - **Designed and led the service that took reviews out of the monolith.** A venue's
   rating decides where it ranks, so this is some of the most important data in the
   company.
-  - Elixir, with its own Postgres and connection pooler, gRPC contracts for other
-    services, GraphQL for the apps, and the frontend on top.
+  - Built in Elixir with its own Postgres and connection pooler, gRPC contracts for
+    other services, GraphQL for the apps, and the frontend on top.
   - Owned delivery across web, iOS, Android and backend, then owned it in production.
     We took reads from a 5% canary to 100% in two days (me on the pager), and it now
     serves around 157M requests a week.
 - **Moved around 90M rows with the marketplace live.** There's no downtime window on a
   marketplace, so we moved reads, then writes, over a sync that kept the old system
   authoritative, with parity monitored and every stage reversible.
-  - A script wasn't going to survive that, so it got a proper migration tool: resumable with
-    per-partition ETAs, throttled on the database's own vital signs, circuit-broken,
-    immune to a single bad row, and with a diff mode that prints only where the two sides
-    disagree. Fed from S3, Snowflake and a live Kafka mirror.
+  - Wrote a migration tool for it, because a script wouldn't survive that much live
+    data. It resumes with per-partition ETAs, throttles on the database's own vital
+    signs, has a circuit breaker, shrugs off a single bad row, and has a diff mode that
+    prints only where the two sides disagree. Fed from S3, Snowflake and a live Kafka
+    mirror.
   - Ten teams had their hands in those tables, and agreeing the new boundary with all of
     them was as much of the job as the code.
 - **Keeping the two systems in step uncovered years of silent data corruption**, from
   undocumented callers, forgotten background jobs and internal support tooling.
-  Repaired the damage and replaced the support tools with safe ones, rather than just
-  switching them off.
+  Repaired the damage and gave the support team safe replacements for the tools that
+  caused it.
 - **Fixed review attribution.** The monolith credited the invoice line, not whoever did
   the work, so about 120,000 reviews (one in 230) had moved the wrong person's rating.
   The new service attributes from the calendar booking, credits everyone on the
   appointment, and keeps people who've left.
-- **Events and data.** Changes go out to Kafka through an outbox; during the migration the
-  service mirrored the monolith's writes in live from its topics, behind a kill switch with
-  dead-letter queues. Rating changes feed marketplace ranking, and the tables stream into
-  Snowflake via logical replication and CDC, poisoned rows excluded so one bad record
-  can't stall it.
-- **Schema and APIs built around how they're read.** A denormalised line-item table so
-  aggregates, facets and sorts never join across the domain, with covering, partial and
-  GIN full-text indexes. The gRPC surface cut to seven calls with batch reads in one
-  windowed query. GraphQL with cost ceilings, field-level redaction, role-based auth, and
-  nullable roots so one failing field degrades a page instead of blanking it.
+- **Wired the service into Kafka and Snowflake.** Changes go out through an outbox, and
+  during the migration the service mirrored the monolith's writes in live from its
+  topics, behind a kill switch with dead-letter queues. Rating changes feed marketplace
+  ranking, and the tables stream into Snowflake via logical replication and CDC,
+  poisoned rows excluded so one bad record can't stall it.
+- **Designed the schema and APIs around how they're read.** A denormalised line-item
+  table so aggregates, facets and sorts never join across the domain, with covering,
+  partial and GIN full-text indexes. Cut the gRPC API to seven calls, with batch reads
+  in one windowed query. Gave GraphQL cost ceilings, field-level redaction, role-based
+  auth, and nullable roots so one failing field degrades a page without blanking it.
 - **Built AI review replies end to end**: entitlement, generation in the business's
   own voice, moderation, publishing, and the partner UI. Everything is a draft until
-  published, and billing reads the live balance so running out cancels replies rather
-  than failing open. 2,343 published and 129 businesses on full automation in the first
+  published, and billing reads the live balance, so running out cancels scheduled
+  replies. 2,343 published and 129 businesses on full automation in the first
   weeks.
 - **Rebuilt consumer search** across the web app, gateway and search service, and
   deleted the old one: autocomplete, search history as its own service, server-side map
-  clustering streamed as you pan, and distance to a venue's real boundary rather than a
+  clustering streamed as you pan, and distance to a venue's boundary, not its
   pin. Around 119M requests a week.
 - **Loyalty was my first project**, and Fresha's largest consumer release to date:
   points, tiers, eligibility and the wallet, schema to UI. I learned Elixir on the way.
-- **Shared libraries and standards.** Fixed leaks in the shared Elixir libraries and two
-  paths that created atoms from runtime input (the BEAM never frees them, so enough
-  traffic kills the node). Built CLDR locale handling, pluralisation and TypeScript
-  codegen into the treatment taxonomy the marketplace searches against. Wrote the
-  organisation's supply chain standard (SHA-pinned actions, pinned toolchains, isolated
-  installs, no fetch-and-execute), with a first-party carve-out so people could follow
-  it.
-- **Other engineers.** 615 pull requests reviewed, mentoring through hard problems, and
-  product-level input so the technical decisions matched what the business needed.
-  Also built an internal Claude plugin marketplace, including a skill that takes a
-  ticket to an opened pull request.
+- **Hardened the shared code everyone else builds on.** Fixed leaks in the shared Elixir
+  libraries and two paths that created atoms from runtime input (the BEAM never frees
+  them, so enough traffic kills the node). Built CLDR locale handling, pluralisation and
+  TypeScript codegen into the treatment taxonomy the marketplace searches against. Wrote
+  the organisation's supply chain standard (SHA-pinned actions, pinned toolchains,
+  isolated installs, no fetch-and-execute), with a first-party carve-out so people could
+  follow it.
+- **Reviewed 615 pull requests for other engineers**, mentored people through hard
+  problems, and gave product-level input so technical decisions matched what the
+  business needed. Also built an internal Claude plugin marketplace, including a skill
+  that takes a ticket to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
@@ -132,7 +133,7 @@ _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS
 Actions_
 
 - Built Next.js features and NestJS APIs for a move to a new architecture, and kept the
-  legacy React frontends and Express microservices running until it landed.
+  legacy React frontends and Express microservices running until the move was done.
 - Debugged performance problems in services on Kubernetes and extended the GitHub
   Actions pipelines.
 
@@ -144,7 +145,7 @@ Cloud Foundry, BOSH_
 - I wanted to step out of frontend work and broaden my skills, so I joined a small
   consultancy that helps companies move their infrastructure and processes onto
   continuous deployment, and their software onto cloud platforms built to run it. We
-  took enterprise projects of real complexity and made them manageable, scalable and
+  took large, tangled enterprise projects and made them manageable, scalable and
   declarative, putting reproducibility and resistance to drift ahead of strict GitOps
   where the two disagreed.
 - Wrote Kubernetes controllers in Go, and CI in Concourse, GitHub Actions and GitLab for
@@ -219,8 +220,8 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 - My move into fintech, leading development of the credit card section of Zopa's app, in
   React Native with Redux as the data layer.
-- Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while those
-  APIs were still new.
+- Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while
+  those APIs were still new.
 - I learned a huge amount about React Native there. The team kept the codebase current
   and picked up new things like hooks as soon as they made sense, and put a heavy
   emphasis on well-reviewed, well-tested code, with detox and
@@ -234,62 +235,63 @@ Handwritten the old way, or architected by hand and written with AI: everything 
 there for anyone with the curiosity to look.
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
-  240+★</small>—in-memory static file server for SPAs and static content. It serves
+  240+★</small>: in-memory static file server for SPAs and static content. It serves
   this site, from my cupboard.
-- **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>—my
-  own infrastructure as a single Pulumi program. It provisions a Hetzner VPS, installs
-  k3s on it, reads the kubeconfig back as an output of the same run that consumes it, and
-  deploys into the cluster it just built, so there's no secret round-trip and nothing for
-  a human to rotate. Cilium as the CNI so NetworkPolicies are actually enforced, Traefik terminating
-  Let's Encrypt TLS over DNS-01, and a censorship-resistant proxy layer—Xray
-  VLESS-REALITY, Hysteria2, unbound, tailscale—running as hostNetwork DaemonSets rather
-  than systemd units, so the host itself runs k3s and sshd and nothing else. Xray owns
-  `:443` and passes unmatched traffic to Traefik, so the public site and the proxy share
-  a port. It runs this site, Navidrome, and an MCP gateway with Hydra and Postgres behind
-  it, with VictoriaMetrics and Grafana watching all of it. GitHub Actions previews the
-  stack on a pull request and applies it on merge, and a scheduled job tracks upstream
-  component versions and opens the bump itself.
+- **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
+  my own infrastructure as a single Pulumi program. It provisions a Hetzner VPS,
+  installs k3s on it, reads the kubeconfig back as an output of the same run that
+  consumes it, and deploys into the cluster it just built, so there's no secret
+  round-trip and nothing for a human to rotate. Cilium as the CNI so NetworkPolicies are
+  enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
+  censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, unbound, tailscale)
+  running as hostNetwork DaemonSets rather than systemd units, so the host itself runs
+  k3s and sshd and nothing else. Xray owns `:443` and passes unmatched traffic to
+  Traefik, so the public site and the proxy share a port. It runs this site, Navidrome,
+  and an MCP gateway with Hydra and Postgres behind it, with VictoriaMetrics and Grafana
+  watching all of it. GitHub Actions previews the stack on a pull request and applies it
+  on merge, and a scheduled job tracks upstream component versions and opens the bump
+  itself.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
-  65+★</small>—CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
-  attachment text extraction and masked email. Predates the official Fastmail MCP, largely
-  because I knew what I wanted out of it and couldn't be bothered waiting to find out if
-  they'd want the same.
-- **MCP servers in Rust**—[tfl-mcp](https://github.com/radiosilence/tfl-mcp), which
+  65+★</small>: CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
+  attachment text extraction and masked email. Predates the official Fastmail MCP,
+  largely because I knew what I wanted out of it and couldn't be bothered waiting to
+  find out if they'd want the same.
+- **MCP servers in Rust**: [tfl-mcp](https://github.com/radiosilence/tfl-mcp), which
   wraps TfL's REST API into a fully associated graph. Bots love it.
   [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp),
   [mcp-gateway](https://github.com/radiosilence/mcp-gateway),
   [caldav-cli](https://github.com/radiosilence/caldav-cli),
   [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp). All share a
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
-  sprawl of flat tools, so a model can find what exists and ask for exactly the fields it
-  needs. It uses far fewer tokens, and when it fails, a model can read why.
-- **[koan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>—a music
-  player and server on one Rust core: native SwiftUI apps for macOS and iOS with the core
-  linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless server with a
-  web UI, public share links, an OpenSubsonic-compatible API and an MCP server. Bit-perfect
-  CoreAudio output, gapless playback, 1TB+ libraries. Local and Subsonic/Navidrome libraries
-  merge into one, streamed through an aggressive local cache. The server pushes a playlist to
-  the linked phone or Mac over WebSocket, so an assistant using the MCP can build one from the
-  library and have it start playing there. Deployed on my own k3s cluster as a versioned
-  Pulumi component package.
-- **[GrogLog](https://github.com/radiosilence/groglog)** <small>Swift</small>—an iOS app: a
-  private, offline drink diary for cutting down, free, with no account, no adverts and
-  nothing sent anywhere. SQLite via GRDB, Lock Screen and Home Screen widgets, Shortcuts
-  integration.
-- **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>—a
+  sprawl of flat tools, so a model can find what exists and ask for exactly the fields
+  it needs. It uses far fewer tokens, and when it fails, a model can read why.
+- **[koan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>: a
+  music player and server on one Rust core: native SwiftUI apps for macOS and iOS with
+  the core linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless
+  server with a web UI, public share links, an OpenSubsonic-compatible API and an MCP
+  server. Bit-perfect CoreAudio output, gapless playback, 1TB+ libraries. Local and
+  Subsonic/Navidrome libraries merge into one, streamed through an aggressive local
+  cache. The server pushes a playlist to the linked phone or Mac over WebSocket, so an
+  assistant using the MCP can build one from the library and have it start playing
+  there. Deployed on my own k3s cluster as a versioned Pulumi component package.
+- **[GrogLog](https://github.com/radiosilence/groglog)** <small>Swift</small>: an iOS
+  app: a private, offline drink diary for cutting down, free, with no account, no
+  adverts and nothing sent anywhere. SQLite via GRDB, Lock Screen and Home Screen
+  widgets, Shortcuts integration.
+- **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>: a
   drop-in watchman replacement that doesn't eat your RAM.
-- **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>—this site. A
+- **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>: this site. A
   static site generator with a content-hashed asset pipeline that fails the build on an
   unreferenced or hand-written path, and `askama_gettext`, a gettext implementation for
   Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
   so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
   CSS and a font. The locale picker is `command`/`commandfor` and a native `<dialog>`.
-- **[pip](https://github.com/pypa/pip)**—opened
+- **[pip](https://github.com/pypa/pip)**: opened
   [#789](https://github.com/pypa/pip/pull/789) in 2013 arguing that pip had to verify
   SSL certificates, at a point where it fetched packages over plain HTTP and checked
   nothing. Shipped in pip 1.3 as the fix for CVE-2013-1629, credited by name in the
   release notes.
-- **Contributions elsewhere**—[TanStack
+- **Contributions elsewhere**: [TanStack
   Router](https://github.com/TanStack/router) (static prerendering fix, and docs),
   [Django REST Framework](https://github.com/encode/django-rest-framework) (timedelta
   support in the JSON encoder), [git-absorb](https://github.com/tummychow/git-absorb)
@@ -301,7 +303,7 @@ there for anyone with the curiosity to look.
   styles for Elixir number formatting),
   [sorl-thumbnail](https://github.com/jazzband/sorl-thumbnail),
   [bowser](https://github.com/bowser-js/bowser).
-- **Earlier**—[xr](https://github.com/radiosilence/xr) <small>440+★</small>,
+- **Earlier**: [xr](https://github.com/radiosilence/xr) <small>440+★</small>,
   [Ham](https://github.com/radiosilence/Ham) <small>380+★</small>, a PHP microframework
   from when that was a reasonable thing to write,
   [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
@@ -311,15 +313,15 @@ there for anyone with the curiosity to look.
 
 ## Skills
 
-**Daily**—TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
+**Daily**: TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
 Docker, Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
 
-**Strong**—Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
+**Strong**: Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 
-**Worked with**—Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
+**Worked with**: Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
 MSSQL, MongoDB, CouchDB, Couchbase, Memcached, Pulumi, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
 ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
@@ -353,8 +355,8 @@ I follow current affairs closely, especially where the technology is.
 _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
 Gateway, Apigee, Auth0, Swagger_
 
-- Part of the team that owned the frontend, mainly the allocation UI controllers used to
-  assign deliveries and bookings to couriers.
+- Part of the team that owned the frontend, mainly the allocation UI that controllers
+  used to assign deliveries and bookings to couriers.
 - Helped refactor the whole codebase onto React 16, Redux and redux-observable for side
   effects.
 - Started taking on backend projects there, and took ownership of authentication
