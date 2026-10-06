@@ -69,99 +69,110 @@ React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM,
 Actions, Docker, Kubernetes_
 
 - **I designed and led the service that took reviews out of the monolith.** A venue's
-  rating decides where it ranks, so on a marketplace this is about as load-bearing as
-  data gets.
-  - Elixir with its own Postgres and connection pooler, gRPC and protobuf contracts for
-    the other backend services, GraphQL for the apps, and the frontend on top.
-  - I owned delivery across web, iOS, Android and backend, then owned it in production: a
-    progressive canary across all four, reads from 5% to 100% in two days, with me on the
-    pager.
-  - It handles around 157M requests a week.
-- **I moved around 90M rows out from under the live marketplace**, with no downtime
-  window, because a marketplace doesn't have one.
-  - Reads moved first, then writes, over a sync that kept the old system authoritative
-    until we no longer needed it, with parity monitored and every stage reversible.
-  - A script won't move that much data out of a live system, so I built a proper tool: it
-    resumes where it stopped with per-partition ETAs, watches the database's own load and
-    backs off before production notices, has a circuit breaker, can't be killed by one bad
-    row, and has a diff mode that prints only where the two sides disagree. It fed from S3
-    history, Snowflake dumps and a live Kafka mirror.
-  - Ten teams still touched those tables, and getting all of them to agree on where the
-    new boundary sat was as much of the job as the code.
-- **Keeping the two systems in step turned up years of hidden damage.**
-  - Undocumented callers, background jobs nobody remembered, and internal support tooling
-    that had been quietly corrupting review data for years. I repaired the affected
-    windows and replaced the support tools with ones that did the same job safely, rather
-    than switching the old ones off and leaving support without them.
-  - The monolith credited each review to whoever was on the invoice line, not whoever did
-    the work: about 120,000 reviews, one in 230, had gone to the wrong person and moved
-    the wrong person's rating. The new service attributes from the calendar booking,
-    credits everyone who worked on the appointment, and records when a professional has
-    left instead of pretending they were never there.
-- **Underneath, the data plumbing and Postgres work.**
-  - The service publishes its changes to Kafka through an outbox. While the monolith was
-    still the source of truth I mirrored its writes in live from its topics, behind a kill
-    switch, with dead-letter topics and depth monitoring.
-  - Rating changes feed marketplace ranking, and the tables stream into Snowflake through
-    Postgres logical replication and change data capture, with poisoned rows excluded so
-    one bad record can't stall the pipeline.
-  - A denormalised line-item table lets rating aggregates, search facet counts and sorts
-    read from one place instead of joining across the domain, backed by composite and
-    covering indexes, partial indexes where the predicate was the win, and GIN full-text
-    search over review bodies.
-  - I cut the gRPC surface to seven calls, each shaped to what its caller needs, with
-    batch reads served by a single windowed query. The GraphQL side has query cost
-    ceilings, field-level redaction, role-based authorisation on reply mutations, and
-    nullable root connections so one failing field degrades a page instead of blanking it.
-  - Datadog with I/O attribution, Metabase parity dashboards, and paging on error rate and
-    latency.
-- **I built AI-drafted review replies end to end.**
-  - Who's entitled to them, the generator, a reply voice built from the business's own
-    description of itself, moderation, and the worker that publishes.
-  - Every reply is a draft until it's published or cancelled, so nothing reaches a
-    customer unseen. The business's remaining balance is read live at every billing
-    decision, so running out cancels scheduled replies rather than failing open.
-  - Partners get a replies tab, an enhance action on drafts, and a countdown before a
-    scheduled reply goes out.
-  - In the first weeks, 2,343 replies were published and 129 businesses moved to full
-    automation.
+  rating decides where it ranks on the marketplace, so this was some of the most
+  important data in the company, and it was all tangled up in the monolith.
+  - I gave it its own Postgres schema and connection pooler, gRPC and protobuf contracts
+    for the other backend services, and a GraphQL surface for the apps, and built the
+    frontend on top of that too.
+  - I owned delivery across web, iOS, Android and backend, and then owned it in
+    production. We rolled it out as a progressive canary across all four, taking reads
+    from 5% to 100% in two days (with me holding the pager), and it now handles around
+    157M requests a week.
+- **I moved around 90M rows out of the monolith while the marketplace was live.** A
+  marketplace never closes, so there was no downtime window to hide in.
+  - We moved reads first, then writes, over a sync that kept the old system
+    authoritative until we no longer needed it, monitoring parity the whole way and
+    keeping every stage reversible.
+  - A one-off script was never going to survive that much data in a live system, so I
+    built a proper migration tool. It picks up where it stopped (with per-partition
+    ETAs), watches the database's own vital signs and backs off before production feels
+    it, trips a circuit breaker when things go wrong, and won't let one bad row kill a
+    run. The most useful part was a diff mode that prints only the rows where the two
+    sides disagree. It fed from S3 history, Snowflake dumps and a live Kafka mirror.
+  - Ten teams still had their hands in those tables, and getting all of them to agree on
+    where the new boundary sat was as much of the job as the code.
+- **Keeping the two systems in step turned up years of hidden damage**, and working out
+  why was the interesting part.
+  - The drift came from undocumented callers, background jobs nobody remembered, and
+    internal support tooling that had been quietly corrupting review data for years
+    without anyone noticing. I repaired the affected windows and then gave the support
+    team replacement tools that did the same job safely, because switching the old ones
+    off would only have moved the damage somewhere else.
+  - The same digging showed the monolith credited each review to whoever was on the
+    invoice line rather than whoever did the work. About 120,000 reviews (one in 230) had
+    gone to the wrong person, and on this marketplace that moves someone's rating. The
+    new service attributes from the calendar booking instead, credits everyone who worked
+    on the appointment, and records when a professional has left rather than pretending
+    they were never there.
+- **The service talks to the rest of the company through Kafka and Snowflake.**
+  - It publishes its own changes through an outbox. While the monolith was still the
+    source of truth, I consumed its topics to mirror every write live (behind a kill
+    switch, with dead-letter topics and depth monitoring), and rating changes now feed
+    marketplace ranking.
+  - The tables stream into Snowflake through Postgres logical replication and change data
+    capture, with poisoned rows excluded so one bad record can't stall the whole
+    pipeline.
+- **I designed the schema and APIs around how they are actually read.**
+  - A denormalised line-item table means rating aggregates, search facet counts and sorts
+    all read from one place instead of joining across the domain. It's backed by
+    composite and covering indexes, partial indexes where the predicate was the win, and
+    GIN full-text search over review bodies.
+  - I cut the gRPC surface down to seven calls, each shaped to what its caller needs,
+    with batch reads served by a single windowed query. On the GraphQL side there are
+    query cost ceilings, field-level redaction, role-based authorisation on reply
+    mutations, and nullable root connections, so one failing field degrades a page
+    instead of blanking it.
+  - To keep an eye on all of it I set up Datadog with I/O attribution, Metabase
+    dashboards for parity, and paging on error rate and latency.
+- **I built AI-drafted review replies end to end**, from deciding who's entitled to them
+  through to the worker that publishes them.
+  - The reply voice is built from the business's own description of itself, and every
+    reply is moderated and starts life as a draft until it's published or cancelled, so
+    nothing reaches a customer without passing through that first.
+  - Billing reads the business's remaining balance live at every decision, so if they run
+    out, scheduled replies are cancelled rather than going out anyway.
+  - On the partner side I built a replies tab, an enhance action on drafts, and a
+    countdown before a scheduled reply goes out. In the first few weeks 2,343 replies
+    were published and 129 businesses switched to full automation.
 - **I rebuilt consumer search** across the web app, the gateway and the search service,
-  and deleted the old one outright.
-  - Paginated autocomplete by result type, and search history as its own service that
-    absorbs Redis failures rather than handing them to the user.
-  - Server-side map clustering streamed as you pan and zoom, and distance measured to a
-    venue's actual boundary rather than a pin.
-  - The search service runs at around 119M requests a week.
-- **Before that, my first project here was loyalty**, Fresha's largest consumer release
-  to date: points, tiers, reward eligibility and the wallet, from schema through gateway
-  resolvers to the UI. I led the parts I had context on and learned Elixir on the way.
-- **I also work on what everyone else depends on.**
+  and then deleted the old search outright (the part people usually skip).
+  - Paginated autocomplete by result type, and search history as its own service, which
+    absorbs Redis failures rather than passing them on to the user.
+  - Map results are clustered server-side and streamed as you pan and zoom, and distance
+    is measured to a venue's actual boundary rather than a pin. The search service
+    handles around 119M requests a week.
+- **Loyalty was my first project at Fresha**, and its largest consumer release to date:
+  points, tiers, reward eligibility and the wallet, from schema through gateway resolvers
+  to the UI. I led the parts I had context on, and learned Elixir along the way.
+- **I also work on the shared code everyone else depends on**, which isn't glamorous but
+  has the most leverage.
   - In the shared Elixir libraries I fixed a broker connection and a Redis process that
-    leaked on every failed health probe, and two paths that created atoms from runtime
-    input, which the BEAM never frees, so with enough traffic the node dies.
-  - I worked on the treatment taxonomy the whole marketplace searches against, with CLDR
-    and BCP-47 locale handling, proper pluralisation, gettext catalogues and TypeScript
-    codegen that CI regenerates on its own.
-  - I wrote the organisation's supply chain standard: SHA-pinned actions, toolchains
-    pinned through mise, isolated installs with a build-script allowlist, exact pins and
-    registry-only resolution, and no fetch-and-execute in the install path, with a
-    first-party carve-out so people could follow it.
-  - I've reviewed 615 pull requests for other engineers, mentored people through hard
-    problems, and worked at product level so technical decisions fit what the business
-    needed rather than what was easiest to build.
-  - I built an internal Claude plugin marketplace, including a skill that takes a ticket
-    through to an opened pull request.
+    leaked on every failed health probe, and two code paths that created atoms from
+    runtime input. The BEAM never frees atoms, so given enough traffic that eventually
+    kills the node.
+  - I worked on the treatment taxonomy the whole marketplace searches against, including
+    CLDR and BCP-47 locale handling, proper pluralisation, gettext catalogues and
+    TypeScript codegen, which CI regenerates and opens its own pull request for.
+  - I wrote the organisation's supply chain standard (SHA-pinned actions, toolchains
+    pinned through mise, isolated installs with a build-script allowlist, exact pins,
+    registry-only resolution, and no fetch-and-execute in the install path). The
+    first-party carve-out was what made it something people could actually follow.
+- **I spend a lot of my time on other engineers.** I've reviewed 615 pull requests for
+  other people, mentored engineers through hard problems, and worked at product level so
+  the technical decisions matched what the business needed rather than what was easiest
+  to build. I also built an internal Claude plugin marketplace, including a skill that
+  takes a ticket all the way to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
 _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS, GitHub
 Actions_
 
-- Built Next.js and TypeScript features for the move to a new architecture, and the
-  NestJS APIs behind them, while keeping the legacy React frontends and Express
-  microservices running through the migration.
-- Debugged performance problems in services on Kubernetes and extended the GitHub
-  Actions pipelines.
+- Apolitical was moving onto a new architecture, and I built Next.js and TypeScript
+  features for it along with the NestJS APIs behind them, while keeping the legacy React
+  frontends and Express microservices running until the move was done.
+- I also debugged performance problems in services running on Kubernetes and extended
+  the existing GitHub Actions pipelines.
 
 ### Senior Cloud Native Engineer, [EngineerBetter](https://container-solutions.com) <small>2022–2024</small>
 
