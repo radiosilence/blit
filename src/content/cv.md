@@ -43,8 +43,8 @@ in the work, and I'm the person people come to when something has to be done pro
   monolith. Moved 90M rows with the marketplace live and took reads from a 5% canary to
   100% in two days. It now handles 157M requests a week.
 - **A WebSocket server running on a phone**, written in Java and Swift as React Native
-  modules, because the TV app it controlled ran inside a browser and this was the way to
-  reach it.
+  modules, because the TV app it controlled ran inside a browser and couldn't host one
+  itself.
 - **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
   server in Rust with 240+ stars. It serves this page, from a cupboard.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
@@ -233,14 +233,14 @@ Handwritten the old way, or architected by hand and written with AI: everything 
 there for anyone with the curiosity to look.
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
-  240+★</small>: in-memory static file server for SPAs and static content. It serves
-  this site, from my cupboard.
+  240+★</small>: in-memory static file server for SPAs and static content, and what
+  serves this site.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
   my own infrastructure as a single Pulumi program. It provisions a Hetzner VPS,
   installs k3s on it, reads the kubeconfig back as an output of the same run that
   consumes it, and deploys into the cluster it just built, so there's no secret
-  round-trip and nothing for a human to rotate. Cilium as the CNI so NetworkPolicies are
-  enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
+  round-trip and nothing for a human to rotate. It uses Cilium as the CNI so
+  NetworkPolicies are enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
   censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, unbound, tailscale)
   running as hostNetwork DaemonSets rather than systemd units, so the host itself runs
   k3s and sshd and nothing else. Xray owns `:443` and passes unmatched traffic to
@@ -289,11 +289,8 @@ there for anyone with the curiosity to look.
   Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
   so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
   CSS and a font. The locale picker is `command`/`commandfor` and a native `<dialog>`.
-- **[pip](https://github.com/pypa/pip)**: opened
-  [#789](https://github.com/pypa/pip/pull/789) in 2013 arguing that pip had to verify
-  SSL certificates, at a point where it fetched packages over plain HTTP and checked
-  nothing. Shipped in pip 1.3 as the fix for CVE-2013-1629, credited by name in the
-  release notes.
+- **[pip](https://github.com/pypa/pip)**: [#789](https://github.com/pypa/pip/pull/789),
+  SSL certificate verification, which shipped in pip 1.3 as the fix for CVE-2013-1629.
 - **Contributions elsewhere**: [TanStack
   Router](https://github.com/TanStack/router) (static prerendering fix, and docs),
   [Django REST Framework](https://github.com/encode/django-rest-framework) (timedelta
@@ -377,8 +374,8 @@ C++, C#, .NET, Qt_
 - Architected and built three of their core products, shipped and forthcoming, in React,
   Redux and Node.js, and mentored the other engineers on them.
 - Set patterns and practices that the wider technical team adopted.
-- Whenever a problem needed solving, whether database architecture, system design, or UX
-  and product design, I used what I knew and learned whatever else it took.
+- Took on database architecture, system design, and UX and product design wherever a
+  problem needed it, learning whatever else it took.
 
 ### Lead Frontend Developer, Bootbag <small>2014–2015</small>
 
@@ -398,9 +395,9 @@ _Key Skills: Django, PHP, AngularJS, jQuery, Node.js, Express, C#, .NET, Linux, 
 
 _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apache_
 
-- Moved to Brighton and landed in the deep end. I learned to network, to manage a
-  project, and to lean on technical skills that were improving as fast as the work
-  demanded, and that's where the product instinct came from.
+- Moved to Brighton and dropped myself in the deep end, learning to network, manage
+  projects, and lean on technical skills that were improving as fast as the work
+  demanded.
 
 ### Web Developer, Primrose London <small>2009–2010</small>
 
