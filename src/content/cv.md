@@ -170,7 +170,8 @@ Cloud Foundry, BOSH_
 
 - Cloud native consultancy. I moved enterprise platforms onto declarative
   infrastructure and continuous deployment, putting reproducibility and resistance to
-  drift ahead of strict GitOps where the two disagreed.
+  drift ahead of strict GitOps where the two disagreed. Along the way I wrote Kubernetes
+  controllers in Go.
 - Cloud Security Posture Management policy across cloud platforms. Azure Policy lagged
   badly behind the rest of Azure, its JSON was poorly documented, and it couldn't express
   something Credit Suisse needed for their CSPM to work at all. I made the case to
@@ -190,6 +191,7 @@ Cloud Foundry, BOSH_
 _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
+- A former manager brought me in because I was the person he trusted to get it built.
 - Built an internal Android app and all of its infrastructure from nothing, for bike
   delivery drivers: job viewing, notes and photo upload, training with quizzes and video,
   and taking the customer's payment.
@@ -406,6 +408,13 @@ _Key Skills: PHP, Django, Flask, AngularJS, jQuery, Node.js, Linux, nginx, Apach
 - Moved to Brighton and landed in the deep end. I learned to network, to manage a
   project, and to lean on technical skills that were improving as fast as the work
   demanded, and that's where the product instinct came from.
+
+### Web Developer, Primrose London <small>2009–2010</small>
+
+_Key Skills: PHP, Linux, Active Directory, Git_
+
+- PHP and systems administration. Integrated the Linux servers with Active Directory and
+  set up version control with Git.
 
 ### PHP Developer / Sysadmin, The Escape Committee <small>2007–2009</small>
 
