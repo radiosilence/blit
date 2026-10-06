@@ -4,8 +4,8 @@ senior full stack engineer
 
 **e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
-**location:** London, or remote. Happy to be in an office. I like working with people in
-person, where the flexibility is real.
+**location:** London or remote. Happy in an office too; I like working with people in
+person, as long as there's some flexibility.
 
 Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, across
 commercial frontend, backend, devops, mobile and embedded. Elixir and Go services,
@@ -15,27 +15,34 @@ matters is a good standard library, libraries written by someone who cared, and 
 standing between me and the thing that needs to exist.
 
 I like greenfield, and I like taking a thing that works and making it the thing it should
-have been. Hard problems I can own from one end to the other. I started out freelancing,
-where there is nobody to hand the product to and every bug is yours by lunchtime, and
-that never left. So I want to argue about what a thing should be. Not just build the
-ticket.
+have been, especially hard problems I can own from one end to the other. I started out
+freelancing, where there's nobody to hand the product to and every bug is yours, and that
+never left me. So I like being part of deciding what a thing should be, as well as
+building it.
 
-Most of engineering is explaining. A solution nobody else can follow doesn't get built, or
-gets built wrong, and either way you've lost. I've mentored a lot of people, and I tell
-all of them the same thing: being right is the easy half. The hard half is getting
-everyone else to see it.
+A lot of engineering is communication - sometimes you have to lead by example, but if you
+can't explain the insight you have to those that are supposed to be on board, then you
+have to ask yourself how well you understand it yourself. A good engineer can relate
+concepts to people in ways that they can understand whilst still being open to the
+amazing ideas they might have themselves.
 
-Declarative infrastructure, CI and IaC. Not because it's fashionable. Building a thing
-once is a trick; building it again, on demand, in production, is engineering.
+I love IaC because whilst you can build imperatively, being able to recreate and iterate
+and use development processes to declare and collaborate the infrastructure everything is
+built on is incredibly powerful.
 
-AI and agentic coding are tools. Worth learning properly, worth no reverence at all. I've
-built MCP servers and gateways in Rust and GraphQL to make the models better at their
-jobs, and I've watched them be genuinely impressive and genuinely wrong in the same
-afternoon. Everything they produce needs a critic. Given the right input, the results are
-real.
+LLMs and agentic code are interesting tools - they've enabled anyone to create anything
+easily. However, without the experience of building things, it's very easy to make
+mistakes, because people don't know the right questions to ask. I've had a lot of fun
+building MCP servers and gateways, rebuilding things in various languages, and testing
+their ever-increasing limits. My position is that they make it easy to not care, and to
+stop learning, if you let them. In the hands of someone who is open to them and has a
+wealth of human experience to draw upon, though, they can be an exceptional force
+multiplier, delivering results of high quality at great speed. Using them is a skill like
+any other.
 
-What I want is to wake up and build something interesting. I take a great deal of pride
-in the work, and I'm the person people come to when something has to be done properly.
+What drives me is waking up every day and building something interesting. I take a lot of
+pride in my work, and I'm often the person people come to when something needs doing
+properly.
 
 ## Selected Work
 
