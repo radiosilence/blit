@@ -263,7 +263,7 @@ there for anyone with the curiosity to look.
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields
   it needs. It uses far fewer tokens, and when it fails, a model can read why.
-- **[koan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>: a
+- **[kōan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>: a
   music player and server on one Rust core: native SwiftUI apps for macOS and iOS with
   the core linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless
   server with a web UI, public share links, an OpenSubsonic-compatible API and an MCP
