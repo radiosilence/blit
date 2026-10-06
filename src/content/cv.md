@@ -68,85 +68,89 @@ _Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Ne
 React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
 Actions, Docker, Kubernetes_
 
-**I designed and led the service that took reviews out of the monolith.** A venue's
-rating decides where it ranks, so on a marketplace this is about as load-bearing as data
-gets. The new service is Elixir with its own Postgres and connection pooler, gRPC and
-protobuf contracts for the other backend services, GraphQL for the apps, and the
-frontend on top. I owned delivery across web, iOS, Android and backend, then owned it in
-production: a progressive canary across all four, reads from 5% to 100% in two days,
-with me on the pager. It handles around 157M requests a week.
-
-**I moved around 90M rows out from under the live marketplace**, with no downtime
-window, because a marketplace doesn't have one. Reads moved first, then writes, over a
-sync that kept the old system authoritative until we no longer needed it, with parity
-monitored and every stage reversible. A script won't move that much data out of a live
-system, so I built a proper tool: it resumes where it stopped with per-partition ETAs,
-watches the database's own load and backs off before production notices, has a circuit
-breaker, can't be killed by one bad row, and has a diff mode that prints only where the
-two sides disagree. It fed from S3 history, Snowflake dumps and a live Kafka mirror. Ten
-teams still touched those tables, and getting all of them to agree on where the new
-boundary sat was as much of the job as the code.
-
-**Keeping the two systems in step turned up years of hidden damage.** Undocumented
-callers, background jobs nobody remembered, and internal support tooling that had been
-quietly corrupting review data for years. I repaired the affected windows and replaced
-the support tools with ones that did the same job safely, rather than switching the old
-ones off and leaving support without them. The same digging found that the monolith
-credited each review to whoever was on the invoice line, not whoever did the work:
-about 120,000 reviews, one in 230, had gone to the wrong person and moved the wrong
-person's rating. The new service attributes from the calendar booking, credits everyone
-who worked on the appointment, and records when a professional has left instead of
-pretending they were never there.
-
-**Underneath, the data plumbing and Postgres work.** The service publishes its changes
-to Kafka through an outbox, and while the monolith was still the source of truth I
-mirrored its writes in live from its topics, behind a kill switch, with dead-letter
-topics and depth monitoring. Rating changes feed marketplace ranking, and the tables
-stream into Snowflake through Postgres logical replication and change data capture, with
-poisoned rows excluded so one bad record can't stall the pipeline. A denormalised
-line-item table lets rating aggregates, search facet counts and sorts read from one
-place instead of joining across the domain, backed by composite and covering indexes,
-partial indexes where the predicate was the win, and GIN full-text search over review
-bodies. I cut the gRPC surface to seven calls, each shaped to what its caller needs,
-with batch reads served by a single windowed query. The GraphQL side has query cost
-ceilings, field-level redaction, role-based authorisation on reply mutations, and
-nullable root connections so one failing field degrades a page instead of blanking it.
-Datadog with I/O attribution, Metabase parity dashboards, and paging on error rate and
-latency.
-
-**I built AI-drafted review replies end to end**: who's entitled to them, the generator,
-a reply voice built from the business's own description of itself, moderation, and the
-worker that publishes. Every reply is a draft until it's published or cancelled, so
-nothing reaches a customer unseen, and the business's remaining balance is read live at
-every billing decision, so running out cancels scheduled replies rather than failing
-open. Partners get a replies tab, an enhance action on drafts, and a countdown before a
-scheduled reply goes out. In the first weeks, 2,343 replies were published and 129
-businesses moved to full automation.
-
-**I rebuilt consumer search** across the web app, the gateway and the search service,
-and deleted the old one outright. Paginated autocomplete by result type, search history
-as its own service that absorbs Redis failures rather than handing them to the user,
-server-side map clustering streamed as you pan and zoom, and distance measured to a
-venue's actual boundary rather than a pin. The search service runs at around 119M
-requests a week. Before that, my first project here was loyalty, Fresha's largest
-consumer release to date: points, tiers, reward eligibility and the wallet, from schema
-through gateway resolvers to the UI. I led the parts I had context on and learned Elixir
-on the way.
-
-**I also work on what everyone else depends on.** In the shared Elixir libraries I fixed
-a broker connection and a Redis process that leaked on every failed health probe, and
-two paths that created atoms from runtime input, which the BEAM never frees, so with
-enough traffic the node dies. I worked on the treatment taxonomy the whole marketplace
-searches against, with CLDR and BCP-47 locale handling, proper pluralisation, gettext
-catalogues and TypeScript codegen that CI regenerates on its own. I wrote the
-organisation's supply chain standard: SHA-pinned actions, toolchains pinned through
-mise, isolated installs with a build-script allowlist, exact pins and registry-only
-resolution, and no fetch-and-execute in the install path, with a first-party carve-out
-so people could follow it. I've reviewed 615 pull requests for other engineers, mentored
-people through hard problems, and worked at product level so technical decisions fit
-what the business needed rather than what was easiest to build. I also built an internal
-Claude plugin marketplace, including a skill that takes a ticket through to an opened
-pull request.
+- **I designed and led the service that took reviews out of the monolith.** A venue's
+  rating decides where it ranks, so on a marketplace this is about as load-bearing as
+  data gets.
+  - Elixir with its own Postgres and connection pooler, gRPC and protobuf contracts for
+    the other backend services, GraphQL for the apps, and the frontend on top.
+  - I owned delivery across web, iOS, Android and backend, then owned it in production: a
+    progressive canary across all four, reads from 5% to 100% in two days, with me on the
+    pager.
+  - It handles around 157M requests a week.
+- **I moved around 90M rows out from under the live marketplace**, with no downtime
+  window, because a marketplace doesn't have one.
+  - Reads moved first, then writes, over a sync that kept the old system authoritative
+    until we no longer needed it, with parity monitored and every stage reversible.
+  - A script won't move that much data out of a live system, so I built a proper tool: it
+    resumes where it stopped with per-partition ETAs, watches the database's own load and
+    backs off before production notices, has a circuit breaker, can't be killed by one bad
+    row, and has a diff mode that prints only where the two sides disagree. It fed from S3
+    history, Snowflake dumps and a live Kafka mirror.
+  - Ten teams still touched those tables, and getting all of them to agree on where the
+    new boundary sat was as much of the job as the code.
+- **Keeping the two systems in step turned up years of hidden damage.**
+  - Undocumented callers, background jobs nobody remembered, and internal support tooling
+    that had been quietly corrupting review data for years. I repaired the affected
+    windows and replaced the support tools with ones that did the same job safely, rather
+    than switching the old ones off and leaving support without them.
+  - The monolith credited each review to whoever was on the invoice line, not whoever did
+    the work: about 120,000 reviews, one in 230, had gone to the wrong person and moved
+    the wrong person's rating. The new service attributes from the calendar booking,
+    credits everyone who worked on the appointment, and records when a professional has
+    left instead of pretending they were never there.
+- **Underneath, the data plumbing and Postgres work.**
+  - The service publishes its changes to Kafka through an outbox. While the monolith was
+    still the source of truth I mirrored its writes in live from its topics, behind a kill
+    switch, with dead-letter topics and depth monitoring.
+  - Rating changes feed marketplace ranking, and the tables stream into Snowflake through
+    Postgres logical replication and change data capture, with poisoned rows excluded so
+    one bad record can't stall the pipeline.
+  - A denormalised line-item table lets rating aggregates, search facet counts and sorts
+    read from one place instead of joining across the domain, backed by composite and
+    covering indexes, partial indexes where the predicate was the win, and GIN full-text
+    search over review bodies.
+  - I cut the gRPC surface to seven calls, each shaped to what its caller needs, with
+    batch reads served by a single windowed query. The GraphQL side has query cost
+    ceilings, field-level redaction, role-based authorisation on reply mutations, and
+    nullable root connections so one failing field degrades a page instead of blanking it.
+  - Datadog with I/O attribution, Metabase parity dashboards, and paging on error rate and
+    latency.
+- **I built AI-drafted review replies end to end.**
+  - Who's entitled to them, the generator, a reply voice built from the business's own
+    description of itself, moderation, and the worker that publishes.
+  - Every reply is a draft until it's published or cancelled, so nothing reaches a
+    customer unseen. The business's remaining balance is read live at every billing
+    decision, so running out cancels scheduled replies rather than failing open.
+  - Partners get a replies tab, an enhance action on drafts, and a countdown before a
+    scheduled reply goes out.
+  - In the first weeks, 2,343 replies were published and 129 businesses moved to full
+    automation.
+- **I rebuilt consumer search** across the web app, the gateway and the search service,
+  and deleted the old one outright.
+  - Paginated autocomplete by result type, and search history as its own service that
+    absorbs Redis failures rather than handing them to the user.
+  - Server-side map clustering streamed as you pan and zoom, and distance measured to a
+    venue's actual boundary rather than a pin.
+  - The search service runs at around 119M requests a week.
+- **Before that, my first project here was loyalty**, Fresha's largest consumer release
+  to date: points, tiers, reward eligibility and the wallet, from schema through gateway
+  resolvers to the UI. I led the parts I had context on and learned Elixir on the way.
+- **I also work on what everyone else depends on.**
+  - In the shared Elixir libraries I fixed a broker connection and a Redis process that
+    leaked on every failed health probe, and two paths that created atoms from runtime
+    input, which the BEAM never frees, so with enough traffic the node dies.
+  - I worked on the treatment taxonomy the whole marketplace searches against, with CLDR
+    and BCP-47 locale handling, proper pluralisation, gettext catalogues and TypeScript
+    codegen that CI regenerates on its own.
+  - I wrote the organisation's supply chain standard: SHA-pinned actions, toolchains
+    pinned through mise, isolated installs with a build-script allowlist, exact pins and
+    registry-only resolution, and no fetch-and-execute in the install path, with a
+    first-party carve-out so people could follow it.
+  - I've reviewed 615 pull requests for other engineers, mentored people through hard
+    problems, and worked at product level so technical decisions fit what the business
+    needed rather than what was easiest to build.
+  - I built an internal Claude plugin marketplace, including a skill that takes a ticket
+    through to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
