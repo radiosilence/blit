@@ -43,8 +43,8 @@ in the work, and I'm the person people come to when something has to be done pro
   monolith. Moved 90M rows with the marketplace live and took reads from a 5% canary to
   100% in two days. It now handles 157M requests a week.
 - **A WebSocket server running on a phone**, written in Java and Swift as React Native
-  modules, because the TV app it controlled was stuck inside a browser and couldn't be
-  reached any other way.
+  modules, because the TV app it controlled ran inside a browser and this was the way to
+  reach it.
 - **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
   server in Rust with 240+ stars. It serves this page, from a cupboard.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
@@ -84,16 +84,15 @@ Actions, Docker, Kubernetes_
     signs, has a circuit breaker, shrugs off a single bad row, and has a diff mode that
     prints only where the two sides disagree. Fed from S3, Snowflake and a live Kafka
     mirror.
-  - Ten teams had their hands in those tables, and agreeing the new boundary with all of
+  - Ten teams relied on those tables, and agreeing the new boundary with all of
     them was as much of the job as the code.
-- **Keeping the two systems in step uncovered years of silent data corruption**, from
-  undocumented callers, forgotten background jobs and internal support tooling.
-  Repaired the damage and gave the support team safe replacements for the tools that
-  caused it.
-- **Fixed review attribution.** The monolith credited the invoice line, not whoever did
-  the work, so about 120,000 reviews (one in 230) had moved the wrong person's rating.
-  The new service attributes from the calendar booking, credits everyone on the
-  appointment, and keeps people who've left.
+- **Kept the two systems in step through the migration**, tracing every source of drift
+  back through callers, background jobs and support tooling, cleaning up the affected
+  data, and giving the support team new tools built on the new service.
+- **Made review attribution more accurate.** The new service attributes reviews from the
+  calendar booking, credits everyone who worked on the appointment, and keeps people
+  who've moved on. That sharpened attribution for about 120,000 reviews (one in 230), so
+  ratings reflect who did the work.
 - **Wired the service into Kafka and Snowflake.** Changes go out through an outbox, and
   during the migration the service mirrored the monolith's writes in live from its
   topics, behind a kill switch with dead-letter queues. Rating changes feed marketplace
@@ -115,13 +114,13 @@ Actions, Docker, Kubernetes_
   pin. Around 119M requests a week.
 - **Loyalty was my first project**, and Fresha's largest consumer release to date:
   points, tiers, eligibility and the wallet, schema to UI. I learned Elixir on the way.
-- **Hardened the shared code everyone else builds on.** Fixed leaks in the shared Elixir
-  libraries and two paths that created atoms from runtime input (the BEAM never frees
-  them, so enough traffic kills the node). Built CLDR locale handling, pluralisation and
-  TypeScript codegen into the treatment taxonomy the marketplace searches against. Wrote
-  the organisation's supply chain standard (SHA-pinned actions, pinned toolchains,
-  isolated installs, no fetch-and-execute), with a first-party carve-out so people could
-  follow it.
+- **Hardened the shared code everyone else builds on.** Made the shared Elixir libraries
+  more resilient, including connection handling on failed health probes and converting
+  runtime input to atoms safely (the BEAM never frees them). Built CLDR locale handling,
+  pluralisation and TypeScript codegen into the treatment taxonomy the marketplace
+  searches against. Wrote the organisation's supply chain standard (SHA-pinned actions,
+  pinned toolchains, isolated installs, no fetch-and-execute), with a first-party
+  carve-out so people could follow it.
 - **Reviewed 615 pull requests for other engineers**, mentored people through hard
   problems, and gave product-level input so technical decisions matched what the
   business needed. Also built an internal Claude plugin marketplace, including a skill
@@ -133,7 +132,7 @@ _Key Skills: Next.js, NestJS, React, TypeScript, Kubernetes, Vite, Express, SCSS
 Actions_
 
 - Built Next.js features and NestJS APIs for a move to a new architecture, and kept the
-  legacy React frontends and Express microservices running until the move was done.
+  existing React frontends and Express microservices running until the move was done.
 - Debugged performance problems in services on Kubernetes and extended the GitHub
   Actions pipelines.
 
@@ -145,16 +144,15 @@ Cloud Foundry, BOSH_
 - I wanted to step out of frontend work and broaden my skills, so I joined a small
   consultancy that helps companies move their infrastructure and processes onto
   continuous deployment, and their software onto cloud platforms built to run it. We
-  took large, tangled enterprise projects and made them manageable, scalable and
+  took large, complex enterprise projects and made them manageable, scalable and
   declarative, putting reproducibility and resistance to drift ahead of strict GitOps
   where the two disagreed.
 - Wrote Kubernetes controllers in Go, and CI in Concourse, GitHub Actions and GitLab for
   estates where the pipeline is a large system of its own.
 - Implemented Cloud Security Posture Management in several different ways for different
-  clients. Azure Policy lagged badly behind the rest of Azure, its JSON was poorly
-  documented, and it couldn't express something Credit Suisse needed for their CSPM to
-  work at all. I went to Microsoft's Paddington office to make the case, and a few weeks
-  later it could.
+  clients. Azure Policy couldn't yet express something Credit Suisse needed for their
+  CSPM to work. I went to Microsoft's Paddington office to make the case, and a few
+  weeks later it could.
 - Wrote Python tooling to audit code and deployments across enterprise estates too large
   for anyone to inspect by hand.
 - Between clients, contributed to Kubernetes External Secrets Operator, mostly by
@@ -227,7 +225,7 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   emphasis on well-reviewed, well-tested code, with detox and
   @testing-library/react-native.
 - Learned the financial products in depth to be useful to the analysts and backend
-  engineers, and fixed a few of their bugs along the way.
+  engineers, and pitched in on backend fixes along the way.
 
 ## Open Source
 
