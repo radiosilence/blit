@@ -39,8 +39,8 @@ in the work, and I'm the person people come to when something has to be done pro
 
 ## Selected Work
 
-- **I designed and led a new Elixir service** to replace the reviews domain in Fresha's
-  monolith. I moved 90M rows with the marketplace live and took reads from a 5% canary to
+- **Designed and led a new Elixir service** to replace the reviews domain in Fresha's
+  monolith. Moved 90M rows with the marketplace live and took reads from a 5% canary to
   100% in two days. It now handles 157M requests a week.
 - **A WebSocket server running on a phone**, written in Java and Swift as React Native
   modules, because the TV app it controlled was stuck inside a browser and couldn't be
@@ -68,33 +68,33 @@ _Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Ne
 React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
 Actions, Docker, Kubernetes_
 
-- **I designed and led the service that took reviews out of the monolith.** A venue's
+- **Designed and led the service that took reviews out of the monolith.** A venue's
   rating decides where it ranks, so this is some of the most important data in the
   company.
   - Elixir, with its own Postgres and connection pooler, gRPC contracts for other
     services, GraphQL for the apps, and the frontend on top.
-  - I owned delivery across web, iOS, Android and backend, then owned it in production.
+  - Owned delivery across web, iOS, Android and backend, then owned it in production.
     We took reads from a 5% canary to 100% in two days (me on the pager), and it now
     serves around 157M requests a week.
-- **I moved around 90M rows with the marketplace live.** There's no downtime window on a
+- **Moved around 90M rows with the marketplace live.** There's no downtime window on a
   marketplace, so we moved reads, then writes, over a sync that kept the old system
   authoritative, with parity monitored and every stage reversible.
-  - A script wasn't going to survive that, so I built a migration tool: resumable with
+  - A script wasn't going to survive that, so it got a proper migration tool: resumable with
     per-partition ETAs, throttled on the database's own vital signs, circuit-broken,
     immune to a single bad row, and with a diff mode that prints only where the two sides
     disagree. Fed from S3, Snowflake and a live Kafka mirror.
   - Ten teams had their hands in those tables, and agreeing the new boundary with all of
     them was as much of the job as the code.
 - **Keeping the two systems in step uncovered years of silent data corruption**, from
-  undocumented callers, forgotten background jobs and internal support tooling. I
-  repaired the damage and replaced the support tools with safe ones, rather than just
+  undocumented callers, forgotten background jobs and internal support tooling.
+  Repaired the damage and replaced the support tools with safe ones, rather than just
   switching them off.
-- **I fixed review attribution.** The monolith credited the invoice line, not whoever did
+- **Fixed review attribution.** The monolith credited the invoice line, not whoever did
   the work, so about 120,000 reviews (one in 230) had moved the wrong person's rating.
   The new service attributes from the calendar booking, credits everyone on the
   appointment, and keeps people who've left.
-- **Events and data.** Changes go out to Kafka through an outbox; during the migration I
-  mirrored the monolith's writes in live from its topics, behind a kill switch with
+- **Events and data.** Changes go out to Kafka through an outbox; during the migration the
+  service mirrored the monolith's writes in live from its topics, behind a kill switch with
   dead-letter queues. Rating changes feed marketplace ranking, and the tables stream into
   Snowflake via logical replication and CDC, poisoned rows excluded so one bad record
   can't stall it.
@@ -103,26 +103,27 @@ Actions, Docker, Kubernetes_
   GIN full-text indexes. The gRPC surface cut to seven calls with batch reads in one
   windowed query. GraphQL with cost ceilings, field-level redaction, role-based auth, and
   nullable roots so one failing field degrades a page instead of blanking it.
-- **I built AI review replies end to end**: entitlement, generation in the business's
+- **Built AI review replies end to end**: entitlement, generation in the business's
   own voice, moderation, publishing, and the partner UI. Everything is a draft until
   published, and billing reads the live balance so running out cancels replies rather
   than failing open. 2,343 published and 129 businesses on full automation in the first
   weeks.
-- **I rebuilt consumer search** across the web app, gateway and search service, and
+- **Rebuilt consumer search** across the web app, gateway and search service, and
   deleted the old one: autocomplete, search history as its own service, server-side map
   clustering streamed as you pan, and distance to a venue's real boundary rather than a
   pin. Around 119M requests a week.
 - **Loyalty was my first project**, and Fresha's largest consumer release to date:
   points, tiers, eligibility and the wallet, schema to UI. I learned Elixir on the way.
-- **Shared libraries and standards.** I fixed leaks in the shared Elixir libraries and two
+- **Shared libraries and standards.** Fixed leaks in the shared Elixir libraries and two
   paths that created atoms from runtime input (the BEAM never frees them, so enough
-  traffic kills the node). I worked on the treatment taxonomy and its locale,
-  pluralisation and codegen pipeline, and wrote the organisation's supply chain standard
-  (SHA-pinned actions, pinned toolchains, isolated installs, no fetch-and-execute), with a
-  first-party carve-out so people could actually follow it.
+  traffic kills the node). Built CLDR locale handling, pluralisation and TypeScript
+  codegen into the treatment taxonomy the marketplace searches against. Wrote the
+  organisation's supply chain standard (SHA-pinned actions, pinned toolchains, isolated
+  installs, no fetch-and-execute), with a first-party carve-out so people could follow
+  it.
 - **Other engineers.** 615 pull requests reviewed, mentoring through hard problems, and
-  product-level input so the technical decisions matched what the business needed. I
-  also built an internal Claude plugin marketplace, including a skill that takes a
+  product-level input so the technical decisions matched what the business needed.
+  Also built an internal Claude plugin marketplace, including a skill that takes a
   ticket to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
@@ -155,7 +156,7 @@ Cloud Foundry, BOSH_
   later it could.
 - Wrote Python tooling to audit code and deployments across enterprise estates too large
   for anyone to inspect by hand.
-- Between clients I contributed to Kubernetes External Secrets Operator, mostly by
+- Between clients, contributed to Kubernetes External Secrets Operator, mostly by
   pairing with less experienced engineers and bringing them on, and to Compliance
   Framework, an open source CSPM auditing tool that has since been retired.
 
@@ -186,10 +187,10 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- I built several key projects from scratch and worked on the core product, the
-  companion app in React Native. The TV app had to run inside a browser, so it couldn't
-  host any kind of daemon, and I came up with having the phone run a WebSocket server
-  that talks to the television directly over the LAN with low latency.
+- Built several key projects from scratch.
+- The core product was a React Native companion app for a TV app that ran inside a
+  browser and couldn't host any kind of daemon. I came up with having the phone run a
+  WebSocket server and talk to the television directly over the LAN, with low latency.
 - Wrote the native WebSocket transport for both platforms as React Native modules, Java
   on Android and Swift on iOS, and made the iOS side thread-safe with Grand Central
   Dispatch.
@@ -216,7 +217,7 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
-- My move into fintech. I led development of the credit card section of Zopa's app, in
+- My move into fintech, leading development of the credit card section of Zopa's app, in
   React Native with Redux as the data layer.
 - Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while those
   APIs were still new.
@@ -224,9 +225,8 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
   and picked up new things like hooks as soon as they made sense, and put a heavy
   emphasis on well-reviewed, well-tested code, with detox and
   @testing-library/react-native.
-- I worked closely with the analysts and backend engineers, fixing a few of their bugs
-  along the way, and learned the financial products in depth so I could be more useful
-  as an engineer.
+- Learned the financial products in depth to be useful to the analysts and backend
+  engineers, and fixed a few of their bugs along the way.
 
 ## Open Source
 
@@ -367,7 +367,7 @@ _Key Skills: React, AngularJS, Redux, flux, Node.js, Express, WebSockets, ZeroMQ
 C++, C#, .NET, Qt_
 
 - Lead engineer in the innovation and frontend teams at a London marketing technology
-  company, where I built and rebuilt a large share of the frontend code and internal
+  company, building and rebuilding a large share of the frontend code and internal
   services.
 - Architected and built three of their core products, shipped and forthcoming, in React,
   Redux and Node.js, and mentored the other engineers on them.
