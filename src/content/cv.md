@@ -320,10 +320,10 @@ there for anyone with the curiosity to look.
 
 ## Skills
 
-**Daily**: TypeScript, Elixir, Rust, GraphQL, Node.js, PostgreSQL, React, Next.js,
-Docker, Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
+**Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
+Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
 
-**Strong**: Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
+**Strong**: Rust, Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
@@ -357,7 +357,7 @@ I follow current affairs closely, especially where the technology is.
 
 ## Less Recent Work
 
-### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) <small>2017–2018</small>
+### Senior Frontend Developer, [On The Dot](https://www.citysprint.co.uk) (formerly LastMileLink) <small>2017–2018</small>
 
 _Key Skills: React, TypeScript, Redux, redux-observable, Go, Node.js, AWS Lambda, API
 Gateway, Apigee, Auth0, Swagger_
