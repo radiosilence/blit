@@ -263,7 +263,8 @@ there for anyone with the curiosity to look.
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields
   it needs. It uses far fewer tokens, and when it fails, a model can read why.
-- **[kōan](https://github.com/radiosilence/koan)** <small>Rust · Swift · 25★</small>: a
+- **[kōan](https://koan.rocks)** <small>Rust · Swift · 25★ ·
+  [source](https://github.com/radiosilence/koan)</small>: a
   music player and server on one Rust core: native SwiftUI apps for macOS and iOS with
   the core linked in-process through uniffi FFI, a Ratatui terminal UI, and a headless
   server with a web UI, public share links, an OpenSubsonic-compatible API and an MCP
@@ -272,10 +273,13 @@ there for anyone with the curiosity to look.
   cache. The server pushes a playlist to the linked phone or Mac over WebSocket, so an
   assistant using the MCP can build one from the library and have it start playing
   there. Deployed on my own k3s cluster as a versioned Pulumi component package.
-- **[GrogLog](https://github.com/radiosilence/groglog)** <small>Swift</small>: an iOS
-  app: a private, offline drink diary for cutting down, free, with no account, no
-  adverts and nothing sent anywhere. SQLite via GRDB, Lock Screen and Home Screen
-  widgets, Shortcuts integration.
+- **[GrogLog](https://github.com/radiosilence/groglog)** <small>Swift</small>: I know
+  people who struggle with how much they drink, and I wanted them to have something
+  completely free that helps them cut down. It's a private, offline drink diary for iOS
+  with no account, no adverts and nothing sent anywhere, and it does more than the paid
+  apps: a daily budget to taper against, charts of the day as a running total, overnight
+  heart rate and HRV from Health filed against the night before, export, Lock Screen and
+  Home Screen widgets, and Shortcuts.
 - **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>: a
   drop-in watchman replacement that doesn't eat your RAM.
 - **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>: this site. A
