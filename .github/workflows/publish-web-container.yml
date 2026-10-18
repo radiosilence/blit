@@ -31,6 +31,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # changelog:check compares HEAD with its parent.
+          fetch-depth: 2
 
       # mise.toml is the single source of truth for rust, task, tailwind and gh.
       - name: Install toolchain
