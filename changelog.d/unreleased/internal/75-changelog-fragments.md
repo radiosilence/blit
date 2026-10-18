@@ -1,0 +1,1 @@
+- **Changelog fragments.** Changes record their notes under `changelog.d/` and `CHANGELOG.md` is generated from them, so concurrent pull requests no longer conflict on it; CI checks the fragments, and the pre-commit hook now runs rustfmt alone, leaving clippy to CI.

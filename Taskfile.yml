@@ -132,8 +132,32 @@ tasks:
     cmd: cargo test --workspace
 
   check:
-    desc: Lint, formatting and tests
-    deps: [lint, format:check, test]
+    desc: Lint, formatting, tests and the changelog
+    deps: [lint, format:check, test, changelog:check]
+
+  changelog:
+    desc: Write CHANGELOG.md from changelog.d/ — `task changelog -- --stdout` prints it instead
+    cmd: python3 scripts/changelog.py {{.CLI_ARGS}}
+
+  # A pull request adds fragments without regenerating CHANGELOG.md, so usually
+  # only the fragments and the numbered sections are checked. A commit that does
+  # write it, as cutting a numbered section does, must write exactly what the
+  # fragments make. HEAD^1 is the base branch on a pull request's merge commit
+  # and the previous commit on main, so CI checks out two commits.
+  changelog:check:
+    desc: Check the changelog fragments, and CHANGELOG.md where the last commit writes it
+    cmds:
+      - python3 -m unittest scripts/test_changelog.py
+      - |
+        if git rev-parse -q --verify HEAD^1 >/dev/null && ! git diff --quiet HEAD^1 HEAD -- CHANGELOG.md; then
+          python3 scripts/changelog.py --check
+        else
+          python3 scripts/changelog.py --lint
+        fi
+
+  hooks:
+    desc: Install the git hooks
+    cmd: lefthook install
 
   ci:
     desc: Everything CI verifies — checks, then a full build
