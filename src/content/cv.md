@@ -328,14 +328,14 @@ projects as I know enought about it to maintain it, review it, and spot if LLMs 
 hideous or worked their way into an antipattern.
 
 **Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
-Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, Pulumi, Vite, agentic AI tooling and MCPs.
+Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, Pulumi, Vite, Zustand, agentic AI tooling and MCPs.
 
-**Strong**: Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes, Astro,
+**Strong**: Go, Python, React Native, gRPC and Protobuf, Kubernetes, Astro,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
 ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Memcached, Zod,esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 
-**Worked with**: Rust, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
+**Worked with**: Rust, NestJS, Express, Swift, Java, Kotlin, Django, Flask, Celery, Cython, Twisted, MySQL,
 MSSQL, MongoDB, CouchDB, Couchbase, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
 ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
