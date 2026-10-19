@@ -322,19 +322,24 @@ there for anyone with the curiosity to look.
 
 ## Skills
 
-**Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
-Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, agentic AI tooling and MCP.
+AI is changing how we learn and build with things - I've tried to be honest here about tools
+I could use without LLM assistance. However, <em>for instance</em>, I use Rust for my personal
+projects as I know enought about it to maintain it, review it, and spot if LLMs have done something
+hideous or worked their way into an antipattern.
 
-**Strong**: Rust, Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes,
+**Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
+Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, Pulumi, Vite, agentic AI tooling and MCPs.
+
+**Strong**: Go, Python, React Native, Swift, Kotlin, Java, gRPC and Protobuf, Kubernetes, Astro,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
-ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Zod, Vite, esbuild, bun,
+ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Memcached, Zod,esbuild, bun,
 Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 
-**Worked with**: Astro, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
-MSSQL, MongoDB, CouchDB, Couchbase, Memcached, Pulumi, ArgoCD, Ansible, Azure and Azure
+**Worked with**: Rust, NestJS, Express, Django, Flask, Celery, Cython, Twisted, MySQL,
+MSSQL, MongoDB, CouchDB, Couchbase, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
 ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
-SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN.
+SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN, and many, many more...
 
 ## Education
 
