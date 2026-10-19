@@ -11,7 +11,7 @@ Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, a
 commercial frontend, backend, devops, mobile and embedded. Elixir and Go services,
 GraphQL gateways, React and Next.js, native Swift and Kotlin modules, Rust tooling,
 Terraform, Pulumi and Kubernetes. The language matters less than people think. What
-matters is a architecting software in a smart, forward thinking but pragmatic manner and
+matters is architecting software in a smart, forward-thinking but pragmatic manner and
 a language that enables that.
 
 I like greenfield, and I like taking a thing that works and making it the thing it should
@@ -21,14 +21,14 @@ never left me. So I like being part of deciding what a thing should be, as well 
 building it.
 
 A lot of engineering is communication - sometimes you have to lead by example, but if you
-can't explain the insight you have to those that are supposed to be on board, then you
-have to ask yourself how well you understand it yourself. A good engineer can relate
+can't explain the insight you have to those who are supposed to be on board, then you
+have to ask how well you understand it yourself. A good engineer can relate
 concepts to people in ways that they can understand, whilst still being open to the
 amazing ideas they might have themselves.
 
-I love IaC because whilst you can build imperatively, being able to recreate and iterate
-and use development processes to declare and collaborate the infrastructure everything is
-built on is incredibly powerful.
+I love IaC. You can build imperatively, but being able to recreate, iterate, and declare
+the infrastructure everything is built on, then collaborate on it like any other code, is
+incredibly powerful.
 
 LLMs and agentic code are interesting tools - they've enabled anyone to create anything
 easily. However, without the experience of building things, it's very easy to make
@@ -38,7 +38,7 @@ their ever-increasing limits. My position is that they make it easy to not care,
 stop learning, if you let them. In the hands of someone who is open to them and has a
 wealth of human experience to draw upon, though, they can be an exceptional force
 multiplier, delivering results of high quality at great speed. Using them is a skill like
-any other. My most recent GitHub projects are fairly AI assisted, however I am lucky enough
+any other. My most recent GitHub projects are fairly AI-assisted; however, I am lucky enough
 to have decades of experience to draw on in order to create things that are high quality,
 performant, secure, and intuitive to use.
 
@@ -55,12 +55,12 @@ properly.
   modules, because the TV app it controlled ran inside a browser and couldn't host one
   itself.
 - **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
-  server in originally Go, and rebuilt in Rust with 240+ stars.
+  server written in Go and rebuilt in Rust, with 240+ stars.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
-  Credit Suisse's CSPM needed, so I went to their office and made the case, and they
-  changed the platform for my client and everyone else on it.
-- **Found a security hole in pip.** In 2013 it fetched packages over plain HTTP and verified
-  nothing. I argued it had to check SSL certificates, and that shipped in pip 1.3 as the
+  Credit Suisse's CSPM needed, so I went to their office and made the case. A few weeks
+  later Azure Policy could express it, for my client and everyone else.
+- **Fixed a security hole in pip.** In 2013 it fetched packages over plain HTTP and verified
+  nothing. I argued for SSL certificate checks and wrote the patch, and it shipped in pip 1.3 as the
   fix for CVE-2013-1629, with me credited by name in the release notes.
 - **An Android app and the entire AWS backend behind it**, built from nothing for bike
   delivery drivers in React Native, CDK, Lambda, DynamoDB and API Gateway.
@@ -84,30 +84,31 @@ Actions, Docker, Kubernetes_
     other services, GraphQL for the apps, and the frontend on top.
   - Owned delivery across web, iOS, Android and backend, then owned it in production.
     We took reads from a 5% canary to 100% in two days (me on the pager), and it now
-    serves around 157M requests a week.
-- **Moved around 90M rows with the marketplace live.** There's no downtime window on a
-  marketplace, so we moved reads, then writes, over a sync that kept the old system
-  authoritative, with parity monitored and every stage reversible.
+    serves 157M requests a week.
+- **Moved 90M review rows out of the monolith with the marketplace live.**
+  There's no downtime window on a marketplace, so we moved reads, then writes, over a
+  sync that kept the monolith authoritative, with parity monitored and every stage reversible.
   - Wrote a migration tool for it, because a script wouldn't survive that much live
     data. It resumes with per-partition ETAs, throttles on the database's own vital
     signs, has a circuit breaker, shrugs off a single bad row, and has a diff mode that
     prints only where the two sides disagree. Fed from S3, Snowflake and a live Kafka
     mirror.
-  - Ten teams relied on those tables, and agreeing the new boundary with all of
+  - Ten teams relied on the reviews tables, and agreeing the new boundary with all of
     them was as much of the job as the code.
-- **Kept the two systems in step through the migration**, tracing every source of drift
-  back through callers, background jobs and support tooling, cleaning up the affected
-  data, and giving the support team new tools built on the new service.
-- **Made review attribution more accurate.** The new service attributes reviews from the
+- **Kept the monolith and the reviews service in step through the migration**, tracing
+  every source of drift back through callers, background jobs and support tooling,
+  cleaning up the affected data, and giving the support team new tools built on the
+  reviews service.
+- **Made review attribution more accurate.** The reviews service attributes reviews from the
   calendar booking, credits everyone who worked on the appointment, and keeps people
   who've moved on. That sharpened attribution for about 120,000 reviews (one in 230), so
   ratings reflect who did the work.
-- **Wired the service into Kafka and Snowflake.** Changes go out through an outbox, and
-  during the migration the service mirrored the monolith's writes in live from its
+- **Wired the reviews service into Kafka and Snowflake.** Changes go out through an
+  outbox, and during the migration it mirrored writes live from the monolith's
   topics, behind a kill switch with dead-letter queues. Rating changes feed marketplace
   ranking, and the tables stream into Snowflake via logical replication and CDC,
   poisoned rows excluded so one bad record can't stall it.
-- **Designed the schema and APIs around how they're read.** A denormalised line-item
+- **Designed the reviews schema and APIs around how they're read.** A denormalised line-item
   table so aggregates, facets and sorts never join across the domain, with covering,
   partial and GIN full-text indexes. Cut the gRPC API to seven calls, with batch reads
   in one windowed query. Gave GraphQL cost ceilings, field-level redaction, role-based
@@ -121,7 +122,7 @@ Actions, Docker, Kubernetes_
   deleted the old one: autocomplete, search history as its own service, server-side map
   clustering streamed as you pan, and distance to a venue's boundary, not its
   pin. Around 119M requests a week.
-- **Loyalty was my first project**, and Fresha's largest consumer release to date:
+- **Loyalty was my first project**, and Fresha's largest consumer release at the time:
   points, tiers, eligibility and the wallet, schema to UI. I learned Elixir on the way.
 - **Hardened the shared code everyone else builds on.** Made the shared Elixir libraries
   more resilient, including connection handling on failed health probes and converting
@@ -170,7 +171,7 @@ Cloud Foundry, BOSH_
 
 ### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>2021–2024</small>
 
-<small>Concurrent with EngineerBetter and ROXi</small>
+<small>Concurrent with EngineerBetter, ROXi and Sapien Interactive</small>
 
 _Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
@@ -245,15 +246,15 @@ there for anyone with the curiosity to look.
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>: in-memory static file server for SPAs and static content, and what
-  serves this site. Uniquely designed in that it pre-computes and pre-compresses every possible
-  request AoT, so that serving it is just feeding the kernel a buffer.
+  serves this site. Uniquely designed in that it computes and compresses every possible
+  response ahead of time, so that serving it is just feeding the kernel a buffer.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
   my own homelab infrastructure as a single Pulumi stack. It provisions a Hetzner VPS,
   installs k3s on it, reads the kubeconfig back as an output of the same run that
   consumes it, and deploys into the cluster it just built, so there's no secret
   round-trip and nothing for a human to rotate. It uses Cilium as the CNI so
   NetworkPolicies are enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
-  censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, unbound, tailscale)
+  censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, Unbound, Tailscale)
   running as hostNetwork DaemonSets rather than systemd units, so the host itself runs
   k3s and sshd and nothing else. Xray owns `:443` and passes unmatched traffic to
   Traefik, so the public site and the proxy share a port. It runs this site, kōan,
@@ -261,9 +262,9 @@ there for anyone with the curiosity to look.
   watching all of it. GitHub Actions previews the stack on a pull request and applies it
   on merge, and a scheduled job tracks upstream component versions and opens the bump
   itself. Basically other than ArgoCD (which I don't have the spare mem for), it's pretty
-  productionised. Personally not a big helm fan, as Pulumi's typesafety is much nicer.
+  productionised. Personally not a big Helm fan, as Pulumi's type safety is much nicer.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
-  65+★</small>: CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
+  75+★</small>: CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
   attachment text extraction and masked email. Predates the official Fastmail MCP,
   largely because I knew what I wanted out of it and couldn't be bothered waiting to
   find out if they'd want the same.
@@ -274,16 +275,18 @@ there for anyone with the curiosity to look.
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields
   it needs. It uses far fewer tokens, and when it fails, a model can read why.
-- **MCP gateway** [mcp-gateway](https://github.com/radiosilence/mcp-gateway), which handles storing
-  user secrets and injecting them into headers for the MCP servers themselves to wear, and also the
-  Oauth flow to use as a connector on desktop/mobile/code.
-- **[kōan](https://koan.rocks)** <small>Rust/Swift/Kotlin · 25★ ·
+- **[mcp-gateway](https://github.com/radiosilence/mcp-gateway)** <small>Rust</small>:
+  stores per-user secrets and injects them as headers on requests to the MCP servers
+  behind it, and runs the OAuth flow so they work as connectors in Claude on desktop,
+  mobile and Code.
+- **[kōan](https://koan.rocks)** <small>Rust/Swift/Kotlin ·
   [source](https://github.com/radiosilence/koan)</small>: a music player and server for
   local and OpenSubsonic libraries, built from 25 years of messing about with music and
-  wanting my dream app. Native SwiftUI apps for macOS and iOS link a Rust core directly,
-  alongside a terminal UI and a server, and now Android apps. Room and headphone correction imports from
-  Roon, REW and AutoEQ per output, DLNA/UPnP support, and playback can be moved and remote controlled
-  between devices on same LAN (ala AirPlay), or anywhere provided kōan server is used. It stays compatible with
+  wanting my dream app. Native SwiftUI apps for macOS and iOS and a native Android app
+  link a Rust core directly, alongside a terminal UI and a server. It imports room and
+  headphone correction per output from Roon, REW and AutoEQ, speaks DLNA/UPnP, and moves
+  and remote-controls playback between devices on the same LAN (à la AirPlay), or
+  anywhere through a kōan server. It stays compatible with
   OpenSubsonic throughout, so every part works with the rest of the ecosystem, and its
   MCP server lets an assistant build a playlist and start it on your phone.
 - **[GrogLog](https://groglog.io)** <small>Rust/Swift/Kotlin ·
@@ -298,8 +301,8 @@ there for anyone with the curiosity to look.
 - **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>: a
   drop-in watchman replacement that doesn't eat your RAM.
 - **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>: this site. A
-  static site generator with a content-hashed asset pipeline that fails the build on an
-  unreferenced or hand-written path, and `askama_gettext`, a gettext implementation for
+  static site generator with a content-hashed asset pipeline that fails the build on a
+  missing or hand-written path, and `askama_gettext`, a gettext implementation for
   Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
   so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
   CSS and a font. The locale picker is `command`/`commandfor` and a native `<dialog>`.
@@ -307,7 +310,8 @@ there for anyone with the curiosity to look.
 ### Contributed
 
 - **[pip](https://github.com/pypa/pip)**: [#789](https://github.com/pypa/pip/pull/789),
-  SSL certificate verification, which shipped in pip 1.3 as the fix for CVE-2013-1629.
+  SSL certificate verification, carried into [#791](https://github.com/pypa/pip/pull/791)
+  and shipped in pip 1.3 as the fix for CVE-2013-1629.
 - **Contributions elsewhere**: [TanStack
   Router](https://github.com/TanStack/router) (static prerendering fix, and docs),
   [Django REST Framework](https://github.com/encode/django-rest-framework) (timedelta
@@ -332,7 +336,7 @@ there for anyone with the curiosity to look.
 
 AI is changing how we learn and build with things - I've tried to be honest here about tools
 I could use without LLM assistance. However, <em>for instance</em>, I use Rust for my personal
-projects as I know enought about it to maintain it, review it, and spot if LLMs have done something
+projects as I know enough about it to maintain it, review it, and spot if LLMs have done something
 hideous or worked their way into an antipattern.
 
 **Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
@@ -340,8 +344,8 @@ Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, Pulumi, Vite, Zustand, agen
 
 **Strong**: Go, Python, React Native, gRPC and Protobuf, Kubernetes, Astro,
 Terraform, AWS (CDK, Lambda, API Gateway, DynamoDB, S3, CloudFront, Cognito,
-ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Memcached, Zod,esbuild, bun,
-Zustand, MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
+ECS/Fargate, RDS, IAM, Route53, SQS, SES, CloudWatch), Redis, Memcached, Zod, esbuild, bun,
+MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 
 **Worked with**: Rust, NestJS, Express, Swift, Java, Kotlin, Django, Flask, Celery, Cython, Twisted, MySQL,
 MSSQL, MongoDB, CouchDB, Couchbase, ArgoCD, Ansible, Azure and Azure
@@ -353,7 +357,7 @@ SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN, and ma
 
 Full disclosure: I dropped out of Computer Science & Cybernetics at the University of
 Reading, despite winning a competition for my embedded work in second year. It wasn't for
-me, I loved practicals over theory, writing code over sitting in lectures and sitting exams. Whilst
+me. I loved practicals over theory, writing code over sitting in lectures and sitting exams. Whilst
 university was an excellent experience in many other ways, and gave me access to some brilliant minds,
 as soon as I moved to Brighton and started freelancing, I started really having fun.
 
