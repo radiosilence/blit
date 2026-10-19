@@ -11,8 +11,8 @@ Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, a
 commercial frontend, backend, devops, mobile and embedded. Elixir and Go services,
 GraphQL gateways, React and Next.js, native Swift and Kotlin modules, Rust tooling,
 Terraform, Pulumi and Kubernetes. The language matters less than people think. What
-matters is a good standard library, libraries written by someone who cared, and nothing
-standing between me and the thing that needs to exist.
+matters is a architecting software in a smart, forward thinking but pragmatic manner and
+a language that enables that.
 
 I like greenfield, and I like taking a thing that works and making it the thing it should
 have been, especially hard problems I can own from one end to the other. I started out
@@ -23,7 +23,7 @@ building it.
 A lot of engineering is communication - sometimes you have to lead by example, but if you
 can't explain the insight you have to those that are supposed to be on board, then you
 have to ask yourself how well you understand it yourself. A good engineer can relate
-concepts to people in ways that they can understand whilst still being open to the
+concepts to people in ways that they can understand, whilst still being open to the
 amazing ideas they might have themselves.
 
 I love IaC because whilst you can build imperatively, being able to recreate and iterate
@@ -38,7 +38,9 @@ their ever-increasing limits. My position is that they make it easy to not care,
 stop learning, if you let them. In the hands of someone who is open to them and has a
 wealth of human experience to draw upon, though, they can be an exceptional force
 multiplier, delivering results of high quality at great speed. Using them is a skill like
-any other.
+any other. My most recent GitHub projects are fairly AI assisted, however I am lucky enough
+to have decades of experience to draw on in order to create things that are high quality,
+performant, secure, and intuitive to use.
 
 What drives me is waking up every day and building something interesting. I take a lot of
 pride in my work, and I'm often the person people come to when something needs doing
@@ -53,11 +55,11 @@ properly.
   modules, because the TV app it controlled ran inside a browser and couldn't host one
   itself.
 - **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
-  server in Rust with 240+ stars. It serves this page, from a cupboard.
+  server in originally Go, and rebuilt in Rust with 240+ stars.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
   Credit Suisse's CSPM needed, so I went to their office and made the case, and they
   changed the platform for my client and everyone else on it.
-- **Found the hole in pip.** In 2013 it fetched packages over plain HTTP and verified
+- **Found a security hole in pip.** In 2013 it fetched packages over plain HTTP and verified
   nothing. I argued it had to check SSL certificates, and that shipped in pip 1.3 as the
   fix for CVE-2013-1629, with me credited by name in the release notes.
 - **An Android app and the entire AWS backend behind it**, built from nothing for bike
