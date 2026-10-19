@@ -284,7 +284,7 @@ there for anyone with the curiosity to look.
   alongside a terminal UI and a server. Your DAC runs at each track's own sample rate,
   gapless survives you editing the queue, room and headphone correction imports from
   Roon, REW and AutoEQ per output, network amps get the actual file, and playback moves
-  between devices with each one playing its own copy. It stays compatible with
+  between devices with each one playing its own copy (ala AirPlay). It stays compatible with
   OpenSubsonic throughout, so every part works with the rest of the ecosystem, and its
   MCP server lets an assistant build a playlist and start it on your phone.
 - **[GrogLog](https://groglog.io)** <small>Swift ·
