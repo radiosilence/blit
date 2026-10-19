@@ -268,13 +268,15 @@ there for anyone with the curiosity to look.
   largely because I knew what I wanted out of it and couldn't be bothered waiting to
   find out if they'd want the same.
 - **MCP servers in Rust**: [tfl-mcp](https://github.com/radiosilence/tfl-mcp), which
-  wraps TfL's REST API into a fully associated graph. Bots love it.
-  [mcp-gateway](https://github.com/radiosilence/mcp-gateway),
+  wraps TfL's REST API into a fully associated graph,
   [caldav-cli](https://github.com/radiosilence/caldav-cli),
   [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp). All share a
   GraphQL transport I designed for them: one typed, introspectable graph instead of a
   sprawl of flat tools, so a model can find what exists and ask for exactly the fields
   it needs. It uses far fewer tokens, and when it fails, a model can read why.
+- **MCP gateway** [mcp-gateway](https://github.com/radiosilence/mcp-gateway), which handles storing
+  user secrets and injecting them into headers for the MCP servers themselves to wear, and also the
+  Oauth flow to use as a connector on desktop/mobile/code.
 - **[kōan](https://koan.rocks)** <small>Rust · Swift · 25★ ·
   [source](https://github.com/radiosilence/koan)</small>: a music player and server for
   local and OpenSubsonic libraries, built from 25 years of messing about with music and
