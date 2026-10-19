@@ -241,13 +241,14 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 Handwritten the old way, or architected by hand and written with AI: everything I make is
 there for anyone with the curiosity to look.
 
-### Mine
+### Created
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>: in-memory static file server for SPAs and static content, and what
-  serves this site.
+  serves this site. Uniquely designed in that it pre-computes and pre-compresses every possible
+  request AoT, so that serving it is just feeding the kernel a buffer.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
-  my own infrastructure as a single Pulumi program. It provisions a Hetzner VPS,
+  my own homelab infrastructure as a single Pulumi stack. It provisions a Hetzner VPS,
   installs k3s on it, reads the kubeconfig back as an output of the same run that
   consumes it, and deploys into the cluster it just built, so there's no secret
   round-trip and nothing for a human to rotate. It uses Cilium as the CNI so
@@ -255,11 +256,12 @@ there for anyone with the curiosity to look.
   censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, unbound, tailscale)
   running as hostNetwork DaemonSets rather than systemd units, so the host itself runs
   k3s and sshd and nothing else. Xray owns `:443` and passes unmatched traffic to
-  Traefik, so the public site and the proxy share a port. It runs this site, Navidrome,
+  Traefik, so the public site and the proxy share a port. It runs this site, kōan,
   and an MCP gateway with Hydra and Postgres behind it, with VictoriaMetrics and Grafana
   watching all of it. GitHub Actions previews the stack on a pull request and applies it
   on merge, and a scheduled job tracks upstream component versions and opens the bump
-  itself.
+  itself. Basically other than ArgoCD (which I don't have the spare mem for), it's pretty
+  productionised. Personally not a big helm fan, as Pulumi's typesafety is much nicer.
 - **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
   65+★</small>: CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
   attachment text extraction and masked email. Predates the official Fastmail MCP,
