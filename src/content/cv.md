@@ -277,24 +277,24 @@ there for anyone with the curiosity to look.
 - **MCP gateway** [mcp-gateway](https://github.com/radiosilence/mcp-gateway), which handles storing
   user secrets and injecting them into headers for the MCP servers themselves to wear, and also the
   Oauth flow to use as a connector on desktop/mobile/code.
-- **[kōan](https://koan.rocks)** <small>Rust · Swift · 25★ ·
+- **[kōan](https://koan.rocks)** <small>Rust/Swift/Kotlin · 25★ ·
   [source](https://github.com/radiosilence/koan)</small>: a music player and server for
   local and OpenSubsonic libraries, built from 25 years of messing about with music and
   wanting my dream app. Native SwiftUI apps for macOS and iOS link a Rust core directly,
-  alongside a terminal UI and a server. Your DAC runs at each track's own sample rate,
-  gapless survives you editing the queue, room and headphone correction imports from
-  Roon, REW and AutoEQ per output, network amps get the actual file, and playback moves
-  between devices with each one playing its own copy (ala AirPlay). It stays compatible with
+  alongside a terminal UI and a server, and now Android apps. Room and headphone correction imports from
+  Roon, REW and AutoEQ per output, DLNA/UPnP support, and playback can be moved and remote controlled
+  between devices on same LAN (ala AirPlay), or anywhere provided kōan server is used. It stays compatible with
   OpenSubsonic throughout, so every part works with the rest of the ecosystem, and its
   MCP server lets an assistant build a playlist and start it on your phone.
-- **[GrogLog](https://groglog.io)** <small>Swift ·
+- **[GrogLog](https://groglog.io)** <small>Rust/Swift/Kotlin ·
   [source](https://github.com/radiosilence/groglog)</small>: I know people who struggle
   with how much they drink, and I wanted them to have something completely free that
   helps them cut down and does more than the paid apps. No subscription, no adverts, no
   account and no server. It counts UK units, prices and calories from a catalogue of
   over 1,100 drinks, sets a gradual reduction plan within UK clinical guidance, charts
   progress and streaks, shows heart rate, HRV and sleep from Apple Health against the
-  evening before, and logs from widgets and Shortcuts.
+  evening before, and logs from widgets and Shortcuts. Shared Rust logic core between Android
+  and iOS apps, bridged via FFI.
 - **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>: a
   drop-in watchman replacement that doesn't eat your RAM.
 - **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>: this site. A
