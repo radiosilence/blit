@@ -348,8 +348,13 @@ SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN, and ma
 ## Education
 
 Full disclosure: I dropped out of Computer Science & Cybernetics at the University of
-Reading, despite winning various competitions for my work along the way. It wasn't for
-me.
+Reading, despite winning a competition for my embedded work in second year. It wasn't for
+me, I loved practicals over theory, writing code over sitting in lectures and sitting exams. Whilst
+university was an excellent experience in many other ways, and gave me access to some brilliant minds,
+as soon as I moved to Brighton and started freelancing, I started really having fun.
+
+I think I have a diploma for the two years I did, but I don't see it as particularly relevant to my
+work.
 
 ## Who is James?
 
