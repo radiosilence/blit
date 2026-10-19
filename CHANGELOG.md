@@ -29,8 +29,6 @@ it across runners would only add a manifest-merge job. `--platform` is applied o
 push alone, because `--load` has nowhere to put a manifest list and a local build only
 needs the architecture it can run.
 
-## Unreleased
-
 ### The generator is Rust
 
 The build is a single binary. `generator/` renders the site, `crates/askama_gettext`
@@ -63,8 +61,6 @@ Two bugs worth recording, both found by rendering rather than by reasoning:
   discarded the translation. Caught because Polish stopped pluralising on a page
   built to show exactly that.
 
-## Unreleased
-
 ### Assets are content-hashed and published on demand
 
 `dist/` is now built from what the templates referenced rather than copied out of
@@ -91,8 +87,6 @@ Two bugs worth recording, both found by rendering rather than by reasoning:
   locale's directory stops being served. The `static` copy task is gone.
 - Rendered pages are unchanged apart from the asset URLs: identical across all 72
   pages once fingerprints are normalised.
-
-## Unreleased
 
 ### Templates are WebC, messages are Lingui
 
@@ -306,7 +300,13 @@ no JavaScript at all, and no `<script>` tag on any page.
 - Docker pipeline split: runner builds the site and uploads it as an artifact; the publish job downloads it and packages a thin image (just `FROM nano-web` + `COPY dist /public`)
 - Dockerfile no longer needs Node, npm, or aube — final image is just static assets on top of nano-web
 
-## 4.0.0 — 2026-04-11
+### Internal
+
+- **Changelog fragments.** Changes record their notes under `changelog.d/` and `CHANGELOG.md` is generated from them, so concurrent pull requests no longer conflict on it; CI checks the fragments, and the pre-commit hook now runs rustfmt alone, leaving clippy to CI.
+
+## 4.0.0
+
+Released 2026-04-11.
 
 Replaced Astro with TanStack Start. Server-side i18n with zero client flash.
 
@@ -336,7 +336,9 @@ Replaced Astro with TanStack Start. Server-side i18n with zero client flash.
 - SSG served by nano-web from `dist/client/`
 - Standalone SSR via `bun run serve` (Bun.serve wrapping TanStack Start's fetch handler)
 
-## 3.0.0 — 2026-03-14
+## 3.0.0
+
+Released 2026-03-14.
 
 Astro 6 upgrade with build and asset optimisations.
 
