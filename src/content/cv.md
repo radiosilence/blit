@@ -241,6 +241,8 @@ _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 Handwritten the old way, or architected by hand and written with AI: everything I make is
 there for anyone with the curiosity to look.
 
+### Mine
+
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
   240+★</small>: in-memory static file server for SPAs and static content, and what
   serves this site.
@@ -265,7 +267,6 @@ there for anyone with the curiosity to look.
   find out if they'd want the same.
 - **MCP servers in Rust**: [tfl-mcp](https://github.com/radiosilence/tfl-mcp), which
   wraps TfL's REST API into a fully associated graph. Bots love it.
-  [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp),
   [mcp-gateway](https://github.com/radiosilence/mcp-gateway),
   [caldav-cli](https://github.com/radiosilence/caldav-cli),
   [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp). All share a
@@ -298,6 +299,9 @@ there for anyone with the curiosity to look.
   Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
   so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
   CSS and a font. The locale picker is `command`/`commandfor` and a native `<dialog>`.
+
+### Contributed
+
 - **[pip](https://github.com/pypa/pip)**: [#789](https://github.com/pypa/pip/pull/789),
   SSL certificate verification, which shipped in pip 1.3 as the fix for CVE-2013-1629.
 - **Contributions elsewhere**: [TanStack
