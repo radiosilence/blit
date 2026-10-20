@@ -254,6 +254,12 @@ jobs:
     timeout-minutes: 10
     needs: [checks, container]
     if: ${{ !cancelled() && needs.checks.result == 'success' && needs.container.result == 'success' && github.ref == 'refs/heads/main' }}
+    # One at a time across runs: two that read `latest` together could both see
+    # their commit ahead, and the one finishing last would win.
+    concurrency:
+      group: promote
+      cancel-in-progress: false
+    # contents: read covers the compare API the guard calls.
     permissions:
       contents: read
       packages: write
