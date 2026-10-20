@@ -165,12 +165,21 @@ tasks:
       - task: check
       - task: build
 
-  # Cache flags are read from the environment so a caller can point buildx at a shared
-  # cache; unset, it uses the local one. PUSH and LATEST are compared as strings
-  # because GitHub expressions render booleans as "true"/"false".
   docker:build:
-    desc: Build the container image — PUSH=true to push, LATEST=true to also tag latest
+    desc: Build the site, then its container image — PUSH=true to push it
     deps: [build]
+    cmds:
+      - task: docker:image
+
+  # dist/ is the whole build context, so CI builds the site in one job and the image
+  # from its artefact in another. It pushes IMAGE:<full sha>, which nothing deploys;
+  # docker:promote adds the tags the deployment reads once the commit has passed.
+  #
+  # Cache flags are read from the environment so a caller can point buildx at a shared
+  # cache; unset, it uses the local one. PUSH is compared as a string because GitHub
+  # expressions render booleans as "true"/"false".
+  docker:image:
+    desc: Build the container image from an existing dist/ — PUSH=true to push it
     # SHA is derived here rather than globally: Task evaluates global `sh:` vars on
     # every invocation, so `task lint` and the dev watch loop would fork git too. The
     # self-reference is load-bearing — a plain task-level var outranks a CLI-passed
@@ -187,16 +196,27 @@ tasks:
     # --load has nowhere to put one, so a local build takes the host's architecture —
     # which is the only one you could run anyway.
     cmd: >-
-      docker buildx build .
+      docker buildx build {{.DIST}}
+      --file Dockerfile
       {{if eq .PUSH "true"}}--platform {{.PLATFORMS}}{{end}}
-      --tag {{.IMAGE}}:{{.TAG}}
-      {{if eq .LATEST "true"}}--tag {{.IMAGE}}:latest{{end}}
+      --tag {{.IMAGE}}:{{.SHA}}
       --label org.opencontainers.image.revision={{.SHA}}
       --label org.opencontainers.image.created={{.BUILT_AT}}
       --label org.opencontainers.image.version={{.TAG}}
       {{if .CACHE_FROM}}--cache-from {{.CACHE_FROM}}{{end}}
       {{if .CACHE_TO}}--cache-to {{.CACHE_TO}}{{end}}
       {{if eq .PUSH "true"}}--push{{else}}--load{{end}}
+
+  # Points `sha-<short>`, which the deployment pins, and `latest` at the image
+  # docker:image pushed for SHA. A retag copies no layers, so what ships is byte for
+  # byte what was built and checked.
+  docker:promote:
+    desc: Tag the pushed IMAGE:<sha> as sha-<short> and latest
+    vars:
+      SHA:
+        sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
+      TAG: sha-{{trunc 7 .SHA}}
+    cmd: docker buildx imagetools create --tag {{.IMAGE}}:{{.TAG}} --tag {{.IMAGE}}:latest {{.IMAGE}}:{{.SHA}}
 
   # Asks the deployment to update itself, rather than reaching in and editing it.
   #

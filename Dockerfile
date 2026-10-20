@@ -11,6 +11,6 @@ LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
   org.opencontainers.image.vendor="James Cleveland" \
   org.opencontainers.image.licenses=""
 
-COPY dist /public
+COPY . /public
 ENV PORT=3000
 EXPOSE 3000

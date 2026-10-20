@@ -1,6 +1,6 @@
 # blit.cc personal site
 
-![publish-web-container](https://github.com/radiosilence/blit/actions/workflows/publish-web-container.yml/badge.svg)
+![CI/CD](https://github.com/radiosilence/blit/actions/workflows/ci-cd.yml/badge.svg)
 
 Static site for [blit.cc](https://blit.cc) — a homepage and a CV, in 36 locales.
 The browser gets HTML, CSS and a font. No JavaScript at all.
@@ -143,7 +143,7 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | `task generate`     | Render every locale × page only                    |
 | `task check`        | Clippy, rustfmt and tests                          |
 | `task ci`           | Exactly what CI runs — `check`, then `build`       |
-| `task docker:build` | Build the container image                          |
+| `task docker:build` | Build the site, then the container image           |
 | `task i18n:sync`    | Sync locale catalogues against the source          |
 | `task clean`        | Drop `dist/`, `.build/`, `target/` and the cache   |
 
@@ -167,18 +167,44 @@ pass — the image is a `COPY` onto a base that already covers both, so there is
 to emulate. A local `task docker:build` loads the host's architecture only, since
 `--load` takes a single image rather than a list.
 
-GitHub Actions only supplies the environment — a checkout, the mise toolchain,
-registry credentials and a build cache. Each step is a Taskfile target, so the same
-pipeline runs on a laptop:
+GitHub Actions supplies the environment — a checkout, the mise toolchain, registry
+credentials and a build cache — and decides what runs. Each step is a Taskfile
+target, so the same pipeline runs on a laptop:
 
 ```bash
-task ci                                # what the build job runs
-task docker:build                      # what it publishes, minus the push
+task lint format:check test            # what the Rust job runs
+task changelog:check                   # what the Changelog job runs
+task build                             # what the Site job runs
+task docker:image                      # what the Container image job builds from dist/
+task docker:promote                    # what CD tags once Checks has passed
 task deploy:update                     # asks prod to pick the build up
 ```
 
 Anything a runner has and a laptop doesn't arrives as environment rather than as
 workflow logic: `CI` selects an optimised build over the fast debug one the watch loop
-wants, `CACHE_FROM`/`CACHE_TO` select GitHub's buildx cache over the local one, and
+wants, `CACHE_FROM`/`CACHE_TO` select a shared buildx cache over the local one, and
 `GH_TOKEN` authorises asking the deployment repository to update. Unset, each falls
 back to the local equivalent.
+
+### CI/CD
+
+`.github/workflows/ci-cd.yml` is one run in two halves. Its first job, `changes`,
+diffs the change (a pull request against its base, a push against the last main
+commit whose run passed) and sets one flag per domain:
+
+| Domain   | Paths                                                                                              | Job             |
+| -------- | -------------------------------------------------------------------------------------------------- | --------------- |
+| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `Taskfile.yml`, `mise.toml` | Rust            |
+| `site`   | the above and the rest of `src/`                                                                   | Site            |
+| `docker` | `Dockerfile` on a pull request; on main, also anything in `site`                                   | Container image |
+
+Markdown outside `src/` is documentation and counts for nothing; a change under
+`.github/` and a manual run count for everything. A job whose domain is untouched is
+skipped, and a skipped job is a pass: the one required status is `Checks`, which fails
+only when a job it needs failed or was cancelled. Changelog runs for every change. To
+add a domain, add an output and a `touches` line to `changes`, gate the job on it with
+`if:`, and add the job to `Checks`'s `needs`.
+
+On main the container job pushes `ghcr.io/radiosilence/blit:<full sha>` alongside the
+other checks; nothing deploys that tag. Once `Checks` passes, CD retags it as
+`sha-<short>`, which jaritanet pins, and `latest`, then asks jaritanet to update.
