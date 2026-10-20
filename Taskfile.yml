@@ -217,12 +217,13 @@ tasks:
         sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
       TAG: sha-{{trunc 7 .SHA}}
     # Runs finish out of order, so `latest` moves only to a commit that descends from
-    # the one it holds (read from the image's revision label); a run that finishes
-    # after a newer one leaves it alone.
+    # the one it holds (read from the image's revision label), or to a rebuild of that
+    # same commit; a run that finishes after a newer one leaves it alone. With no
+    # readable label there is nothing to compare, and it moves.
     cmd: |
       tags=(--tag {{.IMAGE}}:{{.TAG}})
-      held=$(docker buildx imagetools inspect {{.IMAGE}}:latest \
-        --format '{{`{{ index (index .Image "linux/amd64").Config.Labels "org.opencontainers.image.revision" }}`}}' 2>/dev/null || true)
+      held=$(docker buildx imagetools inspect {{.IMAGE}}:latest --format '{{`{{json .Image}}`}}' 2>/dev/null \
+        | jq -r '[.. | objects | .config?.Labels?["org.opencontainers.image.revision"]? // empty] | first // empty' || true)
       status=ahead
       if printf "%s" "$held" | grep -qxE "[0-9a-f]{40}"; then
         status=$(gh api "repos/radiosilence/blit/compare/$held...{{.SHA}}" --jq .status)
