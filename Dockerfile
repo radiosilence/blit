@@ -12,7 +12,10 @@ LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
   org.opencontainers.image.licenses=""
 
 # The build context is dist/ (`task docker:image`), not the repository root: this
-# copies everything in the context into the directory nano-web serves.
+# copies everything in the context into the directory nano-web serves. The first
+# COPY fails a build from any context without a generated home page, so a build
+# from the root cannot publish the checkout.
+COPY index.html /public/index.html
 COPY . /public
 ENV PORT=3000
 EXPOSE 3000
