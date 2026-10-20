@@ -211,12 +211,28 @@ tasks:
   # docker:image pushed for SHA. A retag copies no layers, so what ships is byte for
   # byte what was built and checked.
   docker:promote:
-    desc: Tag the pushed IMAGE:<sha> as sha-<short> and latest
+    desc: Tag the pushed IMAGE:<sha> as sha-<short>, and as latest unless latest is newer
     vars:
       SHA:
         sh: "{{if .SHA}}echo {{.SHA}}{{else}}git rev-parse HEAD{{end}}"
       TAG: sha-{{trunc 7 .SHA}}
-    cmd: docker buildx imagetools create --tag {{.IMAGE}}:{{.TAG}} --tag {{.IMAGE}}:latest {{.IMAGE}}:{{.SHA}}
+    # Runs finish out of order, so `latest` moves only to a commit that descends from
+    # the one it holds (read from the image's revision label); a run that finishes
+    # after a newer one leaves it alone.
+    cmd: |
+      tags=(--tag {{.IMAGE}}:{{.TAG}})
+      held=$(docker buildx imagetools inspect {{.IMAGE}}:latest \
+        --format '{{`{{ index (index .Image "linux/amd64").Config.Labels "org.opencontainers.image.revision" }}`}}' 2>/dev/null || true)
+      status=ahead
+      if printf "%s" "$held" | grep -qxE "[0-9a-f]{40}"; then
+        status=$(gh api "repos/radiosilence/blit/compare/$held...{{.SHA}}" --jq .status)
+      fi
+      if [ "$status" = ahead ] || [ "$status" = identical ]; then
+        tags+=(--tag {{.IMAGE}}:latest)
+      else
+        echo "latest holds ${held::7}, which {{.TAG}} does not descend from ($status); leaving it"
+      fi
+      docker buildx imagetools create "${tags[@]}" {{.IMAGE}}:{{.SHA}}
 
   # Asks the deployment to update itself, rather than reaching in and editing it.
   #

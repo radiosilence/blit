@@ -57,7 +57,9 @@ jobs:
         # The domains a change touches, from its diff. A pull request's is
         # against its base. A push's is against the last commit on main whose
         # run passed, so a push whose run was cancelled by the next one still
-        # reaches CD with it; without one in recent history, the commit before.
+        # reaches CD with it. When that commit cannot be found (no passed run in
+        # the last two hundred commits, or `gh` failing), the base is unknown and
+        # everything runs rather than guessing.
         # A manual run, or a diff that cannot be worked out, runs everything.
         #
         # Allowlists, so a new top-level directory is invisible here until it is
@@ -71,16 +73,22 @@ jobs:
           rust=true site=true docker=true
           base=HEAD^1
           if [ "$EVENT" = "push" ]; then
-            passed=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci-cd.yml --branch main --event push \
-              --status success --limit 1 --json headSha --jq '.[0].headSha' 2>/dev/null || true)
-            if [ -n "$passed" ] && [ "$passed" != "$(git rev-parse HEAD)" ] && git fetch -q --deepen=100 origin main && git merge-base --is-ancestor "$passed" HEAD; then
-              base=$passed
+            base=
+            if passed=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci-cd.yml --branch main --event push \
+              --status success --limit 1 --json headSha --jq '.[0].headSha // empty') && [ -n "$passed" ]; then
+              # A re-run of the commit that last passed diffs against its parent.
+              if [ "$passed" = "$(git rev-parse HEAD)" ]; then
+                base=HEAD^1
+              elif git fetch -q --deepen=200 origin main && git merge-base --is-ancestor "$passed" HEAD; then
+                base=$passed
+              fi
             fi
           fi
-          touches() { printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//' | grep -qE "$1"; }
-          if [ "$EVENT" != "workflow_dispatch" ] && files=$(git diff --name-only "$base" HEAD); then
+          touches() { grep -qE "$1" <<< "$relevant"; }
+          if [ -n "$base" ] && [ "$EVENT" != "workflow_dispatch" ] && files=$(git diff --name-only "$base" HEAD); then
             echo "changes since $(git rev-parse --short "$base"):"
             printf '%s\n' "$files" | sed 's/^/  /'
+            relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//')
             # What cargo compiles, Askama's templates included, and the tasks
             # and toolchain that check it.
             touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^Taskfile\.yml$|^mise\.toml$|^\.github/' || rust=false
@@ -111,9 +119,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.rust == 'true'
     timeout-minutes: 30
-    concurrency:
-      group: rust-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # mise.toml is the single source of truth for rust, task, tailwind and gh.
@@ -156,9 +161,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.site == 'true'
     timeout-minutes: 30
-    concurrency:
-      group: site-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
@@ -187,9 +189,6 @@ jobs:
     timeout-minutes: 15
     needs: [changes, site]
     if: ${{ !cancelled() && needs.changes.outputs.docker == 'true' && needs.site.result == 'success' }}
-    concurrency:
-      group: container-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
-      cancel-in-progress: true
     permissions:
       contents: read
       packages: write
@@ -259,14 +258,16 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
         with:
-          install_args: task
+          install_args: task gh
       # No buildx builder: `imagetools create` talks to the registry alone.
       - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: task docker:promote SHA=${{ github.sha }}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: task docker:promote SHA=${{ github.sha }}
 
   update-deployment:
     name: Update deployment
