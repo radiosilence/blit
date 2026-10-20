@@ -229,7 +229,7 @@ tasks:
   # So the direction is inverted. This says a build exists; what a version is,
   # where the pin lives and how to write it belong to the deployment, which is
   # where they were always going to change. Its updater resolves this branch's
-  # head to the tag `docker:build` pushed and moves the pin from there.
+  # head to the tag `docker:promote` wrote and moves the pin from there.
   #
   # GH_TOKEN needs `actions: write` on the deployment repository — it triggers a
   # workflow now rather than committing, so `contents: write` is no longer

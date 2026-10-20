@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 task dev          # Rebuild on change, serve on :3000 with nano-web
 task build        # css into .build/, then generate the site into dist/
 task check        # clippy, rustfmt and tests
-task ci           # What CI runs: check, then build
+task ci           # Everything CI checks: check, then build
 task i18n:sync    # Extract messages from the templates into every catalogue
 task docker:build # Build the site, then the container image (PUSH=true to push)
 task clean        # Drop dist/, .build/, target/ and Task's checksum cache

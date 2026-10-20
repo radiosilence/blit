@@ -11,6 +11,8 @@ LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
   org.opencontainers.image.vendor="James Cleveland" \
   org.opencontainers.image.licenses=""
 
+# The build context is dist/ (`task docker:image`), not the repository root: this
+# copies everything in the context into the directory nano-web serves.
 COPY . /public
 ENV PORT=3000
 EXPOSE 3000

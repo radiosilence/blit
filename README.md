@@ -142,7 +142,7 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | `task build`        | Compile CSS, then generate the site into `dist/`   |
 | `task generate`     | Render every locale × page only                    |
 | `task check`        | Clippy, rustfmt and tests                          |
-| `task ci`           | Exactly what CI runs — `check`, then `build`       |
+| `task ci`           | Everything CI checks — `check`, then `build`       |
 | `task docker:build` | Build the site, then the container image           |
 | `task i18n:sync`    | Sync locale catalogues against the source          |
 | `task clean`        | Drop `dist/`, `.build/`, `target/` and the cache   |
@@ -196,7 +196,7 @@ commit whose run passed) and sets one flag per domain:
 | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
 | `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `Taskfile.yml`, `mise.toml` | Rust            |
 | `site`   | the above and the rest of `src/`                                                                   | Site            |
-| `docker` | `Dockerfile` on a pull request; on main, also anything in `site`                                   | Container image |
+| `docker` | `Dockerfile`, `Taskfile.yml`, `mise.toml` on a pull request; on main, also anything in `site`      | Container image |
 
 Markdown outside `src/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is
