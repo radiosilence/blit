@@ -58,8 +58,10 @@ impl Assets {
             return name.to_owned();
         }
 
-        let hash = format!("{:x}", Sha256::digest(body));
-        let hash = &hash[..8];
+        let hash: String = Sha256::digest(body)[..4]
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect();
         match name.rsplit_once('.') {
             Some((stem, ext)) => format!("{stem}.{hash}.{ext}"),
             None => format!("{name}.{hash}"),
