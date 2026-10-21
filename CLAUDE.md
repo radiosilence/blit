@@ -8,9 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 task dev          # Rebuild on change, serve on :3000 with nano-web
 task build        # css into .build/, then generate the site into dist/
 task check        # clippy, rustfmt and tests
-task ci           # What CI runs: check, then build
+task ci           # Everything CI checks: check, then build
 task i18n:sync    # Extract messages from the templates into every catalogue
-task docker:build # Build the container image (PUSH/LATEST to publish)
+task docker:build # Build the site, then the container image (PUSH=true to push)
 task clean        # Drop dist/, .build/, target/ and Task's checksum cache
 ```
 
@@ -77,6 +77,10 @@ Key decisions:
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
 - Adding a page means a template, a `page!` entry in `generator/templates.rs`, and a
   route in `generator/routes.rs`.
-- GitHub Actions is an environment, not a pipeline: it checks out, installs mise,
-  supplies credentials and a cargo cache, then calls Taskfile targets. If a step
-  can't be run locally, it's in the wrong file.
+- GitHub Actions supplies an environment and decides what runs: it checks out,
+  installs mise, supplies credentials and a cargo cache, then calls Taskfile targets.
+  If a step can't be run locally, it's in the wrong file. Jobs run only for the
+  domains a change touches and report through one required status, `Checks`; the
+  README's CI/CD section lists the domains and how to add one.
+- The deployment pins `sha-<short>`, and only CD writes that tag, after `Checks`.
+  CI pushes the image under the full commit SHA, which nothing reads.

@@ -1,0 +1,1 @@
+- **One CI/CD pipeline.** `ci-cd.yml` replaces `publish-web-container.yml`: jobs run only for the parts of the repository a change touches and report through one `Checks` status, and the image pushed under the commit is tagged for deployment only after `Checks` passes, so a commit that fails its checks can no longer be deployed.
