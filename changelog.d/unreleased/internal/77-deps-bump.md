@@ -1,0 +1,1 @@
+- **Dependencies updated to their latest releases.** Includes sha2 0.10 → 0.11.
