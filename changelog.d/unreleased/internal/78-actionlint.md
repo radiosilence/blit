@@ -1,0 +1,1 @@
+- **Workflows are linted.** The `Actionlint` job in `ci-cd.yml` runs actionlint, with shellcheck over every `run` script, on each change, and `task check` runs it locally.

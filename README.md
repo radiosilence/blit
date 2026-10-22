@@ -141,7 +141,7 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | `task dev`          | Rebuild on change, serve on :3000                  |
 | `task build`        | Compile CSS, then generate the site into `dist/`   |
 | `task generate`     | Render every locale × page only                    |
-| `task check`        | Clippy, rustfmt and tests                          |
+| `task check`        | Clippy, rustfmt, tests, actionlint, changelog      |
 | `task ci`           | Everything CI checks — `check`, then `build`       |
 | `task docker:build` | Build the site, then the container image           |
 | `task i18n:sync`    | Sync locale catalogues against the source          |
