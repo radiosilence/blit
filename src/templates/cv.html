@@ -1,6 +1,7 @@
 {% extends "page-base.html" %}
 {% block content %}
 {%- let logo = asset("logo.png") %}
+{%- let pdf = asset("cv.pdf") %}
 <div class="mx-4 flex flex-col items-center lg:mx-0">
   <section class="mb-12 max-w-5xl">
     <a href="{{ urls.home }}">
@@ -9,4 +10,7 @@
     <article class="prose prose-sm">{{ cv|safe }}</article>
   </section>
 </div>
+
+{# Pinned like the locale switcher, so it never sits in the CV's own flow. #}
+<a href="{{ pdf }}" class="fixed end-2 top-2 p-1 text-xs print:hidden">{{ __("download as pdf") }}</a>
 {% endblock %}

@@ -36,3 +36,7 @@ msgstr "အကြီးတန်း ဖူးလ်စတက် အင်ဂျ�
 msgid "cv-2026.08"
 msgstr "cv-2025.01"
 
+#: src/templates/cv.html:15
+msgid "download as pdf"
+msgstr "PDF အဖြစ် ဒေါင်းလုဒ်လုပ်ရန်"
+

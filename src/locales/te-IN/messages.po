@@ -36,3 +36,7 @@ msgstr "సీనియర్ ఫుల్ స్టాక్ ఇంజనీర
 msgid "cv-2026.08"
 msgstr "cv-2025.01"
 
+#: src/templates/cv.html:15
+msgid "download as pdf"
+msgstr "PDFగా డౌన్‌లోడ్ చేయండి"
+

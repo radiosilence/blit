@@ -33,12 +33,14 @@ tasks:
       - crates/**/*.rs
       - generator/**/*.rs
       - src/content/**/*.md
+      - src/fonts/**/*
       - src/locales/**/*.po
       - src/static/**/*
-      - src/templates/**/*.html
+      - src/templates/**/*
       - "{{.BUILD}}/style.css"
     generates:
       - "{{.DIST}}/**/index.html"
+      - "{{.DIST}}/cv.pdf"
     cmd: cargo run {{.PROFILE}} --quiet --bin blit
 
   css:
@@ -82,10 +84,11 @@ tasks:
       - crates/**/*.rs
       - generator/**/*.rs
       - src/content/**/*.md
+      - src/fonts/**/*
       - src/locales/**/*.po
       - src/static/**/*
       - src/styles/**/*.css
-      - src/templates/**/*.html
+      - src/templates/**/*
     cmds:
       - task: i18n:sync
       - task: build

@@ -38,7 +38,20 @@ fn main() -> Result<()> {
     let manifest = rewrite_manifest(&assets, &root.join("src/static/manifest.json"))?;
     assets.derive("manifest.json", manifest.into_bytes());
 
-    let cv = markdown(&fs::read_to_string(root.join("src/content/cv.md"))?);
+    let source = fs::read_to_string(root.join("src/content/cv.md"))?;
+    let cv = markdown(&source);
+
+    let fonts = fonts(&root.join("src/fonts"))?;
+    let template = fs::read_to_string(root.join("src/templates/cv.typ"))?;
+    assets.derive(
+        "cv.pdf",
+        blit::pdf::render(
+            &source,
+            &template,
+            &fonts,
+            &fs::read(root.join("src/static/logo.png"))?,
+        )?,
+    );
 
     let ctx = Context {
         catalogs: &catalogs,
@@ -122,6 +135,18 @@ fn markdown(source: &str) -> String {
     let mut out = String::new();
     html::push_html(&mut out, parser);
     out
+}
+
+/// The PDF's fonts. Typst reads no system fonts here, so one missing from this
+/// directory is a fallback warning at build time rather than a different PDF on
+/// another machine.
+fn fonts(dir: &Path) -> Result<Vec<Vec<u8>>> {
+    let mut paths: Vec<PathBuf> = fs::read_dir(dir)?
+        .map(|entry| entry.map(|e| e.path()))
+        .collect::<Result<_, _>>()?;
+    paths.retain(|path| path.extension().is_some_and(|e| e == "ttf"));
+    paths.sort();
+    paths.iter().map(|path| Ok(fs::read(path)?)).collect()
 }
 
 /// The manifest declares icons the browser fetches without any page linking them,
