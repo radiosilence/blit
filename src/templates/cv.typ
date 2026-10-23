@@ -4,14 +4,10 @@
 // the HTML it carries. The voice is the site's: Geist Mono, lowercase thin
 // headings, brand red, the logo.
 //
-// The page is a body column with a wide margin beside it, and the margin holds
-// what you scan for: the logo, the section titles and the dates. The body column
-// is narrow enough for a comfortable line of monospace, about 77 characters.
-//
-// Everything in the margin is placed from the flow it belongs to, so the
-// extracted text is still one column in reading order: a role's dates come out
-// on its line. The band, the rules and the second-page logo are shapes and
-// images, with no header or footer text to land in the middle of anything.
+// Decoration is drawn rather than written, because an applicant tracking system
+// reads this before a person does. The band, the rules and the second-page logo
+// are shapes and images, so the extracted text is one column in reading order,
+// with no header or footer text to land in the middle of it.
 
 #let mono = "Geist Mono"
 #let brand = rgb("#e65e5e")
@@ -20,36 +16,37 @@
 #let faint = rgb("#9a9a9a")
 #let hair = rgb("#e4e4e4")
 
-// The margin column sits this far left of the body, and is this wide.
-#let reach = 40mm
-#let aside-width = 32mm
-
-/// Sets `body` in the margin, `dy` below the top of the block it is called in.
-#let aside(body, dy: 0pt) = place(
-  top + left,
-  dx: -reach,
-  dy: dy,
-  box(width: aside-width, body),
-)
-
 #let small(body) = text(size: 0.92em, fill: mid, body)
 
-// Dates travel inside the role's heading as metadata; the heading's show rule
-// takes them out and sets them in the margin beside it.
-#let dates(body) = metadata((dates: body))
+// On the role's own line, at the right margin: where the eye and a parser both
+// look for it.
+#let dates(body) = {
+  h(1fr)
+  text(size: 7.5pt, weight: "regular", fill: faint, tracking: 0.03em, body)
+}
 
-#let masthead(name, title, contact) = {
-  // Sized to run from the top of the name to the baseline of the title, so the
-  // logo, name and title read as one lockup.
-  aside(image("logo.png", width: 14.7mm, alt: "blit.cc logo"))
-  block(below: 11mm, {
+// The logo is as tall as the text beside it, from the top of the name to the
+// last contact line, whatever the Markdown puts there. Its width depends on that
+// height and the text's wrapping on its width, so the height is measured twice.
+#let masthead(name, title, contact) = block(below: 10mm, layout(size => {
+  let gutter = 8mm
+  let lines(width) = block(width: width, {
     name
     v(2.6mm)
     text(size: 10pt, fill: brand, title)
     v(3mm)
     text(size: 7.8pt, fill: mid, contact)
   })
-}
+  let height = measure(lines(size.width - 40mm)).height
+  let height = measure(lines(size.width - height - gutter)).height
+
+  grid(
+    columns: (height, 1fr),
+    column-gutter: gutter,
+    image("logo.png", height: height, alt: "blit.cc logo"),
+    lines(100%),
+  )
+}))
 
 #let cv(name: none, body) = {
   set document(title: name + " – CV", author: name, date: none)
@@ -65,12 +62,12 @@
 
   set page(
     paper: "a4",
-    margin: (left: 18mm + reach, right: 18mm, top: 24mm, bottom: 22mm),
+    margin: (x: 22mm, top: 22mm, bottom: 20mm),
     // A band of the brand along the top edge of every page.
     background: place(top, rect(width: 100%, height: 2.4mm, fill: brand)),
-    // The logo again from the second page, small, at the head of the margin.
+    // The logo again from the second page, small, in the top corner.
     header: context if here().page() > 1 {
-      move(dx: -reach, image("logo.png", width: 6mm, alt: "blit.cc logo"))
+      align(right, image("logo.png", width: 6mm, alt: "blit.cc logo"))
     },
     header-ascent: 35%,
   )
@@ -97,36 +94,32 @@
     text(size: 30pt, weight: "extralight", tracking: -0.02em, lower(it.body)),
   )
 
-  // A row of its own: the title in the margin, and beside it a hairline across
-  // the body that starts in brand red. Below it, the body column carries on.
+  // The title, then a hairline running out from it to the margin, starting in
+  // brand red: one row, no space spent beside it.
   show heading.where(level: 2): it => block(
-    above: 3.2em,
-    below: 1.7em,
+    above: 3em,
+    below: 1.5em,
     sticky: true,
     width: 100%,
-    move(dx: -reach, box(width: 100% + reach, grid(
-      columns: (reach, 1fr),
+    grid(
+      columns: (auto, 1fr),
+      column-gutter: 4mm,
       align: horizon,
-      text(size: 11pt, weight: "thin", fill: ink, lower(it.body)),
+      text(size: 15pt, weight: "thin", tracking: -0.01em, lower(it.body)),
       box(width: 100%, {
         line(length: 100%, stroke: 0.5pt + hair)
         place(top + left, line(length: 12mm, stroke: 1pt + brand))
       }),
-    ))),
+    ),
   )
 
-  // The role in the body; its dates, if it has any, level with it in the margin.
-  show heading.where(level: 3): it => {
-    let parts = if it.body.has("children") { it.body.children } else { (it.body,) }
-    let dated = parts.filter(p => p.func() == metadata)
-    let role = parts.filter(p => p.func() != metadata).join()
-    block(above: 2.4em, below: 1em, sticky: true, width: 100%, {
-      for d in dated {
-        aside(align(right, text(size: 7.5pt, weight: "regular", fill: faint, d.value.dates)))
-      }
-      text(size: 9pt, weight: "semibold", role)
-    })
-  }
+  show heading.where(level: 3): it => block(
+    above: 2.3em,
+    below: 1em,
+    sticky: true,
+    width: 100%,
+    text(size: 9pt, weight: "semibold", it.body),
+  )
 
   body
 }
