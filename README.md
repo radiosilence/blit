@@ -35,8 +35,8 @@ that changes about as often as a language renames itself.
 
 ## Stack
 
-- [Task](https://taskfile.dev) orchestrates; steps declare `sources`/`generates` so
-  nothing re-runs without cause
+- [just](https://just.systems) runs the recipes, and
+  [watchexec](https://watchexec.github.io) reruns the build on change for `just dev`
 - [Askama](https://askama.rs) renders `src/templates/*.html`, bound to a struct at
   compile time — a field a template names but the struct lacks fails `cargo build`
 - `crates/askama_gettext` handles the messages: `__`/`__p`/`__n` in the template,
@@ -45,9 +45,9 @@ that changes about as often as a language renames itself.
   passing through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
 - [Typst](https://typst.app), as a library, typesets the same CV into `/cv.pdf`
-- Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, task,
-  tailwind, gh, yq. [nano-web](https://github.com/radiosilence/nano-web) serves
-  `dist/` for `task dev` and is yours to install
+- Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, just,
+  watchexec, tailwind, gh. [nano-web](https://github.com/radiosilence/nano-web) serves
+  `dist/` for `just dev` and is yours to install
 
 The build is a Rust binary. Tailwind is the only JavaScript left in it — its
 compiler genuinely is TypeScript, and Oxide is only the scanner — so it arrives as a
@@ -86,13 +86,13 @@ while the site selects them another. So the expression is parsed and evaluated
 against CLDR for every count up to a thousand, and the build names the smallest one
 they differ on.
 
-Adding a locale is a line in `generator/config.rs` and `task i18n:sync`, which writes
+Adding a locale is a line in `generator/config.rs` and `just i18n-sync`, which writes
 the catalogue. The `Plural-Forms` header it needs is found rather than looked up:
 known gettext expressions are offered to CLDR one at a time and the first it confirms
 is kept, so what's written has been checked against the same source that decides
 which form renders. A language none of them fits is an error rather than a guess.
 
-`task i18n:sync` extracts from the templates into every catalogue and reports what's
+`just i18n-sync` extracts from the templates into every catalogue and reports what's
 outstanding. Extraction walks Askama's own AST, so it recognises no template syntax
 of its own and can't drift from what Askama accepts. Translations, translator
 comments, flags and header metadata all survive a round trip.
@@ -103,7 +103,7 @@ changed the translation moves across and is flagged `fuzzy` — reworded English
 the same message with a new id, and the alternative is asking 36 languages for a
 string they already have. What finds nowhere to go is deleted. Both are named in the
 output, because between them they're everything extraction does to a translator's
-work and `task dev` runs it on every save.
+work and `just dev` runs it on every save.
 
 Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
 `generator/config.rs` decides what to do with one. This site serves them: most of a
@@ -139,20 +139,20 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 | Command             | Notes                                              |
 | ------------------- | -------------------------------------------------- |
-| `task dev`          | Rebuild on change, serve on :3000                  |
-| `task build`        | Compile CSS, then generate the site into `dist/`   |
-| `task generate`     | Render every locale × page only                    |
-| `task check`        | Clippy, rustfmt, tests, actionlint, changelog      |
-| `task ci`           | Everything CI checks — `check`, then `build`       |
-| `task docker:build` | Build the site, then the container image           |
-| `task i18n:sync`    | Sync locale catalogues against the source          |
-| `task clean`        | Drop `dist/`, `.build/`, `target/` and the cache   |
+| `just dev`          | Rebuild on change, serve on :3000                  |
+| `just build`        | Compile CSS, then generate the site into `dist/`   |
+| `just generate`     | Render every locale × page only                    |
+| `just check`        | Clippy, rustfmt, tests, actionlint, changelog      |
+| `just ci`           | Everything CI checks — `check`, then `build`       |
+| `just docker-build` | Build the site, then the container image           |
+| `just i18n-sync`    | Sync locale catalogues against the source          |
+| `just clean`        | Drop `dist/`, `.build/` and `target/`              |
 
-`task --list` shows the rest.
+`just --list` shows the rest.
 
 ## The CV
 
-`src/content/cv.md` is the whole CV. Edit it and `task build` writes both `/cv` and
+`src/content/cv.md` is the whole CV. Edit it and `just build` writes both `/cv` and
 `/cv.pdf` from it; nothing else needs touching. The PDF is typeset by Typst:
 `generator/pdf.rs` translates the Markdown into Typst markup, `src/templates/cv.typ`
 decides how it looks, and the fonts come from `src/fonts/`. It is a tagged PDF/UA-1
@@ -175,7 +175,7 @@ write one). `★` is the one character already handled; it reads as "stars".
 ## Adding things
 
 A **string**: write it in a template as `__("the english text")`, then run
-`task i18n:sync`. A **page**: add a template, a `page!` entry in
+`just i18n-sync`. A **page**: add a template, a `page!` entry in
 `generator/templates.rs` and a route in `generator/routes.rs`. An **asset**: drop it
 in `src/static/` and reference it with `asset("name.ext")`.
 
@@ -187,20 +187,20 @@ image tag is written into the IaC repo's Pulumi config, which Pulumi then rolls 
 
 The published tag is a manifest list for `linux/amd64` and `linux/arm64`, built in one
 pass — the image is a `COPY` onto a base that already covers both, so there is nothing
-to emulate. A local `task docker:build` loads the host's architecture only, since
+to emulate. A local `just docker-build` loads the host's architecture only, since
 `--load` takes a single image rather than a list.
 
 GitHub Actions supplies the environment — a checkout, the mise toolchain, registry
-credentials and a build cache — and decides what runs. Each step is a Taskfile
-target, so the same pipeline runs on a laptop:
+credentials and a build cache — and decides what runs. Each step is a just
+recipe, so the same pipeline runs on a laptop:
 
 ```bash
-task lint format:check test            # what the Rust job runs
-task changelog:check                   # what the Changelog job runs
-task build                             # what the Site job runs
-task docker:image                      # what the Container image job builds from dist/
-task docker:promote                    # what CD tags once Checks has passed
-task deploy:update                     # asks prod to pick the build up
+just lint fmt-check test               # what the Rust job runs
+just changelog-check                   # what the Changelog job runs
+just build                             # what the Site job runs
+just docker-image                      # what the Container image job builds from dist/
+just docker-promote                    # what CD tags once Checks has passed
+just deploy-update                     # asks prod to pick the build up
 ```
 
 Anything a runner has and a laptop doesn't arrives as environment rather than as
@@ -217,9 +217,9 @@ commit whose run passed) and sets one flag per domain:
 
 | Domain   | Paths                                                                                              | Job             |
 | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
-| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `Taskfile.yml`, `mise.toml` | Rust            |
+| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml`     | Rust            |
 | `site`   | the above and the rest of `src/`                                                                   | Site            |
-| `docker` | `Dockerfile`, `Taskfile.yml`, `mise.toml` on a pull request; on main, also anything in `site`      | Container image |
+| `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`          | Container image |
 
 Markdown outside `src/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is

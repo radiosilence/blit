@@ -78,7 +78,7 @@ fn main() -> Result<()> {
     }
 
     // Both loud, because between them they are everything extraction does to a
-    // translator's work — and `task dev` runs it on every save.
+    // translator's work — and `just dev` runs it on every save.
     if !reworded.is_empty() {
         println!("\ncarried onto reworded English, now fuzzy:");
         for ((was, is), catalogues) in &reworded {

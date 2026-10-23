@@ -12,7 +12,7 @@ name: CI/CD
 # the commit as `sha-<short>` and `latest`, then asks the deployment to pick it
 # up. The site deploys by commit and has no versioned releases.
 #
-# Every step of substance is a Taskfile target that runs identically on a
+# Every step of substance is a just recipe that runs identically on a
 # laptop; this file supplies the checkout, the toolchain, credentials and
 # caches, and decides what runs.
 on:
@@ -89,17 +89,17 @@ jobs:
             echo "changes since $(git rev-parse --short "$base"):"
             printf '%s\n' "$files" | sed 's/^/  /'
             relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//')
-            # What cargo compiles, Askama's templates included, and the tasks
+            # What cargo compiles, Askama's templates included, and the recipes
             # and toolchain that check it.
-            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^Taskfile\.yml$|^mise\.toml$|^\.github/' || rust=false
-            # Everything `task build` reads to write dist/.
-            touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^Taskfile\.yml$|^mise\.toml$|^\.github/' || site=false
+            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            # Everything `just build` reads to write dist/.
+            touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^justfile$|^mise\.toml$|^\.github/' || site=false
             # The image is dist/ on nano-web. A pull request builds it only when
-            # the recipe changed (the Dockerfile, or the tasks and tools that
+            # the recipe changed (the Dockerfile, or the recipes and tools that
             # run it), since the site job already proves dist/ builds; main
             # whenever dist/ did, since CD ships it.
             if [ "$EVENT" = "pull_request" ] || [ "$site" = false ]; then
-              touches '^Dockerfile$|^Taskfile\.yml$|^mise\.toml$|^\.github/' || docker=false
+              touches '^Dockerfile$|^justfile$|^mise\.toml$|^\.github/' || docker=false
             fi
             # The image is built from dist/, so building it builds the site.
             if [ "$docker" = true ]; then
@@ -121,7 +121,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # mise.toml is the single source of truth for rust, task, tailwind and gh.
+      # mise.toml is the single source of truth for rust, just, tailwind and gh.
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
       # rust-cache rather than a hand-rolled actions/cache: it keys on the rustc
       # version as well as Cargo.lock, and prunes target/ to what the build
@@ -132,7 +132,7 @@ jobs:
           shared-key: check
           save-if: ${{ github.ref == 'refs/heads/main' }}
           cache-on-failure: true
-      - run: task lint format:check test
+      - run: just lint fmt-check test
 
   # CHANGELOG.md is generated from changelog.d/. A pull request adds fragments
   # without regenerating it, so only its fragments are checked; a commit that
@@ -148,12 +148,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # changelog:check compares HEAD with its parent.
+          # changelog-check compares HEAD with its parent.
           fetch-depth: 2
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
         with:
-          install_args: task
-      - run: task changelog:check
+          install_args: just
+      - run: just changelog-check
 
   # The site, built once with the release profile. Generating it is a check in
   # its own right: an asset referenced by hand or a catalogue whose plural
@@ -172,7 +172,7 @@ jobs:
           shared-key: build
           save-if: ${{ github.ref == 'refs/heads/main' }}
           cache-on-failure: true
-      - run: task build
+      - run: just build
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
@@ -211,7 +211,7 @@ jobs:
           path: dist
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
         with:
-          install_args: task
+          install_args: just
       - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       # Keyed on the ref rather than the event, so a manual run on a branch
       # builds without publishing.
@@ -224,9 +224,9 @@ jobs:
       # No layer cache: the image is a FROM, a LABEL and a COPY of dist/, whose
       # content changes on every build.
       - run: >-
-          task docker:image
           SHA=${{ github.sha }}
           PUSH=${{ github.ref == 'refs/heads/main' }}
+          just docker-image
 
   # Workflow syntax, expressions and the shell in `run` steps (the image bundles
   # shellcheck). Runs for every change: it takes seconds.
@@ -286,7 +286,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
         with:
-          install_args: task gh
+          install_args: just gh
       # No buildx builder: `imagetools create` talks to the registry alone.
       - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
         with:
@@ -295,7 +295,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: task docker:promote SHA=${{ github.sha }}
+        run: SHA=${{ github.sha }} just docker-promote
 
   update-deployment:
     name: Update deployment
@@ -313,7 +313,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
         with:
-          install_args: task gh
+          install_args: just gh
       # No git identity and no credential helper: this triggers a workflow, it
       # does not commit. DEPLOYMENT_PAT needs `actions: write` on the deployment
       # repository.
@@ -325,4 +325,4 @@ jobs:
             echo "::notice::DEPLOYMENT_PAT is not set; the deployment picks the image up at its next scheduled sweep"
             exit 0
           fi
-          task deploy:update
+          just deploy-update

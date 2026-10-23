@@ -382,6 +382,10 @@ pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
 /// signal, a full disk, a panic in the next locale — leaves an empty file where the
 /// translations were. A rename on the same directory is atomic, so the worst case
 /// becomes a stray temporary rather than a lost catalogue.
+///
+/// A catalogue whose bytes would not change is left alone. `just dev` watches the
+/// catalogues an extraction writes, and replacing one with identical bytes is still
+/// an event the watcher sees, so every extraction would start the next.
 fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()> {
     let temporary = temporary(path);
 
@@ -391,6 +395,11 @@ fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()
             message: e.to_string(),
         })
         .and_then(|()| {
+            if let (Ok(new), Ok(old)) = (std::fs::read(&temporary), std::fs::read(path))
+                && new == old
+            {
+                return Ok(std::fs::remove_file(&temporary)?);
+            }
             std::fs::rename(&temporary, path).map_err(|e| Error::Catalog {
                 path: path.to_owned(),
                 message: e.to_string(),
@@ -408,7 +417,7 @@ fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()
 
 /// The temporary a catalogue is written through, unique to the write that asks.
 ///
-/// Two extractions overlap routinely: `task dev` watches the catalogues an
+/// Two extractions overlap routinely: `just dev` watches the catalogues an
 /// extraction writes, so saving a template can start a second one before the first
 /// has finished. Sharing one temporary meant the first rename took the second's
 /// file with it, and the second then failed to rename a path that had just existed —
@@ -493,6 +502,29 @@ mod tests {
         into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
 
         assert!(std::fs::read_to_string(&path).unwrap().contains("zamknij"));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn an_unchanged_catalogue_is_not_replaced() {
+        use std::os::unix::fs::MetadataExt;
+
+        // A replaced file is a new inode, which is what a watcher reports.
+        let path = catalogue(
+            "an_unchanged_catalogue_is_not_replaced",
+            &format!("{PL_HEADER}\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n"),
+        );
+        into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
+        let settled = std::fs::metadata(&path).unwrap().ino();
+
+        into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
+
+        assert_eq!(std::fs::metadata(&path).unwrap().ino(), settled);
+        assert!(
+            strays(&path).is_empty(),
+            "temporary left behind: {:?}",
+            strays(&path)
+        );
     }
 
     #[test]
@@ -733,7 +765,7 @@ mod atomicity {
 
     #[test]
     fn merges_of_one_catalogue_do_not_collide() {
-        // `task dev` watches the catalogues an extraction writes, so a save can
+        // `just dev` watches the catalogues an extraction writes, so a save can
         // start a second extraction over the first. They must not share a
         // temporary: one rename would take the other's file, and the second would
         // then fail on a path that had just existed.

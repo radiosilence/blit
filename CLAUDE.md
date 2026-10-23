@@ -5,16 +5,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-task dev          # Rebuild on change, serve on :3000 with nano-web
-task build        # css into .build/, then generate the site into dist/
-task check        # clippy, rustfmt, tests, actionlint and the changelog
-task ci           # Everything CI checks: check, then build
-task i18n:sync    # Extract messages from the templates into every catalogue
-task docker:build # Build the site, then the container image (PUSH=true to push)
-task clean        # Drop dist/, .build/, target/ and Task's checksum cache
+just dev          # Rebuild on change, serve on :3000 with nano-web
+just build        # css into .build/, then generate the site into dist/
+just check        # clippy, rustfmt, tests, actionlint and the changelog
+just ci           # Everything CI checks: check, then build
+just i18n-sync    # Extract messages from the templates into every catalogue
+just docker-build # Build the site, then the container image (PUSH=true to push)
+just clean        # Drop dist/, .build/ and target/
 ```
 
-`task --list` is authoritative; prefer it over this list going stale.
+`just --list` is authoritative; prefer it over this list going stale.
 
 ## Architecture Overview
 
@@ -31,8 +31,8 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
   (`generator/pdf.rs` translates the Markdown, `src/templates/cv.typ` styles it, fonts
   from `src/fonts/`). It is PDF/UA-1, so a glyph the font lacks or broken structure
   fails the build. Unhashed URL, because it gets pasted into application forms
-- **Toolchain**: mise (`mise.toml`) — rust, task, tailwind, gh, yq. nano-web is not
-  pinned there: it serves `dist/` for `task dev`, and nothing the build does needs a
+- **Toolchain**: mise (`mise.toml`) — rust, just, watchexec, tailwind, gh. nano-web
+  is not pinned there: it serves `dist/` for `just dev`, and nothing the build does needs a
   server
 - **Deployment**: container image → k3s on a Hetzner VPS, behind Traefik terminating
   Let's Encrypt over DNS-01. Cloudflare serves DNS only, no proxy or tunnel. The
@@ -75,14 +75,14 @@ Key decisions:
   assets, so they are rewritten before their own hash is taken. Tailwind compiles to
   `.build` so that rewrite has a fixed input.
 - Tailwind is the only JavaScript left — its compiler is TypeScript, and Oxide is
-  only the scanner. It arrives as a mise tool; `task css` links its typography plugin
+  only the scanner. It arrives as a mise tool; `just css` links its typography plugin
   into place so `@plugin` resolves without a `package.json`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
 - Adding a page means a template, a `page!` entry in `generator/templates.rs`, and a
   route in `generator/routes.rs`.
 - GitHub Actions supplies an environment and decides what runs: it checks out,
-  installs mise, supplies credentials and a cargo cache, then calls Taskfile targets.
+  installs mise, supplies credentials and a cargo cache, then calls just recipes.
   If a step can't be run locally, it's in the wrong file. Jobs run only for the
   domains a change touches and report through one required status, `Checks`; the
   README's CI/CD section lists the domains and how to add one.

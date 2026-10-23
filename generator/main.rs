@@ -31,7 +31,7 @@ fn main() -> Result<()> {
     // fetched at an unhashed URL that is cached just as hard.
     let font = assets.href("geist-mono.woff2");
     let css = fs::read_to_string(build.join("style.css"))
-        .context("reading .build/style.css — run the css task first")?
+        .context("reading .build/style.css — run `just css` first")?
         .replace("/geist-mono.woff2", &font);
     assets.derive("style.css", css.into_bytes());
 
