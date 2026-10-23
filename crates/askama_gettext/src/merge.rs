@@ -383,27 +383,33 @@ pub fn create_catalog(path: &Path, locale: &str) -> Result<bool> {
 /// translations were. A rename on the same directory is atomic, so the worst case
 /// becomes a stray temporary rather than a lost catalogue.
 ///
-/// A catalogue whose bytes would not change is left alone. `just dev` watches the
-/// catalogues an extraction writes, and replacing one with identical bytes is still
-/// an event the watcher sees, so every extraction would start the next.
+/// A catalogue whose bytes would not change is not touched at all, temporary
+/// included. `just dev` watches the catalogues an extraction writes, and creating
+/// and removing a temporary changes the directory it sits in, so an extraction that
+/// wrote anything would start the next.
 fn write_atomically(catalog: &polib::catalog::Catalog, path: &Path) -> Result<()> {
-    let temporary = temporary(path);
-
-    let written = po_file::write_to_file(catalog, &temporary)
-        .map_err(|e| Error::Catalog {
-            path: temporary.clone(),
-            message: e.to_string(),
-        })
+    let mut buffer = std::io::BufWriter::new(Vec::new());
+    let bytes = po_file::write(catalog, &mut buffer)
         .and_then(|()| {
-            if let (Ok(new), Ok(old)) = (std::fs::read(&temporary), std::fs::read(path))
-                && new == old
-            {
-                return Ok(std::fs::remove_file(&temporary)?);
-            }
-            std::fs::rename(&temporary, path).map_err(|e| Error::Catalog {
-                path: path.to_owned(),
-                message: e.to_string(),
-            })
+            buffer
+                .into_inner()
+                .map_err(std::io::IntoInnerError::into_error)
+        })
+        .map_err(|e| Error::Catalog {
+            path: path.to_owned(),
+            message: e.to_string(),
+        })?;
+
+    if std::fs::read(path).is_ok_and(|current| current == bytes) {
+        return Ok(());
+    }
+
+    let temporary = temporary(path);
+    let written = std::fs::write(&temporary, &bytes)
+        .and_then(|()| std::fs::rename(&temporary, path))
+        .map_err(|e| Error::Catalog {
+            path: path.to_owned(),
+            message: e.to_string(),
         });
 
     // No later run will reuse this name, so one left behind stays in src/ until
@@ -740,13 +746,14 @@ mod atomicity {
         );
     }
 
-    #[cfg(unix)]
     #[test]
-    fn an_unchanged_catalogue_is_not_replaced() {
-        use std::os::unix::fs::MetadataExt;
-
-        // A replaced file is a new inode, which is what a watcher reports.
-        let path = std::env::temp_dir().join("agt-unchanged.po");
+    fn an_unchanged_catalogue_is_not_touched() {
+        // A watcher reports the catalogue's directory changing as well as the file,
+        // and a temporary created and removed beside it changes the directory. The
+        // directory is the test's own, so nothing else writes to it.
+        let directory = std::env::temp_dir().join("agt-unchanged");
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("pl-PL.po");
         std::fs::write(
             &path,
             concat!(
@@ -768,16 +775,12 @@ mod atomicity {
             line: 1,
         }];
         into_catalog(&path, "pl-PL", &sites).unwrap();
-        let settled = std::fs::metadata(&path).unwrap().ino();
+        let modified = |path: &Path| std::fs::metadata(path).unwrap().modified().unwrap();
+        let settled = (modified(&path), modified(&directory));
 
         into_catalog(&path, "pl-PL", &sites).unwrap();
 
-        assert_eq!(std::fs::metadata(&path).unwrap().ino(), settled);
-        assert!(
-            strays(&path).is_empty(),
-            "temporary left behind: {:?}",
-            strays(&path)
-        );
+        assert_eq!((modified(&path), modified(&directory)), settled);
     }
 
     #[test]
