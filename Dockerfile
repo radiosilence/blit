@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.2
 FROM ghcr.io/radiosilence/nano-web:latest
 
-# The constant half of the OCI labels; the Taskfile adds revision, created and
+# The constant half of the OCI labels; the justfile adds revision, created and
 # version. image.source is the load-bearing one — it links the ghcr package back to
 # the repository.
 LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
   org.opencontainers.image.vendor="James Cleveland" \
   org.opencontainers.image.licenses=""
 
-# The build context is dist/ (`task docker:image`), not the repository root: this
+# The build context is dist/ (`just docker-image`), not the repository root: this
 # copies everything in the context into the directory nano-web serves. The first
 # COPY fails a build from any context without a generated home page, so a build
 # from the root cannot publish the checkout.

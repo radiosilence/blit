@@ -1,20 +1,22 @@
 [tools]
-# The generator and the extractor. `task check` runs rustfmt and clippy, which the
+# The generator and the extractor. `just check` runs rustfmt and clippy, which the
 # minimal profile leaves out — a laptop tends to have them from rustup already, a
 # clean runner does not.
 rust = { version = "1", components = "rustfmt,clippy" }
-task = "latest"
+just = "latest"
+# Rebuilds on change for `just dev`.
+watchexec = "latest"
 # Tailwind is the one part of the build that is still JavaScript — its compiler is
 # TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
 # than as a package manifest and a node_modules tree.
 "npm:@tailwindcss/cli" = "4"
 # The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
-# next to the stylesheet, so `task css` links it into place from here.
+# next to the stylesheet, so `just css` links it into place from here.
 "npm:@tailwindcss/typography" = "0.5"
-# Used by the deploy task; pinned here so CI gets them from the same place as a laptop.
+# Used by the deploy recipe; pinned here so CI gets them from the same place as a laptop.
 gh = "latest"
-# Installs the pre-commit hook in lefthook.yml (`task hooks`).
+# Installs the pre-commit hook in lefthook.yml (`just hooks`).
 lefthook = "latest"
-# Lints .github/workflows (`task workflows:lint`); shellcheck checks the scripts in `run` steps.
+# Lints .github/workflows (`just check`); shellcheck checks the scripts in `run` steps.
 actionlint = "1.7.12"
 shellcheck = "0.11.0"

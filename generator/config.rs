@@ -3,7 +3,7 @@
 //! Endonyms come from ICU via `Intl.DisplayNames`, resolved once and kept here
 //! rather than at build time: ICU4X exposes display names only in
 //! `icu_experimental`, and this is data that changes about as often as a language
-//! renames itself. Regenerate with `task i18n:locales`.
+//! renames itself.
 
 use askama_gettext::Fuzzy;
 
