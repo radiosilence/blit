@@ -27,6 +27,10 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
 - **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
 - **Content**: pulldown-cmark renders `src/content/cv.md`
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
+- **PDF**: `/cv.pdf` is typeset in-process by Typst from the same `cv.md`
+  (`generator/pdf.rs` translates the Markdown, `src/templates/cv.typ` styles it, fonts
+  from `src/fonts/`). It is PDF/UA-1, so a glyph the font lacks or broken structure
+  fails the build. Unhashed URL, because it gets pasted into application forms
 - **Toolchain**: mise (`mise.toml`) — rust, task, tailwind, gh, yq. nano-web is not
   pinned there: it serves `dist/` for `task dev`, and nothing the build does needs a
   server

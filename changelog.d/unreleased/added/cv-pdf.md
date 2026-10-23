@@ -1,0 +1,1 @@
+- **/cv.pdf, typeset at build time.** The generator renders the CV's Markdown through Typst into a tagged PDF/UA-1 document in Geist, single column for applicant tracking systems, and the CV page links it; the Fresha section is cut to eight bullets.

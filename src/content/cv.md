@@ -79,62 +79,41 @@ Actions, Docker, Kubernetes_
 
 - **Designed and led the service that took reviews out of the monolith.** A venue's
   rating decides where it ranks, so this is some of the most important data in the
-  company.
-  - Built in Elixir with its own Postgres and connection pooler, gRPC contracts for
-    other services, GraphQL for the apps, and the frontend on top.
-  - Owned delivery across web, iOS, Android and backend, then owned it in production.
-    We took reads from a 5% canary to 100% in two days (me on the pager), and it now
-    serves 157M requests a week.
-- **Moved 90M review rows out of the monolith with the marketplace live.**
-  There's no downtime window on a marketplace, so we moved reads, then writes, over a
-  sync that kept the monolith authoritative, with parity monitored and every stage reversible.
-  - Wrote a migration tool for it, because a script wouldn't survive that much live
-    data. It resumes with per-partition ETAs, throttles on the database's own vital
-    signs, has a circuit breaker, shrugs off a single bad row, and has a diff mode that
-    prints only where the two sides disagree. Fed from S3, Snowflake and a live Kafka
-    mirror.
-  - Ten teams relied on the reviews tables, and agreeing the new boundary with all of
-    them was as much of the job as the code.
-- **Kept the monolith and the reviews service in step through the migration**, tracing
-  every source of drift back through callers, background jobs and support tooling,
-  cleaning up the affected data, and giving the support team new tools built on the
-  reviews service.
-- **Made review attribution more accurate.** The reviews service attributes reviews from the
-  calendar booking, credits everyone who worked on the appointment, and keeps people
-  who've moved on. That sharpened attribution for about 120,000 reviews (one in 230), so
-  ratings reflect who did the work.
-- **Wired the reviews service into Kafka and Snowflake.** Changes go out through an
-  outbox, and during the migration it mirrored writes live from the monolith's
-  topics, behind a kill switch with dead-letter queues. Rating changes feed marketplace
-  ranking, and the tables stream into Snowflake via logical replication and CDC,
-  poisoned rows excluded so one bad record can't stall it.
-- **Designed the reviews schema and APIs around how they're read.** A denormalised line-item
-  table so aggregates, facets and sorts never join across the domain, with covering,
-  partial and GIN full-text indexes. Cut the gRPC API to seven calls, with batch reads
-  in one windowed query. Gave GraphQL cost ceilings, field-level redaction, role-based
-  auth, and nullable roots so one failing field degrades a page without blanking it.
+  company. Elixir with its own Postgres and connection pooler, gRPC contracts for other
+  services, GraphQL for the apps, and the frontend on top. I owned delivery across web,
+  iOS, Android and backend, then owned it in production: reads went from a 5% canary to
+  100% in two days (me on the pager), and it now serves 157M requests a week.
+- **Moved 90M review rows with the marketplace live.** No downtime window, so reads
+  then writes moved over a sync that kept the monolith authoritative, with parity
+  monitored and every stage reversible. Wrote the migration tool: resumable with
+  per-partition ETAs, throttled on the database's own vital signs, circuit-broken,
+  tolerant of a bad row, with a diff mode, fed from S3, Snowflake and a live Kafka
+  mirror. Agreeing the new boundary with the ten teams that relied on those tables was
+  as much of the job as the code.
+- **Designed the schema, APIs and events around how reviews are read.** A denormalised
+  line-item table so aggregates, facets and sorts never join across the domain; a
+  seven-call gRPC API with batch reads in one windowed query; GraphQL with cost
+  ceilings, field-level redaction and nullable roots, so one failing field degrades a
+  page without blanking it. Changes leave through an outbox to Kafka, where they feed
+  marketplace ranking, and stream into Snowflake via CDC.
+- **Kept the monolith and the new service in step**, tracing every source of drift
+  through callers, background jobs and support tooling, and made attribution more
+  accurate on the way: about 120,000 reviews (one in 230) now credit the people who
+  actually did the work.
 - **Built AI review replies end to end**: entitlement, generation in the business's
-  own voice, moderation, publishing, and the partner UI. Everything is a draft until
-  published, and billing reads the live balance, so running out cancels scheduled
-  replies. 2,343 published and 129 businesses on full automation in the first
-  weeks.
+  own voice, moderation, publishing and the partner UI, with billing read live so
+  running out cancels scheduled replies. 2,343 published and 129 businesses on full
+  automation in the first weeks.
 - **Rebuilt consumer search** across the web app, gateway and search service, and
-  deleted the old one: autocomplete, search history as its own service, server-side map
-  clustering streamed as you pan, and distance to a venue's boundary, not its
-  pin. Around 119M requests a week.
-- **Loyalty was my first project**, and Fresha's largest consumer release at the time:
-  points, tiers, eligibility and the wallet, schema to UI. I learned Elixir on the way.
-- **Hardened the shared code everyone else builds on.** Made the shared Elixir libraries
-  more resilient, including connection handling on failed health probes and converting
-  runtime input to atoms safely (the BEAM never frees them). Built CLDR locale handling,
-  pluralisation and TypeScript codegen into the treatment taxonomy the marketplace
-  searches against. Wrote the organisation's supply chain standard (SHA-pinned actions,
-  pinned toolchains, isolated installs, no fetch-and-execute), with a first-party
-  carve-out so people could follow it.
-- **Reviewed 615 pull requests for other engineers**, mentored people through hard
-  problems, and gave product-level input so technical decisions matched what the
-  business needed. Also built an internal Claude plugin marketplace, including a skill
-  that takes a ticket to an opened pull request.
+  deleted the old one: autocomplete, search history as its own service, and server-side
+  map clustering streamed as you pan. Around 119M requests a week.
+- **Shipped Loyalty, Fresha's largest consumer release at the time**: points, tiers,
+  eligibility and the wallet, schema to UI. It was my first project, and I learned
+  Elixir on the way.
+- **Raised the floor for everyone else.** Hardened the shared Elixir libraries, wrote
+  the organisation's supply chain standard, reviewed 615 pull requests, mentored people
+  through hard problems, and built an internal Claude plugin marketplace, including a
+  skill that takes a ticket to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
@@ -173,7 +152,7 @@ Cloud Foundry, BOSH_
 
 <small>Concurrent with EngineerBetter, ROXi and Sapien Interactive</small>
 
-_Key Skills: React Native, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
+_Key Skills: React Native, Expo, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
 - A former manager needed an internal Android app built quickly and for a reasonable
@@ -185,7 +164,8 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
   API Gateway and CloudFront for the backend and helped him integrate it with the
   services he already had. It was good to have free rein on a greenfield project again
   and make something fast, efficient and cheap to run.
-- The frontend is React Native with MobX-State-Tree and a thin layer of AWS Amplify.
+- The frontend is React Native on Expo, with MobX-State-Tree and a thin layer of AWS
+  Amplify.
 - The BitBucket pipeline deploys the infrastructure, reads the CloudFront outputs back
   and builds a working app against them. Everything is derived, so the only
   configuration a new environment needs comes from its own variables.

@@ -36,3 +36,7 @@ msgstr "시니어 풀스택 엔지니어"
 msgid "cv-2026.08"
 msgstr "cv-2025.01"
 
+#: src/templates/cv.html:10
+msgid "download as pdf"
+msgstr ""
+

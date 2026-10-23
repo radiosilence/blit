@@ -15,8 +15,11 @@ use sha2::{Digest, Sha256};
 use walkdir::WalkDir;
 
 /// Their URLs are a convention rather than ours: a browser asks for /favicon.ico
-/// when a page links no icon, and a crawler asks for /robots.txt.
-const FIXED: &[&str] = &["favicon.ico", "robots.txt"];
+/// when a page links no icon, and a crawler asks for /robots.txt. /cv.pdf is ours,
+/// but it is a link handed to people and pasted into application forms, so it has
+/// to keep working. nano-web serves a PDF for an hour, not a year, which is what
+/// lets that URL stay put.
+const FIXED: &[&str] = &["favicon.ico", "robots.txt", "cv.pdf"];
 
 pub struct Assets {
     bodies: BTreeMap<String, Vec<u8>>,

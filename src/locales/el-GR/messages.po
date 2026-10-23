@@ -36,3 +36,7 @@ msgstr "ανώτερος full stack μηχανικός"
 msgid "cv-2026.08"
 msgstr "cv-2025.01"
 
+#: src/templates/cv.html:10
+msgid "download as pdf"
+msgstr ""
+
