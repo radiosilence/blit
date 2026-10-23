@@ -8,11 +8,11 @@ senior full stack engineer
 person, as long as there's some flexibility.
 
 Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, across
-frontend, backend, infrastructure, mobile and embedded: Elixir and Go services, GraphQL
-gateways, React and Next.js, native Swift and Kotlin, Rust, Terraform, Pulumi and
-Kubernetes. The language matters less than people think; what matters is architecture
-that looks ahead without losing sight of what has to ship, in a language that supports
-it.
+commercial frontend, backend, devops, mobile and embedded. Elixir and Go services,
+GraphQL gateways, React and Next.js, native Swift and Kotlin modules, Rust tooling,
+Terraform, Pulumi and Kubernetes. The language matters less than people think. What
+matters is architecting software in a smart, forward-thinking but pragmatic manner and
+a language that enables that.
 
 I like greenfield, and I like taking something that works and making it what it should
 have been, especially hard problems I can own from one end to the other. I started out
@@ -47,8 +47,9 @@ properly.
 - **Fixed a security hole in pip.** In 2013 it fetched packages over plain HTTP and
   verified nothing. I wrote the SSL certificate verification patch, which shipped in pip
   1.3 as the fix for CVE-2013-1629 with me credited in the release notes.
-- **[kōan](https://koan.rocks)**, a music player and server with one Rust core linked
-  directly into native apps for iOS, macOS and Android, a terminal UI and a server.
+- **Built [kōan](https://koan.rocks)**, a music player and server: one Rust core linked
+  directly into native apps for iOS, macOS and Android, a terminal UI and a server, with
+  room correction, DLNA and playback handed between devices.
 
 ## Recent Work
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>2025–Present</small>
@@ -62,21 +63,15 @@ _Key Skills: Elixir, Phoenix, OTP, gRPC, GraphQL, TypeScript, Next.js, React,
 PostgreSQL, Kafka, Snowflake, Datadog, Kubernetes_
 
 - **Designed and led the service that took reviews out of Fresha's monolith.** Ratings
-  decide where a venue ranks on the marketplace, so this is some of the company's most
-  important data. Elixir with its own Postgres, gRPC for other services and GraphQL for
-  the apps. I owned delivery across web, iOS, Android and backend, and ran the cutover
-  on the pager: reads went from a 5% canary to 100% in two days, and it now serves 157M
-  requests a week.
-- **Migrated 90M rows with no downtime.** Reads, then writes, moved over a sync that kept
-  the monolith authoritative, with parity monitored and every stage reversible. I wrote
-  the migration tool: resumable, throttled on the database's own health, circuit-broken,
-  tolerant of bad rows, with a diff mode, reading from S3, Snowflake and a live Kafka
-  mirror. Agreed the new boundary with the ten teams that depended on those tables.
-- **Designed the schema and APIs around how reviews are read.** A denormalised table so
-  aggregates, facets and sorts never join across domains, batched gRPC reads in one
-  windowed query, and GraphQL with cost limits, field-level redaction and nullable roots
-  so one failing field can't blank a page. Changes publish through an outbox to Kafka,
-  feeding marketplace ranking, and reach Snowflake through CDC.
+  decide where a venue ranks, so this is some of the company's most important data.
+  Elixir with its own Postgres and a denormalised schema so aggregates, facets and sorts
+  never join across domains; gRPC for other services; GraphQL with cost limits,
+  field-level redaction and nullable roots for the apps; an outbox to Kafka feeding
+  marketplace ranking. Moved 90M rows with no downtime and every stage reversible, using a
+  resumable migration tool I wrote that throttles on the database's own health. Agreed
+  the new boundary with the ten teams that depended on it, owned delivery across web,
+  iOS, Android and backend, and took reads from a 5% canary to 100% in two days. It now
+  serves 157M requests a week.
 - **Rebuilt consumer search** across the web app, gateway and search service, then
   retired the old one: autocomplete, search history as its own service, and server-side
   map clustering streamed as you pan. Around 119M requests a week.
@@ -85,7 +80,7 @@ PostgreSQL, Kafka, Snowflake, Datadog, Kubernetes_
   the UI.
 - **Shipped Loyalty**, Fresha's largest consumer release at the time (points, tiers and
   wallet, schema to UI), while learning Elixir.
-- **Wrote the organisation's software supply chain standard**, hardened the shared
+- **Helped shape the organisation's approach to supply chain security**, hardened the shared
   Elixir libraries, mentored engineers, and built an internal Claude plugin marketplace,
   including a skill that takes a ticket to an opened pull request.
 
@@ -128,9 +123,8 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
   from nothing: jobs, notes and photos, video training with quizzes, and taking the
   customer's payment. React Native on Expo, with CDK, Lambda, DynamoDB, API Gateway and
   CloudFront integrated into the client's existing AWS services.
-- The pipeline deploys the infrastructure, reads its outputs back and builds the app
-  against them, so a new environment needs nothing but its own variables.
-- Audited the existing infrastructure code and made it more secure.
+- Audited the client's existing infrastructure and fixed a number of security holes in
+  it.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>2020–2022</small>
 
@@ -159,8 +153,9 @@ _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSo
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
 - Led development of the credit card section of Zopa's app in React Native and Redux.
-- Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while they
-  were still new.
+- Wrote native modules in Swift and Kotlin against Stripe's card issuing API while it was
+  brand new and its documentation incomplete, translating Objective-C into Swift without
+  knowing either language beforehand.
 - Learned the credit products well enough to work directly with analysts and backend
   engineers, and contributed backend fixes.
 
@@ -175,9 +170,10 @@ there for anyone with the curiosity to look.
   240+★</small>: static file server that compresses every possible response ahead of
   time, so serving one is handing the kernel a buffer. It serves this site.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
-  my infrastructure as one Pulumi stack, which builds a k3s cluster on a VPS and deploys
-  into it in the same run, with no secret leaving the stack. Previewed on pull request,
-  applied on merge, and it opens its own version bumps.
+  production-grade declarative infrastructure for my own services as one Pulumi stack,
+  which builds a k3s cluster on a VPS and deploys into it in the same run, with no secret
+  leaving the stack. Previewed on pull request, applied on merge, and it opens its own
+  version bumps.
 - **[kōan](https://koan.rocks)** <small>Rust/Swift/Kotlin ·
   [source](https://github.com/radiosilence/koan)</small>: music player and server. One
   Rust core linked into native SwiftUI and Android apps, a terminal UI and a server;
@@ -189,7 +185,7 @@ there for anyone with the curiosity to look.
   clinical guidance and Apple Health data against the night before, on a Rust core shared
   by the iOS and Android apps.
 - **MCP servers in Rust**: [fastmail-cli](https://github.com/radiosilence/fastmail-cli)
-  <small>75+★</small>, which predates Fastmail's official MCP,
+  <small>75+★</small>, which predates Fastmail's official MCP and does more,
   [tfl-mcp](https://github.com/radiosilence/tfl-mcp),
   [caldav-cli](https://github.com/radiosilence/caldav-cli) and
   [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp), sharing a
@@ -226,9 +222,10 @@ there for anyone with the curiosity to look.
 
 ## Skills
 
-Sorted by what I can write, review and maintain without an LLM. Rust sits under Worked
-with for that reason, even though I use it for personal projects: I know it well enough
-to review what a model writes and spot when it's heading into an antipattern.
+AI is changing how we learn and build with things - I've tried to be honest here about tools
+I could use without LLM assistance. However, <em>for instance</em>, I use Rust for my personal
+projects as I know enough about it to maintain it, review it, and spot if LLMs have done something
+hideous or worked their way into an antipattern.
 
 **Daily**: TypeScript, Elixir, GraphQL, Node.js, PostgreSQL, React, Next.js, Docker,
 Git, GitHub Actions, Tailwind, CSS, bash/zsh, Linux, Pulumi, Vite, Zustand, agentic AI tooling and MCPs.
@@ -242,15 +239,15 @@ MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 MSSQL, MongoDB, CouchDB, Couchbase, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
 ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
-SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels.
+SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, and many, many more...
 
 ## Education
 
 ### Computer Science & Cybernetics, University of Reading
 
 - Completed two years and won a competition for my embedded systems work in the second,
-  then left to start working. I learn best by building, and freelancing gave me more of
-  that than lectures did.
+  then left to start working. I learn best by building, and freelancing gave me more
+  hands-on experience than lectures did.
 
 ## Who is James?
 
