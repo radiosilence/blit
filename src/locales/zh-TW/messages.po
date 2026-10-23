@@ -36,7 +36,7 @@ msgstr "資深全端工程師"
 msgid "cv-2026.08"
 msgstr "履歷-2025.01"
 
-#: src/templates/cv.html:10
+#: src/templates/cv.html:15
 msgid "download as pdf"
 msgstr ""
 

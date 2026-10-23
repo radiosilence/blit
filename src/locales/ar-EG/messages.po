@@ -37,7 +37,7 @@ msgstr "مهندس فول ستاك كبير"
 msgid "cv-2026.08"
 msgstr "السيرة الذاتية-٢٠٢٥.٠١"
 
-#: src/templates/cv.html:10
+#: src/templates/cv.html:15
 msgid "download as pdf"
 msgstr ""
 

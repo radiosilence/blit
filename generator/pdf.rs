@@ -28,7 +28,7 @@ pub fn render(markdown: &str, template: &str, fonts: &[Vec<u8>], logo: &[u8]) ->
     let (name, body) = markup(markdown)?;
 
     let main = format!(
-        "#import \"cv.typ\": cv, small, dates\n#show: cv.with(name: {})\n\n{body}",
+        "#import \"cv.typ\": cv, masthead, small, dates\n#show: cv.with(name: {})\n\n{body}",
         string(&name)
     );
     let world = CvWorld::new(main, template.to_owned(), fonts, logo)?;
@@ -59,6 +59,9 @@ fn markup(markdown: &str) -> Result<(String, String)> {
     if out.name.is_empty() {
         bail!("cv.md has no `#` heading to name the PDF after");
     }
+    if out.masthead > 0 {
+        bail!("cv.md: the `#` heading needs a title and a contact paragraph under it");
+    }
     Ok((out.name, out.body))
 }
 
@@ -67,6 +70,10 @@ struct Markup {
     body: String,
     name: String,
     heading: Option<HeadingLevel>,
+    /// Paragraphs still owed to the masthead: the `#` heading is set beside the
+    /// logo with the two paragraphs under it, the title and the contact lines,
+    /// rather than as loose paragraphs in the flow.
+    masthead: usize,
     /// What closes each open HTML element, innermost last.
     html: Vec<&'static str>,
     /// An HTML block arrives a line at a time and is read once it is whole, so
@@ -100,8 +107,21 @@ impl Markup {
 
     fn start(&mut self, tag: Tag) -> Result<()> {
         match tag {
+            Tag::Paragraph if self.masthead > 0 => self.body.push('['),
+            Tag::Heading { .. } | Tag::List(_) | Tag::HtmlBlock | Tag::BlockQuote(_)
+                if self.masthead > 0 =>
+            {
+                bail!("cv.md: the `#` heading needs a title and a contact paragraph under it")
+            }
             Tag::Paragraph => {}
             Tag::HtmlBlock => self.block = Some(String::new()),
+            Tag::Heading {
+                level: HeadingLevel::H1,
+                ..
+            } => {
+                self.heading = Some(HeadingLevel::H1);
+                self.body.push_str("#masthead([= ");
+            }
             Tag::Heading { level, .. } => {
                 self.heading = Some(level);
                 let _ = write!(self.body, "{} ", "=".repeat(level as usize));
@@ -126,11 +146,21 @@ impl Markup {
 
     fn end(&mut self, tag: TagEnd) -> Result<()> {
         match tag {
+            TagEnd::Paragraph if self.masthead > 0 => {
+                self.masthead -= 1;
+                self.body
+                    .push_str(if self.masthead == 0 { "])\n\n" } else { "], " });
+            }
             TagEnd::Paragraph => self.body.push_str("\n\n"),
             TagEnd::HtmlBlock => {
                 let block = self.block.take().unwrap_or_default();
                 self.html(&block)?;
                 self.body.push_str("\n\n");
+            }
+            TagEnd::Heading(HeadingLevel::H1) => {
+                self.heading = None;
+                self.masthead = 2;
+                self.body.push_str("\n], ");
             }
             TagEnd::Heading(_) => {
                 self.heading = None;
@@ -306,25 +336,32 @@ mod tests {
 
     #[test]
     fn escapes_what_typst_would_read_as_markup() {
-        let (_, body) = markup("# A\n\nSee 1. or `code` at https://x.y (#2)\n").unwrap();
+        let (_, body) = markup("# A\n\nt\n\nc\n\nSee 1. or `code` at https://x.y (#2)\n").unwrap();
         assert!(body.contains(r#"See 1\. or #raw("code") at https\:\/\/x\.y \(\#2\)"#));
     }
 
     #[test]
     fn dates_in_headings_move_right() {
-        let (name, body) = markup("# James\n\n### Role <small>2025</small>\n").unwrap();
+        let (name, body) = markup("# James\n\nt\n\nc\n\n### Role <small>2025</small>\n").unwrap();
         assert_eq!(name, "James");
         assert!(body.contains("=== Role #dates[2025]"));
     }
 
     #[test]
     fn html_blocks_keep_their_line_breaks_as_spaces() {
-        let (_, body) = markup("# A\n\n<small>\none\ntwo\n</small>\n").unwrap();
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\none\ntwo\n</small>\n").unwrap();
         assert!(body.contains("#small[one two]"));
     }
 
     #[test]
+    fn the_name_title_and_contact_make_the_masthead() {
+        let (_, body) = markup("# James\n\ntitle\n\nmail\n\nbody\n").unwrap();
+        assert!(body.starts_with("#masthead([= James\n], [title], [mail])\n\nbody"));
+        assert!(markup("# James\n\ntitle\n").is_err());
+    }
+
+    #[test]
     fn unknown_html_fails() {
-        assert!(markup("# A\n\n<blink>x</blink>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n<blink>x</blink>\n").is_err());
     }
 }
