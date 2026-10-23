@@ -30,8 +30,8 @@ any other code.
 LLMs and agents make it easy to build anything, and just as easy to stop caring and stop
 learning. Without experience you don't know which questions to ask; with it, they're an
 exceptional force multiplier, and using them well is a skill like any other. My recent
-GitHub projects are heavily AI-assisted, and decades of building things by hand is what
-keeps them fast, secure and pleasant to use.
+GitHub projects are heavily AI-assisted, and decades of building things by hand keep
+them fast, secure and pleasant to use.
 
 What drives me is waking up every day and building something interesting. I take a lot of
 pride in my work, and I'm often the person people come to when something needs doing
@@ -39,9 +39,9 @@ properly.
 
 ## Selected Work
 
-- **Designed and led the Elixir service that took reviews out of Fresha's monolith.**
-  Moved 90M rows with the marketplace live, took reads from a 5% canary to 100% in two
-  days, and it now serves 157M requests a week.
+- **Moved Fresha's reviews out of its monolith with the marketplace live.** 90M rows
+  migrated with no downtime into an Elixir service I designed, which now serves 157M
+  requests a week.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
   Credit Suisse's cloud security tooling needed, so I went to Microsoft and made the
   case. A few weeks later it could, for my client and everyone else.
@@ -60,7 +60,7 @@ World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ pa
 businesses across 120+ countries
 </small>
 
-_Key Skills: Elixir, Phoenix, OTP, gRPC, GraphQL, TypeScript, Next.js, React,
+_Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, GraphQL, TypeScript, Next.js, React,
 PostgreSQL, Kafka, Snowflake, Datadog, Kubernetes_
 
 - **Designed and led the service that took reviews out of Fresha's monolith.** Ratings
@@ -132,9 +132,9 @@ CloudFront, MobX-State-Tree, BitBucket Pipelines_
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- Designed the core product, a React Native companion app for a TV app that ran in a
-  browser and couldn't host a server. The phone runs a WebSocket server instead and talks
-  to the TV directly over the LAN.
+- Came up with the architecture for the core product, a React Native companion to a TV
+  app that ran in a browser and couldn't host a server: the phone runs a WebSocket server
+  and talks to the TV directly over the LAN, with low latency.
 - Wrote that transport as native modules in Java and Swift, thread-safe on iOS through
   Grand Central Dispatch.
 - Built internal curation tools on MobX-State-Tree and Vite, and a statically generated
