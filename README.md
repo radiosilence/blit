@@ -44,6 +44,7 @@ that changes about as often as a language renames itself.
 - [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) renders the CV,
   passing through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
+- [Typst](https://typst.app), as a library, typesets the same CV into `/cv.pdf`
 - Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, task,
   tailwind, gh, yq. [nano-web](https://github.com/radiosilence/nano-web) serves
   `dist/` for `task dev` and is yours to install
@@ -148,6 +149,28 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | `task clean`        | Drop `dist/`, `.build/`, `target/` and the cache   |
 
 `task --list` shows the rest.
+
+## The CV
+
+`src/content/cv.md` is the whole CV. Edit it and `task build` writes both `/cv` and
+`/cv.pdf` from it; nothing else needs touching. The PDF is typeset by Typst:
+`generator/pdf.rs` translates the Markdown into Typst markup, `src/templates/cv.typ`
+decides how it looks, and the fonts come from `src/fonts/`. It is a tagged PDF/UA-1
+document in one column, so an applicant tracking system reads it in order.
+
+The Markdown it understands, and what the PDF makes of it:
+
+- The `#` heading is the name, and the two paragraphs under it are the title and the
+  contact lines. Together they are the masthead, beside a logo sized to match them.
+- `##` is a section, `###` a role. A `<small>` inside a `###` is that role's dates,
+  set at the right margin; anywhere else it is small grey text.
+- Paragraphs, lists (nested too), bold, italics, links and `code`, plus the inline
+  HTML `<br/>`, `<small>`, `<em>` and `<strong>`.
+
+Anything else fails the build with a message saying what, rather than vanishing from
+the PDF: an image, table, code block or blockquote, any other HTML tag, a `#` heading
+without its two paragraphs, or a character Geist Mono can't draw (PDF/UA refuses to
+write one). `★` is the one character already handled; it reads as "stars".
 
 ## Adding things
 
