@@ -4,7 +4,7 @@ senior full stack engineer
 
 **e-mail:** [jc@blit.cc](mailto:jc@blit.cc)<br/>
 **github:** [@radiosilence](https://github.com/radiosilence)<br/>
-**location:** London or remote. Happy in an office too; I like working with people in
+**location:** London or remote. I like working with people in
 person, as long as there's some flexibility.
 
 Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, across
