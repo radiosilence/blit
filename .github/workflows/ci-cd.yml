@@ -220,13 +220,24 @@ jobs:
           SHA=${{ github.sha }}
           PUSH=${{ github.ref == 'refs/heads/main' }}
 
+  # Workflow syntax, expressions and the shell in `run` steps (the image bundles
+  # shellcheck). Runs for every change: it takes seconds.
+  actionlint:
+    name: Actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lint the workflows
+        run: docker run --rm --volume "$PWD:/repo" --workdir /repo rhysd/actionlint:1.7.12 -color
+
   # The one status a ruleset should require. Skipped jobs are domains the change
   # does not touch and pass; anything failed or cancelled fails it.
   checks:
     name: Checks
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [changes, rust, changelog, site, container]
+    needs: [changes, rust, changelog, actionlint, site, container]
     if: always()
     steps:
       - env:

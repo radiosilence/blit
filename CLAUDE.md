@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 task dev          # Rebuild on change, serve on :3000 with nano-web
 task build        # css into .build/, then generate the site into dist/
-task check        # clippy, rustfmt and tests
+task check        # clippy, rustfmt, tests, actionlint and the changelog
 task ci           # Everything CI checks: check, then build
 task i18n:sync    # Extract messages from the templates into every catalogue
 task docker:build # Build the site, then the container image (PUSH=true to push)

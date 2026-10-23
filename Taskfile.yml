@@ -131,9 +131,13 @@ tasks:
     desc: Run the test suite
     cmd: cargo test --workspace
 
+  workflows:lint:
+    desc: Lint the GitHub Actions workflows
+    cmd: actionlint
+
   check:
-    desc: Lint, formatting, tests and the changelog
-    deps: [lint, format:check, test, changelog:check]
+    desc: Lint, formatting, tests, the workflows and the changelog
+    deps: [lint, format:check, test, workflows:lint, changelog:check]
 
   changelog:
     desc: Write CHANGELOG.md from changelog.d/ — `task changelog -- --stdout` prints it instead
