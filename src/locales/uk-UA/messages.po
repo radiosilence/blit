@@ -39,5 +39,5 @@ msgstr "резюме-2025.01"
 
 #: src/templates/cv.html:15
 msgid "download as pdf"
-msgstr ""
+msgstr "завантажити як pdf"
 
