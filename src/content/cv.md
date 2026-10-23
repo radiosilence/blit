@@ -14,11 +14,11 @@ Terraform, Pulumi and Kubernetes. The language matters less than people think. W
 matters is architecting software in a smart, forward-thinking but pragmatic manner and
 a language that enables that.
 
-I get things done. Give me a hard problem and I'll own it from one end to the other:
-work out what it should be, build every layer of it, ship it and run it in production,
-without needing anyone to unblock me. I started out freelancing, where every bug is yours
-and there's nobody to hand the product to, and that never left me. I like greenfield,
-and I like taking something that works and making it what it should have been.
+I like greenfield, and I like taking a thing that works and making it the thing it should
+have been, especially hard problems I can own from one end to the other. I started out
+freelancing, where there's nobody to hand the product to and every bug is yours, and that
+never left me. So I like being part of deciding what a thing should be, as well as
+building it.
 
 A lot of engineering is communication. If I can't explain an insight to the people who
 need to be on board, I don't understand it as well as I think, and the people I'm
@@ -34,7 +34,7 @@ GitHub projects are heavily AI-assisted, and decades of building things by hand 
 keeps them fast, secure and pleasant to use.
 
 What drives me is waking up every day and building something interesting. I take a lot of
-pride in my work, and I'm the person people come to when something needs doing
+pride in my work, and I'm often the person people come to when something needs doing
 properly.
 
 ## Selected Work
