@@ -20,27 +20,18 @@ freelancing, where there's nobody to hand the product to and every bug is yours,
 never left me. So I like being part of deciding what a thing should be, as well as
 building it.
 
-A lot of engineering is communication - sometimes you have to lead by example, but if you
-can't explain the insight you have to those who are supposed to be on board, then you
-have to ask how well you understand it yourself. A good engineer can relate
-concepts to people in ways that they can understand, whilst still being open to the
-amazing ideas they might have themselves.
+A lot of engineering is communication. If I can't explain an insight to the people who
+need to be on board, I don't understand it as well as I think, and the people I'm
+explaining it to often come back with better ideas than mine.
 
-I love IaC. You can build imperatively, but being able to recreate, iterate, and declare
-the infrastructure everything is built on, then collaborate on it like any other code, is
-incredibly powerful.
+I love IaC: infrastructure you can recreate, iterate on and declare, then review like
+any other code.
 
-LLMs and agentic code are interesting tools - they've enabled anyone to create anything
-easily. However, without the experience of building things, it's very easy to make
-mistakes, because people don't know the right questions to ask. I've had a lot of fun
-building MCP servers and gateways, rebuilding things in various languages, and testing
-their ever-increasing limits. My position is that they make it easy to not care, and to
-stop learning, if you let them. In the hands of someone who is open to them and has a
-wealth of human experience to draw upon, though, they can be an exceptional force
-multiplier, delivering results of high quality at great speed. Using them is a skill like
-any other. My most recent GitHub projects are fairly AI-assisted; however, I am lucky enough
-to have decades of experience to draw on in order to create things that are high quality,
-performant, secure, and intuitive to use.
+LLMs and agents make it easy to build anything, and just as easy to stop caring and stop
+learning. Without experience you don't know which questions to ask; with it, they're an
+exceptional force multiplier, and using them well is a skill like any other. My recent
+GitHub projects are heavily AI-assisted, and decades of building things by hand is what
+keeps them fast, secure and pleasant to use.
 
 What drives me is waking up every day and building something interesting. I take a lot of
 pride in my work, and I'm often the person people come to when something needs doing
@@ -48,22 +39,18 @@ properly.
 
 ## Selected Work
 
-- **Designed and led a new Elixir service** to replace the reviews domain in Fresha's
-  monolith. Moved 90M rows with the marketplace live and took reads from a 5% canary to
-  100% in two days. It now handles 157M requests a week.
-- **A WebSocket server running on a phone**, written in Java and Swift as React Native
-  modules, because the TV app it controlled ran inside a browser and couldn't host one
-  itself.
-- **[nano-web](https://github.com/radiosilence/nano-web)**, an in-memory static file
-  server written in Go and rebuilt in Rust, with 240+ stars.
+- **Designed and led the Elixir service that took reviews out of Fresha's monolith.**
+  Moved 90M rows with the marketplace live, took reads from a 5% canary to 100% in two
+  days, and it now serves 157M requests a week.
 - **Got Microsoft to change Azure Policy.** It couldn't express a compliance check
-  Credit Suisse's CSPM needed, so I went to their office and made the case. A few weeks
-  later Azure Policy could express it, for my client and everyone else.
-- **Fixed a security hole in pip.** In 2013 it fetched packages over plain HTTP and verified
-  nothing. I argued for SSL certificate checks and wrote the patch, and it shipped in pip 1.3 as the
-  fix for CVE-2013-1629, with me credited by name in the release notes.
-- **An Android app and the entire AWS backend behind it**, built from nothing for bike
-  delivery drivers in React Native, CDK, Lambda, DynamoDB and API Gateway.
+  Credit Suisse's cloud security tooling needed, so I went to Microsoft and made the
+  case. A few weeks later it could, for my client and everyone else.
+- **Fixed a security hole in pip.** In 2013 it fetched packages over plain HTTP and
+  verified nothing. I wrote the SSL certificate verification patch, which shipped in pip
+  1.3 as the fix for CVE-2013-1629 with me credited in the release notes.
+- **Built [kōan](https://koan.rocks)**, a music player and server: one Rust core linked
+  directly into native apps for iOS, macOS and Android, a terminal UI and a server, with
+  room correction, DLNA and playback handed between devices.
 
 ## Recent Work
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>2025–Present</small>
@@ -73,47 +60,30 @@ World's largest beauty & wellness marketplace: 1 billion+ appointments, 120k+ pa
 businesses across 120+ countries
 </small>
 
-_Key Skills: Elixir, Phoenix, Ecto, OTP, gRPC, Protobuf, GraphQL, TypeScript, Next.js,
-React, Zod, PostgreSQL, pgbouncer, Kafka, Snowflake, Datadog, Metabase, LiteLLM, GitHub
-Actions, Docker, Kubernetes_
+_Key Skills: Elixir, Phoenix, OTP, gRPC, GraphQL, TypeScript, Next.js, React,
+PostgreSQL, Kafka, Snowflake, Datadog, Kubernetes_
 
-- **Designed and led the service that took reviews out of the monolith.** A venue's
-  rating decides where it ranks, so this is some of the most important data in the
-  company. Elixir with its own Postgres and connection pooler, gRPC contracts for other
-  services, GraphQL for the apps, and the frontend on top. I owned delivery across web,
-  iOS, Android and backend, then owned it in production: reads went from a 5% canary to
-  100% in two days (me on the pager), and it now serves 157M requests a week.
-- **Moved 90M review rows with the marketplace live.** No downtime window, so reads
-  then writes moved over a sync that kept the monolith authoritative, with parity
-  monitored and every stage reversible. Wrote the migration tool: resumable with
-  per-partition ETAs, throttled on the database's own vital signs, circuit-broken,
-  tolerant of a bad row, with a diff mode, fed from S3, Snowflake and a live Kafka
-  mirror. Agreeing the new boundary with the ten teams that relied on those tables was
-  as much of the job as the code.
-- **Designed the schema, APIs and events around how reviews are read.** A denormalised
-  line-item table so aggregates, facets and sorts never join across the domain; a
-  seven-call gRPC API with batch reads in one windowed query; GraphQL with cost
-  ceilings, field-level redaction and nullable roots, so one failing field degrades a
-  page without blanking it. Changes leave through an outbox to Kafka, where they feed
-  marketplace ranking, and stream into Snowflake via CDC.
-- **Kept the monolith and the new service in step**, tracing every source of drift
-  through callers, background jobs and support tooling, and made attribution more
-  accurate on the way: about 120,000 reviews (one in 230) now credit the people who
-  actually did the work.
-- **Built AI review replies end to end**: entitlement, generation in the business's
-  own voice, moderation, publishing and the partner UI, with billing read live so
-  running out cancels scheduled replies. 2,343 published and 129 businesses on full
-  automation in the first weeks.
-- **Rebuilt consumer search** across the web app, gateway and search service, and
-  deleted the old one: autocomplete, search history as its own service, and server-side
+- **Designed and led the service that took reviews out of Fresha's monolith.** Ratings
+  decide where a venue ranks, so this is some of the company's most important data.
+  Elixir with its own Postgres and a denormalised schema so aggregates, facets and sorts
+  never join across domains; gRPC for other services; GraphQL with cost limits,
+  field-level redaction and nullable roots for the apps; an outbox to Kafka feeding
+  marketplace ranking. Moved 90M rows with no downtime and every stage reversible, using a
+  resumable migration tool I wrote that throttles on the database's own health. Agreed
+  the new boundary with the ten teams that depended on it, owned delivery across web,
+  iOS, Android and backend, and took reads from a 5% canary to 100% in two days. It now
+  serves 157M requests a week.
+- **Rebuilt consumer search** across the web app, gateway and search service, then
+  retired the old one: autocomplete, search history as its own service, and server-side
   map clustering streamed as you pan. Around 119M requests a week.
-- **Shipped Loyalty, Fresha's largest consumer release at the time**: points, tiers,
-  eligibility and the wallet, schema to UI. It was my first project, and I learned
-  Elixir on the way.
-- **Raised the floor for everyone else.** Hardened the shared Elixir libraries, wrote
-  the organisation's supply chain standard, reviewed 615 pull requests, mentored people
-  through hard problems, and built an internal Claude plugin marketplace, including a
-  skill that takes a ticket to an opened pull request.
+- **Built AI review replies end to end**, a paid feature for businesses: replies
+  generated in the business's own voice, moderation, scheduled publishing, billing and
+  the UI.
+- **Shipped Loyalty**, Fresha's largest consumer release at the time (points, tiers and
+  wallet, schema to UI), while learning Elixir.
+- **Helped shape the organisation's approach to supply chain security**, hardened the shared
+  Elixir libraries, mentored engineers, and built an internal Claude plugin marketplace,
+  including a skill that takes a ticket to an opened pull request.
 
 ### Senior Full Stack Engineer, [Apolitical](https://apolitical.co) <small>2024</small>
 
@@ -130,23 +100,18 @@ Actions_
 _Key Skills: AWS, Azure, Kubernetes, Terraform, Concourse, Docker, Go, Python, CSPM,
 Cloud Foundry, BOSH_
 
-- I wanted to step out of frontend work and broaden my skills, so I joined a small
-  consultancy that helps companies move their infrastructure and processes onto
-  continuous deployment, and their software onto cloud platforms built to run it. We
-  took large, complex enterprise projects and made them manageable, scalable and
-  declarative, putting reproducibility and resistance to drift ahead of strict GitOps
-  where the two disagreed.
+- Consultancy moving enterprises onto continuous deployment and cloud platforms; I
+  joined to broaden from frontend into infrastructure. Made large estates declarative and
+  reproducible, favouring resistance to drift over strict GitOps where the two disagreed.
 - Wrote Kubernetes controllers in Go, and CI in Concourse, GitHub Actions and GitLab for
   estates where the pipeline is a large system of its own.
-- Implemented Cloud Security Posture Management in several different ways for different
-  clients. Azure Policy couldn't yet express something Credit Suisse needed for their
-  CSPM to work. I went to Microsoft's Paddington office to make the case, and a few
-  weeks later it could.
-- Wrote Python tooling to audit code and deployments across enterprise estates too large
-  for anyone to inspect by hand.
+- Implemented Cloud Security Posture Management for several clients. When Azure Policy
+  couldn't express a check Credit Suisse needed, I made the case at Microsoft's
+  Paddington office and they added it.
+- Wrote Python tooling to audit code and deployments across estates too large to
+  inspect by hand.
 - Between clients, contributed to Kubernetes External Secrets Operator, mostly by
-  pairing with less experienced engineers and bringing them on, and to Compliance
-  Framework, an open source CSPM auditing tool that has since been retired.
+  pairing with less experienced engineers and bringing them on.
 
 ### Consultant Full Stack / Mobile Engineer, [Superbike Factory](https://superbikefactory.co.uk/) (Freelance) <small>2021–2024</small>
 
@@ -155,36 +120,25 @@ Cloud Foundry, BOSH_
 _Key Skills: React Native, Expo, TypeScript, AWS CDK, Lambda, DynamoDB, API Gateway,
 CloudFront, MobX-State-Tree, BitBucket Pipelines_
 
-- A former manager needed an internal Android app built quickly and for a reasonable
-  cost, and brought me in because I was the person he trusted to get it done well. It
-  let bike delivery drivers view their jobs, upload notes and photos, do training with
-  quizzes and video, and by the end of the project take the customer's payment.
-- I enjoyed it because it was well defined and I was building all of it, app and
-  infrastructure. His existing systems were on AWS, so I chose CDK, Lambda, DynamoDB,
-  API Gateway and CloudFront for the backend and helped him integrate it with the
-  services he already had. It was good to have free rein on a greenfield project again
-  and make something fast, efficient and cheap to run.
-- The frontend is React Native on Expo, with MobX-State-Tree and a thin layer of AWS
-  Amplify.
-- The BitBucket pipeline deploys the infrastructure, reads the CloudFront outputs back
-  and builds a working app against them. Everything is derived, so the only
-  configuration a new environment needs comes from its own variables.
-- Audited the existing infrastructure code and made it more secure in several places.
+- Built an Android app for bike delivery drivers and the AWS backend behind it, alone and
+  from nothing: jobs, notes and photos, video training with quizzes, and taking the
+  customer's payment. React Native on Expo, with CDK, Lambda, DynamoDB, API Gateway and
+  CloudFront integrated into the client's existing AWS services.
+- Audited the client's existing infrastructure and fixed a number of security holes in
+  it.
 
 ### Lead Developer, [ROXi](https://roxi.tv) <small>2020–2022</small>
 
 _Key Skills: Swift, Java, WebSockets, React Native, TypeScript, Astro, React, Node.js,
 AWS, MobX-State-Tree, Vite_
 
-- Built several key projects from scratch.
-- The core product was a React Native companion app for a TV app that ran inside a
-  browser and couldn't host any kind of daemon. I came up with having the phone run a
-  WebSocket server and talk to the television directly over the LAN, with low latency.
-- Wrote the native WebSocket transport for both platforms as React Native modules, Java
-  on Android and Swift on iOS, and made the iOS side thread-safe with Grand Central
-  Dispatch.
-- Built internal curation tools on MobX-State-Tree, Tailwind and Vite, and a statically
-  generated e-commerce and account servicing site in Astro when Astro was new.
+- Designed the core product, a React Native companion app for a TV app that ran in a
+  browser and couldn't host a server. The phone runs a WebSocket server instead and talks
+  to the TV directly over the LAN.
+- Wrote that transport as native modules in Java and Swift, thread-safe on iOS through
+  Grand Central Dispatch.
+- Built internal curation tools on MobX-State-Tree and Vite, and a statically generated
+  e-commerce and account site in Astro when Astro was new.
 
 ### Consultant Frontend Developer, [Sapien Interactive](https://bootbag.co) (Freelance) <small>2019–2024</small>
 
@@ -192,30 +146,19 @@ AWS, MobX-State-Tree, Vite_
 
 _Key Skills: React Native, TypeScript, Firebase, MobX-State-Tree, Node.js, WebSockets_
 
-- A former business partner brought me in to build the app for a new venture and
-  restart an earlier project we'd worked on, in React Native, MobX-State-Tree and
-  Firebase.
-- I came to MobX-State-Tree sceptical, because I preferred the explicit, functional
-  immutability of Redux. I approached it with an open mind, and once I understood MobX's
-  observables and had moved the codebase from class components to functional components
-  with hooks, wrapped in mobx-react observers, the simplicity and elegance won me over:
-  observables for performance, mutable-style updates, flows for side effects, and very
-  little boilerplate.
+- Built the app for a new venture and revived an earlier one in React Native,
+  MobX-State-Tree and Firebase, moving the codebase from class components to hooks.
 
 ### Senior Mobile Developer, [Zopa Financial Services](https://zopa.com) <small>2018–2020</small>
 
 _Key Skills: Swift, Kotlin, React Native, TypeScript, Redux, Java, Kafka, detox_
 
-- My move into fintech, leading development of the credit card section of Zopa's app, in
-  React Native with Redux as the data layer.
-- Wrote native modules in Swift and Kotlin against Stripe's card issuing APIs while
-  those APIs were still new.
-- I learned a huge amount about React Native there. The team kept the codebase current
-  and picked up new things like hooks as soon as they made sense, and put a heavy
-  emphasis on well-reviewed, well-tested code, with detox and
-  @testing-library/react-native.
-- Learned the financial products in depth to be useful to the analysts and backend
-  engineers, and pitched in on backend fixes along the way.
+- Led development of the credit card section of Zopa's app in React Native and Redux.
+- Wrote native modules in Swift and Kotlin against Stripe's card issuing API while it was
+  brand new and its documentation incomplete, translating Objective-C into Swift without
+  knowing either language beforehand.
+- Learned the credit products well enough to work directly with analysts and backend
+  engineers, and contributed backend fixes.
 
 ## Open Source
 
@@ -225,92 +168,58 @@ there for anyone with the curiosity to look.
 ### Created
 
 - **[nano-web](https://github.com/radiosilence/nano-web)** <small>Rust ·
-  240+★</small>: in-memory static file server for SPAs and static content, and what
-  serves this site. Uniquely designed in that it computes and compresses every possible
-  response ahead of time, so that serving it is just feeding the kernel a buffer.
+  240+★</small>: static file server that compresses every possible response ahead of
+  time, so serving one is handing the kernel a buffer. It serves this site.
 - **[jaritanet](https://github.com/radiosilence/jaritanet)** <small>TypeScript</small>:
-  my own homelab infrastructure as a single Pulumi stack. It provisions a Hetzner VPS,
-  installs k3s on it, reads the kubeconfig back as an output of the same run that
-  consumes it, and deploys into the cluster it just built, so there's no secret
-  round-trip and nothing for a human to rotate. It uses Cilium as the CNI so
-  NetworkPolicies are enforced, Traefik terminating Let's Encrypt TLS over DNS-01, and a
-  censorship-resistant proxy layer (Xray VLESS-REALITY, Hysteria2, Unbound, Tailscale)
-  running as hostNetwork DaemonSets rather than systemd units, so the host itself runs
-  k3s and sshd and nothing else. Xray owns `:443` and passes unmatched traffic to
-  Traefik, so the public site and the proxy share a port. It runs this site, kōan,
-  and an MCP gateway with Hydra and Postgres behind it, with VictoriaMetrics and Grafana
-  watching all of it. GitHub Actions previews the stack on a pull request and applies it
-  on merge, and a scheduled job tracks upstream component versions and opens the bump
-  itself. Basically other than ArgoCD (which I don't have the spare mem for), it's pretty
-  productionised. Personally not a big Helm fan, as Pulumi's type safety is much nicer.
-- **[fastmail-cli](https://github.com/radiosilence/fastmail-cli)** <small>Rust ·
-  75+★</small>: CLI and MCP server for Fastmail over JMAP, CardDAV and GraphQL, with
-  attachment text extraction and masked email. Predates the official Fastmail MCP,
-  largely because I knew what I wanted out of it and couldn't be bothered waiting to
-  find out if they'd want the same.
-- **MCP servers in Rust**: [tfl-mcp](https://github.com/radiosilence/tfl-mcp), which
-  wraps TfL's REST API into a fully associated graph,
-  [caldav-cli](https://github.com/radiosilence/caldav-cli),
-  [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp). All share a
-  GraphQL transport I designed for them: one typed, introspectable graph instead of a
-  sprawl of flat tools, so a model can find what exists and ask for exactly the fields
-  it needs. It uses far fewer tokens, and when it fails, a model can read why.
-- **[mcp-gateway](https://github.com/radiosilence/mcp-gateway)** <small>Rust</small>:
-  stores per-user secrets and injects them as headers on requests to the MCP servers
-  behind it, and runs the OAuth flow so they work as connectors in Claude on desktop,
-  mobile and Code.
+  production-grade declarative infrastructure for my own services as one Pulumi stack,
+  which builds a k3s cluster on a VPS and deploys into it in the same run, with no secret
+  leaving the stack. Previewed on pull request, applied on merge, and it opens its own
+  version bumps.
 - **[kōan](https://koan.rocks)** <small>Rust/Swift/Kotlin ·
-  [source](https://github.com/radiosilence/koan)</small>: a music player and server for
-  local and OpenSubsonic libraries, built from 25 years of messing about with music and
-  wanting my dream app. Native SwiftUI apps for macOS and iOS and a native Android app
-  link a Rust core directly, alongside a terminal UI and a server. It imports room and
-  headphone correction per output from Roon, REW and AutoEQ, speaks DLNA/UPnP, and moves
-  and remote-controls playback between devices on the same LAN (à la AirPlay), or
-  anywhere through a kōan server. It stays compatible with
-  OpenSubsonic throughout, so every part works with the rest of the ecosystem, and its
-  MCP server lets an assistant build a playlist and start it on your phone.
+  [source](https://github.com/radiosilence/koan)</small>: music player and server. One
+  Rust core linked into native SwiftUI and Android apps, a terminal UI and a server;
+  per-output room correction, DLNA, playback handed between devices, and full
+  OpenSubsonic compatibility.
 - **[GrogLog](https://groglog.io)** <small>Rust/Swift/Kotlin ·
-  [source](https://github.com/radiosilence/groglog)</small>: I know people who struggle
-  with how much they drink, and I wanted them to have something completely free that
-  helps them cut down and does more than the paid apps. No subscription, no adverts, no
-  account and no server. It counts UK units, prices and calories from a catalogue of
-  over 1,100 drinks, sets a gradual reduction plan within UK clinical guidance, charts
-  progress and streaks, shows heart rate, HRV and sleep from Apple Health against the
-  evening before, and logs from widgets and Shortcuts. Shared Rust logic core between Android
-  and iOS apps, bridged via FFI.
+  [source](https://github.com/radiosilence/groglog)</small>: a free drink tracker for
+  people cutting down, with no account, adverts or server. Reduction plans within UK
+  clinical guidance and Apple Health data against the night before, on a Rust core shared
+  by the iOS and Android apps.
+- **MCP servers in Rust**: [fastmail-cli](https://github.com/radiosilence/fastmail-cli)
+  <small>75+★</small>, which predates Fastmail's official MCP and does more,
+  [tfl-mcp](https://github.com/radiosilence/tfl-mcp),
+  [caldav-cli](https://github.com/radiosilence/caldav-cli) and
+  [mainlynorfolk-mcp](https://github.com/radiosilence/mainlynorfolk-mcp), sharing a
+  GraphQL transport I designed: one typed graph instead of a sprawl of flat tools, so a
+  model asks for exactly the fields it needs, spends far fewer tokens, and can read why a
+  query failed. [mcp-gateway](https://github.com/radiosilence/mcp-gateway) runs the OAuth
+  flow and injects per-user secrets so they work as Claude connectors.
 - **[watchwoman](https://github.com/radiosilence/watchwoman)** <small>Rust</small>: a
   drop-in watchman replacement that doesn't eat your RAM.
 - **[blit.cc](https://github.com/radiosilence/blit)** <small>Rust</small>: this site. A
-  static site generator with a content-hashed asset pipeline that fails the build on a
-  missing or hand-written path, and `askama_gettext`, a gettext implementation for
-  Askama covering 36 locales with CLDR plural rules, checked against CLDR at build time
-  so a catalogue can't disagree with it silently. Nothing reaches the browser but HTML,
-  CSS and a font. The locale picker is `command`/`commandfor` and a native `<dialog>`.
+  static site generator with a content-hashed asset pipeline and a gettext
+  implementation for Askama, 36 locales with plural rules checked against CLDR at build
+  time. The browser gets HTML, CSS and a font, and the PDF is typeset at build time.
+- **Earlier**: [xr](https://github.com/radiosilence/xr) <small>440+★</small>, a tiny
+  XMLHttpRequest wrapper from before `fetch`, and
+  [Ham](https://github.com/radiosilence/Ham) <small>380+★</small>, a PHP microframework
+  from when that was a reasonable thing to write.
 
 ### Contributed
 
 - **[pip](https://github.com/pypa/pip)**: [#789](https://github.com/pypa/pip/pull/789),
   SSL certificate verification, carried into [#791](https://github.com/pypa/pip/pull/791)
   and shipped in pip 1.3 as the fix for CVE-2013-1629.
-- **Contributions elsewhere**: [TanStack
-  Router](https://github.com/TanStack/router) (static prerendering fix, and docs),
-  [Django REST Framework](https://github.com/encode/django-rest-framework) (timedelta
-  support in the JSON encoder), [git-absorb](https://github.com/tummychow/git-absorb)
-  (darwin arm64 build target),
+- **Elsewhere**: [TanStack Router](https://github.com/TanStack/router) (static
+  prerendering), [Django REST Framework](https://github.com/encode/django-rest-framework)
+  (timedelta in the JSON encoder), [icu_ex](https://github.com/hansihe/icu_ex) (compact
+  and percent number formatting for Elixir),
+  [go-buildpack](https://github.com/cloudfoundry/go-buildpack) (Go version from
+  `go.mod`), [ops](https://github.com/nanovms/ops) (unikernel packaging),
+  [git-absorb](https://github.com/tummychow/git-absorb),
   [react-native-webview](https://github.com/react-native-webview/react-native-webview),
-  [ops](https://github.com/nanovms/ops) (unikernel packaging fixes),
-  [go-buildpack](https://github.com/cloudfoundry/go-buildpack) (take the Go version from
-  `go.mod`), [icu_ex](https://github.com/hansihe/icu_ex) (compact notation and percent
-  styles for Elixir number formatting),
   [sorl-thumbnail](https://github.com/jazzband/sorl-thumbnail),
   [bowser](https://github.com/bowser-js/bowser).
-- **Earlier**: [xr](https://github.com/radiosilence/xr) <small>440+★</small>,
-  [Ham](https://github.com/radiosilence/Ham) <small>380+★</small>, a PHP microframework
-  from when that was a reasonable thing to write,
-  [subdown](https://github.com/radiosilence/subdown) <small>19★</small>,
-  [servers.py](https://github.com/radiosilence/servers.py) <small>13★</small>,
-  [python-nginx](https://github.com/radiosilence/python-nginx) <small>12★</small>,
-  [redux-rx-http](https://github.com/radiosilence/redux-rx-http) <small>12★</small>.
 
 ## Skills
 
@@ -331,18 +240,15 @@ MobX-State-Tree, Redux, RxJS, WebSockets, Kafka, i18n, TDD/BDD.
 MSSQL, MongoDB, CouchDB, Couchbase, ArgoCD, Ansible, Azure and Azure
 Policy, Concourse, CircleCI, BitBucket Pipelines, GitLab CI, Traefik, Nginx, Apache,
 ZeroMQ, Socket.IO, C#, .NET, C++, C, x86 assembly, Qt, PHP, AngularJS, jQuery,
-SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, Vagrant, SVN, and many, many more...
+SASS/LESS, Cloud Foundry, BOSH, Mesos/Marathon, unikernels, and many, many more...
 
 ## Education
 
-Full disclosure: I dropped out of Computer Science & Cybernetics at the University of
-Reading, despite winning a competition for my embedded work in second year. It wasn't for
-me. I loved practicals over theory, writing code over sitting in lectures and sitting exams. Whilst
-university was an excellent experience in many other ways, and gave me access to some brilliant minds,
-as soon as I moved to Brighton and started freelancing, I started really having fun.
+### Computer Science & Cybernetics, University of Reading
 
-I think I have a diploma for the two years I did, but I don't see it as particularly relevant to my
-work.
+- Completed two years and won a competition for my embedded systems work in the second,
+  then left to start working. I learn best by building, and freelancing gave me more
+  hands-on experience than lectures did.
 
 ## Who is James?
 
