@@ -7,35 +7,24 @@ senior full stack engineer
 **location:** London or remote. I like working with people in
 person, as long as there's some flexibility.
 
-Polyglot engineer. Twenty-five years of writing code, twenty of them paid for, across
-commercial frontend, backend, devops, mobile and embedded. Elixir and Go services,
-GraphQL gateways, React and Next.js, native Swift and Kotlin modules, Rust tooling,
-Terraform, Pulumi and Kubernetes. The language matters less than people think. What
-matters is architecting software in a smart, forward-thinking but pragmatic manner and
-a language that enables that.
+Polyglot engineer. Twenty-five years writing code, twenty of them paid for,
+across frontend, backend, infrastructure, mobile and embedded: Elixir and Go
+services, GraphQL gateways, React, native Swift and Kotlin, Rust tooling, and
+Kubernetes declared in Terraform and Pulumi. I care more about how a system is
+architected than what it’s written in.
 
-I like greenfield, and I like taking a thing that works and making it the thing it should
-have been, especially hard problems I can own from one end to the other. I started out
-freelancing, where there's nobody to hand the product to and every bug is yours, and that
-never left me. So I like being part of deciding what a thing should be, as well as
-building it.
+I like greenfield, and I like taking something that works and making it what it
+should have been. I started out freelancing, so I’m used to owning every bug and
+making the product and UX decisions. Explaining my thinking is part of the job.
+If I can’t get an idea across, I don’t understand it well enough yet, and
+explaining it clearly is how I get the best ideas out of other people, often
+better than mine.
 
-A lot of engineering is communication. If I can't explain an insight to the people who
-need to be on board, I don't understand it as well as I think, and the people I'm
-explaining it to often come back with better ideas than mine.
+My recent projects are AI-assisted. Without experience, these tools make it easy
+to stop learning; with it, you know which questions to ask in order to get
+things built quickly and without a loss of quality.
 
-I love IaC: infrastructure you can recreate, iterate on and declare, then review like
-any other code.
-
-LLMs and agents make it easy to build anything, and just as easy to stop caring and stop
-learning. Without experience you don't know which questions to ask; with it, they're an
-exceptional force multiplier, and using them well is a skill like any other. My recent
-GitHub projects are heavily AI-assisted, and decades of building things by hand keep
-them fast, secure and pleasant to use.
-
-What drives me is waking up every day and building something interesting. I take a lot of
-pride in my work, and I'm often the person people come to when something needs doing
-properly.
+I’m the person people come to when something needs doing properly.
 
 ## Selected Work
 
@@ -53,6 +42,7 @@ properly.
   room correction, DLNA and playback handed between devices.
 
 ## Recent Work
+
 ### Senior Full Stack Engineer, [Fresha](https://fresha.com) <small>2025–Present</small>
 
 <small>
