@@ -39,7 +39,9 @@
 #let dates(body) = metadata((dates: body))
 
 #let masthead(name, title, contact) = {
-  aside(image("logo.png", width: 21mm, alt: "blit.cc logo"))
+  // Sized to run from the top of the name to the baseline of the title, so the
+  // logo, name and title read as one lockup.
+  aside(image("logo.png", width: 14.7mm, alt: "blit.cc logo"))
   block(below: 11mm, {
     name
     v(2.6mm)
