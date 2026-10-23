@@ -43,7 +43,15 @@ fn main() -> Result<()> {
 
     let fonts = fonts(&root.join("src/fonts"))?;
     let template = fs::read_to_string(root.join("src/templates/cv.typ"))?;
-    assets.derive("cv.pdf", blit::pdf::render(&source, &template, &fonts)?);
+    assets.derive(
+        "cv.pdf",
+        blit::pdf::render(
+            &source,
+            &template,
+            &fonts,
+            &fs::read(root.join("src/static/logo.png"))?,
+        )?,
+    );
 
     let ctx = Context {
         catalogs: &catalogs,

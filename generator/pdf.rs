@@ -23,15 +23,15 @@ use typst_layout::PagedDocument;
 use typst_pdf::{PdfOptions, PdfStandard, PdfStandards};
 
 /// Typesets `markdown` with `template`, which must export `cv` and the helpers
-/// the markup calls (`small`, `dates`).
-pub fn render(markdown: &str, template: &str, fonts: &[Vec<u8>]) -> Result<Vec<u8>> {
+/// the markup calls (`small`, `dates`), and can read the logo as `logo.png`.
+pub fn render(markdown: &str, template: &str, fonts: &[Vec<u8>], logo: &[u8]) -> Result<Vec<u8>> {
     let (name, body) = markup(markdown)?;
 
     let main = format!(
         "#import \"cv.typ\": cv, small, dates\n#show: cv.with(name: {})\n\n{body}",
         string(&name)
     );
-    let world = CvWorld::new(main, template.to_owned(), fonts)?;
+    let world = CvWorld::new(main, template.to_owned(), fonts, logo)?;
 
     let warned = typst::compile::<PagedDocument>(&world);
     for warning in &warned.warnings {
@@ -206,7 +206,7 @@ fn string(s: &str) -> String {
     format!("\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\""))
 }
 
-/// Two files and the fonts that were handed in. Nothing is read from disk, so the
+/// Two sources, the logo and the fonts that were handed in. Nothing is read from disk, so the
 /// PDF can't come to depend on what happens to be installed.
 struct CvWorld {
     library: LazyHash<Library>,
@@ -214,10 +214,11 @@ struct CvWorld {
     fonts: Vec<Font>,
     main: Source,
     template: Source,
+    logo: (FileId, Bytes),
 }
 
 impl CvWorld {
-    fn new(main: String, template: String, fonts: &[Vec<u8>]) -> Result<Self> {
+    fn new(main: String, template: String, fonts: &[Vec<u8>], logo: &[u8]) -> Result<Self> {
         let id = |path: &str| -> Result<FileId> {
             let vpath = VirtualPath::new(path).map_err(|e| anyhow!("{e:?}"))?;
             Ok(RootedPath::new(VirtualRoot::Project, vpath).intern())
@@ -234,6 +235,7 @@ impl CvWorld {
             fonts,
             main: Source::new(id("/main.typ")?, main),
             template: Source::new(id("/cv.typ")?, template),
+            logo: (id("/logo.png")?, Bytes::new(logo.to_vec())),
         })
     }
 }
@@ -260,6 +262,9 @@ impl World for CvWorld {
     }
 
     fn file(&self, id: FileId) -> FileResult<Bytes> {
+        if id == self.logo.0 {
+            return Ok(self.logo.1.clone());
+        }
         Err(FileError::NotFound(
             id.get().vpath().get_without_slash().into(),
         ))
