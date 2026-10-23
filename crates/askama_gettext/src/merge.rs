@@ -504,29 +504,6 @@ mod tests {
         assert!(std::fs::read_to_string(&path).unwrap().contains("zamknij"));
     }
 
-    #[cfg(unix)]
-    #[test]
-    fn an_unchanged_catalogue_is_not_replaced() {
-        use std::os::unix::fs::MetadataExt;
-
-        // A replaced file is a new inode, which is what a watcher reports.
-        let path = catalogue(
-            "an_unchanged_catalogue_is_not_replaced",
-            &format!("{PL_HEADER}\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n"),
-        );
-        into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
-        let settled = std::fs::metadata(&path).unwrap().ino();
-
-        into_catalog(&path, "pl-PL", &[site("close", None)]).unwrap();
-
-        assert_eq!(std::fs::metadata(&path).unwrap().ino(), settled);
-        assert!(
-            strays(&path).is_empty(),
-            "temporary left behind: {:?}",
-            strays(&path)
-        );
-    }
-
     #[test]
     fn a_message_that_left_the_templates_is_removed_and_named() {
         let path = catalogue(
@@ -756,6 +733,46 @@ mod atomicity {
             "translation lost on a failed merge"
         );
         assert_eq!(after, original, "a failed merge rewrote the catalogue");
+        assert!(
+            strays(&path).is_empty(),
+            "temporary left behind: {:?}",
+            strays(&path)
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn an_unchanged_catalogue_is_not_replaced() {
+        use std::os::unix::fs::MetadataExt;
+
+        // A replaced file is a new inode, which is what a watcher reports.
+        let path = std::env::temp_dir().join("agt-unchanged.po");
+        std::fs::write(
+            &path,
+            concat!(
+                "msgid \"\"\nmsgstr \"\"\n",
+                "\"Language: pl-PL\\n\"\n",
+                "\"MIME-Version: 1.0\\n\"\n",
+                "\"Content-Type: text/plain; charset=utf-8\\n\"\n",
+                "\"Content-Transfer-Encoding: 8bit\\n\"\n",
+                "\"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\"\n",
+                "\n#: t.html:1\nmsgid \"close\"\nmsgstr \"zamknij\"\n",
+            ),
+        )
+        .unwrap();
+        let sites = [Extracted {
+            id: "close".to_owned(),
+            context: None,
+            plural: None,
+            file: "t.html".to_owned(),
+            line: 1,
+        }];
+        into_catalog(&path, "pl-PL", &sites).unwrap();
+        let settled = std::fs::metadata(&path).unwrap().ino();
+
+        into_catalog(&path, "pl-PL", &sites).unwrap();
+
+        assert_eq!(std::fs::metadata(&path).unwrap().ino(), settled);
         assert!(
             strays(&path).is_empty(),
             "temporary left behind: {:?}",
