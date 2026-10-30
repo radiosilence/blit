@@ -1,0 +1,1 @@
+- **`time` 0.3.47.** Clears RUSTSEC-2026-0009 (stack exhaustion parsing hostile RFC 2822 input), reached through syntect's plist loader. The input is bundled syntax assets, so nothing was exposed; quick-xml 0.38 (RUSTSEC-2026-0194, -0195) stays until typst moves off it.
