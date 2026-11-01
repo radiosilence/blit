@@ -1,0 +1,25 @@
+name: Audit
+
+# Advisories are published against code that has not changed, so the audit job
+# in ci-cd.yml, which runs only when dependencies do, never sees them. This runs
+# the same recipe against main every week. It lives outside ci-cd.yml because a
+# scheduled run there would reach the jobs that promote and deploy.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        with:
+          install_args: just cargo-deny
+      - run: just audit

@@ -87,8 +87,14 @@ test:
 check: lint fmt-check test changelog-check
     actionlint
 
-# Everything CI verifies: checks, then a full build
-ci: check build
+# Fetches the advisory database, so it is kept out of `check`, which works offline.
+# Ignores live in deny.toml, where the CI job and the weekly run both read them.
+[doc("Check Cargo.lock against the RustSec advisory database")]
+audit:
+    cargo deny check advisories
+
+# Everything CI verifies: checks, the advisory audit, then a full build
+ci: check audit build
 
 # Install the git hooks
 hooks:

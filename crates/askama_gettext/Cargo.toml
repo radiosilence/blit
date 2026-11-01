@@ -2,7 +2,9 @@
 name = "askama_gettext"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
+# What askama 0.16 and icu 2.4 require. Clippy's incompatible_msrv holds this
+# crate's own std usage to it; nothing builds it on 1.88 itself.
+rust-version = "1.88"
 description = "gettext for Askama templates: __/__p/__n in the template, extraction via Askama's own parser, CLDR plural selection"
 keywords = ["askama", "gettext", "i18n", "l10n", "template"]
 categories = ["internationalization", "template-engine"]

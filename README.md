@@ -143,7 +143,7 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | `just build`        | Compile CSS, then generate the site into `dist/`   |
 | `just generate`     | Render every locale × page only                    |
 | `just check`        | Clippy, rustfmt, tests, actionlint, changelog      |
-| `just ci`           | Everything CI checks — `check`, then `build`       |
+| `just ci`           | Everything CI checks: `check`, `audit`, `build`    |
 | `just docker-build` | Build the site, then the container image           |
 | `just i18n-sync`    | Sync locale catalogues against the source          |
 | `just clean`        | Drop `dist/`, `.build/` and `target/`              |
@@ -220,11 +220,14 @@ commit whose run passed) and sets one flag per domain:
 | `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml`     | Rust            |
 | `site`   | the above and the rest of `src/`                                                                   | Site            |
 | `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`          | Container image |
+| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`                              | Audit           |
 
 Markdown outside `src/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is
 skipped, and a skipped job is a pass: the one required status is `Checks`, which fails
-only when a job it needs failed or was cancelled. Changelog runs for every change. To
+only when a job it needs failed or was cancelled. Changelog runs for every change.
+Advisories are published against code that has not changed, so `audit.yml` also runs
+`just audit` against main weekly; its ignores are in `deny.toml`, shared with the job. To
 add a domain, add an output and a `touches` line to `changes`, gate the job on it with
 `if:`, and add the job to `Checks`'s `needs`.
 

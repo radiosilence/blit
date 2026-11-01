@@ -1,0 +1,6 @@
+# The toolchain floats to the latest stable (mise.toml), so MSRV-aware resolution
+# only ever holds dependencies back. It did: a declared rust-version below what the
+# locked crates already needed made `cargo update` downgrade `time` past a security
+# fix.
+[resolver]
+incompatible-rust-versions = "allow"

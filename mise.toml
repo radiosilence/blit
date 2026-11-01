@@ -17,6 +17,9 @@ watchexec = "latest"
 gh = "latest"
 # Installs the pre-commit hook in lefthook.yml (`just hooks`).
 lefthook = "latest"
+# Checks Cargo.lock against RustSec advisories (`just audit`). A prebuilt binary,
+# so a cold CI cache does not compile it.
+cargo-deny = "0.20.2"
 # Lints .github/workflows (`just check`); shellcheck checks the scripts in `run` steps.
 actionlint = "1.7.12"
 shellcheck = "0.11.0"
