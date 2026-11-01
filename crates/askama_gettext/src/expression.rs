@@ -15,7 +15,7 @@
 //! The grammar is C's, restricted to what gettext allows — the ternary, the
 //! boolean and comparison operators, the four arithmetic ones and `%`, over `n`
 //! and integer literals. It is a parser rather than a pattern match on known
-//! headers because the point is to accept whatever a catalogue actually contains
+//! headers because the point is to accept whatever a catalogue contains
 //! and say what it means.
 
 use crate::error::{Error, Result};

@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1.2
+# syntax=docker/dockerfile:1
 FROM ghcr.io/radiosilence/nano-web:latest
 
 # The constant half of the OCI labels; the justfile adds revision, created and
-# version. image.source is the load-bearing one — it links the ghcr package back to
-# the repository.
+# version. image.source matters most: it links the ghcr package back to the
+# repository.
 LABEL org.opencontainers.image.source="https://github.com/radiosilence/blit" \
   org.opencontainers.image.url="https://github.com/radiosilence/blit" \
   org.opencontainers.image.title="blit" \

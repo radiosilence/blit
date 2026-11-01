@@ -28,7 +28,7 @@
 
     <meta property="og:title" content="{{ tagline }}" />
     <meta property="og:url" content="{{ canonical_url }}" />
-    <meta property="og:image" content="https://blit.cc{{ logo }}" />
+    <meta property="og:image" content="{{ crate::config::ORIGIN }}{{ logo }}" />
 
     <link rel="stylesheet" href="{{ stylesheet }}" />
     <link rel="preload" href="{{ font }}" as="font" type="font/woff2" crossorigin />

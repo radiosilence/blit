@@ -16,6 +16,10 @@ pub struct Locale {
 
 pub const SOURCE: &str = "en-GB";
 
+/// Where the site is served, for the URLs that leave it: canonical links and the
+/// Open Graph image a link preview fetches.
+pub const ORIGIN: &str = "https://blit.cc";
+
 /// What a `fuzzy` translation does here.
 ///
 /// `msgfmt` drops it, and so does this site. The flag arrives two ways: from a
