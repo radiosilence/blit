@@ -119,45 +119,63 @@ impl Display for Markup {
             .map(|(k, v)| (k.as_str(), v.as_str()))
             .collect();
 
-        // Values are substituted first and then escaped along with everything else,
-        // so a value can never introduce a tag even if it looks like one.
-        let text = crate::interpolate::interpolate(&self.text, &values);
-
-        let mut out = String::with_capacity(text.len());
-        render(&mut out, &text, &self.elements);
+        let mut out = String::with_capacity(self.text.len());
+        render(&mut out, &self.text, &self.elements, &values);
         f.write_str(&out)
     }
+}
+
+/// Fills in the values of one run of text between tags, then escapes it.
+///
+/// Tags are found in the translated text before any value is substituted, so a
+/// value can never introduce a tag even if it spells a registered one.
+fn text(out: &mut String, run: &str, values: &[(&str, &str)]) {
+    escape(out, &crate::interpolate::interpolate(run, values));
 }
 
 /// Scans for registered names and escapes everything else. Deliberately a scan
 /// rather than a parse: the message is a sentence with a few known names in it, not
 /// a document, and anything unrecognised must end up escaped rather than guessed at.
-fn render(out: &mut String, text: &str, elements: &BTreeMap<String, Element>) {
-    let mut rest = text;
+fn render(
+    out: &mut String,
+    source: &str,
+    elements: &BTreeMap<String, Element>,
+    values: &[(&str, &str)],
+) {
+    let mut rest = source;
+    // Text not yet written. A `<` that opens no registered tag stays part of it,
+    // so a placeholder either side of one is still filled in.
+    let mut pending = 0;
 
-    while let Some(open) = rest.find('<') {
-        escape(out, &rest[..open]);
+    while let Some(found) = rest[pending..].find('<') {
+        let open = pending + found;
         let after = &rest[open + 1..];
 
         let Some(close) = after.find('>') else {
-            escape(out, &rest[open..]);
-            return;
+            break;
         };
 
         let raw = &after[..close];
         let name = raw.strip_suffix('/').unwrap_or(raw);
+        let self_closing = raw.ends_with('/');
 
-        let Some(element) = elements.get(name) else {
-            // Not a name we were given, so it is text as far as this is concerned.
-            escape(out, &rest[open..=open]);
-            rest = after;
+        // Not a name we were given, or a non-empty element written as if it were
+        // empty: text as far as this is concerned. The second would otherwise
+        // open an element nothing closes.
+        let Some(element) = elements
+            .get(name)
+            .filter(|element| element.empty || !self_closing)
+        else {
+            pending = open + 1;
             continue;
         };
 
+        text(out, &rest[..open], values);
         write_open(out, element);
 
-        if element.empty || raw.ends_with('/') {
+        if element.empty {
             rest = &after[close + 1..];
+            pending = 0;
             continue;
         }
 
@@ -167,17 +185,18 @@ fn render(out: &mut String, text: &str, elements: &BTreeMap<String, Element>) {
         let Some(at) = body.find(&end) else {
             // Unterminated: close it here so the output stays well-formed rather
             // than swallowing the remainder of the sentence.
-            render(out, body, elements);
+            render(out, body, elements, values);
             let _ = write!(out, "</{}>", element.tag);
             return;
         };
 
-        render(out, &body[..at], elements);
+        render(out, &body[..at], elements, values);
         let _ = write!(out, "</{}>", element.tag);
         rest = &body[at + end.len()..];
+        pending = 0;
     }
 
-    escape(out, rest);
+    text(out, rest, values);
 }
 
 fn write_open(out: &mut String, element: &Element) {
@@ -241,6 +260,33 @@ mod tests {
             .empty("br", "br")
             .to_string();
         assert_eq!(out, "<strong>bold <em>and italic</em></strong><br>next");
+    }
+
+    #[test]
+    fn a_value_cannot_become_a_tag() {
+        // `cv` is registered, so the same text written in the message would be a
+        // link. Supplied as a value it is text.
+        let out = Markup::new("hi %{name}")
+            .link("cv", "/cv")
+            .with("name", "<cv>x</cv>")
+            .to_string();
+        assert_eq!(out, "hi &lt;cv&gt;x&lt;/cv&gt;");
+    }
+
+    #[test]
+    fn values_are_filled_in_beside_tags_and_inside_them() {
+        let out = Markup::new("%{n} < 3, see <cv>%{n} items</cv>")
+            .link("cv", "/cv")
+            .with("n", 2)
+            .to_string();
+        assert_eq!(out, r#"2 &lt; 3, see <a href="/cv">2 items</a>"#);
+    }
+
+    #[test]
+    fn a_non_empty_element_written_self_closing_is_text() {
+        // Rendering it would open a link that nothing closes.
+        let out = Markup::new("see <cv/> here").link("cv", "/cv").to_string();
+        assert_eq!(out, "see &lt;cv/&gt; here");
     }
 
     #[test]
