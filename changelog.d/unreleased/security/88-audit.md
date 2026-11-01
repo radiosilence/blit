@@ -1,1 +1,1 @@
-- **Dependency advisories are checked.** `just audit` runs `cargo deny check advisories` in CI when dependencies change and weekly against main, and `cargo update` resolves for the toolchain mise installs rather than holding dependencies to an old `rust-version`.
+- **Dependency advisories are checked.** `just audit` runs `cargo deny check advisories` in CI when dependencies change and weekly against main, so an advisory, or a lockfile change that brings one back, fails a check rather than going unnoticed.

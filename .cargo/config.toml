@@ -1,4 +1,0 @@
-# The toolchain floats to the latest stable (mise.toml), so MSRV-aware resolution
-# would only hold dependencies back.
-[resolver]
-incompatible-rust-versions = "allow"
