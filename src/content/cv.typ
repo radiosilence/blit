@@ -30,10 +30,11 @@
   keywords: daily + strong-skills,
 )
 
-Polyglot engineer. Twenty-five years writing code, twenty of them paid for, across frontend,
-backend, infrastructure, mobile and embedded: Elixir and Go services, GraphQL gateways, React,
+Polyglot engineer. Twenty-five years writing code, twenty paid for, spanning frontend,
+backend, infrastructure, mobile and embedded. Elixir and Go services, GraphQL gateways, React,
 native Swift and Kotlin, Rust tooling, and Kubernetes declared in Terraform and Pulumi. I care more
-about how a system is architected than what it's written in.
+about how a system is architected and that the language choice is appropriate, than having any
+specific preference.
 
 I like greenfield, and I like taking something that works and making it what it should have been. I
 started out freelancing, so I'm used to owning every bug and making the product and UX decisions.
