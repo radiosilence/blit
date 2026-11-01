@@ -1,0 +1,1 @@
+- **Search engines see one page in 36 languages.** Every page names its canonical URL and links each locale's copy with `hreflang`, plus an `x-default` at the source locale, so each reader is offered their own copy and the copies are not treated as duplicates. The reference check resolves absolute URLs on the site's own origin, which these and `og:image` are.
