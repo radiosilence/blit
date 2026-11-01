@@ -11,7 +11,7 @@ use pulldown_cmark::{Options, Parser, html};
 
 use askama_gettext::Catalogs;
 use blit::assets::Assets;
-use blit::config::{FUZZY, LOCALES, SOURCE};
+use blit::config::{FUZZY, LOCALES, ORIGIN, SOURCE};
 use blit::routes::{PAGES, url};
 use blit::templates::{Context, Cv, Index, LocaleLink, Urls};
 
@@ -29,10 +29,9 @@ fn main() -> Result<()> {
     // The stylesheet and the manifest name other assets, so both are rewritten
     // before their own hash is taken — otherwise the font and the icons are also
     // fetched at an unhashed URL that is cached just as hard.
-    let font = assets.href("geist-mono.woff2");
     let css = fs::read_to_string(build.join("style.css"))
-        .context("reading .build/style.css — run `just css` first")?
-        .replace("/geist-mono.woff2", &font);
+        .context("reading .build/style.css — run `just css` first")?;
+    let css = rewrite(&assets, &css, "geist-mono.woff2").context("rewriting style.css")?;
     assets.derive("style.css", css.into_bytes());
 
     let manifest = rewrite_manifest(&assets, &root.join("src/static/manifest.json"))?;
@@ -63,13 +62,13 @@ fn main() -> Result<()> {
     for locale in LOCALES {
         let dir = if locale.rtl { "rtl" } else { "ltr" };
 
+        let urls = Urls {
+            home: url(locale.code, ""),
+            cv: url(locale.code, "cv"),
+        };
+
         for page in PAGES {
             let path = url(locale.code, page.slug);
-
-            let urls = Urls {
-                home: url(locale.code, ""),
-                cv: url(locale.code, "cv"),
-            };
 
             let locale_links: Vec<LocaleLink> = LOCALES
                 .iter()
@@ -82,7 +81,7 @@ fn main() -> Result<()> {
                 })
                 .collect();
 
-            let canonical_url = format!("https://blit.cc{path}");
+            let canonical_url = format!("{ORIGIN}{path}");
 
             let html = match page.template {
                 "index" => Index {
@@ -161,10 +160,23 @@ fn rewrite_manifest(assets: &Assets, path: &Path) -> Result<String> {
         "android-chrome-192x192.png",
         "android-chrome-512x512.png",
     ] {
-        out = out.replace(&format!("/{name}"), &assets.href(name));
+        out = rewrite(assets, &out, name).context("rewriting manifest.json")?;
     }
 
     Ok(out)
+}
+
+/// Points `/{name}` in `text` at the asset's hashed URL.
+///
+/// The reference check reads only pages, so a reference here that stopped matching
+/// would publish the hashed file while this one still asked for the unhashed path,
+/// a 404 nothing else would notice.
+fn rewrite(assets: &Assets, text: &str, name: &str) -> Result<String> {
+    let from = format!("/{name}");
+    if !text.contains(&from) {
+        bail!("no reference to {from}");
+    }
+    Ok(text.replace(&from, &assets.href(name)))
 }
 
 /// dist/ is written entirely here, so anything else in it is from an earlier build:

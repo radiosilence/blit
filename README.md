@@ -50,7 +50,7 @@ that changes about as often as a language renames itself.
   `dist/` for `just dev` and is yours to install
 
 The build is a Rust binary. Tailwind is the only JavaScript left in it — its
-compiler genuinely is TypeScript, and Oxide is only the scanner — so it arrives as a
+compiler is TypeScript, and Oxide is only the scanner — so it arrives as a
 pinned tool rather than as a `package.json` and a `node_modules` tree.
 
 ## i18n
@@ -59,11 +59,10 @@ pinned tool rather than as a `package.json` and a `node_modules` tree.
 English source text — `__("change language")` — so the English is visible where it's
 used rather than behind a key, and that text is the `msgid` a translator reads.
 Untranslated messages fall back to `en-GB` rather than rendering blank, so a new
-string is live everywhere the moment it's added; a message no catalogue has fails the
-build, since the alternative is shipping a typo as itself.
+string is live everywhere the moment it's added.
 
 Plurals are written the way gettext writes them — one `msgstr[n]` per form the
-language actually has, which is what makes Poedit and Weblate show one input box per
+language has, which is what makes Poedit and Weblate show one input box per
 form:
 
 ```po
@@ -106,12 +105,12 @@ output, because between them they're everything extraction does to a translator'
 work and `just dev` runs it on every save.
 
 Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
-`generator/config.rs` decides what to do with one. This site serves them: most of a
-sentence in your own language beats all of one in someone else's. `msgfmt` would do
-the opposite, and that's the right default where a msgid is a key like `nav.close` —
-here it's the English, so both answers are a real sentence and it's a judgement call
-rather than a rule. Set it to `Fuzzy::Skip` to hold a drifted translation back until
-someone reviews it.
+`generator/config.rs` decides what to do with one. This site skips them, as `msgfmt`
+does: the merge's own rewordings are the common source of the flag, and serving one
+renders a translation of a sentence that no longer exists. Here a msgid is the English
+rather than a key like `nav.close`, so skipping costs only what an untranslated string
+already costs. `Fuzzy::Serve` shows a drifted translation anyway, on the argument that
+most of a sentence in your own language beats all of one in someone else's.
 
 ## Assets
 
@@ -121,11 +120,12 @@ is built from what was referenced rather than copied wholesale, so a file nothin
 points at stops shipping, a name nothing provides fails the build, and a path written
 by hand instead of through the helper fails too.
 
-The hashing is load-bearing rather than decorative: nano-web chooses caching by MIME
-type alone, so CSS, images and fonts are all served `immutable, max-age=1y`. A stable
-URL is a promise the build cannot keep. `favicon.ico` and `robots.txt` are the
-exceptions — their URLs are a convention, not ours to choose, so they publish unhashed
-and unconditionally.
+The hashing is what makes the caching correct: nano-web chooses caching by MIME type
+alone, so CSS, images and fonts are all served `immutable, max-age=1y`, and a stable
+URL is a promise the build cannot keep. `favicon.ico` and `robots.txt` are exceptions
+because their URLs are a convention, not ours to choose. `cv.pdf` is one because its
+link gets pasted into application forms; nano-web serves a PDF for an hour, not a
+year. All three publish unhashed and unconditionally.
 
 The stylesheet and the web app manifest name other assets, so both are rewritten
 before their own hash is taken; otherwise the font and the icons would also be fetched
@@ -181,9 +181,12 @@ in `src/static/` and reference it with `asset("name.ext")`.
 
 ## Deployment
 
-Docker image → microk8s → CloudFlare Tunnel, via Pulumi in a separate IaC repo.
-`dist/` is layered onto [nano-web](https://github.com/radiosilence/nano-web) and the
-image tag is written into the IaC repo's Pulumi config, which Pulumi then rolls out.
+A container image on k3s on a Hetzner VPS, behind Traefik terminating Let's Encrypt
+over DNS-01; Cloudflare serves DNS only. The cluster and this deployment are one Pulumi
+program in [jaritanet](https://github.com/radiosilence/jaritanet). `dist/` is layered
+onto [nano-web](https://github.com/radiosilence/nano-web), and the deployment pins
+`sha-<short>`, which CD writes once `Checks` has passed and then asks jaritanet to pick
+up.
 
 The published tag is a manifest list for `linux/amd64` and `linux/arm64`, built in one
 pass — the image is a `COPY` onto a base that already covers both, so there is nothing

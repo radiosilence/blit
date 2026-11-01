@@ -1,0 +1,1 @@
+- The README's i18n, assets and deployment sections describe what the code and the cluster do, and the Dockerfile follows the current `dockerfile:1` frontend rather than pinning 1.2.

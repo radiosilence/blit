@@ -40,7 +40,7 @@ const CANONICAL: [PluralCategory; 6] = [
 /// gettext has called both two-form languages for as long as there have been `.po`
 /// files. Sampling far enough to find it would add a slot that every catalogue in
 /// the world lacks and every translator's tool declines to offer — so the form set
-/// stays the one catalogues are actually written against.
+/// stays the one catalogues are written against.
 ///
 /// What lies past the bound is not ignored, which is the other half of the decision:
 /// see [`Forms::index`].

@@ -1,10 +1,10 @@
 //! Askama binds a template to a struct at compile time, so a field a template
 //! names but the struct lacks is a compile error rather than a blank in the output.
-//! That replaces the runtime Proxy the TypeScript needs.
 //!
 //! `{% extends %}` requires the child to carry every field the parent names, so the
-//! shape is declared once by macro rather than repeated per page. The methods are
-//! deliberately `__`, `__n` and `__v`: a template holds the English, never an id.
+//! shape is declared once by macro rather than repeated per page. Translation comes
+//! from `askama_gettext::Translate`, so a template calls the `__` family with the
+//! English rather than an id.
 
 use askama::Template;
 use askama_gettext::{Catalogs, Translate, Translator};
@@ -35,7 +35,7 @@ pub struct Context<'a> {
 ///
 /// `{% extends %}` requires a child to carry every field the layout names, so the
 /// shared ones are listed once here and each page adds only what it uses itself —
-/// which keeps an genuinely unused field a warning rather than noise.
+/// which keeps an unused field a warning rather than noise.
 macro_rules! page {
     ($name:ident, $path:literal $(, $field:ident: $ty:ty)* $(,)?) => {
         #[derive(Template)]

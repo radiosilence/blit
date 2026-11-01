@@ -77,7 +77,7 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
 
     // One entry per (context, id): the same string used in three templates is one
     // message with three references, not three messages.
-    let mut wanted: BTreeMap<(Option<String>, String), Vec<&Extracted>> = BTreeMap::new();
+    let mut wanted = Wanted::new();
     for message in messages {
         wanted
             .entry((message.context.clone(), message.id.clone()))
@@ -209,6 +209,7 @@ pub fn into_catalog(path: &Path, locale: &str, messages: &[Extracted]) -> Result
 ///
 /// Read out in full before the merge writes anything, because by the time it is
 /// wanted the catalogue has been overwritten with the templates' idea of itself.
+#[derive(Clone)]
 struct Departed {
     context: Option<String>,
     id: String,
@@ -293,26 +294,11 @@ fn rewordings(
 
         if let Some((index, from, _)) = best {
             taken.insert(index);
-            pairs.insert(key.clone(), from.clone_for_carrying());
+            pairs.insert(key.clone(), from.clone());
         }
     }
 
     pairs
-}
-
-impl Departed {
-    /// The parts that follow a reword. Not `Clone`, because the identity of the
-    /// message it came from stays behind.
-    fn clone_for_carrying(&self) -> Self {
-        Self {
-            context: self.context.clone(),
-            id: self.id.clone(),
-            plural: self.plural.clone(),
-            translations: self.translations.clone(),
-            comments: self.comments.clone(),
-            flags: self.flags.clone(),
-        }
-    }
 }
 
 /// Creates an empty catalogue for a locale, with a header CLDR agrees with.

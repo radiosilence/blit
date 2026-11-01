@@ -1,5 +1,5 @@
 //! Assets are content-hashed into their filename and published only if a template
-//! asked for one — the same contract as the TypeScript, for the same reason.
+//! asked for one.
 //!
 //! nano-web picks caching from the MIME type alone, so CSS, images and fonts are
 //! all served `max-age=31536000, immutable`. A stable URL is a promise the build
