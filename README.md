@@ -173,8 +173,9 @@ branching on `target()`:
 Any warning from either compile fails the build, because each one is content that
 one target dropped or set wrongly: an element HTML export ignores, a font that
 isn't there. Typst's notice that HTML export is experimental is the one exception.
-The page's article must also carry no inline style or embedded file, since either
-would bypass the stylesheet or the asset pipeline.
+The page's article must also carry no inline style, embedded file or inline SVG,
+since these would bypass the stylesheet or the asset pipeline, or draw text that
+can't be selected.
 
 The world is rooted at `src/` and reads no system fonts and no packages, so the CLI
 and an editor preview compile exactly what the build does:
