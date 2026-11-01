@@ -250,7 +250,7 @@ impl Markup {
             words.push(' ');
         }
         words.push_str(&text.split_whitespace().collect::<Vec<_>>().join(" "));
-        if !closing && text.ends_with(char::is_whitespace) && !words.ends_with(' ') {
+        if !closing && text.ends_with(char::is_whitespace) {
             words.push(' ');
         }
         let decoded = entities(&words)?;
