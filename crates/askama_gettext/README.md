@@ -55,7 +55,10 @@ __h("read my <cv>CV</cv>").link("cv", "/fr-FR/cv")
 A translator can move `<cv>…</cv>` to wherever the sentence needs it, rename the
 text, or drop it. They cannot choose where it points, and they cannot introduce an
 element nobody registered: everything unrecognised is escaped, including markup
-typed into a catalogue by hand.
+typed into a catalogue by hand. Tags are found before values are filled in, so a
+value that spells a registered tag is escaped too. A registered element that has
+content is written as a pair; `<cv/>` is text, since it would otherwise open a link
+nothing closes.
 
 ## Extraction
 

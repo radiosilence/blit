@@ -156,8 +156,9 @@ fn render(
         };
 
         let raw = &after[..close];
-        let name = raw.strip_suffix('/').unwrap_or(raw);
-        let self_closing = raw.ends_with('/');
+        let (name, self_closing) = raw
+            .strip_suffix('/')
+            .map_or((raw, false), |name| (name, true));
 
         // Not a name we were given, or a non-empty element written as if it were
         // empty: text as far as this is concerned. The second would otherwise
@@ -280,6 +281,15 @@ mod tests {
             .with("n", 2)
             .to_string();
         assert_eq!(out, r#"2 &lt; 3, see <a href="/cv">2 items</a>"#);
+    }
+
+    #[test]
+    fn values_are_filled_in_beside_a_stray_open_bracket() {
+        let out = Markup::new("%{a} < %{b}")
+            .with("a", 1)
+            .with("b", 2)
+            .to_string();
+        assert_eq!(out, "1 &lt; 2");
     }
 
     #[test]
