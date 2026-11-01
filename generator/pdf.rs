@@ -84,6 +84,10 @@ struct Markup {
     masthead: usize,
     /// The HTML elements open, innermost last.
     html: Vec<&'static str>,
+    /// How many HTML elements were open as each Markdown element began, innermost
+    /// last. An HTML element has to close inside the Markdown element it opened
+    /// in, or the Typst brackets the two emit would cross.
+    depths: Vec<usize>,
     /// An HTML block arrives a line at a time and is read once it is whole, so
     /// the line breaks inside it stay spaces between words.
     block: Option<String>,
@@ -114,6 +118,7 @@ impl Markup {
     }
 
     fn start(&mut self, tag: Tag) -> Result<()> {
+        self.depths.push(self.html.len());
         match tag {
             Tag::Paragraph if self.masthead > 0 => self.body.push('['),
             Tag::Heading { .. } | Tag::List(_) | Tag::HtmlBlock | Tag::BlockQuote(_)
@@ -178,6 +183,9 @@ impl Markup {
             TagEnd::Item => self.body.push_str("],"),
             _ => self.body.push(']'),
         }
+        if let Some(open) = self.html.get(self.depths.pop().unwrap_or(0)) {
+            bail!("cv.md: <{open}> is still open where the Markdown element around it ends");
+        }
         Ok(())
     }
 
@@ -197,27 +205,59 @@ impl Markup {
     /// The few elements cv.md writes inline. Anything else fails the build rather
     /// than leaking a tag into the text.
     ///
-    /// Whitespace runs collapse to one space, and go entirely just inside an
-    /// element and at either end of `raw`, which is where HTML would not render
-    /// them either. Between a word and a tag the space is kept.
+    /// Whitespace collapses as a browser collapses it: a run of ASCII whitespace
+    /// is one space, written only between two words, wherever the tags between
+    /// them fall. So it goes at either end of `raw` and beside a line break.
     fn html(&mut self, raw: &str) -> Result<()> {
         let mut rest = raw;
-        // Whether the text about to be written follows an opening boundary: the
-        // start of `raw`, an opening tag or a line break.
-        let mut opened = true;
+        // A word has been written since the start or the last line break.
+        let mut wrote = false;
+        // Whitespace seen since that word, owed before the next one.
+        let mut space = false;
 
-        while let Some(open) = rest.find('<') {
+        loop {
+            let open = rest.find('<').unwrap_or(rest.len());
+            for (i, word) in rest[..open]
+                .split(|c: char| c.is_ascii_whitespace())
+                .enumerate()
+            {
+                space |= i > 0;
+                if word.is_empty() {
+                    continue;
+                }
+                if space && wrote {
+                    self.body.push(' ');
+                }
+                self.text(&entities(word)?);
+                wrote = true;
+                space = false;
+            }
+            if open == rest.len() {
+                return Ok(());
+            }
+
             let close = rest[open..]
                 .find('>')
                 .ok_or_else(|| anyhow!("cv.md: unterminated tag in {raw:?}"))?;
-            let tag = rest[open + 1..open + close].trim_end_matches('/').trim();
-            let closing = tag.starts_with('/') || tag == "br";
-            self.html_text(&rest[..open], opened, closing)?;
+            let tag = rest[open + 1..open + close]
+                .trim_end_matches('/')
+                .trim()
+                .to_ascii_lowercase();
             rest = &rest[open + close + 1..];
-            opened = !tag.starts_with('/');
 
-            match tag {
-                "br" => self.body.push_str("#linebreak()"),
+            // A space before an opening tag is written outside the element, as
+            // the source has it.
+            if space && wrote && !tag.starts_with('/') && tag != "br" {
+                self.body.push(' ');
+                space = false;
+            }
+
+            match tag.as_str() {
+                "br" => {
+                    self.body.push_str("#linebreak()");
+                    wrote = false;
+                    space = false;
+                }
                 // A date in a heading is pushed to the right margin, on the same
                 // line as the role: where a parser looks for it.
                 "small" if self.heading.is_some() => self.open("small", "#dates["),
@@ -226,6 +266,9 @@ impl Markup {
                 "strong" => self.open("strong", "#strong["),
                 _ if tag.starts_with('/') => {
                     let name = &tag[1..];
+                    if self.html.len() <= self.depths.last().copied().unwrap_or(0) {
+                        bail!("cv.md: <{tag}> closes nothing opened inside its Markdown element");
+                    }
                     match self.html.pop() {
                         Some(open) if open == name => self.body.push(']'),
                         Some(open) => bail!("cv.md: <{tag}> closes <{open}>"),
@@ -235,27 +278,6 @@ impl Markup {
                 _ => bail!("cv.md: the PDF has no rendering for <{tag}>"),
             }
         }
-        self.html_text(rest, opened, true)
-    }
-
-    fn html_text(&mut self, text: &str, opened: bool, closing: bool) -> Result<()> {
-        let mut words = String::new();
-        if text.trim().is_empty() {
-            if !opened && !closing && !text.is_empty() {
-                self.body.push(' ');
-            }
-            return Ok(());
-        }
-        if !opened && text.starts_with(char::is_whitespace) {
-            words.push(' ');
-        }
-        words.push_str(&text.split_whitespace().collect::<Vec<_>>().join(" "));
-        if !closing && text.ends_with(char::is_whitespace) {
-            words.push(' ');
-        }
-        let decoded = entities(&words)?;
-        self.text(&decoded);
-        Ok(())
     }
 
     fn open(&mut self, name: &'static str, markup: &str) {
@@ -302,6 +324,9 @@ fn entities(text: &str) -> Result<std::borrow::Cow<'_, str>> {
                 .or_else(|| name.strip_prefix('#').map(str::parse))
                 .and_then(Result::ok)
                 .and_then(char::from_u32)
+                // A browser maps some of these to other characters; the PDF would
+                // get an invisible control rather than what the page shows.
+                .filter(|c| !c.is_control())
                 .ok_or_else(|| {
                     anyhow!(
                         "cv.md: &{name}; inside an HTML block, where the PDF knows only \
@@ -457,6 +482,32 @@ mod tests {
     }
 
     #[test]
+    fn a_space_just_inside_an_element_still_separates_words() {
+        let (_, body) =
+            markup("# A\n\nt\n\nc\n\n<small>\n<em>a </em>b c<em> d</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[#emph[a] b c#emph[ d]]"), "{body}");
+    }
+
+    #[test]
+    fn a_non_breaking_space_is_not_collapsed() {
+        let (_, body) =
+            markup("# A\n\nt\n\nc\n\n<small>\n10\u{a0}km <em>\u{a0}</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[10\u{a0}km #emph[\u{a0}]]"), "{body}");
+    }
+
+    #[test]
+    fn tag_names_ignore_case() {
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<SMALL>x</Small>\n").unwrap();
+        assert!(body.contains("#small[x]"), "{body}");
+    }
+
+    #[test]
+    fn html_must_close_inside_the_markdown_element_it_opened_in() {
+        assert!(markup("# A\n\nt\n\nc\n\n*a <strong>b* c</strong>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n- <em>a\n- b</em>\n").is_err());
+    }
+
+    #[test]
     fn whitespace_between_tags_on_their_own_lines_is_not_kept() {
         let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\n<em>b</em>\n</small>\n").unwrap();
         assert!(body.contains("#small[#emph[b]]"), "{body}");
@@ -476,6 +527,7 @@ mod tests {
             markup("# A\n\nt\n\nc\n\n<small>\na &amp; b &#233; & c\n</small>\n").unwrap();
         assert!(body.contains("#small[a & b é & c]"), "{body}");
         assert!(markup("# A\n\nt\n\nc\n\n<small>\n&bogus;\n</small>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n<small>\n&#150;\n</small>\n").is_err());
         // Not a reference at all, so it is text, as a browser shows it.
         let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\na &; b\n</small>\n").unwrap();
         assert!(body.contains("#small[a &\\; b]"), "{body}");
