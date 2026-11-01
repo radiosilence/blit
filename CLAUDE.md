@@ -64,7 +64,8 @@ Key decisions:
   anything unregistered is escaped.
 - Every asset reaches a page through `asset('logo.png')`, which publishes it under a
   content hash and records the reference. Writing the path by hand fails the build,
-  because the reference check resolves `href` and `src` against what was written.
+  because the reference check resolves `href`, `src` and `content`, including
+  absolute URLs on the site's origin, against what was written.
 - Hashing is not decoration. nano-web picks caching by MIME type alone, so CSS,
   images and fonts are all served `immutable, max-age=1y`. `favicon.ico`,
   `robots.txt` and `cv.pdf` are the exceptions — the first two are conventions and

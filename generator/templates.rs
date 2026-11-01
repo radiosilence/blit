@@ -45,6 +45,8 @@ macro_rules! page {
             pub locale: &'a str,
             pub dir: &'a str,
             pub canonical_url: String,
+            /// Whether to name each locale's copy as an alternate of this one.
+            pub alternates: bool,
             pub urls: &'a Urls,
             pub locale_links: &'a [LocaleLink],
             $(pub $field: $ty,)*

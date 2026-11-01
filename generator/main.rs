@@ -81,7 +81,13 @@ fn main() -> Result<()> {
                 })
                 .collect();
 
-            let canonical_url = format!("{ORIGIN}{path}");
+            // An untranslated page has one canonical copy, the source locale's.
+            let canonical = if page.translated {
+                path.clone()
+            } else {
+                url(SOURCE, page.slug)
+            };
+            let canonical_url = format!("{ORIGIN}{canonical}");
 
             let html = match page.template {
                 "index" => Index {
@@ -89,6 +95,7 @@ fn main() -> Result<()> {
                     locale: locale.code,
                     dir,
                     canonical_url,
+                    alternates: page.translated,
                     urls: &urls,
                     locale_links: &locale_links,
                 }
@@ -98,6 +105,7 @@ fn main() -> Result<()> {
                     locale: locale.code,
                     dir,
                     canonical_url,
+                    alternates: page.translated,
                     urls: &urls,
                     locale_links: &locale_links,
                     cv: &cv,
@@ -210,6 +218,8 @@ fn prune(dist: &Path, keep: &BTreeSet<PathBuf>) -> Result<()> {
 
 /// A link that misses is a routing bug; an `src` that misses is an asset written by
 /// hand rather than through `asset()`. Both would ship as a 404 nobody clicks.
+/// `content` attributes are read too, for og:url and og:image, and an absolute URL
+/// on ORIGIN counts as the path after it, as the canonical and alternate links are.
 fn check_references(
     dist: &Path,
     pages: &BTreeSet<PathBuf>,
@@ -220,9 +230,8 @@ fn check_references(
     for page in pages {
         let html = fs::read_to_string(page)?;
 
-        // `content` for og:url and og:image, absolute URLs on this origin like the
-        // canonical and alternate links.
-        for attr in ["href=\"", "src=\"", "content=\""] {
+        // A space before `content`, so `data-content` is not read as a reference.
+        for attr in ["href=\"", "src=\"", " content=\""] {
             for part in html.split(attr).skip(1) {
                 let Some(value) = part.split('"').next() else {
                     continue;
