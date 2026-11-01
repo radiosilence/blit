@@ -71,10 +71,9 @@
 
 // One thing made, for a list item.
 #let project(name: none, url: none, lang: none, stars: none, source: none, body) = {
-  let count = stars
   let meta = (
     lang,
-    if count != none { stars-of(count) },
+    if stars != none { stars-of(stars) },
     if source != none { link(source)[source] },
   ).filter(it => it != none)
   strong(if url == none { name } else { link(url, name) })
@@ -191,8 +190,14 @@
 }
 
 #let cv(name: none, role: none, email: none, github: none, location: none, keywords: (), body) = {
-  // Keyword lists are comma-separated, so a parenthetical would split mid-entry.
-  let keywords = keywords.map(it => it.split(" (").first())
+  // Keyword lists are comma-separated, so "AWS (CDK, Lambda)" becomes "AWS",
+  // "CDK", "Lambda" rather than splitting mid-entry.
+  let keywords = keywords
+    .map(it => {
+      let (name, ..inner) = it.split(" (")
+      if inner == () { (name,) } else { (name, ..inner.join(" (").trim(")", at: end).split(", ")) }
+    })
+    .flatten()
   assert(keywords.all(it => not it.contains(",")), message: "cv: a keyword contains a comma")
   set document(title: name + " – CV", author: name, keywords: keywords, date: none)
   set text(lang: "en", region: "gb")

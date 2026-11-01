@@ -10,5 +10,5 @@
 unmaintained = "workspace"
 ignore = [
   { id = "RUSTSEC-2026-0194", reason = "quick-xml 0.38, reached through typst -> hayagriva -> citationberg: quadratic time on hostile XML. CvWorld in generator/cv.rs reads only files under src/, so the only XML typst can parse is what ships in this repository. Remove once typst moves to quick-xml 0.41." },
-  { id = "RUSTSEC-2026-0195", reason = "quick-xml 0.38, as RUSTSEC-2026-0194: memory exhaustion from hostile namespace declarations, in XML that CvWorld::file never lets in." },
+  { id = "RUSTSEC-2026-0195", reason = "quick-xml 0.38, as RUSTSEC-2026-0194: memory exhaustion from hostile namespace declarations, in XML that only this repository's src/ could supply." },
 ]
