@@ -1,0 +1,14 @@
+# `just audit` checks the lockfile against the RustSec advisory database. Only
+# advisories are checked; licences and bans are not policies this site has.
+#
+# The CI job and the weekly scheduled run both read this file, so an ignore added
+# here applies to both. Each one says why the advisory does not reach this build.
+[advisories]
+# Unmaintained crates are reported when a workspace crate depends on them
+# directly. One pulled in by a dependency is that dependency's to replace, so it is
+# not reported; a vulnerability in it still is.
+unmaintained = "workspace"
+ignore = [
+  { id = "RUSTSEC-2026-0194", reason = "quick-xml 0.38, reached through typst -> hayagriva -> citationberg: quadratic time on hostile XML. CvWorld::file in generator/pdf.rs serves logo.png and nothing else, so the only XML typst can parse is what ships inside it. Remove once typst moves to quick-xml 0.41." },
+  { id = "RUSTSEC-2026-0195", reason = "quick-xml 0.38, as RUSTSEC-2026-0194: memory exhaustion from hostile namespace declarations, in XML that CvWorld::file never lets in." },
+]

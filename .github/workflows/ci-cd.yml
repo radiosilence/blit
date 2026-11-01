@@ -46,6 +46,7 @@ jobs:
       rust: ${{ steps.filter.outputs.rust }}
       site: ${{ steps.filter.outputs.site }}
       docker: ${{ steps.filter.outputs.docker }}
+      deps: ${{ steps.filter.outputs.deps }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -70,7 +71,7 @@ jobs:
         # command rather than an answer, so every question is asked in a
         # condition.
         run: |
-          rust=true site=true docker=true
+          rust=true site=true docker=true deps=true
           base=HEAD^1
           if [ "$EVENT" = "push" ]; then
             base=
@@ -92,6 +93,9 @@ jobs:
             # What cargo compiles, Askama's templates included, and the recipes
             # and toolchain that check it.
             touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            # What the advisory audit reads, and the recipe and tool that run it.
+            # Advisories that land without a change are caught by audit.yml.
+            touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false
             # Everything `just build` reads to write dist/.
             touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^justfile$|^mise\.toml$|^\.github/' || site=false
             # The image is dist/ on nano-web. A pull request builds it only when
@@ -110,6 +114,7 @@ jobs:
             echo "rust=$rust"
             echo "site=$site"
             echo "docker=$docker"
+            echo "deps=$deps"
           } | tee -a "$GITHUB_OUTPUT"
 
   # Clippy, formatting and the tests, on the debug profile the tests use.
@@ -133,6 +138,11 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
           cache-on-failure: true
       - run: just lint fmt-check test
+
+  audit:
+    needs: changes
+    if: needs.changes.outputs.deps == 'true'
+    uses: ./.github/workflows/audit.yml
 
   # CHANGELOG.md is generated from changelog.d/. A pull request adds fragments
   # without regenerating it, so only its fragments are checked; a commit that
@@ -245,7 +255,7 @@ jobs:
     name: Checks
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [changes, rust, changelog, actionlint, site, container]
+    needs: [changes, rust, audit, changelog, actionlint, site, container]
     if: always()
     steps:
       - env:
