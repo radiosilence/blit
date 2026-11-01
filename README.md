@@ -7,7 +7,7 @@ The browser gets HTML, CSS and a font. No JavaScript at all.
 
 ## Why there's no framework
 
-The site is two pages, seven translated strings and a markdown CV. Its only piece of
+The site is two pages, seven translated strings and a CV written in Typst. Its only piece of
 interactivity is the language picker, so there was nothing for a client-side
 framework to do.
 
@@ -41,10 +41,9 @@ that changes about as often as a language renames itself.
   compile time — a field a template names but the struct lacks fails `cargo build`
 - `crates/askama_gettext` handles the messages: `__`/`__p`/`__n` in the template,
   extraction through Askama's own parser, plural selection from CLDR
-- [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) renders the CV,
-  passing through the inline HTML it already contained
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
-- [Typst](https://typst.app), as a library, typesets the same CV into `/cv.pdf`
+- [Typst](https://typst.app), as a library, typesets the CV into both `/cv` and
+  `/cv.pdf`
 - Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, just,
   watchexec, tailwind, gh. [nano-web](https://github.com/radiosilence/nano-web) serves
   `dist/` for `just dev` and is yours to install
@@ -152,25 +151,42 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## The CV
 
-`src/content/cv.md` is the whole CV. Edit it and `just build` writes both `/cv` and
-`/cv.pdf` from it; nothing else needs touching. The PDF is typeset by Typst:
-`generator/pdf.rs` translates the Markdown into Typst markup, `src/templates/cv.typ`
-decides how it looks, and the fonts come from `src/fonts/`. It is a tagged PDF/UA-1
-document in one column, so an applicant tracking system reads it in order.
+`src/content/cv.typ` is the whole CV. Edit it and `just build` writes both `/cv` and
+`/cv.pdf` from it. `generator/cv.rs` compiles it twice in-process: as pages for a
+tagged PDF/UA-1 document in one column, so an applicant tracking system reads it in
+order, and as HTML whose `<body>` becomes the page's article. One source means the
+two cannot drift apart.
 
-The Markdown it understands, and what the PDF makes of it:
+The content says what each piece is and `src/templates/cv.typ` decides how it looks,
+branching on `target()`:
 
-- The `#` heading is the name, and the two paragraphs under it are the title and the
-  contact lines. Together they are the masthead, beside a logo sized to match them.
-- `##` is a section, `###` a role. A `<small>` inside a `###` is that role's dates,
-  set at the right margin; anywhere else it is small grey text.
-- Paragraphs, lists (nested too), bold, italics, links and `code`, plus the inline
-  HTML `<br/>`, `<small>`, `<em>` and `<strong>`.
+- `cv.with(..)` takes the name, title and contact details, which become the
+  masthead: beside a logo sized to match on paper, plain on the page.
+- `=` is a section. `job(..)` is a role, taking its dates as data (`from: 2025,
+  to: none` reads "2025–Present") and its key skills as an array. A role given a
+  `label` can be linked to, so the Selected Work leads jump to the role they
+  summarise in both the PDF and the page.
+- `project(..)` is an open source entry; `stars: 240` reads "240+★" on the page and
+  "240+ stars" on paper, where Geist Mono has no star.
+- Skills are a terms list, and the PDF's keywords come from the same arrays.
 
-Anything else fails the build with a message saying what, rather than vanishing from
-the PDF: an image, table, code block or blockquote, any other HTML tag, a `#` heading
-without its two paragraphs, or a character Geist Mono can't draw (PDF/UA refuses to
-write one). `★` is the one character already handled; it reads as "stars".
+Any warning from either compile fails the build, because each one is content that
+one target dropped or set wrongly: an element HTML export ignores, a font that
+isn't there. Typst's notice that HTML export is experimental is the one exception.
+The page's article must also carry no inline style, embedded file or inline SVG,
+since these would bypass the stylesheet or the asset pipeline, or draw text that
+can't be selected.
+
+The world is rooted at `src/` and reads no system fonts and no packages, so the CLI
+and an editor preview compile exactly what the build does:
+
+```sh
+typst compile --root src --font-path src/fonts --ignore-system-fonts src/content/cv.typ
+```
+
+For tinymist, set `tinymist.rootPath` to `src`, `tinymist.fontPaths` to
+`["src/fonts"]` and `tinymist.systemFonts` to `false`. Anything written with `html.*`
+sits behind `target()`, so the paged preview needs no HTML feature enabled.
 
 ## Adding things
 
@@ -218,12 +234,12 @@ back to the local equivalent.
 diffs the change (a pull request against its base, a push against the last main
 commit whose run passed) and sets one flag per domain:
 
-| Domain   | Paths                                                                                        | Job             |
-| -------- | -------------------------------------------------------------------------------------------- | --------------- |
-| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml` | Rust            |
-| `site`   | the above and the rest of `src/`                                                             | Site            |
-| `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`    | Container image |
-| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`                       | Audit           |
+| Domain   | Paths                                                                                                                                             | Job             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `rust`   | `generator/`, `crates/`, `src/templates/`, `src/content/`, `src/fonts/`, `src/static/logo.png`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml` | Rust            |
+| `site`   | the above and the rest of `src/`                                                                                                                  | Site            |
+| `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`                                                         | Container image |
+| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`                                                                            | Audit           |
 
 Markdown outside `src/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is
