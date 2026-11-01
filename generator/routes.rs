@@ -7,16 +7,22 @@ use crate::config::SOURCE;
 pub struct Page {
     pub slug: &'static str,
     pub template: &'static str,
+    /// Whether the page's main content is in each locale. The CV is written once,
+    /// in English, and only the text around it is translated, which a search
+    /// engine counts as the same page rather than a translation of it.
+    pub translated: bool,
 }
 
 pub const PAGES: &[Page] = &[
     Page {
         slug: "",
         template: "index",
+        translated: true,
     },
     Page {
         slug: "cv",
         template: "cv",
+        translated: false,
     },
 ];
 

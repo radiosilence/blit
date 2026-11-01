@@ -30,6 +30,22 @@
     <meta property="og:url" content="{{ canonical_url }}" />
     <meta property="og:image" content="{{ crate::config::ORIGIN }}{{ logo }}" />
 
+    {#
+      Every locale's copy of this page, so a search engine serves each reader their
+      own and treats them as one page rather than as duplicates. x-default is the
+      source locale, for a reader whose language none of them matches. A page whose
+      content is not translated names none: its canonical is the source locale's.
+    #}
+    <link rel="canonical" href="{{ canonical_url }}" />
+    {%- if alternates %}
+    {%- for option in locale_links %}
+    <link rel="alternate" hreflang="{{ option.code }}" href="{{ crate::config::ORIGIN }}{{ option.href }}" />
+    {%- if option.code == crate::config::SOURCE %}
+    <link rel="alternate" hreflang="x-default" href="{{ crate::config::ORIGIN }}{{ option.href }}" />
+    {%- endif %}
+    {%- endfor %}
+    {%- endif %}
+
     <link rel="stylesheet" href="{{ stylesheet }}" />
     <link rel="preload" href="{{ font }}" as="font" type="font/woff2" crossorigin />
     <link rel="apple-touch-icon" sizes="180x180" href="{{ touch_icon }}" />
