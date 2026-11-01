@@ -220,8 +220,8 @@ fn check_references(
     for page in pages {
         let html = fs::read_to_string(page)?;
 
-        // `content` for the Open Graph image, which is an absolute URL on this
-        // origin like the canonical and alternate links.
+        // `content` for og:url and og:image, absolute URLs on this origin like the
+        // canonical and alternate links.
         for attr in ["href=\"", "src=\"", "content=\""] {
             for part in html.split(attr).skip(1) {
                 let Some(value) = part.split('"').next() else {
