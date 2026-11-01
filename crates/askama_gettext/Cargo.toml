@@ -2,7 +2,6 @@
 name = "askama_gettext"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
 description = "gettext for Askama templates: __/__p/__n in the template, extraction via Askama's own parser, CLDR plural selection"
 keywords = ["askama", "gettext", "i18n", "l10n", "template"]
 categories = ["internationalization", "template-engine"]
