@@ -52,5 +52,5 @@ macro_rules! round_trip {
 round_trip!(plain, r#"{{ __("plain") }}"#);
 round_trip!(
     escapes,
-    r#"{{ __("a\\nb") }}{{ __("tab\there") }}{{ __("it\'s \"so\"") }}{{ __("nl\nnul\0") }}{{ __("\u{e9}\x41\r") }}"#
+    r#"{{ __("a\\nb") }}{{ __("tab\there") }}{{ __("it\'s \"so\"") }}{{ __("nl\n") }}{{ __("\u{e9}\x41\r") }}"#
 );

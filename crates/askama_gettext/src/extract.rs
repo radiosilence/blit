@@ -47,7 +47,7 @@ fn shape(name: &str) -> Option<(bool, bool)> {
 ///
 /// # Errors
 ///
-/// Fails if the file cannot be read or Askama cannot parse it.
+/// Fails if the file cannot be read, or for any reason [`from_str`] gives.
 pub fn from_file(path: &Path, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
     let source = std::fs::read_to_string(path)?;
     from_str(&source, &path.to_string_lossy(), syntax)
@@ -165,24 +165,21 @@ impl Walker<'_> {
     fn expr(&mut self, expr: &Expression<'_>) -> Result<()> {
         match &***expr {
             Expr::Call(call) => {
-                match &**call.path {
+                // `self.__(…)` and `Self::__(…)` render the same message, but one
+                // spelling is what extraction recognises.
+                let qualified = match &**call.path {
                     Expr::Var(name) => {
                         if let Some(shape) = shape(name) {
                             self.message(expr, name, shape, &call.args)?;
                         }
+                        None
                     }
-                    // `self.__(…)` and `Self::__(…)` render the same message, but
-                    // one spelling is what extraction recognises.
-                    Expr::AssociatedItem(_, item) if shape(&item.name).is_some() => {
-                        return Err(self.error(expr, &format!("call `{}` unqualified", *item.name)));
-                    }
-                    Expr::Path(path)
-                        if path.last().is_some_and(|last| shape(&last.name).is_some()) =>
-                    {
-                        let name = path.last().map_or("", |last| *last.name);
-                        return Err(self.error(expr, &format!("call `{name}` unqualified")));
-                    }
-                    _ => {}
+                    Expr::AssociatedItem(_, item) => Some(*item.name),
+                    Expr::Path(path) => path.last().map(|last| *last.name),
+                    _ => None,
+                };
+                if let Some(name) = qualified.filter(|name| shape(name).is_some()) {
+                    return Err(self.error(expr, &format!("call `{name}` unqualified")));
                 }
                 // The receiver as well as the arguments: `__("x").link(...)` parses
                 // as a call whose path is a method access on the call wanted here.
@@ -201,6 +198,15 @@ impl Walker<'_> {
                 self.exprs(&value.base)
             }
             Expr::LetCond(test) => self.expr(&test.expr),
+            // Askama hands a macro's arguments to rustc as unparsed tokens, so a
+            // call inside one renders but cannot be walked.
+            Expr::RustMacro(_, tokens) => match tokens
+                .split(|c: char| !(c.is_alphanumeric() || c == '_'))
+                .find(|word| shape(word).is_some())
+            {
+                Some(name) => Err(self.error(expr, &format!("call `{name}` outside a macro"))),
+                None => Ok(()),
+            },
             Expr::Group(inner)
             | Expr::Unary(_, inner)
             | Expr::Try(inner)
@@ -218,7 +224,6 @@ impl Walker<'_> {
             | Expr::CharLit(_)
             | Expr::Var(_)
             | Expr::Path(_)
-            | Expr::RustMacro(..)
             | Expr::FilterSource
             | Expr::IsDefined(_)
             | Expr::IsNotDefined(_)
@@ -264,6 +269,23 @@ impl Walker<'_> {
         let context = has_context.then(|| take("context")).transpose()?;
         let id = take("English")?;
         let plural = has_plural.then(|| take("plural")).transpose()?;
+
+        // A .po string escapes only \n, \r, \t, \\ and \". Any other control
+        // character would be written raw, which gettext tools reject, and \x04 is
+        // the separator gettext keys a context with.
+        let unwritable = [context.as_deref(), Some(id.as_str()), plural.as_deref()]
+            .into_iter()
+            .flatten()
+            .any(|text| {
+                text.chars()
+                    .any(|c| c.is_control() && !matches!(c, '\n' | '\r' | '\t'))
+            });
+        if unwritable {
+            return Err(self.error(
+                call,
+                &format!("`{name}` has a control character a .po file cannot hold"),
+            ));
+        }
 
         self.found.push(Message {
             id,
@@ -416,6 +438,23 @@ mod tests {
     fn a_qualified_call_is_an_error_rather_than_missed() {
         assert!(fails(r#"{{ self.__("x") }}"#).contains("unqualified"));
         assert!(fails(r#"{{ Self::__p("c", "x") }}"#).contains("unqualified"));
+    }
+
+    #[test]
+    fn a_call_inside_a_macro_is_an_error_rather_than_missed() {
+        assert!(fails(r#"{{ format!("{} :", __("github")) }}"#).contains("macro"));
+        // Only the bare names: a longer identifier is not one of them.
+        assert_eq!(
+            extract(r#"{{ format!("{}", __hello) }}"#),
+            Vec::<Message>::new()
+        );
+    }
+
+    #[test]
+    fn a_control_character_a_po_file_cannot_hold_is_an_error() {
+        assert!(fails(r#"{{ __("a\0b") }}"#).contains("control character"));
+        assert!(fails(r#"{{ __p("c\x04", "b") }}"#).contains("control character"));
+        assert_eq!(extract(r#"{{ __("a\tb") }}"#)[0].id, "a\tb");
     }
 
     #[test]

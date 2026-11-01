@@ -38,9 +38,12 @@
 //!
 //! [`extract`] reads those calls back out using Askama's own parser, so it
 //! recognises no template syntax of its own and cannot drift from what Askama
-//! accepts. [`merge`] writes them into `.po` files, keeping existing translations,
-//! comments and flags, and deleting what has left the templates rather than
-//! flagging it — so `fuzzy` keeps meaning only what a translator meant by it.
+//! accepts. Every argument naming the English, its context or its plural must be
+//! a string literal in a bare `__`-family call, so the msgid is exactly what the
+//! template looks up; anything else fails with its line. [`merge`] writes them
+//! into `.po` files, keeping existing translations, comments and flags, and
+//! deleting what has left the templates rather than flagging it — so `fuzzy`
+//! keeps meaning only what a translator meant by it.
 //!
 //! What to then do with one is [`Fuzzy`], which the caller chooses: `msgfmt` skips
 //! them, but where a msgid is the English rather than a key both answers render a
