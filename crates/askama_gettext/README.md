@@ -65,24 +65,32 @@ writes them into `.po` files, keeping translations, translator comments, flags a
 header metadata — the templates are authoritative only about which messages exist
 and where they are written.
 
+Every argument that names the English, its context or its plural has to be a string
+literal, and the call has to be the bare name (`__(…)`, not `self.__(…)`): that is
+what lets the msgid be exactly the string the template looks up. Anything else fails
+extraction with its line, rather than being skipped or filed under a key nothing
+reads.
+
 ```rust
 let messages = extract::from_file(&path, &Syntax::default())?;
 let summary = merge::into_catalog(&catalogue, "fr-FR", &messages)?;
 ```
 
-A message that leaves the templates is flagged fuzzy rather than deleted, so its
-translation is still there if the string comes back.
+A message that leaves the templates is first offered to one that has arrived: if the
+two are the same sentence reworded, the translation moves to the new id and is flagged
+fuzzy. One that finds nowhere to go is deleted, and named in the merge's summary.
 
 ## Plurals
 
 Which `msgstr[n]` a count selects comes from CLDR via `icu_plurals`, not from
 evaluating the catalogue's `Plural-Forms` expression. CLDR is kept current in a way
-a header copied between projects is not, and nothing here has to implement a C
-expression parser.
+a header copied between projects is not.
 
-The header is still checked. It decides how many forms a translator is offered;
-CLDR decides which one a count picks. When they disagree, loading fails rather than
-writing to a slot nobody will translate:
+The header is still checked, because it is what a translator's tool numbers the
+boxes by. Its `nplurals` must match the forms CLDR gives, and its `plural=` expression
+is evaluated against CLDR over a range of counts and must pick the same form for each.
+When either disagrees, loading fails rather than writing to a slot nobody will
+translate:
 
 ```
 ar-EG: catalogue declares nplurals=2, CLDR gives 6 ([Zero, One, Two, Few, Many, Other])
