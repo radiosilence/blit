@@ -217,10 +217,10 @@ commit whose run passed) and sets one flag per domain:
 
 | Domain   | Paths                                                                                              | Job             |
 | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
-| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml`     | Rust            |
+| `rust`   | `generator/`, `crates/`, `src/templates/`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml`, `.cargo/` | Rust |
 | `site`   | the above and the rest of `src/`                                                                   | Site            |
 | `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`          | Container image |
-| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`                              | Audit           |
+| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`, `.cargo/`                   | Audit           |
 
 Markdown outside `src/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is

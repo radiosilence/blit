@@ -92,12 +92,12 @@ jobs:
             relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//')
             # What cargo compiles, Askama's templates included, and the recipes
             # and toolchain that check it.
-            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^justfile$|^mise\.toml$|^\.cargo/|^\.github/' || rust=false
             # What the advisory audit reads, and the recipe and tool that run it.
             # Advisories that land without a change are caught by audit.yml.
-            touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false
+            touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.cargo/|^\.github/' || deps=false
             # Everything `just build` reads to write dist/.
-            touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^justfile$|^mise\.toml$|^\.github/' || site=false
+            touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^justfile$|^mise\.toml$|^\.cargo/|^\.github/' || site=false
             # The image is dist/ on nano-web. A pull request builds it only when
             # the recipe changed (the Dockerfile, or the recipes and tools that
             # run it), since the site job already proves dist/ builds; main
@@ -149,8 +149,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        # rust as well: cargo-deny reads the lockfile through `cargo metadata`,
+        # which should be the cargo mise.toml pins rather than the runner's.
         with:
-          install_args: just cargo-deny
+          install_args: just rust cargo-deny
       - run: just audit
 
   # CHANGELOG.md is generated from changelog.d/. A pull request adds fragments
