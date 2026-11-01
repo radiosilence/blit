@@ -3,6 +3,6 @@
 
 pub mod assets;
 pub mod config;
-pub mod pdf;
+pub mod cv;
 pub mod routes;
 pub mod templates;

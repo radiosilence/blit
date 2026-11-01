@@ -32,11 +32,11 @@ anyhow = "1"
 icu_locale_core = "2"
 icu_plurals = "2"
 polib = "0.3"
-pulldown-cmark = "0.13"
 sha2 = "0.11"
 # Renders /cv.pdf in-process, so generate still writes all of dist/ and the build
 # needs no second tool to have run first.
 typst = "0.15"
 typst-layout = "0.15"
+typst-html = "0.15"
 typst-pdf = "0.15"
 walkdir = "2"

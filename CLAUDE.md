@@ -25,12 +25,13 @@ framework and no bundler — the browser receives HTML, CSS and a font, nothing 
 - **Templates**: [Askama](https://askama.rs) over `src/templates/*.html`, bound to a
   struct at compile time
 - **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
-- **Content**: pulldown-cmark renders `src/content/cv.md`
+- **Content**: `src/content/cv.typ`, the CV in Typst
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
-- **PDF**: `/cv.pdf` is typeset in-process by Typst from the same `cv.md`
-  (`generator/pdf.rs` translates the Markdown, `src/templates/cv.typ` styles it, fonts
-  from `src/fonts/`). It is PDF/UA-1, so a glyph the font lacks or broken structure
-  fails the build. Unhashed URL, because it gets pasted into application forms
+- **CV**: `generator/cv.rs` compiles `src/content/cv.typ` twice with Typst, as pages
+  for `/cv.pdf` and as HTML for the `/cv` article; `src/templates/cv.typ` styles
+  both, branching on `target()`, with fonts from `src/fonts/`. The PDF is PDF/UA-1,
+  and any Typst warning from either compile fails the build. Unhashed URL, because
+  it gets pasted into application forms
 - **Toolchain**: mise (`mise.toml`) — rust, just, watchexec, tailwind, gh. nano-web
   is not pinned there: it serves `dist/` for `just dev`, and nothing the build does needs a
   server
