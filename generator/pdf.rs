@@ -24,7 +24,12 @@ use typst_pdf::{PdfOptions, PdfStandard, PdfStandards};
 
 /// Typesets `markdown` with `template`, which must export `cv` and the helpers
 /// the markup calls (`small`, `dates`), and can read the logo as `logo.png`.
-pub fn render(markdown: &str, template: &str, fonts: &[Vec<u8>], logo: &[u8]) -> Result<Vec<u8>> {
+pub fn render(
+    markdown: &str,
+    template: &str,
+    fonts: Vec<Vec<u8>>,
+    logo: Vec<u8>,
+) -> Result<Vec<u8>> {
     let (name, body) = markup(markdown)?;
 
     let main = format!(
@@ -62,6 +67,9 @@ fn markup(markdown: &str) -> Result<(String, String)> {
     if out.masthead > 0 {
         bail!("cv.md: the `#` heading needs a title and a contact paragraph under it");
     }
+    if let Some(open) = out.html.last() {
+        bail!("cv.md: <{open}> is never closed");
+    }
     Ok((out.name, out.body))
 }
 
@@ -74,8 +82,12 @@ struct Markup {
     /// logo with the two paragraphs under it, the title and the contact lines,
     /// rather than as loose paragraphs in the flow.
     masthead: usize,
-    /// What closes each open HTML element, innermost last.
+    /// The HTML elements open, innermost last.
     html: Vec<&'static str>,
+    /// How many HTML elements were open as each Markdown element began, innermost
+    /// last. An HTML element has to close inside the Markdown element it opened
+    /// in, or the Typst brackets the two emit would cross.
+    depths: Vec<usize>,
     /// An HTML block arrives a line at a time and is read once it is whole, so
     /// the line breaks inside it stay spaces between words.
     block: Option<String>,
@@ -106,6 +118,7 @@ impl Markup {
     }
 
     fn start(&mut self, tag: Tag) -> Result<()> {
+        self.depths.push(self.html.len());
         match tag {
             Tag::Paragraph if self.masthead > 0 => self.body.push('['),
             Tag::Heading { .. } | Tag::List(_) | Tag::HtmlBlock | Tag::BlockQuote(_)
@@ -170,6 +183,9 @@ impl Markup {
             TagEnd::Item => self.body.push_str("],"),
             _ => self.body.push(']'),
         }
+        if let Some(open) = self.html.get(self.depths.pop().unwrap_or(0)) {
+            bail!("cv.md: <{open}> is still open where the Markdown element around it ends");
+        }
         Ok(())
     }
 
@@ -188,47 +204,142 @@ impl Markup {
 
     /// The few elements cv.md writes inline. Anything else fails the build rather
     /// than leaking a tag into the text.
+    ///
+    /// Whitespace collapses as a browser collapses it: a run of ASCII whitespace
+    /// is one space, written only between two words, wherever the tags between
+    /// them fall. So it goes at either end of `raw` and beside a line break.
     fn html(&mut self, raw: &str) -> Result<()> {
         let mut rest = raw;
-        while let Some(open) = rest.find('<') {
-            self.text(
-                &rest[..open]
-                    .split_whitespace()
-                    .collect::<Vec<_>>()
-                    .join(" "),
-            );
+        // A word has been written since the start or the last line break.
+        let mut wrote = false;
+        // Whitespace seen since that word, owed before the next one.
+        let mut space = false;
+
+        loop {
+            let open = rest.find('<').unwrap_or(rest.len());
+            for (i, word) in rest[..open]
+                .split(|c: char| c.is_ascii_whitespace())
+                .enumerate()
+            {
+                space |= i > 0;
+                if word.is_empty() {
+                    continue;
+                }
+                if space && wrote {
+                    self.body.push(' ');
+                }
+                self.text(&entities(word)?);
+                wrote = true;
+                space = false;
+            }
+            if open == rest.len() {
+                return Ok(());
+            }
+
             let close = rest[open..]
                 .find('>')
                 .ok_or_else(|| anyhow!("cv.md: unterminated tag in {raw:?}"))?;
-            let tag = rest[open + 1..open + close].trim_end_matches('/').trim();
+            let tag = rest[open + 1..open + close]
+                .trim_end_matches('/')
+                .trim()
+                .to_ascii_lowercase();
             rest = &rest[open + close + 1..];
 
-            match tag {
-                "br" => self.body.push_str("#linebreak()"),
+            // A space before an opening tag is written outside the element, as
+            // the source has it.
+            if space && wrote && !tag.starts_with('/') && tag != "br" {
+                self.body.push(' ');
+                space = false;
+            }
+
+            match tag.as_str() {
+                "br" => {
+                    self.body.push_str("#linebreak()");
+                    wrote = false;
+                    space = false;
+                }
                 // A date in a heading is pushed to the right margin, on the same
                 // line as the role: where a parser looks for it.
-                "small" if self.heading.is_some() => self.open("#dates[", "]"),
-                "small" => self.open("#small[", "]"),
-                "em" => self.open("#emph[", "]"),
-                "strong" => self.open("#strong[", "]"),
+                "small" if self.heading.is_some() => self.open("small", "#dates["),
+                "small" => self.open("small", "#small["),
+                "em" => self.open("em", "#emph["),
+                "strong" => self.open("strong", "#strong["),
                 _ if tag.starts_with('/') => {
-                    let close = self
-                        .html
-                        .pop()
-                        .ok_or_else(|| anyhow!("cv.md: <{tag}> closes nothing"))?;
-                    self.body.push_str(close);
+                    let name = &tag[1..];
+                    if self.html.len() <= self.depths.last().copied().unwrap_or(0) {
+                        bail!("cv.md: <{tag}> closes nothing opened inside its Markdown element");
+                    }
+                    match self.html.pop() {
+                        Some(open) if open == name => self.body.push(']'),
+                        Some(open) => bail!("cv.md: <{tag}> closes <{open}>"),
+                        None => bail!("cv.md: <{tag}> closes nothing"),
+                    }
                 }
                 _ => bail!("cv.md: the PDF has no rendering for <{tag}>"),
             }
         }
-        self.text(rest.trim());
-        Ok(())
     }
 
-    fn open(&mut self, open: &str, close: &'static str) {
-        self.body.push_str(open);
-        self.html.push(close);
+    fn open(&mut self, name: &'static str, markup: &str) {
+        self.body.push_str(markup);
+        self.html.push(name);
     }
+}
+
+/// Character references in raw HTML, which pulldown-cmark leaves alone there. The
+/// page's browser decodes them, so the PDF has to as well; one this does not know
+/// fails the build rather than reaching the PDF as `&name;`.
+fn entities(text: &str) -> Result<std::borrow::Cow<'_, str>> {
+    if !text.contains('&') {
+        return Ok(text.into());
+    }
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    while let Some(at) = rest.find('&') {
+        out.push_str(&rest[..at]);
+        rest = &rest[at..];
+        let name = rest[1..]
+            .find(';')
+            .map(|end| &rest[1..=end])
+            .filter(|name| {
+                !name.is_empty() && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '#')
+            });
+        let Some(name) = name else {
+            // A bare ampersand, as in "beauty & wellness".
+            out.push('&');
+            rest = &rest[1..];
+            continue;
+        };
+        let decoded = match name {
+            "amp" => '&',
+            "lt" => '<',
+            "gt" => '>',
+            "quot" => '"',
+            "apos" => '\'',
+            "nbsp" => '\u{a0}',
+            _ => name
+                .strip_prefix("#x")
+                .or_else(|| name.strip_prefix("#X"))
+                .map(|hex| u32::from_str_radix(hex, 16))
+                .or_else(|| name.strip_prefix('#').map(str::parse))
+                .and_then(Result::ok)
+                .and_then(char::from_u32)
+                // A browser maps some of these to other characters; the PDF would
+                // get an invisible control rather than what the page shows.
+                .filter(|c| !c.is_control())
+                .ok_or_else(|| {
+                    anyhow!(
+                        "cv.md: &{name}; inside an HTML block, where the PDF knows only \
+                         &amp; &lt; &gt; &quot; &apos; &nbsp; and numeric references: \
+                         write the character itself"
+                    )
+                })?,
+        };
+        out.push(decoded);
+        rest = &rest[name.len() + 2..];
+    }
+    out.push_str(rest);
+    Ok(out.into())
 }
 
 /// A Typst string literal.
@@ -248,15 +359,15 @@ struct CvWorld {
 }
 
 impl CvWorld {
-    fn new(main: String, template: String, fonts: &[Vec<u8>], logo: &[u8]) -> Result<Self> {
+    fn new(main: String, template: String, fonts: Vec<Vec<u8>>, logo: Vec<u8>) -> Result<Self> {
         let id = |path: &str| -> Result<FileId> {
             let vpath = VirtualPath::new(path).map_err(|e| anyhow!("{e:?}"))?;
             Ok(RootedPath::new(VirtualRoot::Project, vpath).intern())
         };
 
         let fonts: Vec<Font> = fonts
-            .iter()
-            .flat_map(|data| Font::iter(Bytes::new(data.clone())))
+            .into_iter()
+            .flat_map(|data| Font::iter(Bytes::new(data)))
             .collect();
 
         Ok(Self {
@@ -265,7 +376,7 @@ impl CvWorld {
             fonts,
             main: Source::new(id("/main.typ")?, main),
             template: Source::new(id("/cv.typ")?, template),
-            logo: (id("/logo.png")?, Bytes::new(logo.to_vec())),
+            logo: (id("/logo.png")?, Bytes::new(logo)),
         })
     }
 }
@@ -315,9 +426,13 @@ fn describe(world: &CvWorld, diagnostic: &SourceDiagnostic) -> String {
         && let Ok(source) = world.source(id)
         && let Some(range) = world.range(diagnostic.span)
     {
-        let line = source.text()[..range.start].lines().count();
+        let line = source
+            .lines()
+            .byte_to_line(range.start)
+            .map(|l| format!(":{}", l + 1))
+            .unwrap_or_default();
         let path = id.get().vpath().get_without_slash();
-        let _ = write!(out, " ({path}:{line}: {:?})", &source.text()[range]);
+        let _ = write!(out, " ({path}{line}: {:?})", &source.text()[range]);
     }
     for hint in &diagnostic.hints {
         let _ = write!(out, "\n  hint: {}", hint.v);
@@ -358,6 +473,64 @@ mod tests {
         let (_, body) = markup("# James\n\ntitle\n\nmail\n\nbody\n").unwrap();
         assert!(body.starts_with("#masthead([= James\n], [title], [mail])\n\nbody"));
         assert!(markup("# James\n\ntitle\n").is_err());
+    }
+
+    #[test]
+    fn spaces_between_words_and_tags_survive_an_html_block() {
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\na <em>b</em> c\n</small>\n").unwrap();
+        assert!(body.contains("#small[a #emph[b] c]"), "{body}");
+    }
+
+    #[test]
+    fn a_space_just_inside_an_element_still_separates_words() {
+        let (_, body) =
+            markup("# A\n\nt\n\nc\n\n<small>\n<em>a </em>b c<em> d</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[#emph[a] b c#emph[ d]]"), "{body}");
+    }
+
+    #[test]
+    fn a_non_breaking_space_is_not_collapsed() {
+        let (_, body) =
+            markup("# A\n\nt\n\nc\n\n<small>\n10\u{a0}km <em>\u{a0}</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[10\u{a0}km #emph[\u{a0}]]"), "{body}");
+    }
+
+    #[test]
+    fn tag_names_ignore_case() {
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<SMALL>x</Small>\n").unwrap();
+        assert!(body.contains("#small[x]"), "{body}");
+    }
+
+    #[test]
+    fn html_must_close_inside_the_markdown_element_it_opened_in() {
+        assert!(markup("# A\n\nt\n\nc\n\n*a <strong>b* c</strong>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n- <em>a\n- b</em>\n").is_err());
+    }
+
+    #[test]
+    fn whitespace_between_tags_on_their_own_lines_is_not_kept() {
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\n<em>b</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[#emph[b]]"), "{body}");
+    }
+
+    #[test]
+    fn a_closing_tag_must_close_what_is_open() {
+        assert!(markup("# A\n\nt\n\nc\n\n<small><em>x</small></em>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n<small>x\n").is_err());
+    }
+
+    #[test]
+    fn entities_in_html_are_decoded_and_unknown_ones_fail() {
+        // Raw HTML only: in a paragraph pulldown-cmark decodes them itself, and
+        // leaves an unknown one as text that the page shows as written too.
+        let (_, body) =
+            markup("# A\n\nt\n\nc\n\n<small>\na &amp; b &#233; & c\n</small>\n").unwrap();
+        assert!(body.contains("#small[a & b é & c]"), "{body}");
+        assert!(markup("# A\n\nt\n\nc\n\n<small>\n&bogus;\n</small>\n").is_err());
+        assert!(markup("# A\n\nt\n\nc\n\n<small>\n&#150;\n</small>\n").is_err());
+        // Not a reference at all, so it is text, as a browser shows it.
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\na &; b\n</small>\n").unwrap();
+        assert!(body.contains("#small[a &\\; b]"), "{body}");
     }
 
     #[test]
