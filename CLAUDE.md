@@ -66,9 +66,10 @@ Key decisions:
   content hash and records the reference. Writing the path by hand fails the build,
   because the reference check resolves `href` and `src` against what was written.
 - Hashing is not decoration. nano-web picks caching by MIME type alone, so CSS,
-  images and fonts are all served `immutable, max-age=1y`. `favicon.ico` and
-  `robots.txt` are the exceptions — their URLs are a convention, so they publish
-  unhashed and always.
+  images and fonts are all served `immutable, max-age=1y`. `favicon.ico`,
+  `robots.txt` and `cv.pdf` are the exceptions — the first two are conventions and
+  the CV's URL gets pasted into application forms, so they publish unhashed and
+  always.
 - `dist/` is written entirely by `generate`, which is what lets it delete anything
   that is not a page or a referenced asset.
 - The stylesheet and the manifest are derived rather than copied: both name other
