@@ -268,13 +268,15 @@ mod tests {
     fn a_warning_fails_the_build() {
         let root = root("warning", "#text(font: \"Nope\")[x]\n");
         let error = render(&root).err().unwrap().to_string();
+        let _ = fs::remove_dir_all(&root);
         assert!(error.contains("unknown font family"), "{error}");
     }
 
     #[test]
-    fn content_html_export_ignores_fails_the_build() {
+    fn what_html_export_ignores_fails_the_build() {
         let root = root("ignored", "#rotate(10deg)[x]\n");
         let error = render(&root).err().unwrap().to_string();
+        let _ = fs::remove_dir_all(&root);
         assert!(error.contains("ignored during HTML export"), "{error}");
     }
 
@@ -282,6 +284,7 @@ mod tests {
     fn packages_are_not_fetched() {
         let root = root("package", "#import \"@preview/anything:0.1.0\": *\n");
         let error = render(&root).err().unwrap().to_string();
+        let _ = fs::remove_dir_all(&root);
         assert!(error.contains("imports nothing from packages"), "{error}");
     }
 
@@ -299,5 +302,6 @@ mod tests {
     fn body_refuses_what_bypasses_the_stylesheet_or_the_assets() {
         assert!(body(r#"<body><span style="color: red">a</span></body>"#).is_err());
         assert!(body(r#"<body><img src="data:image/png;base64,AA"></body>"#).is_err());
+        assert!(body("<body><svg></svg></body>").is_err());
     }
 }

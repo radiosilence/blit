@@ -56,6 +56,7 @@
   skills: (),
   body,
 ) = {
+  assert(from != none or to == auto, message: "job: `to` without `from`")
   let head = heading(level: 2, [#role#if org != none [, #org]#if from != none { dates(span(from, to)) }])
   if label == none { head } else [#head#label]
   if about != none { par(small(about)) }
@@ -111,8 +112,10 @@
   })),
 )
 
+#let size = 8.6pt
+
 #let paper(body) = {
-  set text(font: mono, size: 8.6pt, fill: ink, hyphenate: false)
+  set text(font: mono, size: size, fill: ink, hyphenate: false)
   set par(leading: 0.8em, spacing: 1.25em, justify: false)
 
   set page(
@@ -144,13 +147,18 @@
   } else { it }
   show strong: set text(fill: rgb("#1a1a1a"))
   show emph: set text(fill: mid)
-  show raw: set text(font: mono, size: 8.6pt)
+  show raw: set text(font: mono, size: size)
 
   show title: it => block(
+    below: 6.45pt,
     text(size: 30pt, weight: "extralight", tracking: -0.02em, lower(it.body)),
   )
 
   show heading: set text(weight: "regular")
+  // Spacing below is in ems of these sizes, rather than of the sizes Typst scales
+  // each level to by default.
+  show heading.where(level: 1): set text(size: 1.2 * size)
+  show heading.where(level: 2): set text(size: size)
 
   // The title, then a hairline running out from it to the margin, starting in
   // brand red: one row, no space spent beside it.

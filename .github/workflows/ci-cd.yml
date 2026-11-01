@@ -90,9 +90,9 @@ jobs:
             echo "changes since $(git rev-parse --short "$base"):"
             printf '%s\n' "$files" | sed 's/^/  /'
             relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//')
-            # What cargo compiles, Askama's templates included, and the recipes
-            # and toolchain that check it.
-            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/templates/|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            # What cargo compiles, Askama's templates included, what its tests
+            # typeset, and the recipes and toolchain that check it.
+            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/(templates|content|fonts)/|^src/static/logo\.png$|^justfile$|^mise\.toml$|^\.github/' || rust=false
             # What the advisory audit reads, and the recipe and tool that run it.
             # Advisories that land without a change are caught by audit.yml.
             touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false

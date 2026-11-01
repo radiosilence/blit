@@ -27,7 +27,8 @@
   github: "radiosilence",
   location: [London or remote. I like working with people in person, as long as there's some
     flexibility.],
-  keywords: daily + strong-skills,
+  // Keyword lists are comma-separated, so a parenthetical would split mid-entry.
+  keywords: (daily + strong-skills).map(it => it.split(" (").first()),
 )
 
 Polyglot engineer. Twenty-five years writing code, twenty of them paid for, across frontend,
