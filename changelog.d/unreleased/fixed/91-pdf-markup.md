@@ -1,0 +1,1 @@
+- **The CV PDF reads its HTML as a browser does.** Spaces between a word and a tag in an HTML block are kept, a closing tag must close the element that is open and every element must be closed, and character references such as `&amp;` are decoded, with an unknown one failing the build. Typst errors point at the right line.
