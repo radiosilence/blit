@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 just dev          # Rebuild on change, serve on :3000 with nano-web
 just build        # css into .build/, then generate the site into dist/
 just check        # clippy, rustfmt, tests, actionlint and the changelog
-just ci           # Everything CI checks: check, then build
+just ci           # Everything CI checks: check, audit, then build
 just i18n-sync    # Extract messages from the templates into every catalogue
 just docker-build # Build the site, then the container image (PUSH=true to push)
 just clean        # Drop dist/, .build/ and target/

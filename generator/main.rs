@@ -47,8 +47,8 @@ fn main() -> Result<()> {
         blit::pdf::render(
             &source,
             &template,
-            &fonts,
-            &fs::read(root.join("src/static/logo.png"))?,
+            fonts,
+            fs::read(root.join("src/static/logo.png"))?,
         )?,
     );
 

@@ -1,0 +1,1 @@
+- **A value in a `__h` message can no longer become markup.** Tags are found in the translated text before `%{values}` are filled in, so a value that spells a registered tag is escaped like any other text, as the crate documents. A non-empty element written self-closing (`<cv/>`) is now text rather than an opening tag nothing closes.

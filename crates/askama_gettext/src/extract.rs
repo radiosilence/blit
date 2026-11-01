@@ -9,9 +9,7 @@
 use std::path::Path;
 
 use crate::error::{Error, Result};
-use askama_parser::node::{
-    BlockDef, FilterBlock, If, Let, LetValueOrBlock, Loop, Macro, Match, Node,
-};
+use askama_parser::node::{LetValueOrBlock, Node};
 use askama_parser::{Ast, Expr, Syntax, WithSpan};
 
 /// One `__`-family call found in a template.
@@ -49,7 +47,7 @@ fn shape(name: &str) -> Option<(bool, bool)> {
 ///
 /// # Errors
 ///
-/// Fails if the file cannot be read or Askama cannot parse it.
+/// Fails if the file cannot be read, or for any reason [`from_str`] gives.
 pub fn from_file(path: &Path, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
     let source = std::fs::read_to_string(path)?;
     from_str(&source, &path.to_string_lossy(), syntax)
@@ -59,18 +57,25 @@ pub fn from_file(path: &Path, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
 ///
 /// # Errors
 ///
-/// Fails if Askama cannot parse the source.
+/// Fails if Askama cannot parse the source, or if a `__`-family call passes
+/// anything but a string literal where the English, its context or its plural
+/// goes: the message could not be extracted under the key it is looked up by.
+/// That refuses gettext's marker pattern, `__(item.label)` with the English
+/// marked elsewhere, by design: the English lives in the template. A call written
+/// `self.__(…)` or `Self::__(…)` fails too, so there is one spelling to recognise.
 pub fn from_str(source: &str, file: &str, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
     let ast = Ast::from_str(source, None, syntax).map_err(|e| Error::Template {
         path: file.into(),
         message: e.to_string(),
     })?;
 
-    let mut found = Vec::new();
-    for node in ast.nodes() {
-        walk_node(node, source, file, &mut found);
-    }
-    Ok(found)
+    let mut walker = Walker {
+        source,
+        file,
+        found: Vec::new(),
+    };
+    walker.nodes(ast.nodes())?;
+    Ok(walker.found)
 }
 
 /// Byte offset to 1-based line, so a `#:` reference points where it was written.
@@ -82,157 +87,256 @@ fn line_of(source: &str, offset: usize) -> usize {
         + 1
 }
 
-fn walk_node(node: &Node<'_>, source: &str, file: &str, out: &mut Vec<Message>) {
-    match node {
-        Node::Expr(_, expr) => walk_expr(expr, source, file, out),
-        Node::Call(call) => {
-            for arg in call.args.iter().flatten() {
-                walk_expr(arg, source, file, out);
+struct Walker<'s> {
+    source: &'s str,
+    file: &'s str,
+    found: Vec<Message>,
+}
+
+type Expression<'a> = WithSpan<Box<Expr<'a>>>;
+
+// Both walks match every variant with no wildcard arm. A construct this does not
+// descend into is a message that renders in English and is never offered to a
+// translator, so a variant added to Askama's grammar fails this crate's build
+// rather than being skipped.
+impl Walker<'_> {
+    fn nodes<'a>(&mut self, nodes: impl IntoIterator<Item = &'a Box<Node<'a>>>) -> Result<()> {
+        nodes.into_iter().try_for_each(|node| self.node(node))
+    }
+
+    fn exprs<'a>(&mut self, exprs: impl IntoIterator<Item = &'a Expression<'a>>) -> Result<()> {
+        exprs.into_iter().try_for_each(|expr| self.expr(expr))
+    }
+
+    fn node(&mut self, node: &Node<'_>) -> Result<()> {
+        match node {
+            Node::Expr(_, expr) => self.expr(expr),
+            Node::Call(call) => {
+                self.exprs(call.args.iter().flatten())?;
+                self.nodes(&call.nodes)
             }
-            for node in &call.nodes {
-                walk_node(node, source, file, out);
+            Node::Let(inner) => match &inner.val {
+                LetValueOrBlock::Value(expr) => self.expr(expr),
+                LetValueOrBlock::Block { nodes, .. } => self.nodes(nodes),
+            },
+            Node::Compound(inner) => {
+                self.expr(&inner.op.lhs)?;
+                self.expr(&inner.op.rhs)
             }
-        }
-        Node::Let(inner) => {
-            let Let { val, .. } = &**inner;
-            match val {
-                LetValueOrBlock::Value(expr) => walk_expr(expr, source, file, out),
-                LetValueOrBlock::Block { nodes, .. } => {
-                    for node in nodes {
-                        walk_node(node, source, file, out);
+            Node::If(inner) => {
+                for branch in &inner.branches {
+                    if let Some(test) = &branch.cond {
+                        self.expr(&test.expr)?;
                     }
+                    self.nodes(&branch.nodes)?;
                 }
+                Ok(())
             }
-        }
-        Node::If(inner) => {
-            let If { branches, .. } = &**inner;
-            for branch in branches {
-                for node in &branch.nodes {
-                    walk_node(node, source, file, out);
-                }
+            Node::Match(inner) => {
+                self.expr(&inner.expr)?;
+                inner.arms.iter().try_for_each(|arm| self.nodes(&arm.nodes))
             }
-        }
-        Node::Match(inner) => {
-            let Match { arms, .. } = &**inner;
-            for arm in arms {
-                for node in &arm.nodes {
-                    walk_node(node, source, file, out);
-                }
+            Node::Loop(inner) => {
+                self.expr(&inner.iter)?;
+                self.exprs(&inner.cond)?;
+                self.nodes(inner.body.iter().chain(&inner.else_nodes))
             }
-        }
-        Node::Loop(inner) => {
-            let Loop {
-                body, else_nodes, ..
-            } = &**inner;
-            for node in body.iter().chain(else_nodes) {
-                walk_node(node, source, file, out);
+            Node::BlockDef(inner) => self.nodes(&inner.nodes),
+            Node::Macro(inner) => {
+                self.exprs(inner.args.iter().filter_map(|arg| arg.default.as_ref()))?;
+                self.nodes(&inner.nodes)
             }
-        }
-        Node::BlockDef(inner) => {
-            let BlockDef { nodes, .. } = &**inner;
-            for node in nodes {
-                walk_node(node, source, file, out);
+            Node::FilterBlock(inner) => {
+                self.exprs(&inner.filters.arguments)?;
+                self.nodes(&inner.nodes)
             }
+            Node::Lit(_)
+            | Node::Comment(_)
+            | Node::Declare(_)
+            | Node::Extends(_)
+            | Node::Include(_)
+            | Node::Import(_)
+            | Node::Raw(_)
+            | Node::Break(_)
+            | Node::Continue(_) => Ok(()),
         }
-        Node::Macro(inner) => {
-            let Macro { nodes, .. } = &**inner;
-            for node in nodes {
-                walk_node(node, source, file, out);
-            }
-        }
-        Node::FilterBlock(inner) => {
-            let FilterBlock { nodes, .. } = &**inner;
-            for node in nodes {
-                walk_node(node, source, file, out);
-            }
-        }
-        _ => {}
     }
-}
 
-fn literal(expr: &WithSpan<Box<Expr<'_>>>) -> Option<String> {
-    match &***expr {
-        Expr::StrLit(lit) => Some(lit.content.replace("\\\"", "\"").replace("\\n", "\n")),
-        _ => None,
+    fn expr(&mut self, expr: &Expression<'_>) -> Result<()> {
+        match &***expr {
+            Expr::Call(call) => {
+                // `self.__(…)` and `Self::__(…)` render the same message, but one
+                // spelling is what extraction recognises.
+                let qualified = match &**call.path {
+                    Expr::Var(name) => {
+                        if let Some(shape) = shape(name) {
+                            self.message(expr, name, shape, &call.args)?;
+                        }
+                        None
+                    }
+                    Expr::AssociatedItem(_, item) => Some(*item.name),
+                    Expr::Path(path) => path.last().map(|last| *last.name),
+                    _ => None,
+                };
+                if let Some(name) = qualified.filter(|name| shape(name).is_some()) {
+                    return Err(self.error(expr, &format!("call `{name}` unqualified")));
+                }
+                // The receiver as well as the arguments: `__("x").link(...)` parses
+                // as a call whose path is a method access on the call wanted here.
+                self.expr(&call.path)?;
+                self.exprs(&call.args)
+            }
+            Expr::Filter(filter) => self.exprs(&filter.arguments),
+            Expr::BinOp(op) => {
+                self.expr(&op.lhs)?;
+                self.expr(&op.rhs)
+            }
+            Expr::Range(range) => self.exprs(range.lhs.iter().chain(&range.rhs)),
+            Expr::Struct(value) => {
+                self.expr(&value.path)?;
+                self.exprs(value.fields.iter().filter_map(|field| field.value.as_ref()))?;
+                self.exprs(&value.base)
+            }
+            Expr::LetCond(test) => self.expr(&test.expr),
+            // Askama hands a macro's arguments to rustc as unparsed tokens, so a
+            // call inside one renders but cannot be walked.
+            Expr::RustMacro(_, tokens) => match tokens
+                .split(|c: char| !(c.is_alphanumeric() || c == '_'))
+                .find(|word| shape(word).is_some())
+            {
+                Some(name) => Err(self.error(expr, &format!("call `{name}` outside a macro"))),
+                None => Ok(()),
+            },
+            Expr::Group(inner)
+            | Expr::Unary(_, inner)
+            | Expr::Try(inner)
+            | Expr::AssociatedItem(inner, _)
+            | Expr::As(inner, _)
+            | Expr::NamedArgument(_, inner) => self.expr(inner),
+            Expr::Index(lhs, rhs) | Expr::ArrayRepeat(lhs, rhs) => {
+                self.expr(lhs)?;
+                self.expr(rhs)
+            }
+            Expr::Array(items) | Expr::Tuple(items) | Expr::Concat(items) => self.exprs(items),
+            Expr::BoolLit(_)
+            | Expr::NumLit(..)
+            | Expr::StrLit(_)
+            | Expr::CharLit(_)
+            | Expr::Var(_)
+            | Expr::Path(_)
+            | Expr::FilterSource
+            | Expr::IsDefined(_)
+            | Expr::IsNotDefined(_)
+            | Expr::ArgumentPlaceholder => Ok(()),
+        }
     }
-}
 
-fn walk_expr(expr: &WithSpan<Box<Expr<'_>>>, source: &str, file: &str, out: &mut Vec<Message>) {
-    if let Expr::Call(call) = &***expr {
-        let name = match &**call.path {
-            Expr::Var(name) => Some(*name),
-            _ => None,
+    fn line(&self, expr: &Expression<'_>) -> usize {
+        expr.span()
+            .byte_range()
+            .map_or(1, |r| line_of(self.source, r.start))
+    }
+
+    fn error(&self, expr: &Expression<'_>, message: &str) -> Error {
+        Error::Template {
+            path: self.file.into(),
+            message: format!("line {}: {message}", self.line(expr)),
+        }
+    }
+
+    fn message(
+        &mut self,
+        call: &Expression<'_>,
+        name: &str,
+        (has_context, has_plural): (bool, bool),
+        args: &[Expression<'_>],
+    ) -> Result<()> {
+        let line = self.line(call);
+
+        let mut args = args.iter();
+        let mut take = |role: &str| {
+            args.next().and_then(literal).ok_or_else(|| {
+                self.error(
+                    call,
+                    &format!(
+                        "`{name}` takes a string literal for its {role}, so the message \
+                         can be extracted under the key it is looked up by"
+                    ),
+                )
+            })
         };
 
-        if let Some((has_context, has_plural)) = name.and_then(shape) {
-            let mut args = call.args.iter();
-            let context = if has_context {
-                args.next().and_then(literal)
-            } else {
-                None
-            };
+        let context = has_context.then(|| take("context")).transpose()?;
+        let id = take("English")?;
+        let plural = has_plural.then(|| take("plural")).transpose()?;
 
-            // A non-literal id cannot be extracted, and a caller that passes one has
-            // moved the English out of the template — which is the thing to avoid.
-            if let Some(id) = args.next().and_then(literal) {
-                let plural = if has_plural {
-                    args.next().and_then(literal)
-                } else {
-                    None
-                };
-
-                out.push(Message {
-                    id,
-                    context,
-                    plural,
-                    file: file.to_owned(),
-                    line: expr
-                        .span()
-                        .byte_range()
-                        .map_or(1, |r| line_of(source, r.start)),
-                });
-            }
+        // A .po string escapes only \n, \r, \t, \\ and \". Any other control
+        // character would be written raw, which gettext tools reject, and \x04 is
+        // the separator gettext keys a context with.
+        let unwritable = [context.as_deref(), Some(id.as_str()), plural.as_deref()]
+            .into_iter()
+            .flatten()
+            .any(|text| {
+                text.chars()
+                    .any(|c| c.is_control() && !matches!(c, '\n' | '\r' | '\t'))
+            });
+        if unwritable {
+            return Err(self.error(
+                call,
+                &format!("`{name}` has a control character a .po file cannot hold"),
+            ));
         }
 
-        // The receiver as well as the arguments: `__("x").link(...)` parses as a
-        // call whose path is a method access on the call we are looking for.
-        walk_expr(&call.path, source, file, out);
-        for arg in &call.args {
-            walk_expr(arg, source, file, out);
-        }
-        return;
+        self.found.push(Message {
+            id,
+            context,
+            plural,
+            file: self.file.to_owned(),
+            line,
+        });
+        Ok(())
+    }
+}
+
+/// The string a literal compiles to.
+///
+/// Askama copies a literal's source into the Rust it generates, so the id the
+/// template looks up at runtime is whatever rustc makes of that source. Extraction
+/// has to arrive at the same string, escapes and all, or the catalogue holds a
+/// message nothing ever asks for. A `b""` or `c""` literal is not a `&str` and is
+/// refused.
+fn literal(expr: &Expression<'_>) -> Option<String> {
+    let Expr::StrLit(lit) = &***expr else {
+        return None;
+    };
+    if lit.prefix.is_some() {
+        return None;
     }
 
-    // Anything that can wrap a call — a filter's input, a binary operand, a group.
-    match &***expr {
-        Expr::Filter(filter) => {
-            for arg in &filter.arguments {
-                walk_expr(arg, source, file, out);
-            }
+    let mut out = String::with_capacity(lit.content.len());
+    let mut chars = lit.content.chars();
+    while let Some(c) = chars.next() {
+        match c {
+            '\\' => out.push(match chars.next()? {
+                'n' => '\n',
+                'r' => '\r',
+                't' => '\t',
+                '0' => '\0',
+                'x' => {
+                    let hex: String = chars.by_ref().take(2).collect();
+                    char::from(u8::from_str_radix(&hex, 16).ok()?)
+                }
+                'u' => {
+                    let hex: String = chars.by_ref().skip(1).take_while(|c| *c != '}').collect();
+                    char::from_u32(u32::from_str_radix(&hex, 16).ok()?)?
+                }
+                // \\, \" and \' stand for themselves.
+                other => other,
+            }),
+            c => out.push(c),
         }
-        Expr::BinOp(op) => {
-            walk_expr(&op.lhs, source, file, out);
-            walk_expr(&op.rhs, source, file, out);
-        }
-        // Anything holding exactly one sub-expression that could be a call:
-        // a group, a unary operand, a `?`, a field access, a cast, a named argument.
-        Expr::Group(inner)
-        | Expr::Unary(_, inner)
-        | Expr::Try(inner)
-        | Expr::AssociatedItem(inner, _)
-        | Expr::As(inner, _)
-        | Expr::NamedArgument(_, inner) => walk_expr(inner, source, file, out),
-        Expr::Index(lhs, rhs) => {
-            walk_expr(lhs, source, file, out);
-            walk_expr(rhs, source, file, out);
-        }
-        Expr::Array(items) | Expr::Tuple(items) | Expr::Concat(items) => {
-            for item in items {
-                walk_expr(item, source, file, out);
-            }
-        }
-        _ => {}
     }
+    Some(out)
 }
 
 #[cfg(test)]
@@ -314,8 +418,64 @@ mod tests {
         assert_eq!(found[0].id, "read my <cv>CV</cv>");
     }
 
+    fn fails(source: &str) -> String {
+        from_str(source, "t.html", &Syntax::default())
+            .unwrap_err()
+            .to_string()
+    }
+
     #[test]
-    fn ignores_a_non_literal_id() {
-        assert_eq!(extract("{{ __(some_variable) }}"), Vec::<Message>::new());
+    fn a_non_literal_argument_is_an_error_naming_its_line() {
+        // Each would extract under a key the runtime lookup never uses: no id at
+        // all, the id without its context, or a countable message without its plural.
+        assert!(fails("\n{{ __(some_variable) }}").contains("line 2"));
+        assert!(fails(r#"{{ __p(ctx, "close") }}"#).contains("context"));
+        assert!(fails(r#"{{ __n("one", others, n) }}"#).contains("plural"));
+        assert!(fails(r#"{{ __(b"bytes") }}"#).contains("English"));
+    }
+
+    #[test]
+    fn a_qualified_call_is_an_error_rather_than_missed() {
+        assert!(fails(r#"{{ self.__("x") }}"#).contains("unqualified"));
+        assert!(fails(r#"{{ Self::__p("c", "x") }}"#).contains("unqualified"));
+    }
+
+    #[test]
+    fn a_call_inside_a_macro_is_an_error_rather_than_missed() {
+        assert!(fails(r#"{{ format!("{} :", __("github")) }}"#).contains("macro"));
+        // Only the bare names: a longer identifier is not one of them.
+        assert_eq!(
+            extract(r#"{{ format!("{}", __hello) }}"#),
+            Vec::<Message>::new()
+        );
+    }
+
+    #[test]
+    fn a_control_character_a_po_file_cannot_hold_is_an_error() {
+        assert!(fails(r#"{{ __("a\0b") }}"#).contains("control character"));
+        assert!(fails(r#"{{ __p("c\x04", "b") }}"#).contains("control character"));
+        assert_eq!(extract(r#"{{ __("a\tb") }}"#)[0].id, "a\tb");
+    }
+
+    #[test]
+    fn finds_calls_in_conditions_subjects_and_iterators() {
+        let found = extract(
+            r#"{% if __("in a condition").to_string().is_empty() %}{% endif %}
+{% match __("in a match") %}{% when _ %}{% endmatch %}
+{% for c in __("in an iterator").to_string().chars() %}{% endfor %}
+{% for c in xs if c == __("in a loop filter") %}{% endfor %}
+{% macro m(a = __("in a default")) %}{% endmacro %}"#,
+        );
+        let ids: Vec<&str> = found.iter().map(|m| m.id.as_str()).collect();
+        assert_eq!(
+            ids,
+            [
+                "in a condition",
+                "in a match",
+                "in an iterator",
+                "in a loop filter",
+                "in a default"
+            ]
+        );
     }
 }
