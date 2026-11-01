@@ -240,6 +240,12 @@ impl Markup {
 
     fn html_text(&mut self, text: &str, opened: bool, closing: bool) -> Result<()> {
         let mut words = String::new();
+        if text.trim().is_empty() {
+            if !opened && !closing && !text.is_empty() {
+                self.body.push(' ');
+            }
+            return Ok(());
+        }
         if !opened && text.starts_with(char::is_whitespace) {
             words.push(' ');
         }
@@ -273,7 +279,9 @@ fn entities(text: &str) -> Result<std::borrow::Cow<'_, str>> {
         let name = rest[1..]
             .find(';')
             .map(|end| &rest[1..=end])
-            .filter(|name| name.chars().all(|c| c.is_ascii_alphanumeric() || c == '#'));
+            .filter(|name| {
+                !name.is_empty() && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '#')
+            });
         let Some(name) = name else {
             // A bare ampersand, as in "beauty & wellness".
             out.push('&');
@@ -294,7 +302,13 @@ fn entities(text: &str) -> Result<std::borrow::Cow<'_, str>> {
                 .or_else(|| name.strip_prefix('#').map(str::parse))
                 .and_then(Result::ok)
                 .and_then(char::from_u32)
-                .ok_or_else(|| anyhow!("cv.md: the PDF has no rendering for &{name};"))?,
+                .ok_or_else(|| {
+                    anyhow!(
+                        "cv.md: &{name}; inside an HTML block, where the PDF knows only \
+                         &amp; &lt; &gt; &quot; &apos; &nbsp; and numeric references: \
+                         write the character itself"
+                    )
+                })?,
         };
         out.push(decoded);
         rest = &rest[name.len() + 2..];
@@ -390,9 +404,10 @@ fn describe(world: &CvWorld, diagnostic: &SourceDiagnostic) -> String {
         let line = source
             .lines()
             .byte_to_line(range.start)
-            .map_or(0, |l| l + 1);
+            .map(|l| format!(":{}", l + 1))
+            .unwrap_or_default();
         let path = id.get().vpath().get_without_slash();
-        let _ = write!(out, " ({path}:{line}: {:?})", &source.text()[range]);
+        let _ = write!(out, " ({path}{line}: {:?})", &source.text()[range]);
     }
     for hint in &diagnostic.hints {
         let _ = write!(out, "\n  hint: {}", hint.v);
@@ -442,6 +457,12 @@ mod tests {
     }
 
     #[test]
+    fn whitespace_between_tags_on_their_own_lines_is_not_kept() {
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\n<em>b</em>\n</small>\n").unwrap();
+        assert!(body.contains("#small[#emph[b]]"), "{body}");
+    }
+
+    #[test]
     fn a_closing_tag_must_close_what_is_open() {
         assert!(markup("# A\n\nt\n\nc\n\n<small><em>x</small></em>\n").is_err());
         assert!(markup("# A\n\nt\n\nc\n\n<small>x\n").is_err());
@@ -455,6 +476,9 @@ mod tests {
             markup("# A\n\nt\n\nc\n\n<small>\na &amp; b &#233; & c\n</small>\n").unwrap();
         assert!(body.contains("#small[a & b é & c]"), "{body}");
         assert!(markup("# A\n\nt\n\nc\n\n<small>\n&bogus;\n</small>\n").is_err());
+        // Not a reference at all, so it is text, as a browser shows it.
+        let (_, body) = markup("# A\n\nt\n\nc\n\n<small>\na &; b\n</small>\n").unwrap();
+        assert!(body.contains("#small[a &\\; b]"), "{body}");
     }
 
     #[test]
