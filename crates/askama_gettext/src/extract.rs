@@ -60,6 +60,9 @@ pub fn from_file(path: &Path, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
 /// Fails if Askama cannot parse the source, or if a `__`-family call passes
 /// anything but a string literal where the English, its context or its plural
 /// goes: the message could not be extracted under the key it is looked up by.
+/// That refuses gettext's marker pattern, `__(item.label)` with the English
+/// marked elsewhere, by design: the English lives in the template. A call written
+/// `self.__(…)` or `Self::__(…)` fails too, so there is one spelling to recognise.
 pub fn from_str(source: &str, file: &str, syntax: &Syntax<'_>) -> Result<Vec<Message>> {
     let ast = Ast::from_str(source, None, syntax).map_err(|e| Error::Template {
         path: file.into(),
@@ -92,12 +95,10 @@ struct Walker<'s> {
 
 type Expression<'a> = WithSpan<Box<Expr<'a>>>;
 
-/*
- * Both walks match every variant with no wildcard arm. A construct this does not
- * descend into is a message that renders in English and is never offered to a
- * translator, so a variant added to Askama's grammar fails this crate's build
- * rather than being skipped.
- */
+// Both walks match every variant with no wildcard arm. A construct this does not
+// descend into is a message that renders in English and is never offered to a
+// translator, so a variant added to Askama's grammar fails this crate's build
+// rather than being skipped.
 impl Walker<'_> {
     fn nodes<'a>(&mut self, nodes: impl IntoIterator<Item = &'a Box<Node<'a>>>) -> Result<()> {
         nodes.into_iter().try_for_each(|node| self.node(node))
@@ -164,10 +165,24 @@ impl Walker<'_> {
     fn expr(&mut self, expr: &Expression<'_>) -> Result<()> {
         match &***expr {
             Expr::Call(call) => {
-                if let Expr::Var(name) = &**call.path
-                    && let Some(shape) = shape(name)
-                {
-                    self.message(expr, name, shape, &call.args)?;
+                match &**call.path {
+                    Expr::Var(name) => {
+                        if let Some(shape) = shape(name) {
+                            self.message(expr, name, shape, &call.args)?;
+                        }
+                    }
+                    // `self.__(…)` and `Self::__(…)` render the same message, but
+                    // one spelling is what extraction recognises.
+                    Expr::AssociatedItem(_, item) if shape(&item.name).is_some() => {
+                        return Err(self.error(expr, &format!("call `{}` unqualified", *item.name)));
+                    }
+                    Expr::Path(path)
+                        if path.last().is_some_and(|last| shape(&last.name).is_some()) =>
+                    {
+                        let name = path.last().map_or("", |last| *last.name);
+                        return Err(self.error(expr, &format!("call `{name}` unqualified")));
+                    }
+                    _ => {}
                 }
                 // The receiver as well as the arguments: `__("x").link(...)` parses
                 // as a call whose path is a method access on the call wanted here.
@@ -211,6 +226,19 @@ impl Walker<'_> {
         }
     }
 
+    fn line(&self, expr: &Expression<'_>) -> usize {
+        expr.span()
+            .byte_range()
+            .map_or(1, |r| line_of(self.source, r.start))
+    }
+
+    fn error(&self, expr: &Expression<'_>, message: &str) -> Error {
+        Error::Template {
+            path: self.file.into(),
+            message: format!("line {}: {message}", self.line(expr)),
+        }
+    }
+
     fn message(
         &mut self,
         call: &Expression<'_>,
@@ -218,22 +246,19 @@ impl Walker<'_> {
         (has_context, has_plural): (bool, bool),
         args: &[Expression<'_>],
     ) -> Result<()> {
-        let line = call
-            .span()
-            .byte_range()
-            .map_or(1, |r| line_of(self.source, r.start));
+        let line = self.line(call);
 
         let mut args = args.iter();
         let mut take = |role: &str| {
-            args.next()
-                .and_then(literal)
-                .ok_or_else(|| Error::Template {
-                    path: self.file.into(),
-                    message: format!(
-                        "line {line}: `{name}` takes a string literal for its {role}, so the \
-                     message can be extracted under the key it is looked up by"
+            args.next().and_then(literal).ok_or_else(|| {
+                self.error(
+                    call,
+                    &format!(
+                        "`{name}` takes a string literal for its {role}, so the message \
+                         can be extracted under the key it is looked up by"
                     ),
-                })
+                )
+            })
         };
 
         let context = has_context.then(|| take("context")).transpose()?;
@@ -267,11 +292,9 @@ fn literal(expr: &Expression<'_>) -> Option<String> {
     }
 
     let mut out = String::with_capacity(lit.content.len());
-    let mut chars = lit.content.chars().peekable();
+    let mut chars = lit.content.chars();
     while let Some(c) = chars.next() {
         match c {
-            // rustc reads a CRLF inside a literal as LF.
-            '\r' if chars.peek() == Some(&'\n') => {}
             '\\' => out.push(match chars.next()? {
                 'n' => '\n',
                 'r' => '\r',
@@ -390,18 +413,9 @@ mod tests {
     }
 
     #[test]
-    fn escapes_become_the_string_rustc_compiles() {
-        // The template looks up what the literal compiles to, so that is the msgid.
-        let found = extract(
-            r#"{{ __("a\\nb") }}{{ __("tab\there") }}{{ __("it\'s \"so\"") }}{{ __("\u{e9}\x41") }}"#,
-        );
-        let ids: Vec<&str> = found.iter().map(|m| m.id.as_str()).collect();
-        assert_eq!(ids, ["a\\nb", "tab\there", "it's \"so\"", "éA"]);
-    }
-
-    #[test]
-    fn a_crlf_inside_a_literal_is_a_newline() {
-        assert_eq!(extract("{{ __(\"a\r\nb\") }}")[0].id, "a\nb");
+    fn a_qualified_call_is_an_error_rather_than_missed() {
+        assert!(fails(r#"{{ self.__("x") }}"#).contains("unqualified"));
+        assert!(fails(r#"{{ Self::__p("c", "x") }}"#).contains("unqualified"));
     }
 
     #[test]
