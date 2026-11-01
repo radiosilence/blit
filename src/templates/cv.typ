@@ -150,13 +150,13 @@
   show raw: set text(font: mono, size: size)
 
   show title: it => block(
-    below: 6.45pt,
+    below: 0.75 * size,
     text(size: 30pt, weight: "extralight", tracking: -0.02em, lower(it.body)),
   )
 
   show heading: set text(weight: "regular")
-  // Spacing below is in ems of these sizes, rather than of the sizes Typst scales
-  // each level to by default.
+  // The spacing in the rules below is in ems of these sizes, rather than of the
+  // sizes Typst scales each level to by default.
   show heading.where(level: 1): set text(size: 1.2 * size)
   show heading.where(level: 2): set text(size: size)
 
@@ -191,6 +191,9 @@
 }
 
 #let cv(name: none, role: none, email: none, github: none, location: none, keywords: (), body) = {
+  // Keyword lists are comma-separated, so a parenthetical would split mid-entry.
+  let keywords = keywords.map(it => it.split(" (").first())
+  assert(keywords.all(it => not it.contains(",")), message: "cv: a keyword contains a comma")
   set document(title: name + " – CV", author: name, keywords: keywords, date: none)
   set text(lang: "en", region: "gb")
 

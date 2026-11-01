@@ -97,9 +97,13 @@ fn body(page: &str) -> Result<&str> {
             "=\"data:",
             "an embedded file, which skips the asset pipeline",
         ),
+        (
+            "<svg",
+            "a drawing, whose text can't be selected or searched",
+        ),
     ] {
         if inner.contains(needle) {
-            bail!("the CV's HTML carries {why}: a paged-only rule reached the HTML target");
+            bail!("the CV's HTML carries {why}: something paged reached the HTML target");
         }
     }
     Ok(inner)
