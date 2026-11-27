@@ -287,7 +287,7 @@ commit whose run passed) and sets one flag per domain:
 
 | Domain   | Paths | Job |
 | -------- | ----- | --- |
-| `rust`   | `crates/askama_gettext/`, and in `crates/blit/` the `src/`, `templates/`, `content/`, `fonts/`, `assets/logo.png` and `Cargo.toml`; `Cargo.*`, `justfile`, `mise.toml` | Rust |
+| `rust`   | `crates/askama_gettext/`, and in `crates/blit/` the `src/`, `templates/`, `content/`, `fonts/`, `locales/`, `assets/` and `Cargo.toml`, which the server tests load; `Cargo.*`, `justfile`, `mise.toml` | Rust |
 | `site`   | the above and the rest of `crates/` | Site |
 | `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site` | Container image |
 | `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml` | Audit |

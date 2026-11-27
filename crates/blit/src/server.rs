@@ -13,6 +13,7 @@ use axum::extract::{Path, State};
 use axum::http::{HeaderName, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
+use tower::limit::GlobalConcurrencyLimitLayer;
 use tower::{BoxError, ServiceBuilder};
 use tower_http::catch_panic::CatchPanicLayer;
 use tower_http::limit::RequestBodyLimitLayer;
@@ -54,14 +55,21 @@ pub fn router(app: Arc<App>) -> Router {
         }
     }
 
+    perimeter(router.route("/{file}", get(asset)).with_state(app))
+}
+
+/// §7's perimeter, innermost first, and §8's headers.
+///
+/// `Router::layer` wraps each route separately, so the in-flight limit is a
+/// [`GlobalConcurrencyLimitLayer`], whose one semaphore every route shares; a
+/// plain `concurrency_limit` would give each of the ~145 routes 64 slots of its
+/// own.
+fn perimeter(router: Router) -> Router {
     router
-        .route("/{file}", get(asset))
-        .with_state(app)
-        // Innermost first, as §7 orders the perimeter.
         .layer(CatchPanicLayer::new())
         .layer(RequestBodyLimitLayer::new(BODY_LIMIT))
         .layer(TimeoutLayer::with_status_code(
-            StatusCode::REQUEST_TIMEOUT,
+            StatusCode::SERVICE_UNAVAILABLE,
             REQUEST_TIMEOUT,
         ))
         .layer(
@@ -70,7 +78,7 @@ pub fn router(app: Arc<App>) -> Router {
                     StatusCode::SERVICE_UNAVAILABLE
                 }))
                 .load_shed()
-                .concurrency_limit(IN_FLIGHT),
+                .layer(GlobalConcurrencyLimitLayer::new(IN_FLIGHT)),
         )
         .layer(header_layer(header::CONTENT_SECURITY_POLICY, CSP))
         .layer(header_layer(header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
@@ -136,7 +144,7 @@ mod tests {
     use axum::response::Response;
     use tower::ServiceExt as _;
 
-    use super::router;
+    use super::{IN_FLIGHT, perimeter, router};
     use crate::app::App;
 
     fn app() -> Arc<App> {
@@ -193,6 +201,70 @@ mod tests {
         );
         assert_eq!(get(&app, "/logo.png").await.status(), StatusCode::NOT_FOUND);
         assert_eq!(get(&app, "/cv.pdf").await.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn a_request_past_the_in_flight_limit_is_shed_across_routes() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        use std::time::Duration;
+
+        use axum::Router;
+        use axum::routing::get;
+        use tokio::sync::Semaphore;
+
+        let gate = Arc::new(Semaphore::new(0));
+        let entered = Arc::new(AtomicUsize::new(0));
+        let mut routes = Router::new();
+        for n in 0..=IN_FLIGHT {
+            let (gate, entered) = (gate.clone(), entered.clone());
+            routes = routes.route(
+                &format!("/{n}"),
+                get(move || async move {
+                    entered.fetch_add(1, Ordering::SeqCst);
+                    let _held = gate.acquire().await.expect("the gate stays open");
+                    "done"
+                }),
+            );
+        }
+        let router = perimeter(routes);
+
+        let held: Vec<_> = (0..IN_FLIGHT)
+            .map(|n| {
+                let request = Request::get(format!("/{n}")).body(Body::empty());
+                tokio::spawn(router.clone().oneshot(request.expect("a valid request")))
+            })
+            .collect();
+        tokio::time::timeout(Duration::from_secs(5), async {
+            while entered.load(Ordering::SeqCst) < IN_FLIGHT {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .expect("every held request reaches its handler");
+
+        let shed = router
+            .clone()
+            .oneshot(
+                Request::get(format!("/{IN_FLIGHT}"))
+                    .body(Body::empty())
+                    .expect("a valid request"),
+            )
+            .await
+            .expect("the router is infallible");
+        assert_eq!(
+            shed.status(),
+            StatusCode::SERVICE_UNAVAILABLE,
+            "a request on a route of its own still counts against the shared limit"
+        );
+
+        gate.add_permits(IN_FLIGHT);
+        for request in held {
+            let response = request
+                .await
+                .expect("the task completes")
+                .expect("infallible");
+            assert_eq!(response.status(), StatusCode::OK);
+        }
     }
 
     #[tokio::test]

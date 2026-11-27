@@ -11,9 +11,8 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
-use anyhow::Result;
+use anyhow::{Context as _, Result, bail};
 use sha2::{Digest, Sha256};
-use walkdir::WalkDir;
 
 /// Their URLs are a convention rather than ours: a browser asks for /favicon.ico
 /// when a page links no icon, and a crawler asks for /robots.txt. /cv.pdf is ours,
@@ -30,22 +29,26 @@ pub struct Assets {
 }
 
 impl Assets {
+    /// Reads every file in `dir`. Assets are published at the site's root, one
+    /// segment each (`/logo.a1b2c3d4.png`), so a subdirectory is refused rather
+    /// than served at an address nothing answers.
     pub fn load(dir: &Path) -> Result<Self> {
         let mut assets = Self {
             bodies: BTreeMap::new(),
             published: BTreeMap::new(),
         };
 
-        for entry in WalkDir::new(dir).into_iter().filter_map(Result::ok) {
-            if !entry.file_type().is_file() {
-                continue;
+        for entry in fs::read_dir(dir).with_context(|| format!("reading {}", dir.display()))? {
+            let entry = entry?;
+            let path = entry.path();
+            if entry.file_type()?.is_dir() {
+                bail!(
+                    "{} is a directory; assets are published at the root, so assets/ is flat",
+                    path.display()
+                );
             }
-            let name = entry
-                .path()
-                .strip_prefix(dir)?
-                .to_string_lossy()
-                .into_owned();
-            assets.derive(&name, fs::read(entry.path())?);
+            let name = entry.file_name().to_string_lossy().into_owned();
+            assets.derive(&name, fs::read(&path)?);
         }
 
         Ok(assets)

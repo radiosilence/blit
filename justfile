@@ -1,8 +1,9 @@
-# blit — blit.cc, generated in Rust and served as HTML, CSS and a font
+# blit — blit.cc, a Rust server prerendered into HTML, CSS and a font
 
 dist := "dist"
-# Tailwind's output is an input to generate, which rewrites it; keeping it out of
-# dist gives that rewrite a fixed input and leaves dist owned by generate alone.
+# Tailwind's output is an input to the app, which rewrites its asset URLs; keeping
+# it out of dist gives that rewrite a fixed input and leaves dist owned by the
+# prerender alone.
 build_dir := ".build"
 image := "ghcr.io/radiosilence/blit"
 # Both architectures come out of one build. Nothing in the image is
@@ -19,8 +20,8 @@ _default:
 # Prerender the whole site into dist/
 build: generate
 
-# Depends on css because it hashes the compiled stylesheet into its filename.
-[doc("Crawl the app from / and write every response to dist/")]
+# Depends on css because the app hashes the compiled stylesheet into its filename.
+[doc("Prerender: crawl the app from / and write every response to dist/")]
 generate: css
     cargo run {{ profile }} --quiet --bin blit-prerender
 
