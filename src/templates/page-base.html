@@ -38,12 +38,20 @@
     #}
     <link rel="canonical" href="{{ canonical_url }}" />
     {%- if alternates %}
-    {%- for option in locale_links %}
-    <link rel="alternate" hreflang="{{ option.code }}" href="{{ crate::config::ORIGIN }}{{ option.href }}" />
-    {%- if option.code == crate::config::SOURCE %}
-    <link rel="alternate" hreflang="x-default" href="{{ crate::config::ORIGIN }}{{ option.href }}" />
-    {%- endif %}
-    {%- endfor %}
+      {%- for option in locale_links %}
+        <link
+          rel="alternate"
+          hreflang="{{ option.code }}"
+          href="{{ crate::config::ORIGIN }}{{ option.href }}"
+        />
+        {%- if option.code == crate::config::SOURCE %}
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href="{{ crate::config::ORIGIN }}{{ option.href }}"
+          />
+        {%- endif %}
+      {%- endfor %}
     {%- endif %}
 
     <link rel="stylesheet" href="{{ stylesheet }}" />
@@ -90,18 +98,18 @@
 
       <ul class="grid grid-cols-2 overflow-y-auto p-2 sm:grid-cols-3">
         {%- for option in locale_links %}
-        <li>
-          <a
-            href="{{ option.href }}"
-            hreflang="{{ option.code }}"
-            lang="{{ option.code }}"
-            {%- if option.current %} aria-current="true" autofocus{% endif %}
-            class="block px-3 py-2 no-underline hover:bg-brand-mid/20 {% if option.current %}text-brand{% else %}text-inherit{% endif %}"
-          >
-            <span class="block truncate text-sm">{{ option.name }}</span>
-            <span class="block truncate text-xs opacity-60">{{ option.place }}</span>
-          </a>
-        </li>
+          <li>
+            <a
+              href="{{ option.href }}"
+              hreflang="{{ option.code }}"
+              lang="{{ option.code }}"
+              {%- if option.current %} aria-current="true" autofocus{% endif %}
+              class="block px-3 py-2 no-underline hover:bg-brand-mid/20 {% if option.current %}text-brand{% else %}text-inherit{% endif %}"
+            >
+              <span class="block truncate text-sm">{{ option.name }}</span>
+              <span class="block truncate text-xs opacity-60">{{ option.place }}</span>
+            </a>
+          </li>
         {%- endfor %}
       </ul>
     </dialog>
