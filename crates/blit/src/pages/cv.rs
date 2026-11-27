@@ -3,6 +3,8 @@
 use std::ops::Deref;
 
 use askama::Template;
+// The template's `__` calls resolve through `Deref` to `Page`'s impl.
+use askama_gettext::Translate as _;
 
 use crate::layout::Page;
 
@@ -24,9 +26,5 @@ impl<'a> Deref for Cv<'a> {
 
 pub fn render(page: Page<'_>) -> askama::Result<String> {
     let app = page.app;
-    Cv {
-        page,
-        cv: &app.cv,
-    }
-    .render()
+    Cv { page, cv: &app.cv }.render()
 }

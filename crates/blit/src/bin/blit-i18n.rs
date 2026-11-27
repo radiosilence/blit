@@ -44,10 +44,7 @@ fn main() -> Result<()> {
     let mut reworded: BTreeMap<(String, String), usize> = BTreeMap::new();
 
     for locale in LOCALES {
-        let path = root
-            .join("locales")
-            .join(locale.code)
-            .join("messages.po");
+        let path = root.join("locales").join(locale.code).join("messages.po");
         // A locale added to config.rs has no catalogue until something writes one,
         // and the header it needs is derivable, so adding a locale is one step.
         if merge::create_catalog(&path, locale.code)

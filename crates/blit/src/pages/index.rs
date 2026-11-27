@@ -3,6 +3,8 @@
 use std::ops::Deref;
 
 use askama::Template;
+// The template's `__` calls resolve through `Deref` to `Page`'s impl.
+use askama_gettext::Translate as _;
 
 use crate::layout::Page;
 
