@@ -18,7 +18,7 @@
 #let mid = rgb("#666666")
 #let faint = rgb("#9a9a9a")
 #let hair = rgb("#e4e4e4")
-#let logo = "../static/logo.png"
+#let logo = "../assets/logo.png"
 
 #let html-or(html, paged) = context if target() == "html" { html() } else { paged }
 
