@@ -4,8 +4,8 @@
 //! all served `max-age=31536000, immutable`. A stable URL is a promise the build
 //! cannot keep; a hashed one makes it true.
 //!
-//! Which assets the static site publishes is decided by the prerender's crawl:
-//! what a page, the stylesheet or the manifest links to, and [`FIXED`].
+//! Which assets the static site publishes is decided by the prerender: what a
+//! page, the stylesheet or the manifest links to, and what `prerender.rs` declares.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -19,8 +19,8 @@ use walkdir::WalkDir;
 /// when a page links no icon, and a crawler asks for /robots.txt. /cv.pdf is ours,
 /// but it is a link handed to people and pasted into application forms, so it has
 /// to keep working. nano-web serves a PDF for an hour, not a year, which is what
-/// lets that URL stay put. Nothing links the first two, so the prerender requests
-/// them by name.
+/// lets that URL stay put. No link can carry a hash for them, so `prerender.rs`
+/// declares each by name.
 pub const FIXED: &[&str] = &["favicon.ico", "robots.txt", "cv.pdf"];
 
 pub struct Assets {

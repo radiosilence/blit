@@ -8,5 +8,6 @@ pub mod config;
 pub mod cv;
 pub mod layout;
 pub mod pages;
+pub mod prerender;
 pub mod routes;
 pub mod server;

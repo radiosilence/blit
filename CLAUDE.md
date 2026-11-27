@@ -28,9 +28,10 @@ receives HTML, CSS and a font, nothing else.
   from a `layout::Page`; `App::render` answers a route in a locale, and
   `server::router` puts every locale × route and every asset behind axum.
 - **Two front ends, one router**: `blit` (`main.rs`) serves the router.
-  `blit-prerender` drives the same router in process, crawls it from each locale's
-  root and the `FIXED` files, follows every internal link in pages, the stylesheet
-  and the manifest, and writes each response to `dist/`. It has no render path of
+  `blit-prerender` drives the same router in process, crawls it from `/`, follows
+  every internal link in pages, the stylesheet and the manifest, requests what
+  `src/prerender.rs` declares (entries drawn from the app's config, such as
+  `EachLocale(slug)` over `LOCALES`, and paths asked for by name), and writes each response to `dist/`. It has no render path of
   its own, so what is deployed is exactly what the server answers
 - **Templates**: [Askama](https://askama.rs) over `crates/blit/templates/` (`layout.html`
   and `pages/`), bound to a struct at compile time

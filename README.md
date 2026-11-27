@@ -57,9 +57,11 @@ pinned tool rather than as a `package.json` and a `node_modules` tree.
 The site is a server-rendered app: a table of routes, each answered by a page that
 renders a template, served by axum. The static site is a prerender of that server,
 in the way TanStack Start prerenders: `blit-prerender` starts the router in
-process, requests `/` and each locale's root, follows every internal link it finds
-in a page, the stylesheet or the manifest, and writes each response to `dist/` (a
-page as a directory index). The static build has no render path of its own, so
+process, requests `/`, follows every internal link it finds in a page, the
+stylesheet or the manifest, and writes each response to `dist/` (a page as a
+directory index). What no link reaches is declared in `src/prerender.rs`, as
+patterns over the app's own configuration: `EachLocale("")` is every locale's home,
+from the locale table, and the files asked for by name are listed as paths. The static build has no render path of its own, so
 `dist/` holds exactly what the server answers, and only what something links to.
 A link that does not answer 200, or a route no link reaches, fails the build.
 
@@ -81,6 +83,7 @@ crates/blit/
     pages/            one module per page: its template struct and its render handler
     server.rs         the router: every locale × route, the assets, the perimeter and headers
     main.rs           the server
+    prerender.rs      what the crawl cannot find by itself: entries over the locales, fixed files
     bin/blit-prerender.rs  the crawl into dist/
     bin/blit-i18n.rs  extraction into the catalogues
     assets.rs  config.rs  cv.rs

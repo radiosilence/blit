@@ -1,12 +1,13 @@
 //! The static site, prerendered from the server: starts the app's router in
-//! process, crawls it from `/` and each locale's root, follows every internal
-//! link it finds in a page, the stylesheet or the manifest, and writes each
-//! response to `dist/` at its path, a page as a directory index.
+//! process, crawls it from `/`, follows every internal link it finds in a page,
+//! the stylesheet or the manifest, and writes each response to `dist/` at its
+//! path, a page as a directory index. What no link reaches is declared in
+//! `blit::prerender`.
 //!
 //! A page has no render path here: what lands in `dist/` is exactly what the
-//! server answers. A crawled link that does not answer 200, or a route in the
-//! route table no link reaches, fails the build, since either would ship as a
-//! 404 or as a page nobody can find.
+//! server answers. A declared or crawled path that does not answer 200, or a
+//! route in the route table nothing reaches, fails the build, since either would
+//! ship as a 404 or as a page nobody can find.
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fs;
@@ -19,8 +20,8 @@ use axum::http::{Request, StatusCode, header};
 use tower::ServiceExt as _;
 
 use blit::app::{App, workspace};
-use blit::assets::FIXED;
 use blit::config::{LOCALES, ORIGIN};
+use blit::prerender::entries;
 use blit::routes::{ROUTES, url};
 
 #[tokio::main(flavor = "current_thread")]
@@ -28,17 +29,17 @@ async fn main() -> Result<()> {
     let dist = workspace()?.join("dist");
     let router = blit::server::router(Arc::new(App::open()?));
 
-    // Where the crawl starts: the home page in each locale, and the files nothing
-    // links to because a browser or a crawler asks for them by name.
-    let mut queue: VecDeque<String> = LOCALES
-        .iter()
-        .map(|locale| url(locale.code, ""))
-        .chain(FIXED.iter().map(|name| format!("/{name}")))
-        .collect();
-    let mut found_in: BTreeMap<String, String> = queue
-        .iter()
-        .map(|path| (path.clone(), "the start list".to_owned()))
-        .collect();
+    // The crawl starts at `/`, then takes what `blit::prerender` declares.
+    let mut queue = VecDeque::new();
+    let mut found_in = BTreeMap::new();
+    for (path, from) in std::iter::once(("/".to_owned(), "the crawl's start"))
+        .chain(entries().into_iter().map(|path| (path, "prerender.rs")))
+    {
+        if !found_in.contains_key(&path) {
+            found_in.insert(path.clone(), from.to_owned());
+            queue.push_back(path);
+        }
+    }
 
     let mut written = BTreeSet::new();
     let mut pages = BTreeSet::new();
