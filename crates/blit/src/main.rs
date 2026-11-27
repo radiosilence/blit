@@ -28,7 +28,10 @@ impl Config {
             Ok(value) => value
                 .parse()
                 .with_context(|| format!("BLIT_ADDR is not an address and port: {value:?}"))?,
-            Err(_) => SocketAddr::from(([127, 0, 0, 1], 3000)),
+            Err(std::env::VarError::NotPresent) => SocketAddr::from(([127, 0, 0, 1], 3000)),
+            Err(std::env::VarError::NotUnicode(value)) => {
+                anyhow::bail!("BLIT_ADDR is not UTF-8: {value:?}")
+            }
         };
         Ok(Self { addr })
     }

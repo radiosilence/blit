@@ -1,5 +1,5 @@
 [tools]
-# The generator and the extractor. `just check` runs rustfmt and clippy, which the
+# The server, the prerender and the extractor. `just check` runs rustfmt and clippy, which the
 # minimal profile leaves out — a laptop tends to have them from rustup already, a
 # clean runner does not.
 rust = { version = "latest", components = "rustfmt,clippy" }

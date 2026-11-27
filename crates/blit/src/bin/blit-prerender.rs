@@ -32,9 +32,11 @@ async fn main() -> Result<()> {
     // The crawl starts at `/`, then takes what `blit::prerender` declares.
     let mut queue = VecDeque::new();
     let mut found_in = BTreeMap::new();
-    for (path, from) in std::iter::once(("/".to_owned(), "the crawl's start"))
-        .chain(entries().into_iter().map(|path| (path, "prerender.rs")))
-    {
+    for (path, from) in std::iter::once(("/".to_owned(), "the crawl's start")).chain(
+        entries()
+            .iter()
+            .map(|path| (normalise(path), "prerender.rs")),
+    ) {
         if !found_in.contains_key(&path) {
             found_in.insert(path.clone(), from.to_owned());
             queue.push_back(path);
@@ -136,7 +138,16 @@ fn internal(link: &str) -> Option<String> {
         return None;
     }
     let path = link.split(['?', '#']).next().unwrap_or(link);
-    Some(path.to_owned())
+    Some(normalise(path))
+}
+
+/// `/cv/` and `/cv` are one page written to one file, so the crawl keys both as
+/// `/cv`.
+fn normalise(path: &str) -> String {
+    match path.trim_end_matches('/') {
+        "" => "/".to_owned(),
+        trimmed => trimmed.to_owned(),
+    }
 }
 
 /// `href` and `src` for links and assets, and `content` for og:url and og:image;

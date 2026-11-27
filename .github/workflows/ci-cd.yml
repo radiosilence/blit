@@ -91,8 +91,8 @@ jobs:
             printf '%s\n' "$files" | sed 's/^/  /'
             relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^crates\/blit\/content\//')
             # What cargo compiles, Askama's templates included, what its tests
-            # typeset, and the recipes and toolchain that check it.
-            touches '^crates/(askama_gettext|blit/(src|templates|content|fonts|Cargo\.toml))|^crates/blit/assets/logo\.png$|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            # load and typeset, and the recipes and toolchain that check it.
+            touches '^crates/(askama_gettext|blit/(src|templates|content|fonts|locales|assets|Cargo\.toml))|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || rust=false
             # What the advisory audit reads, and the recipe and tool that run it.
             # Advisories that land without a change are caught by audit.yml.
             touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false
