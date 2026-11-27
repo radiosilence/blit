@@ -1,7 +1,6 @@
 //! The site as an application: everything a page needs to render, loaded once.
-//! [`App::render`] answers a route in a locale the way a server's handler would;
-//! the generator in `main.rs` is what calls it for every address and writes the
-//! answers to disk.
+//! [`App::render`] answers a route in a locale. The server's handlers are its
+//! only callers; the prerender reaches it through them.
 
 use std::path::Path;
 
@@ -21,6 +20,14 @@ pub struct App {
 }
 
 impl App {
+    /// Loads the site from this crate, with the stylesheet `just css` compiled
+    /// into `.build/` at the workspace root.
+    pub fn open() -> Result<Self> {
+        let css = std::fs::read_to_string(workspace()?.join(".build/style.css"))
+            .context("reading .build/style.css — run `just css` first")?;
+        Self::load(Path::new(env!("CARGO_MANIFEST_DIR")), &css)
+    }
+
     /// Reads the catalogues, the assets and the CV from the crate's directory.
     /// `css` is Tailwind's output, which names other assets and is rewritten to
     /// their hashed URLs here.
@@ -55,8 +62,17 @@ impl App {
     }
 }
 
+/// The workspace root. `dist/` and `.build/` belong there, where the justfile,
+/// the Dockerfile and CI expect them, rather than in this crate.
+pub fn workspace() -> Result<&'static Path> {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .context("the crate sits two levels below the workspace")
+}
+
 /// The manifest declares icons the browser fetches without any page linking them,
-/// so its own references are rewritten and thereby recorded as used.
+/// so its own references are rewritten for the prerender's crawl to follow.
 fn rewrite_manifest(assets: &Assets, path: &Path) -> Result<String> {
     let mut out = std::fs::read_to_string(path)?;
 
@@ -75,9 +91,8 @@ fn rewrite_manifest(assets: &Assets, path: &Path) -> Result<String> {
 
 /// Points `/{name}` in `text` at the asset's hashed URL.
 ///
-/// The reference check reads only pages, so a reference here that stopped matching
-/// would publish the hashed file while this one still asked for the unhashed path,
-/// a 404 nothing else would notice.
+/// A reference here that stopped matching would still ask for the unhashed path,
+/// which nothing serves, so a missing one fails the load.
 fn rewrite(assets: &Assets, text: &str, name: &str) -> Result<String> {
     let from = format!("/{name}");
     if !text.contains(&from) {

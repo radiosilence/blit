@@ -1,139 +1,94 @@
-//! The static generator: asks the [`App`] for every locale × route, writes each
-//! answer to `dist/` as a directory index, publishes the assets they referenced,
-//! and checks that every absolute reference resolves to something written.
-//!
-//! Everything a page is lives in the library; this is only how the site reaches
-//! disk rather than a socket.
+//! blit.cc, served: renders each page on request from the same routes the
+//! static site is prerendered from (`blit-prerender`).
 
-use std::collections::BTreeSet;
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::net::SocketAddr;
+use std::sync::Arc;
+use std::time::Duration;
 
-use anyhow::{Context as _, Result, bail};
+use anyhow::{Context as _, Result};
+use tokio::sync::Notify;
+use tracing_subscriber::EnvFilter;
 
 use blit::app::App;
-use blit::config::{LOCALES, ORIGIN};
-use blit::routes::{ROUTES, url};
 
-fn main() -> Result<()> {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    // dist/ and .build/ belong to the workspace, where the justfile, the
-    // Dockerfile and CI expect them, rather than to this crate.
-    let workspace = root
-        .ancestors()
-        .nth(2)
-        .context("the crate sits two levels below the workspace")?;
+/// How long a stopping pod keeps serving while the ingress drops its endpoint.
+const DRAIN: Duration = Duration::from_secs(5);
+/// How long in-flight requests get once it stops accepting, inside the
+/// grace period.
+const DEADLINE: Duration = Duration::from_secs(10);
 
-    let dist = workspace.join("dist");
+/// Read once at start; a malformed value stops the server naming the variable.
+struct Config {
+    addr: SocketAddr,
+}
 
-    let css = fs::read_to_string(workspace.join(".build/style.css"))
-        .context("reading .build/style.css — run `just css` first")?;
-    let app = App::load(root, &css)?;
-
-    let mut written = BTreeSet::new();
-
-    for locale in LOCALES {
-        for route in ROUTES {
-            let html = app.render(locale, route)?;
-
-            let path = url(locale.code, route.slug);
-            let file = dist.join(path.trim_start_matches('/')).join("index.html");
-            fs::create_dir_all(file.parent().context("page has no parent directory")?)?;
-            fs::write(&file, html)?;
-            written.insert(file);
-        }
+impl Config {
+    fn from_env() -> Result<Self> {
+        let addr = match std::env::var("BLIT_ADDR") {
+            Ok(value) => value
+                .parse()
+                .with_context(|| format!("BLIT_ADDR is not an address and port: {value:?}"))?,
+            Err(_) => SocketAddr::from(([127, 0, 0, 1], 3000)),
+        };
+        Ok(Self { addr })
     }
+}
 
-    let published = app.assets.publish(&dist)?;
+#[tokio::main]
+async fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        .with_writer(std::io::stderr)
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| "blit=info,warn".into()),
+        )
+        .init();
 
-    let mut current = written.clone();
-    current.extend(published.iter().cloned());
-    prune(&dist, &current)?;
-    check_references(&dist, &written, &current)?;
+    let config = Config::from_env()?;
+    let app = Arc::new(App::open()?);
+    let router = blit::server::router(app);
 
-    println!(
-        "Generated {} pages and {} assets in {}",
-        written.len(),
-        published.len(),
-        dist.display()
-    );
+    let listener = tokio::net::TcpListener::bind(config.addr)
+        .await
+        .with_context(|| format!("binding {}", config.addr))?;
+    tracing::info!(addr = %config.addr, "listening");
+
+    let stopping = Arc::new(Notify::new());
+    let server = axum::serve(listener, router).with_graceful_shutdown({
+        let stopping = stopping.clone();
+        async move {
+            shutdown().await;
+            stopping.notify_one();
+        }
+    });
+
+    tokio::select! {
+        result = server => result.context("serving")?,
+        () = async {
+            stopping.notified().await;
+            tokio::time::sleep(DEADLINE).await;
+        } => tracing::warn!("requests still in flight at the shutdown deadline"),
+    }
     Ok(())
 }
 
-/// dist/ is written entirely here, so anything else in it is from an earlier build:
-/// a removed locale's directory, or the previous hash of a file that has changed.
-fn prune(dist: &Path, keep: &BTreeSet<PathBuf>) -> Result<()> {
-    for entry in walkdir::WalkDir::new(dist)
-        .into_iter()
-        .filter_map(Result::ok)
-    {
-        if entry.file_type().is_file() && !keep.contains(entry.path()) {
-            fs::remove_file(entry.path())?;
-        }
-    }
-
-    // Depth-first, so a directory is judged only once its children are gone.
-    for entry in walkdir::WalkDir::new(dist)
-        .contents_first(true)
-        .into_iter()
-        .filter_map(Result::ok)
-    {
-        if entry.file_type().is_dir()
-            && entry.path() != dist
-            && fs::read_dir(entry.path())?.next().is_none()
-        {
-            fs::remove_dir(entry.path())?;
-        }
-    }
-
-    Ok(())
-}
-
-/// A link that misses is a routing bug; an `src` that misses is an asset written by
-/// hand rather than through `asset()`. Both would ship as a 404 nobody clicks.
-/// `content` attributes are read too, for og:url and og:image, and an absolute URL
-/// on ORIGIN counts as the path after it, as the canonical and alternate links are.
-fn check_references(
-    dist: &Path,
-    pages: &BTreeSet<PathBuf>,
-    current: &BTreeSet<PathBuf>,
-) -> Result<()> {
-    let mut broken = BTreeSet::new();
-
-    for page in pages {
-        let html = fs::read_to_string(page)?;
-
-        // A space before `content`, so `data-content` is not read as a reference.
-        for attr in ["href=\"", "src=\"", " content=\""] {
-            for part in html.split(attr).skip(1) {
-                let Some(value) = part.split('"').next() else {
-                    continue;
-                };
-                let value = value
-                    .strip_prefix(ORIGIN)
-                    .filter(|path| path.starts_with('/'))
-                    .unwrap_or(value);
-                if !value.starts_with('/') {
-                    continue;
-                }
-
-                let path = value.split(['?', '#']).next().unwrap_or(value);
-                let target = dist.join(path.trim_start_matches('/'));
-
-                if !current.contains(&target) && !current.contains(&target.join("index.html")) {
-                    broken.insert(format!("{} -> {value}", page.display()));
-                }
+/// Waits for SIGTERM, then serves on for [`DRAIN`]; or for Ctrl-C, which stops
+/// at once.
+async fn shutdown() {
+    let term = async {
+        match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+            Ok(mut signal) => {
+                signal.recv().await;
+                tracing::info!("SIGTERM: draining");
+                tokio::time::sleep(DRAIN).await;
+            }
+            Err(e) => {
+                tracing::warn!("no SIGTERM handler: {e}");
+                std::future::pending::<()>().await;
             }
         }
+    };
+    tokio::select! {
+        _ = tokio::signal::ctrl_c() => {}
+        () = term => {}
     }
-
-    if !broken.is_empty() {
-        bail!(
-            "references with nothing behind them:\n  {}",
-            broken.into_iter().collect::<Vec<_>>().join("\n  ")
-        );
-    }
-
-    println!("Checked links and assets across {} pages", pages.len());
-    Ok(())
 }

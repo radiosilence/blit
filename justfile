@@ -16,12 +16,17 @@ profile := if env("CI", "") != "" { "--release" } else { "" }
 _default:
     @just --list
 
-# Generate the whole site into dist/
+# Prerender the whole site into dist/
 build: generate
 
 # Depends on css because it hashes the compiled stylesheet into its filename.
-[doc("Render every locale × page to dist/")]
+[doc("Crawl the app from / and write every response to dist/")]
 generate: css
+    cargo run {{ profile }} --quiet --bin blit-prerender
+
+# BLIT_ADDR sets where it listens; RUST_LOG how much it says.
+[doc("Serve the app, rendering each page on request, on 127.0.0.1:3000")]
+serve: css
     cargo run {{ profile }} --quiet --bin blit
 
 # Compile Tailwind

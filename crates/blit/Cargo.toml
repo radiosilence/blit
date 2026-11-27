@@ -8,9 +8,15 @@ askama.workspace = true
 askama_parser.workspace = true
 askama_gettext = { path = "../askama_gettext" }
 anyhow = "1"
+axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }
 sha2 = "0.11"
-# Renders /cv and /cv.pdf in-process, so generate still writes all of dist/ and the
-# build needs no second tool to have run first.
+tokio = { version = "1.54.1", features = ["macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+tower = { version = "0.5.3", features = ["limit", "load-shed", "util"] }
+tower-http = { version = "0.7.1", features = ["catch-panic", "limit", "set-header", "timeout"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
+# Renders /cv and /cv.pdf in-process, so the server and the prerender need no
+# second tool to have run first.
 typst = "0.15"
 typst-layout = "0.15"
 typst-html = "0.15"
