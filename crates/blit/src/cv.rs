@@ -1,15 +1,15 @@
-//! The CV, typeset by Typst from `src/content/cv.typ` twice: once as pages for
+//! The CV, typeset by Typst from `content/cv.typ` twice: once as pages for
 //! `/cv.pdf`, once as HTML for the body of `/cv`.
 //!
 //! One source means the page and the PDF cannot drift apart. The content says what
-//! each piece is; `src/templates/cv.typ` decides how it looks in each target.
+//! each piece is; `templates/cv.typ` decides how it looks in each target.
 //!
-//! The world is rooted at `src/` and reads only what the source imports from
-//! there, with fonts only from `src/fonts`, so the same file compiles identically
+//! The world is rooted at this crate and reads only what the source imports from
+//! there, with fonts only from `fonts/`, so the same file compiles identically
 //! in the Typst CLI and in an editor preview:
 //!
 //! ```sh
-//! typst compile --root src --font-path src/fonts --ignore-system-fonts src/content/cv.typ
+//! typst compile --root crates/blit --font-path crates/blit/fonts --ignore-system-fonts crates/blit/content/cv.typ
 //! ```
 
 use std::collections::HashMap;
@@ -109,7 +109,7 @@ fn body(page: &str) -> Result<&str> {
     Ok(inner)
 }
 
-/// Sources and files under `src/`, read once each: both compiles see the same
+/// Sources and files under the crate, read once each: both compiles see the same
 /// bytes even if a file is saved between them.
 struct CvWorld {
     root: PathBuf,
@@ -241,8 +241,8 @@ mod tests {
 
     use super::{body, render};
 
-    fn src() -> PathBuf {
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("src")
+    fn crate_dir() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR")).to_owned()
     }
 
     /// A root holding `source` as the CV, with the real fonts.
@@ -250,7 +250,7 @@ mod tests {
         let root = std::env::temp_dir().join(format!("blit-cv-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(root.join("content")).unwrap();
-        std::os::unix::fs::symlink(src().join("fonts"), root.join("fonts")).unwrap();
+        std::os::unix::fs::symlink(crate_dir().join("fonts"), root.join("fonts")).unwrap();
         // A title, or PDF/UA refuses the document before anything else is checked.
         let source =
             format!("#set document(title: \"t\")\n#set text(font: \"Geist Mono\")\n{source}");
@@ -260,7 +260,7 @@ mod tests {
 
     #[test]
     fn links_to_roles_resolve_in_both_targets() {
-        let cv = render(&src()).unwrap();
+        let cv = render(&crate_dir()).unwrap();
         assert!(cv.pdf.starts_with(b"%PDF"));
         for label in ["fresha", "engineerbetter", "contributed"] {
             assert!(cv.html.contains(&format!(" id=\"{label}\"")), "{label}");

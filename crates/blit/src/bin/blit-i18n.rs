@@ -16,9 +16,10 @@ fn main() -> Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let syntax = Syntax::default();
 
-    let mut files: Vec<_> = std::fs::read_dir(root.join("src/templates"))?
+    let mut files: Vec<_> = walkdir::WalkDir::new(root.join("templates"))
+        .into_iter()
         .filter_map(std::result::Result::ok)
-        .map(|entry| entry.path())
+        .map(walkdir::DirEntry::into_path)
         .filter(|path| path.extension().is_some_and(|e| e == "html"))
         .collect();
     files.sort();
@@ -44,7 +45,7 @@ fn main() -> Result<()> {
 
     for locale in LOCALES {
         let path = root
-            .join("src/locales")
+            .join("locales")
             .join(locale.code)
             .join("messages.po");
         // A locale added to config.rs has no catalogue until something writes one,
