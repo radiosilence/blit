@@ -125,3 +125,78 @@ fn content_type(file: &str) -> &'static str {
         _ => "application/octet-stream",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+    use std::sync::Arc;
+
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode, header};
+    use axum::response::Response;
+    use tower::ServiceExt as _;
+
+    use super::router;
+    use crate::app::App;
+
+    fn app() -> Arc<App> {
+        let css = r#"@font-face{src:url("/geist-mono.woff2")}"#;
+        Arc::new(App::load(Path::new(env!("CARGO_MANIFEST_DIR")), css).expect("the site loads"))
+    }
+
+    async fn get(app: &Arc<App>, path: &str) -> Response {
+        router(app.clone())
+            .oneshot(
+                Request::get(path)
+                    .body(Body::empty())
+                    .expect("a valid request"),
+            )
+            .await
+            .expect("the router is infallible")
+    }
+
+    #[tokio::test]
+    async fn every_response_carries_the_security_headers() {
+        let app = app();
+        for path in ["/", "/fr-FR/cv", "/robots.txt", "/nowhere"] {
+            let response = get(&app, path).await;
+            for name in [
+                header::CONTENT_SECURITY_POLICY,
+                header::X_CONTENT_TYPE_OPTIONS,
+                header::X_FRAME_OPTIONS,
+                header::REFERRER_POLICY,
+            ] {
+                assert!(
+                    response.headers().contains_key(&name),
+                    "{path} lacks {name}"
+                );
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn pages_answer_with_and_without_a_trailing_slash() {
+        let app = app();
+        for path in ["/", "/cv", "/cv/", "/ja-JP", "/ja-JP/", "/ja-JP/cv"] {
+            assert_eq!(get(&app, path).await.status(), StatusCode::OK, "{path}");
+        }
+    }
+
+    #[tokio::test]
+    async fn assets_answer_only_at_their_published_name() {
+        let app = app();
+        let response = get(&app, &app.assets.href("logo.png")).await;
+        assert_eq!(response.status(), StatusCode::OK);
+        assert_eq!(
+            response.headers()[header::CACHE_CONTROL],
+            "public, max-age=31536000, immutable"
+        );
+        assert_eq!(get(&app, "/logo.png").await.status(), StatusCode::NOT_FOUND);
+        assert_eq!(get(&app, "/cv.pdf").await.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn healthz_answers_ok() {
+        assert_eq!(get(&app(), "/healthz").await.status(), StatusCode::OK);
+    }
+}

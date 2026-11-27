@@ -5,8 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-just dev          # Rebuild on change, serve on :3000 with nano-web
-just build        # css into .build/, then generate the site into dist/
+just serve        # Run the server, rendering each page on request, on :3000
+just dev          # Rebuild dist/ on change, serve it on :3000 with nano-web
+just build        # css into .build/, then prerender the site into dist/
 just check        # clippy, rustfmt, tests, actionlint and the changelog
 just ci           # Everything CI checks: check, audit, then build
 just i18n-sync    # Extract messages from the templates into every catalogue
@@ -18,15 +19,19 @@ just clean        # Drop dist/, .build/ and target/
 
 ## Architecture Overview
 
-Personal website for [blit.cc](https://blit.cc). A static site generator with no
-framework and no bundler — the browser receives HTML, CSS and a font, nothing else.
+Personal website for [blit.cc](https://blit.cc). A server-rendered app, prerendered
+into a static site for deployment, with no framework and no bundler — the browser
+receives HTML, CSS and a font, nothing else.
 
-- **App**: Rust, in `crates/blit` (laid out per the kōan standard, §3). The site is
-  written as a server-rendered app: `routes.rs` maps each address to a page in
-  `pages/`, which renders its template from a `layout::Page`, and `App::render`
-  answers a route in a locale. `main.rs` is the static generator, a thin layer that
-  renders every locale × route into `dist/`; nothing about a page knows it is
-  going to disk
+- **App**: Rust, in `crates/blit` (laid out per the kōan standard, §3).
+  `routes.rs` maps each address to a page in `pages/`, which renders its template
+  from a `layout::Page`; `App::render` answers a route in a locale, and
+  `server::router` puts every locale × route and every asset behind axum.
+- **Two front ends, one router**: `blit` (`main.rs`) serves the router.
+  `blit-prerender` drives the same router in process, crawls it from each locale's
+  root and the `FIXED` files, follows every internal link in pages, the stylesheet
+  and the manifest, and writes each response to `dist/`. It has no render path of
+  its own, so what is deployed is exactly what the server answers
 - **Templates**: [Askama](https://askama.rs) over `crates/blit/templates/` (`layout.html`
   and `pages/`), bound to a struct at compile time
 - **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
@@ -71,17 +76,18 @@ Key decisions:
 - The tags in a `__h` message are names, not markup. A translator can move
   `<cv>…</cv>` wherever the sentence needs it; code decides where it points, and
   anything unregistered is escaped.
-- Every asset reaches a page through `asset('logo.png')`, which publishes it under a
-  content hash and records the reference. Writing the path by hand fails the build,
-  because the reference check resolves `href`, `src` and `content`, including
-  absolute URLs on the site's origin, against what was written.
+- Every asset reaches a page through `asset('logo.png')`, which gives its URL under
+  a content hash. Writing the path by hand fails the build, because the crawl
+  follows `href`, `src` and `content`, including absolute URLs on the site's origin,
+  and a link that does not answer 200 fails it. A route in the table that no link
+  reaches fails it too.
 - Hashing is not decoration. nano-web picks caching by MIME type alone, so CSS,
   images and fonts are all served `immutable, max-age=1y`. `favicon.ico`,
   `robots.txt` and `cv.pdf` are the exceptions — the first two are conventions and
   the CV's URL gets pasted into application forms, so they publish unhashed and
   always.
-- `dist/` is written entirely by `generate`, which is what lets it delete anything
-  that is not a page or a referenced asset.
+- `dist/` is written entirely by the prerender, which is what lets it delete
+  anything the crawl did not reach. Only what something links to is published.
 - The stylesheet and the manifest are derived rather than copied: both name other
   assets, so they are rewritten before their own hash is taken. Tailwind compiles to
   `.build` so that rewrite has a fixed input.
@@ -93,7 +99,16 @@ Key decisions:
 - Adding a page means `templates/pages/<name>.html`, a module in `src/pages/` with its
   struct and `render`, and a `Route` in `src/routes.rs`.
 - `dist/` and `.build/` sit at the workspace root, where the justfile, the
-  Dockerfile and CI expect them; the generator reads everything else from the crate.
+  Dockerfile and CI expect them; the app reads everything else from the crate at
+  run time.
+- The server follows §7 and §8: the perimeter (catch-panic, 2 MiB body limit, 30 s
+  timeout, 64 in flight behind load-shed), the security headers, `/healthz`,
+  `tracing` to stderr under `RUST_LOG`, `BLIT_ADDR` read once, and SIGTERM serving
+  on for 5 s then a 10 s deadline. Departures, all because production is the
+  prerendered `dist/` on nano-web and this server holds no state or credential: no
+  header-read timeout or connection cap (`axum::serve` has neither), no `Host`
+  check against DNS rebinding (there is nothing to read), no metrics, and assets
+  read from the crate at start rather than embedded in the binary.
 - GitHub Actions supplies an environment and decides what runs: it checks out,
   installs mise, supplies credentials and a cargo cache, then calls just recipes.
   If a step can't be run locally, it's in the wrong file. Jobs run only for the

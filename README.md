@@ -2,7 +2,7 @@
 
 ![CI/CD](https://github.com/radiosilence/blit/actions/workflows/ci-cd.yml/badge.svg)
 
-Static site for [blit.cc](https://blit.cc) — a homepage and a CV, in 36 locales.
+A server-rendered site for [blit.cc](https://blit.cc), deployed as its static prerender — a homepage and a CV, in 36 locales.
 The browser gets HTML, CSS and a font. No JavaScript at all.
 
 ## Why there's no framework
@@ -54,11 +54,23 @@ pinned tool rather than as a `package.json` and a `node_modules` tree.
 
 ## How it is put together
 
-The site is written as an ordinary server-rendered app: a table of routes, each
-answered by a page that renders a template. Static generation is a thin layer over
-it: the `blit` binary asks the app for every locale × route, writes the answers to
-`dist/` as directory indexes, then publishes the assets they referenced. Nothing
-about a page knows it is going to disk.
+The site is a server-rendered app: a table of routes, each answered by a page that
+renders a template, served by axum. The static site is a prerender of that server,
+in the way TanStack Start prerenders: `blit-prerender` starts the router in
+process, requests `/` and each locale's root, follows every internal link it finds
+in a page, the stylesheet or the manifest, and writes each response to `dist/` (a
+page as a directory index). The static build has no render path of its own, so
+`dist/` holds exactly what the server answers, and only what something links to.
+A link that does not answer 200, or a route no link reaches, fails the build.
+
+```bash
+just serve   # the server: renders each page on request at http://127.0.0.1:3000
+just build   # the static site: prerenders into dist/, which production serves
+just dev     # rebuilds dist/ on change and serves it with nano-web, as production does
+```
+
+The server reads `BLIT_ADDR` (default `127.0.0.1:3000`) and `RUST_LOG` (default
+`blit=info,warn`), and answers `/healthz`.
 
 ```
 crates/blit/
@@ -67,7 +79,9 @@ crates/blit/
     routes.rs         the route table and the URL scheme
     layout.rs         Page, what every page shares with layout.html
     pages/            one module per page: its template struct and its render handler
-    main.rs           the generator: every locale × route into dist/, then prune and check links
+    server.rs         the router: every locale × route, the assets, the perimeter and headers
+    main.rs           the server
+    bin/blit-prerender.rs  the crawl into dist/
     bin/blit-i18n.rs  extraction into the catalogues
     assets.rs  config.rs  cv.rs
   templates/          layout.html, pages/, and cv.typ, the CV's Typst styling
