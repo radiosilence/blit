@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: or-IN\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "ଭାଷା ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "ଜେମ୍ସ କ୍ଲିଭଲ୍ୟାଣ୍ଡ"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "ଜେମ୍ସ କ୍ଲିଭଲ୍ୟାଣ୍ଡ : ସିନିଅର ଫୁଲ ଷ୍ଟାକ ଇଞ୍ଜିନିଅର"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "ବନ୍ଦ କରନ୍ତୁ"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "ସିନିଅର ଫୁଲ ଷ୍ଟାକ ଇଞ୍ଜିନିଅର"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "cv-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "PDF ଭାବରେ ଡାଉନଲୋଡ୍ କରନ୍ତୁ"
+

@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh-TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "變更語言"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "詹姆斯·克利夫蘭"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "詹姆斯·克利夫蘭：資深全端工程師"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "關閉"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "資深全端工程師"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "履歷-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "下載 PDF"
+

@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: dv-MV\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "ބަސް ބަދަލުކުރުން"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "ޖޭމްސް ކްލީވްލޭންޑް"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "ޖޭމްސް ކްލީވްލޭންޑް : ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "ބަންދުކުރޭ"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "ސީނިއަރ ފުލް ސްޓެކް އިންޖިނިއަރ"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "cv-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "PDF ގޮތުގައި ޑައުންލޯޑު ކުރޭ"
+

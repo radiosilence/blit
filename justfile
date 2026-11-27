@@ -16,17 +16,22 @@ profile := if env("CI", "") != "" { "--release" } else { "" }
 _default:
     @just --list
 
-# Generate the whole site into dist/
+# Prerender the whole site into dist/
 build: generate
 
 # Depends on css because it hashes the compiled stylesheet into its filename.
-[doc("Render every locale × page to dist/")]
+[doc("Crawl the app from / and write every response to dist/")]
 generate: css
+    cargo run {{ profile }} --quiet --bin blit-prerender
+
+# BLIT_ADDR sets where it listens; RUST_LOG how much it says.
+[doc("Serve the app, rendering each page on request, on 127.0.0.1:3000")]
+serve: css
     cargo run {{ profile }} --quiet --bin blit
 
 # Compile Tailwind
 css: _plugins
-    tailwindcss --input src/styles/app.css --output {{ build_dir }}/style.css --minify
+    tailwindcss --input crates/blit/styles/app.css --output {{ build_dir }}/style.css --minify
 
 # Tailwind resolves `@plugin "@tailwindcss/typography"` through node_modules beside
 # the stylesheet, and the plugin is a mise tool rather than a project dependency.
@@ -51,12 +56,12 @@ dev:
     trap 'kill $(jobs -p) 2>/dev/null' EXIT
     nano-web serve {{ dist }} --port 3000 --dev &
     # Catalogues are written through a .tmp beside them, which is not a change.
-    watchexec --watch crates --watch generator --watch src --ignore '*.tmp' -- just dev-build
+    watchexec --watch crates --ignore '*.tmp' -- just dev-build
 
-# Kept out of `build` because extraction writes to src/, and a CI build that
+# Kept out of `build` because extraction writes to the catalogues, and a CI build that
 # mutates its own input leaves a dirty tree. The watch loop sees the catalogues it
 # writes, and settles because an unchanged catalogue is not rewritten.
-[doc("Sync catalogues then build; dev only, since it writes to src/")]
+[doc("Sync catalogues then build; dev only, since it writes to the catalogues")]
 dev-build: i18n-sync build
 
 # Remove generated output
@@ -75,7 +80,7 @@ lint:
 # askama_gettext's templates are its test fixtures, so they are left as written.
 fmt:
     cargo fmt --all
-    askama-analyzer fmt src/templates
+    askama-analyzer fmt crates/blit/templates
 
 # Check formatting
 fmt-check:

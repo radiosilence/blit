@@ -12,10 +12,10 @@ readme = "README.md"
 # Askama is not a dependency: the crate is what a template calls, and never calls
 # it. Rendering one is how the tests check that, so it is needed only there.
 [dev-dependencies]
-askama = "0.16"
+askama.workspace = true
 
 [dependencies]
-askama_parser = "0.16"
+askama_parser.workspace = true
 icu_locale = "2"
 icu_locale_core = "2"
 icu_plurals = "2"

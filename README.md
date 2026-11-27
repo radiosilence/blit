@@ -2,7 +2,7 @@
 
 ![CI/CD](https://github.com/radiosilence/blit/actions/workflows/ci-cd.yml/badge.svg)
 
-Static site for [blit.cc](https://blit.cc) — a homepage and a CV, in 36 locales.
+A server-rendered site for [blit.cc](https://blit.cc), deployed as its static prerender — a homepage and a CV, in 36 locales.
 The browser gets HTML, CSS and a font. No JavaScript at all.
 
 ## Why there's no framework
@@ -29,7 +29,7 @@ This costs pre-2025 browsers: without `command` support the button does nothing.
 Two lines of feature-detected script would buy that back if it ever matters.
 
 Locale names are endonyms — the picker reads "日本語 / 日本" rather than "ja-JP".
-They come from ICU, resolved once into `generator/config.rs` rather than at build
+They come from ICU, resolved once into `crates/blit/src/config.rs` rather than at build
 time, because ICU4X exposes display names only in `icu_experimental` and this is data
 that changes about as often as a language renames itself.
 
@@ -37,7 +37,7 @@ that changes about as often as a language renames itself.
 
 - [just](https://just.systems) runs the recipes, and
   [watchexec](https://watchexec.github.io) reruns the build on change for `just dev`
-- [Askama](https://askama.rs) renders `src/templates/*.html`, bound to a struct at
+- [Askama](https://askama.rs) renders `crates/blit/templates/`, bound to a struct at
   compile time — a field a template names but the struct lacks fails `cargo build`
 - `crates/askama_gettext` handles the messages: `__`/`__p`/`__n` in the template,
   extraction through Askama's own parser, plural selection from CLDR
@@ -52,9 +52,58 @@ The build is a Rust binary. Tailwind is the only JavaScript left in it — its
 compiler is TypeScript, and Oxide is only the scanner — so it arrives as a
 pinned tool rather than as a `package.json` and a `node_modules` tree.
 
+## How it is put together
+
+The site is a server-rendered app: a table of routes, each answered by a page that
+renders a template, served by axum. The static site is a prerender of that server,
+in the way TanStack Start prerenders: `blit-prerender` starts the router in
+process, requests `/`, follows every internal link it finds in a page, the
+stylesheet or the manifest, and writes each response to `dist/` (a page as a
+directory index). What no link reaches is declared in `src/prerender.rs`, as
+patterns over the app's own configuration: `EachLocale("")` is every locale's home,
+from the locale table, and the files asked for by name are listed as paths. The static build has no render path of its own, so
+`dist/` holds exactly what the server answers, and only what something links to.
+A link that does not answer 200, or a route no link reaches, fails the build.
+
+```bash
+just serve   # the server: renders each page on request at http://127.0.0.1:3000
+just build   # the static site: prerenders into dist/, which production serves
+just dev     # rebuilds dist/ on change and serves it with nano-web, as production does
+```
+
+The server reads `BLIT_ADDR` (default `127.0.0.1:3000`) and `RUST_LOG` (default
+`blit=info,warn`), and answers `/healthz`.
+
+```
+crates/blit/
+  src/
+    app.rs            App: catalogues, assets and the CV, loaded once; render(locale, route)
+    routes.rs         the route table and the URL scheme
+    layout.rs         Page, what every page shares with layout.html
+    pages/            one module per page: its template struct and its render handler
+    server.rs         the router: every locale × route, the assets, the perimeter and headers
+    main.rs           the server
+    prerender.rs      what the crawl cannot find by itself: entries over the locales, fixed files
+    bin/blit-prerender.rs  the crawl into dist/
+    bin/blit-i18n.rs  extraction into the catalogues
+    assets.rs  config.rs  cv.rs
+  templates/          layout.html, pages/, and cv.typ, the CV's Typst styling
+  styles/app.css      Tailwind's input
+  assets/             icons, the font, the logo, robots.txt and the manifest
+  locales/            one gettext catalogue per locale
+  content/cv.typ      the CV
+  fonts/              the fonts Typst typesets the CV with
+crates/askama_gettext/  gettext for askama templates
+```
+
+Each page's struct is a plain `#[derive(Template)]` holding a `Page` and
+dereferencing to it, so the layout's fields are declared once, askama's generated
+`self.locale` reaches them through `Deref`, and askama-analyzer, which finds
+templates by their derive, sees every page.
+
 ## i18n
 
-`src/locales/{locale}/messages.po` are the source of truth. A template passes the
+`crates/blit/locales/{locale}/messages.po` are the source of truth. A template passes the
 English source text — `__("change language")` — so the English is visible where it's
 used rather than behind a key, and that text is the `msgid` a translator reads.
 Untranslated messages fall back to `en-GB` rather than rendering blank, so a new
@@ -84,7 +133,7 @@ while the site selects them another. So the expression is parsed and evaluated
 against CLDR for every count up to a thousand, and the build names the smallest one
 they differ on.
 
-Adding a locale is a line in `generator/config.rs` and `just i18n-sync`, which writes
+Adding a locale is a line in `crates/blit/src/config.rs` and `just i18n-sync`, which writes
 the catalogue. The `Plural-Forms` header it needs is found rather than looked up:
 known gettext expressions are offered to CLDR one at a time and the first it confirms
 is kept, so what's written has been checked against the same source that decides
@@ -104,7 +153,7 @@ output, because between them they're everything extraction does to a translator'
 work and `just dev` runs it on every save.
 
 Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
-`generator/config.rs` decides what to do with one. This site skips them, as `msgfmt`
+`crates/blit/src/config.rs` decides what to do with one. This site skips them, as `msgfmt`
 does: the merge's own rewordings are the common source of the flag, and serving one
 renders a translation of a sentence that no longer exists. Here a msgid is the English
 rather than a key like `nav.close`, so skipping costs only what an untranslated string
@@ -151,13 +200,13 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 
 ## The CV
 
-`src/content/cv.typ` is the whole CV. Edit it and `just build` writes both `/cv` and
-`/cv.pdf` from it. `generator/cv.rs` compiles it twice in-process: as pages for a
+`crates/blit/content/cv.typ` is the whole CV. Edit it and `just build` writes both `/cv` and
+`/cv.pdf` from it. `crates/blit/src/cv.rs` compiles it twice in-process: as pages for a
 tagged PDF/UA-1 document in one column, so an applicant tracking system reads it in
 order, and as HTML whose `<body>` becomes the page's article. One source means the
 two cannot drift apart.
 
-The content says what each piece is and `src/templates/cv.typ` decides how it looks,
+The content says what each piece is and `crates/blit/templates/cv.typ` decides how it looks,
 branching on `target()`:
 
 - `cv.with(..)` takes the name, title and contact details, which become the
@@ -177,23 +226,25 @@ The page's article must also carry no inline style, embedded file or inline SVG,
 since these would bypass the stylesheet or the asset pipeline, or draw text that
 can't be selected.
 
-The world is rooted at `src/` and reads no system fonts and no packages, so the CLI
+The world is rooted at `crates/blit/` and reads no system fonts and no packages, so the CLI
 and an editor preview compile exactly what the build does:
 
 ```sh
-typst compile --root src --font-path src/fonts --ignore-system-fonts src/content/cv.typ
+typst compile --root crates/blit --font-path crates/blit/fonts --ignore-system-fonts crates/blit/content/cv.typ
 ```
 
-For tinymist, set `tinymist.rootPath` to `src`, `tinymist.fontPaths` to
-`["src/fonts"]` and `tinymist.systemFonts` to `false`. Anything written with `html.*`
+For tinymist, set `tinymist.rootPath` to `crates/blit`, `tinymist.fontPaths` to
+`["crates/blit/fonts"]` and `tinymist.systemFonts` to `false`. Anything written with `html.*`
 sits behind `target()`, so the paged preview needs no HTML feature enabled.
 
 ## Adding things
 
 A **string**: write it in a template as `__("the english text")`, then run
-`just i18n-sync`. A **page**: add a template, a `page!` entry in
-`generator/templates.rs` and a route in `generator/routes.rs`. An **asset**: drop it
-in `src/static/` and reference it with `asset("name.ext")`.
+`just i18n-sync`. A **page**: add `templates/pages/<name>.html` extending
+`layout.html`, a module in `src/pages/` holding its `#[derive(Template)]` struct
+(a `page: Page` field, `Deref` to it, and whatever else its template uses) with a
+`render` function, and a `Route` naming it in `src/routes.rs`. An **asset**: drop it
+in `crates/blit/assets/` and reference it with `asset("name.ext")`.
 
 ## Deployment
 
@@ -234,14 +285,14 @@ back to the local equivalent.
 diffs the change (a pull request against its base, a push against the last main
 commit whose run passed) and sets one flag per domain:
 
-| Domain   | Paths                                                                                                                                             | Job             |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `rust`   | `generator/`, `crates/`, `src/templates/`, `src/content/`, `src/fonts/`, `src/static/logo.png`, `Cargo.*`, `askama.toml`, `justfile`, `mise.toml` | Rust            |
-| `site`   | the above and the rest of `src/`                                                                                                                  | Site            |
-| `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site`                                                         | Container image |
-| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml`                                                                            | Audit           |
+| Domain   | Paths | Job |
+| -------- | ----- | --- |
+| `rust`   | `crates/askama_gettext/`, and in `crates/blit/` the `src/`, `templates/`, `content/`, `fonts/`, `assets/logo.png` and `Cargo.toml`; `Cargo.*`, `justfile`, `mise.toml` | Rust |
+| `site`   | the above and the rest of `crates/` | Site |
+| `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site` | Container image |
+| `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml` | Audit |
 
-Markdown outside `src/` is documentation and counts for nothing; a change under
+Markdown outside `crates/blit/content/` is documentation and counts for nothing; a change under
 `.github/` and a manual run count for everything. A job whose domain is untouched is
 skipped, and a skipped job is a pass: the one required status is `Checks`, which fails
 only when a job it needs failed or was cancelled. Changelog runs for every change. To

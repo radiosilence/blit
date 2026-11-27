@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk-UA\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "змінити мову"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "Джеймс Клівленд"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "Джеймс Клівленд : старший full stack інженер"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "закрити"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "старший full stack інженер"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "резюме-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "завантажити як pdf"
+

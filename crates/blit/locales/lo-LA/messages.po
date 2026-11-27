@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lo-LA\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "ປ່ຽນພາສາ"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "ເຈມສ໌ ຄລີຟແລນດ໌"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "ເຈມສ໌ ຄລີຟແລນດ໌ : ວິສະວະກອນ Full Stack ອາວຸໂສ"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "ປິດ"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "ວິສະວະກອນ Full Stack ອາວຸໂສ"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "cv-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "ດາວໂຫຼດເປັນ PDF"
+

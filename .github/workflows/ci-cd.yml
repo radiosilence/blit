@@ -64,8 +64,8 @@ jobs:
         # A manual run, or a diff that cannot be worked out, runs everything.
         #
         # Allowlists, so a new top-level directory is invisible here until it is
-        # added below. Markdown is documentation except under src/, where the CV
-        # is content.
+        # added below. Markdown is documentation except under crates/blit/content/,
+        # where the CV is content.
         #
         # Steps run under `bash -e`, where grep finding nothing is a failing
         # command rather than an answer, so every question is asked in a
@@ -89,15 +89,15 @@ jobs:
           if [ -n "$base" ] && [ "$EVENT" != "workflow_dispatch" ] && files=$(git diff --name-only --no-renames "$base" HEAD); then
             echo "changes since $(git rev-parse --short "$base"):"
             printf '%s\n' "$files" | sed 's/^/  /'
-            relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^src\//')
+            relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^crates\/blit\/content\//')
             # What cargo compiles, Askama's templates included, what its tests
             # typeset, and the recipes and toolchain that check it.
-            touches '^(generator|crates)/|^Cargo\.(toml|lock)$|^askama\.toml$|^src/(templates|content|fonts)/|^src/static/logo\.png$|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            touches '^crates/(askama_gettext|blit/(src|templates|content|fonts|Cargo\.toml))|^crates/blit/assets/logo\.png$|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || rust=false
             # What the advisory audit reads, and the recipe and tool that run it.
             # Advisories that land without a change are caught by audit.yml.
             touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false
             # Everything `just build` reads to write dist/.
-            touches '^(generator|crates|src)/|^Cargo\.(toml|lock)$|^askama\.toml$|^justfile$|^mise\.toml$|^\.github/' || site=false
+            touches '^crates/|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || site=false
             # The image is dist/ on nano-web. A pull request builds it only when
             # the recipe changed (the Dockerfile, or the recipes and tools that
             # run it), since the site job already proves dist/ builds; main
@@ -139,7 +139,7 @@ jobs:
           cache-on-failure: true
       - run: just lint fmt-check test
       # Advisory until the templates are formatted; it becomes blocking then.
-      - run: askama-analyzer fmt --check src/templates
+      - run: askama-analyzer fmt --check crates/blit/templates
         continue-on-error: true
 
   audit:

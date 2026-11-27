@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja-JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/layout.html:88
+msgid "change language"
+msgstr "言語を変更"
+
+#: templates/pages/index.html:11
+msgid "github"
+msgstr "github"
+
+#: templates/pages/index.html:6
+msgid "james cleveland"
+msgstr "ジェームス・クリーブランド"
+
+#: templates/layout.html:6
+msgid "james cleveland : senior full stack engineer"
+msgstr "ジェームス・クリーブランド：シニアフルスタックエンジニア"
+
+#: templates/layout.html:14
+msgctxt "Locale dialog: the button that dismisses it"
+msgid "close"
+msgstr "閉じる"
+
+#: templates/pages/index.html:7
+msgid "senior full stack engineer"
+msgstr "シニアフルスタックエンジニア"
+
+#: templates/pages/index.html:9
+#, fuzzy
+msgid "cv-2026.08"
+msgstr "履歴書-2025.01"
+
+#: templates/pages/cv.html:21
+msgid "download as pdf"
+msgstr "PDFでダウンロード"
+
