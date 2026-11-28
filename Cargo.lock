@@ -2217,7 +2217,7 @@ dependencies = [
 [[package]]
 name = "sando"
 version = "0.0.0"
-source = "git+https://github.com/radiosilence/sando?rev=5fe9249479650d108d50d7eea797ed56039956a7#5fe9249479650d108d50d7eea797ed56039956a7"
+source = "git+https://github.com/radiosilence/sando?rev=4c3c0621801327376e4afdceb028880c17f3dca1#4c3c0621801327376e4afdceb028880c17f3dca1"
 dependencies = [
  "icu_locale",
  "serde",
