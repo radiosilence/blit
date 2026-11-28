@@ -8,6 +8,5 @@ resolver = "3"
 # to the same release.
 sando = { git = "https://github.com/radiosilence/sando", tag = "v0.1.0", default-features = false }
 askama = "0.16"
-# Askama's own template parser, so extraction recognises no syntax of its own and
-# inherits whatever the renderer understands.
-askama_parser = "0.16"
+# From git until its first release reaches crates.io.
+askama_gettext = { git = "https://github.com/radiosilence/askama-gettext", rev = "cdc658e8b18df7c46c9a7162c40541863d783042" }

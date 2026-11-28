@@ -37,7 +37,7 @@ receives HTML, CSS and a font, nothing else.
   that every route is reached, since sdo cannot list the app's routes
 - **Templates**: [Askama](https://askama.rs) over `crates/blit/templates/` (`layout.html`
   and `pages/`), bound to a struct at compile time
-- **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
+- **i18n**: [askama_gettext](https://github.com/radiosilence/askama-gettext) — plain gettext `.po`, 36 locales, CLDR plurals
 - **Content**: `crates/blit/content/cv.typ`, the CV in Typst
 - **Styling**: TailwindCSS v4 CLI, Geist Mono
 - **CV**: `src/cv.rs` compiles `content/cv.typ` twice with Typst, as pages

@@ -64,7 +64,6 @@ lint:
     cargo clippy --workspace --all-targets -- -D warnings
 
 # Format the Rust with rustfmt and the site's templates with askama-analyzer.
-# askama_gettext's templates are its test fixtures, so they are left as written.
 fmt:
     cargo fmt --all
     askama-analyzer fmt crates/blit/templates

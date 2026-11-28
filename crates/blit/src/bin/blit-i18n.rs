@@ -7,8 +7,7 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use askama_gettext::{extract, merge};
-use askama_parser::Syntax;
+use askama_gettext::{Syntax, extract, merge};
 
 use blit::config::{LOCALES, SOURCE};
 
