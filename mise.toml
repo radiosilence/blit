@@ -16,7 +16,7 @@ watchexec = "latest"
 # sdo builds the site (`just build`). Built from the commit Cargo.toml pins the
 # sando library to, so the toolchain and the library cannot disagree; a release
 # from github:radiosilence/sando once one is out.
-"cargo:https://github.com/radiosilence/sando" = { version = "rev:9537a33a42bc7a2c65facd11e4173f35e7d22d08", crate = "sando-cli" }
+"cargo:https://github.com/radiosilence/sando" = { version = "rev:5ea469565309527947818324ba62ff6bc6948b6c", crate = "sando-cli" }
 # Used by the deploy recipe; pinned here so CI gets them from the same place as a laptop.
 gh = "latest"
 # Installs the pre-commit hook in lefthook.yml (`just hooks`).

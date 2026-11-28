@@ -2297,7 +2297,7 @@ dependencies = [
 [[package]]
 name = "sando"
 version = "0.0.0"
-source = "git+https://github.com/radiosilence/sando?rev=9537a33a42bc7a2c65facd11e4173f35e7d22d08#9537a33a42bc7a2c65facd11e4173f35e7d22d08"
+source = "git+https://github.com/radiosilence/sando?rev=5ea469565309527947818324ba62ff6bc6948b6c#5ea469565309527947818324ba62ff6bc6948b6c"
 dependencies = [
  "bytes",
  "http",
