@@ -87,7 +87,8 @@ dependencies = [
 [[package]]
 name = "askama_gettext"
 version = "0.1.0"
-source = "git+https://github.com/radiosilence/askama-gettext?rev=cdc658e8b18df7c46c9a7162c40541863d783042#cdc658e8b18df7c46c9a7162c40541863d783042"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "42e1e29697cb5db361966efded84da582b94858120ae4001c1e1d307b1e89777"
 dependencies = [
  "askama_parser",
  "icu_locale",
