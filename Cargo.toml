@@ -3,9 +3,10 @@ members = ["crates/*"]
 resolver = "3"
 
 [workspace.dependencies]
-# Sando.toml as constants, through a build script. A git dependency pinned to a
-# commit while sando is young (radiosilence/sando#1); crates.io once it is out.
-sando = { git = "https://github.com/radiosilence/sando", rev = "4c3c0621801327376e4afdceb028880c17f3dca1", default-features = false }
+# Sando.toml as constants and the published assets at run time. sando's
+# release tag, from git until its crates are on crates.io; mise.toml pins sdo
+# to the same release.
+sando = { git = "https://github.com/radiosilence/sando", tag = "v0.1.0", default-features = false }
 askama = "0.16"
 # Askama's own template parser, so extraction recognises no syntax of its own and
 # inherits whatever the renderer understands.

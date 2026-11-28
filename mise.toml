@@ -1,5 +1,5 @@
 [tools]
-# The server, the prerender and the extractor. `just check` runs rustfmt and clippy, which the
+# The server and the extractor. `just check` runs rustfmt and clippy, which the
 # minimal profile leaves out — a laptop tends to have them from rustup already, a
 # clean runner does not.
 rust = { version = "latest", components = "rustfmt,clippy" }
@@ -11,8 +11,12 @@ watchexec = "latest"
 # than as a package manifest and a node_modules tree.
 "npm:@tailwindcss/cli" = "4"
 # The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
-# next to the stylesheet, so `just css` links it into place from here.
+# next to the stylesheet, so `just build` links it into place from here.
 "npm:@tailwindcss/typography" = "0.5"
+# sdo builds the site (`just build`): the release binary, at the release
+# Cargo.toml pins the sando library to, so the toolchain and the library cannot
+# disagree. Our own tool, so mise's wait before installing a new release is off.
+"github:radiosilence/sando" = { version = "0.1.0", minimum_release_age = "0" }
 # Used by the deploy recipe; pinned here so CI gets them from the same place as a laptop.
 gh = "latest"
 # Installs the pre-commit hook in lefthook.yml (`just hooks`).

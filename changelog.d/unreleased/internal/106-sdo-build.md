@@ -1,0 +1,1 @@
+- **Built with sando.** `sdo build` crawls the server into `dist/` in place of `blit-prerender`, and sando publishes the hashed assets, Tailwind included, in place of blit's own asset code. `dist/` is unchanged.

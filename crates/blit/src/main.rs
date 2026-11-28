@@ -1,7 +1,7 @@
-//! blit.cc, served: renders each page on request from the same routes the
-//! static site is prerendered from (`blit-prerender`).
+//! blit.cc, served: renders each page on request from the same routes `sdo
+//! build` crawls into the static site. `sdo` says where to listen
+//! (`SANDO_ADDR`) and where the published assets are (`SANDO_ASSETS`).
 
-use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -17,26 +17,6 @@ const DRAIN: Duration = Duration::from_secs(5);
 /// grace period.
 const DEADLINE: Duration = Duration::from_secs(10);
 
-/// Read once at start; a malformed value stops the server naming the variable.
-struct Config {
-    addr: SocketAddr,
-}
-
-impl Config {
-    fn from_env() -> Result<Self> {
-        let addr = match std::env::var("BLIT_ADDR") {
-            Ok(value) => value
-                .parse()
-                .with_context(|| format!("BLIT_ADDR is not an address and port: {value:?}"))?,
-            Err(std::env::VarError::NotPresent) => SocketAddr::from(([127, 0, 0, 1], 3000)),
-            Err(std::env::VarError::NotUnicode(value)) => {
-                anyhow::bail!("BLIT_ADDR is not UTF-8: {value:?}")
-            }
-        };
-        Ok(Self { addr })
-    }
-}
-
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
@@ -46,14 +26,11 @@ async fn main() -> Result<()> {
         )
         .init();
 
-    let config = Config::from_env()?;
     let app = Arc::new(App::open()?);
     let router = blit::server::router(app);
 
-    let listener = tokio::net::TcpListener::bind(config.addr)
-        .await
-        .with_context(|| format!("binding {}", config.addr))?;
-    tracing::info!(addr = %config.addr, "listening");
+    let listener = sando::listener().await?;
+    tracing::info!(addr = %listener.local_addr()?, "listening");
 
     let stopping = Arc::new(Notify::new());
     let server = axum::serve(listener, router).with_graceful_shutdown({

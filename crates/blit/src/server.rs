@@ -1,7 +1,8 @@
 //! The HTTP face of the [`App`]: every locale × route at the address the static
-//! site has always used, the assets at their hashed names, and `/healthz`.
+//! site has always used, the CV's PDF, the assets at their hashed names, and
+//! `/healthz`.
 //!
-//! The server and the prerender both use [`router`], so a page has one way to be
+//! `sdo build` crawls this same server into `dist/`, so a page has one way to be
 //! rendered: on request.
 
 use std::sync::Arc;
@@ -9,7 +10,7 @@ use std::time::Duration;
 
 use axum::Router;
 use axum::error_handling::HandleErrorLayer;
-use axum::extract::{Path, State};
+use axum::extract::State;
 use axum::http::{HeaderName, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
@@ -22,7 +23,7 @@ use tower_http::timeout::TimeoutLayer;
 
 use crate::app::App;
 use crate::config::{LOCALES, Locale};
-use crate::routes::{ROUTES, Route, url};
+use crate::routes::{CV_PDF, ROUTES, Route, url};
 
 /// Every request is a GET of a page or a file, so nothing needs a body.
 const BODY_LIMIT: usize = 2 * 1024 * 1024;
@@ -36,9 +37,9 @@ const CSP: &str = "default-src 'self'; script-src 'self'; style-src 'self'; img-
     font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; \
     base-uri 'none'; object-src 'none'";
 
-/// Hashed names never change their bytes; anything else may.
-const IMMUTABLE: &str = "public, max-age=31536000, immutable";
-const HOUR: &str = "public, max-age=3600";
+/// What a page may be cached for. A page's address never carries a hash, so
+/// it is cached for the same hour as any other unhashed name.
+const HOUR: &str = sando::HOUR;
 
 pub fn router(app: Arc<App>) -> Router {
     let mut router = Router::new().route("/healthz", get(|| async { "ok" }));
@@ -55,7 +56,13 @@ pub fn router(app: Arc<App>) -> Router {
         }
     }
 
-    perimeter(router.route("/{file}", get(asset)).with_state(app))
+    // An unhashed name, so served for an hour rather than a year.
+    let assets = app.assets.service();
+    let router = router
+        .route(CV_PDF, get(cv_pdf))
+        .fallback_service(assets)
+        .with_state(app);
+    perimeter(router)
 }
 
 /// §7's perimeter, innermost first, and §8's headers.
@@ -107,31 +114,15 @@ async fn page(app: Arc<App>, locale: &'static Locale, route: &'static Route) -> 
     }
 }
 
-async fn asset(State(app): State<Arc<App>>, Path(file): Path<String>) -> Response {
-    let Some((body, hashed)) = app.assets.get(&file) else {
-        return (StatusCode::NOT_FOUND, "not found").into_response();
-    };
+async fn cv_pdf(State(app): State<Arc<App>>) -> Response {
     (
         [
-            (header::CONTENT_TYPE, content_type(&file)),
-            (header::CACHE_CONTROL, if hashed { IMMUTABLE } else { HOUR }),
+            (header::CONTENT_TYPE, "application/pdf"),
+            (header::CACHE_CONTROL, HOUR),
         ],
-        body.to_vec(),
+        app.cv_pdf.clone(),
     )
         .into_response()
-}
-
-fn content_type(file: &str) -> &'static str {
-    match file.rsplit_once('.').map(|(_, ext)| ext) {
-        Some("css") => "text/css; charset=utf-8",
-        Some("json") => "application/manifest+json",
-        Some("png") => "image/png",
-        Some("ico") => "image/x-icon",
-        Some("woff2") => "font/woff2",
-        Some("pdf") => "application/pdf",
-        Some("txt") => "text/plain; charset=utf-8",
-        _ => "application/octet-stream",
-    }
 }
 
 #[cfg(test)]
@@ -147,9 +138,33 @@ mod tests {
     use super::{IN_FLIGHT, perimeter, router};
     use crate::app::App;
 
-    fn app() -> Arc<App> {
+    /// The site with its assets published as `sdo` publishes them, and a
+    /// stylesheet standing in for Tailwind's. The directory is served from
+    /// for as long as the caller holds it.
+    fn app() -> (Arc<App>, tempfile::TempDir) {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+        let staging = tempfile::tempdir().expect("a staging directory");
+        for entry in std::fs::read_dir(root.join("assets")).expect("the assets") {
+            let path = entry.expect("an asset").path();
+            std::fs::copy(
+                &path,
+                staging.path().join(path.file_name().expect("a name")),
+            )
+            .expect("staging an asset");
+        }
         let css = r#"@font-face{src:url("/geist-mono.woff2")}"#;
-        Arc::new(App::load(Path::new(env!("CARGO_MANIFEST_DIR")), css).expect("the site loads"))
+        std::fs::write(staging.path().join("style.css"), css).expect("staging the stylesheet");
+        let published = tempfile::tempdir().expect("a published directory");
+        let fixed = ["favicon.ico".to_owned(), "robots.txt".to_owned()];
+        let options = sando::pipeline::Options {
+            fixed: &fixed,
+            origin: None,
+        };
+        sando::pipeline::publish(staging.path(), published.path(), options)
+            .expect("the assets publish");
+        let assets = sando::Assets::open(published.path()).expect("the manifest reads");
+        let app = Arc::new(App::load(root, assets).expect("the site loads"));
+        (app, published)
     }
 
     async fn get(app: &Arc<App>, path: &str) -> Response {
@@ -165,7 +180,7 @@ mod tests {
 
     #[tokio::test]
     async fn every_response_carries_the_security_headers() {
-        let app = app();
+        let (app, _published) = app();
         for path in ["/", "/fr-FR/cv", "/robots.txt", "/nowhere"] {
             let response = get(&app, path).await;
             for name in [
@@ -184,7 +199,7 @@ mod tests {
 
     #[tokio::test]
     async fn pages_answer_with_and_without_a_trailing_slash() {
-        let app = app();
+        let (app, _published) = app();
         for path in ["/", "/cv", "/cv/", "/ja-JP", "/ja-JP/", "/ja-JP/cv"] {
             assert_eq!(get(&app, path).await.status(), StatusCode::OK, "{path}");
         }
@@ -192,7 +207,7 @@ mod tests {
 
     #[tokio::test]
     async fn assets_answer_only_at_their_published_name() {
-        let app = app();
+        let (app, _published) = app();
         let response = get(&app, &app.assets.href("logo.png")).await;
         assert_eq!(response.status(), StatusCode::OK);
         assert_eq!(
@@ -200,7 +215,9 @@ mod tests {
             "public, max-age=31536000, immutable"
         );
         assert_eq!(get(&app, "/logo.png").await.status(), StatusCode::NOT_FOUND);
-        assert_eq!(get(&app, "/cv.pdf").await.status(), StatusCode::OK);
+        let pdf = get(&app, "/cv.pdf").await;
+        assert_eq!(pdf.status(), StatusCode::OK);
+        assert_eq!(pdf.headers()[header::CACHE_CONTROL], "public, max-age=3600");
     }
 
     #[tokio::test]
@@ -269,6 +286,7 @@ mod tests {
 
     #[tokio::test]
     async fn healthz_answers_ok() {
-        assert_eq!(get(&app(), "/healthz").await.status(), StatusCode::OK);
+        let (app, _published) = app();
+        assert_eq!(get(&app, "/healthz").await.status(), StatusCode::OK);
     }
 }
