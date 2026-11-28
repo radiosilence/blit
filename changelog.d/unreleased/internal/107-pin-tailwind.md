@@ -1,0 +1,1 @@
+- **Tailwind is pinned exactly.** `mise.toml` asked for Tailwind `4` and its typography plugin `0.5`, so CI built with 4.3.5 while a laptop with 4.3.3 produced a different stylesheet, and every page names the stylesheet by its hash. Both are now exact versions, matching what is live.

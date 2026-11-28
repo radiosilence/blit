@@ -8,11 +8,13 @@ just = "latest"
 watchexec = "latest"
 # Tailwind is the one part of the build that is still JavaScript — its compiler is
 # TypeScript, and Oxide is only the scanner — so it arrives as a pinned tool rather
-# than as a package manifest and a node_modules tree.
-"npm:@tailwindcss/cli" = "4"
+# than as a package manifest and a node_modules tree. Pinned exactly, with its
+# plugin: the stylesheet's hash is in every page, so a patch release resolved on
+# one machine and not another gives the same commit two different dist/ trees.
+"npm:@tailwindcss/cli" = "4.3.5"
 # The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
 # next to the stylesheet, so `just build` links it into place from here.
-"npm:@tailwindcss/typography" = "0.5"
+"npm:@tailwindcss/typography" = "0.5.20"
 # sdo builds the site (`just build`): the release binary, at the release
 # Cargo.toml pins the sando library to, so the toolchain and the library cannot
 # disagree. Our own tool, so mise's wait before installing a new release is off.
