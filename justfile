@@ -1,38 +1,24 @@
 # blit — blit.cc, a Rust server prerendered into HTML, CSS and a font
 
 dist := "dist"
-# Tailwind's output is an input to the app, which rewrites its asset URLs; keeping
-# it out of dist gives that rewrite a fixed input and leaves dist owned by the
-# prerender alone.
-build_dir := ".build"
 image := "ghcr.io/radiosilence/blit"
 # Both architectures come out of one build. Nothing in the image is
 # architecture-specific — dist/ is bytes and the base image is already a manifest
 # list — so there is no RUN for qemu to emulate and no second compile to parallelise.
 platforms := "linux/amd64,linux/arm64"
-# Debug builds compile several times faster, which is what the watch loop wants.
-# CI sets CI=true and gets an optimised binary.
-profile := if env("CI", "") != "" { "--release" } else { "" }
-
 _default:
     @just --list
 
-# Prerender the whole site into dist/
-build: generate
-
-# Depends on css because the app hashes the compiled stylesheet into its filename.
+# sdo runs Tailwind (a step in Sando.toml), publishes the assets at hashed names,
+# builds the app in release mode and crawls it from / and [prerender].entries.
 [doc("Prerender: crawl the app from / and write every response to dist/")]
-generate: css
-    cargo run {{ profile }} --quiet --bin blit-prerender
+build: _plugins
+    sdo build
 
-# BLIT_ADDR sets where it listens; RUST_LOG how much it says.
+# `sdo serve --addr` sets where it listens; RUST_LOG how much it says.
 [doc("Serve the app, rendering each page on request, on 127.0.0.1:3000")]
-serve: css
-    cargo run {{ profile }} --quiet --bin blit
-
-# Compile Tailwind
-css: _plugins
-    tailwindcss --input crates/blit/styles/app.css --output {{ build_dir }}/style.css --minify
+serve: _plugins
+    sdo serve
 
 # Tailwind resolves `@plugin "@tailwindcss/typography"` through node_modules beside
 # the stylesheet, and the plugin is a mise tool rather than a project dependency.
@@ -67,7 +53,7 @@ dev-build: i18n-sync build
 
 # Remove generated output
 clean:
-    rm -rf {{ dist }} {{ build_dir }} target
+    rm -rf {{ dist }} target
 
 # Extract messages from the templates into every catalogue
 i18n-sync:

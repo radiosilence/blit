@@ -46,7 +46,7 @@ build script derives each locale's endonym, place and direction from ICU4X, and
 - [Typst](https://typst.app), as a library, typesets the CV into both `/cv` and
   `/cv.pdf`
 - Everything the build needs is pinned in [mise](https://mise.jdx.dev): rust, just,
-  watchexec, tailwind, gh. [nano-web](https://github.com/radiosilence/nano-web) serves
+  sdo, watchexec, tailwind, gh. [nano-web](https://github.com/radiosilence/nano-web) serves
   `dist/` for `just dev` and is yours to install
 
 The build is a Rust binary. Tailwind is the only JavaScript left in it — its
@@ -56,40 +56,50 @@ pinned tool rather than as a `package.json` and a `node_modules` tree.
 ## How it is put together
 
 The site is a server-rendered app: a table of routes, each answered by a page that
-renders a template, served by axum. The static site is a prerender of that server,
-in the way TanStack Start prerenders: `blit-prerender` starts the router in
-process, requests `/`, follows every internal link it finds in a page, the
-stylesheet or the manifest, and writes each response to `dist/` (a page as a
-directory index). What no link reaches is declared in `src/prerender.rs`, as
-patterns over the app's own configuration: `EachLocale("")` is every locale's home,
-from the locale table, and the files asked for by name are listed as paths. The static build has no render path of its own, so
-`dist/` holds exactly what the server answers, and only what something links to.
-A link that does not answer 200, or a route no link reaches, fails the build.
+renders a template, served by axum. The static site is a crawl of that server by
+[sando](https://github.com/radiosilence/sando)'s `sdo build`: it runs the server,
+requests `/`, follows every internal link it finds in a page, the stylesheet or the
+manifest, and writes each response to `dist/` (a page as a directory index). What
+no link reaches is listed in `Sando.toml`'s `[prerender].entries`, as patterns over
+the locales: `/{locale}/` is every locale's home, `/{locale}/cv` every CV, and the
+files asked for by name are listed as paths. The static build has no render path
+of its own, so `dist/` holds exactly what the server answers, and only what
+something links to or an entry names. A path that does not answer 200 fails the
+build, and listing every route as an entry is what fails it on a route no link
+reaches.
+
+sdo also builds the assets: Tailwind runs as a step in `Sando.toml`, and every file
+in `crates/blit/assets/` is published under a content-hashed name, with the
+stylesheet's and the manifest's references to the font and the icons rewritten
+before their own hash is taken. `favicon.ico` and `robots.txt` keep their names.
+`/cv.pdf` is not an asset: the app renders it and serves it at that name.
 
 ```bash
-just serve   # the server: renders each page on request at http://127.0.0.1:3000
-just build   # the static site: prerenders into dist/, which production serves
+just serve   # sdo serve: renders each page on request at http://127.0.0.1:3000
+just build   # sdo build: crawls the server into dist/, which production serves
 just dev     # rebuilds dist/ on change and serves it with nano-web, as production does
 ```
 
-The server reads `BLIT_ADDR` (default `127.0.0.1:3000`) and `RUST_LOG` (default
-`blit=info,warn`), and answers `/healthz`.
+The server listens where sdo says (`SANDO_ADDR`), reads the published assets from
+`SANDO_ASSETS` and its log level from `RUST_LOG` (default `blit=info,warn`), and
+answers `/healthz`.
 
 ```
-Sando.toml            the origin, the locales and their overrides, the fuzzy policy
+Sando.toml            the origin, the locales and their overrides, the fuzzy policy,
+                      the assets, the crawl's entries and the Tailwind step
 crates/blit/
   build.rs            writes Sando.toml as constants (sando::build::configure)
   src/
-    app.rs            App: catalogues, assets and the CV, loaded once; render(locale, route)
+    app.rs            App: catalogues, the published assets and the CV, loaded once;
+                      render(locale, route)
     routes.rs         the route table and the URL scheme
     layout.rs         Page, what every page shares with layout.html
     pages/            one module per page: its template struct and its render handler
-    server.rs         the router: every locale × route, the assets, the perimeter and headers
+    server.rs         the router: every locale × route, the CV's PDF, the assets, the
+                      perimeter and headers
     main.rs           the server
-    prerender.rs      what the crawl cannot find by itself: entries over the locales, fixed files
-    bin/blit-prerender.rs  the crawl into dist/
     bin/blit-i18n.rs  extraction into the catalogues
-    assets.rs  config.rs (Sando.toml's constants)  cv.rs
+    config.rs (Sando.toml's constants)  cv.rs
   templates/          layout.html, pages/, and cv.typ, the CV's Typst styling
   styles/app.css      Tailwind's input
   assets/             icons, the font, the logo, robots.txt and the manifest
@@ -192,13 +202,12 @@ The source locale is served at `/` and `/cv`; every other locale is prefixed
 | Command             | Notes                                              |
 | ------------------- | -------------------------------------------------- |
 | `just dev`          | Rebuild on change, serve on :3000                  |
-| `just build`        | Compile CSS, then generate the site into `dist/`   |
-| `just generate`     | Render every locale × page only                    |
+| `just build`        | `sdo build`: the site into `dist/`                 |
 | `just check`        | Clippy, rustfmt, tests, actionlint, changelog      |
 | `just ci`           | Everything CI checks: `check`, `audit`, `build`    |
 | `just docker-build` | Build the site, then the container image           |
 | `just i18n-sync`    | Sync locale catalogues against the source          |
-| `just clean`        | Drop `dist/`, `.build/` and `target/`              |
+| `just clean`        | Drop `dist/` and `target/`                         |
 
 `just --list` shows the rest.
 

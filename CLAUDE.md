@@ -5,14 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-just serve        # Run the server, rendering each page on request, on :3000
+just serve        # sdo serve: the server, rendering each page on request, on :3000
 just dev          # Rebuild dist/ on change, serve it on :3000 with nano-web
-just build        # css into .build/, then prerender the site into dist/
+just build        # sdo build: Tailwind, the hashed assets, then the crawl into dist/
 just check        # clippy, rustfmt, tests, actionlint and the changelog
 just ci           # Everything CI checks: check, audit, then build
 just i18n-sync    # Extract messages from the templates into every catalogue
 just docker-build # Build the site, then the container image (PUSH=true to push)
-just clean        # Drop dist/, .build/ and target/
+just clean        # Drop dist/ and target/
 ```
 
 `just --list` is authoritative; prefer it over this list going stale.
@@ -26,13 +26,15 @@ receives HTML, CSS and a font, nothing else.
 - **App**: Rust, in `crates/blit` (laid out per the kōan standard, §3).
   `routes.rs` maps each address to a page in `pages/`, which renders its template
   from a `layout::Page`; `App::render` answers a route in a locale, and
-  `server::router` puts every locale × route and every asset behind axum.
-- **Two front ends, one router**: `blit` (`main.rs`) serves the router.
-  `blit-prerender` drives the same router in process, crawls it from `/`, follows
-  every internal link in pages, the stylesheet and the manifest, requests what
-  `src/prerender.rs` declares (entries drawn from the app's config, such as
-  `EachLocale(slug)` over `LOCALES`, and paths asked for by name), and writes each response to `dist/`. It has no render path of
-  its own, so what is deployed is exactly what the server answers
+  `server::router` puts every locale × route, the CV's PDF and the published
+  assets (`sando::Assets::service`) behind axum.
+- **One server, crawled**: `blit` (`main.rs`) serves the router. `sdo build`
+  (sando) runs it, crawls it from `/`, follows every internal link in pages, the
+  stylesheet and the manifest, requests `Sando.toml`'s `[prerender].entries`
+  (`/{locale}/`, `/{locale}/cv`, and the paths asked for by name), and writes each
+  response to `dist/`. There is no render path of its own, so what is deployed is
+  exactly what the server answers. Listing every route as an entry keeps the check
+  that every route is reached, since sdo cannot list the app's routes
 - **Templates**: [Askama](https://askama.rs) over `crates/blit/templates/` (`layout.html`
   and `pages/`), bound to a struct at compile time
 - **i18n**: `crates/askama_gettext` — plain gettext `.po`, 36 locales, CLDR plurals
@@ -86,25 +88,29 @@ Key decisions:
   images and fonts are all served `immutable, max-age=1y`. `favicon.ico`,
   `robots.txt` and `cv.pdf` are the exceptions — the first two are conventions and
   the CV's URL gets pasted into application forms, so they publish unhashed and
-  always.
-- `dist/` is written entirely by the prerender, which is what lets it delete
-  anything the crawl did not reach. Only what something links to is published.
-- The stylesheet and the manifest are derived rather than copied: both name other
-  assets, so they are rewritten before their own hash is taken. Tailwind compiles to
-  `.build` so that rewrite has a fixed input.
+  always. The first two are `[assets].fixed`; the PDF is rendered by the app and
+  served at `routes::CV_PDF`, never through `asset()`.
+- `dist/` is written entirely by the crawl, which clears it first. Only what
+  something links to or an entry names is published.
+- sdo publishes the assets: the stylesheet and the manifest name other assets, so
+  their references are rewritten before their own hash is taken. Tailwind is a
+  `[[steps]]` entry writing `{assets}/style.css`, sdo's staging directory, so the
+  rewrite has a fixed input.
+- sdo is pinned in `mise.toml` to the sando commit `Cargo.toml` pins the library
+  to; move both together.
 - Tailwind is the only JavaScript left — its compiler is TypeScript, and Oxide is
-  only the scanner. It arrives as a mise tool; `just css` links its typography plugin
-  into place so `@plugin` resolves without a `package.json`.
+  only the scanner. It arrives as a mise tool; `just build` links its typography
+  plugin into place so `@plugin` resolves without a `package.json`.
 - Pages are written as directory indexes (`dist/cv/index.html`) because nano-web
   resolves `/cv` to `/cv/`. Don't put extensions on internal links.
 - Adding a page means `templates/pages/<name>.html`, a module in `src/pages/` with its
   struct and `render`, and a `Route` in `src/routes.rs`.
-- `dist/` and `.build/` sit at the workspace root, where the justfile, the
-  Dockerfile and CI expect them; the app reads everything else from the crate at
-  run time.
+- `dist/` sits at the workspace root beside `Sando.toml`, where the justfile, the
+  Dockerfile and CI expect it; the app reads the published assets from
+  `SANDO_ASSETS` and everything else from the crate at run time.
 - The server follows §7 and §8: the perimeter (catch-panic, 2 MiB body limit, 30 s
   timeout, 64 in flight behind load-shed), the security headers, `/healthz`,
-  `tracing` to stderr under `RUST_LOG`, `BLIT_ADDR` read once, and SIGTERM serving
+  `tracing` to stderr under `RUST_LOG`, `sando::listener()` binding once, and SIGTERM serving
   on for 5 s then a 10 s deadline. Departures, all because production is the
   prerendered `dist/` on nano-web and this server holds no state or credential: no
   header-read timeout or connection cap (`axum::serve` has neither), no `Host`

@@ -8,6 +8,11 @@ use crate::config::SOURCE;
 use crate::layout::Page;
 use crate::pages;
 
+/// The CV's PDF, rendered by the app rather than published as an asset. It is a
+/// link handed to people and pasted into application forms, so it keeps its
+/// name and carries no hash.
+pub const CV_PDF: &str = "/cv.pdf";
+
 pub struct Route {
     pub slug: &'static str,
     /// Whether the page's main content is in each locale. The CV is written once,

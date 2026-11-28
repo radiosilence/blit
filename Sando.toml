@@ -6,6 +6,30 @@ origin = "https://blit.cc"
 [app]
 package = "blit"
 bin = "blit"
+ready = "/healthz"
+
+[assets]
+dir = "crates/blit/assets"
+# Their URLs are a convention rather than ours: a browser asks for /favicon.ico
+# when a page links no icon, and a crawler asks for /robots.txt. No link can
+# carry a hash for them, so each is an entry below.
+fixed = ["favicon.ico", "robots.txt"]
+
+[prerender]
+# The crawl starts at / and follows every internal link, so this lists only
+# what is reached by address. Each locale's home is an address people type and
+# search engines are told about, so it is published whether or not the locale
+# picker links it. /{locale}/cv keeps the check that every route is reached:
+# sdo cannot list the app's routes, so a route no link reaches would otherwise
+# go unpublished without failing the build. /cv.pdf is rendered by the app and
+# is a link handed to people and pasted into application forms.
+entries = ["/{locale}/", "/{locale}/cv", "/favicon.ico", "/robots.txt", "/cv.pdf"]
+
+# Tailwind resolves `@plugin "@tailwindcss/typography"` through node_modules
+# beside the stylesheet, which `just build` links into place first.
+[[steps]]
+name = "tailwind"
+build = "tailwindcss --input crates/blit/styles/app.css --output {assets}/style.css --minify"
 
 [i18n]
 source = "en-GB"

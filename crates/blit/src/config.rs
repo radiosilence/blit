@@ -10,7 +10,7 @@ mod generated {
     sando::include_config!();
 }
 
-pub use generated::{ENTRIES, LOCALES, ORIGIN, SOURCE};
+pub use generated::{LOCALES, ORIGIN, SOURCE};
 
 /// `[i18n].fuzzy`, in askama_gettext's terms.
 pub const FUZZY: askama_gettext::Fuzzy = match generated::FUZZY {
