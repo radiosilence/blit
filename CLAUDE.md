@@ -96,7 +96,7 @@ Key decisions:
   their references are rewritten before their own hash is taken. Tailwind is a
   `[[steps]]` entry writing `{assets}/style.css`, sdo's staging directory, so the
   rewrite has a fixed input.
-- sdo is pinned in `mise.toml` to the sando commit `Cargo.toml` pins the library
+- sdo is pinned in `mise.toml` to the sando release `Cargo.toml` pins the library
   to; move both together.
 - Tailwind is the only JavaScript left — its compiler is TypeScript, and Oxide is
   only the scanner. It arrives as a mise tool; `just build` links its typography

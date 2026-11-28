@@ -13,10 +13,10 @@ watchexec = "latest"
 # The `prose` styles the CV uses. Tailwind resolves `@plugin` against node_modules
 # next to the stylesheet, so `just build` links it into place from here.
 "npm:@tailwindcss/typography" = "0.5"
-# sdo builds the site (`just build`). Built from the commit Cargo.toml pins the
-# sando library to, so the toolchain and the library cannot disagree; a release
-# from github:radiosilence/sando once one is out.
-"cargo:https://github.com/radiosilence/sando" = { version = "rev:5ea469565309527947818324ba62ff6bc6948b6c", crate = "sando-cli" }
+# sdo builds the site (`just build`): the release binary, at the release
+# Cargo.toml pins the sando library to, so the toolchain and the library cannot
+# disagree. Our own tool, so mise's wait before installing a new release is off.
+"github:radiosilence/sando" = { version = "0.1.0", minimum_release_age = "0" }
 # Used by the deploy recipe; pinned here so CI gets them from the same place as a laptop.
 gh = "latest"
 # Installs the pre-commit hook in lefthook.yml (`just hooks`).
