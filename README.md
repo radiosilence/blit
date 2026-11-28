@@ -40,7 +40,7 @@ build script derives each locale's endonym, place and direction from ICU4X, and
   [watchexec](https://watchexec.github.io) reruns the build on change for `just dev`
 - [Askama](https://askama.rs) renders `crates/blit/templates/`, bound to a struct at
   compile time — a field a template names but the struct lacks fails `cargo build`
-- `crates/askama_gettext` handles the messages: `__`/`__p`/`__n` in the template,
+- [askama_gettext](https://github.com/radiosilence/askama-gettext) handles the messages: `__`/`__p`/`__n` in the template,
   extraction through Askama's own parser, plural selection from CLDR
 - [TailwindCSS](https://tailwindcss.com) v4 with Geist Mono
 - [Typst](https://typst.app), as a library, typesets the CV into both `/cv` and
@@ -106,7 +106,6 @@ crates/blit/
   locales/            one gettext catalogue per locale
   content/cv.typ      the CV
   fonts/              the fonts Typst typesets the CV with
-crates/askama_gettext/  gettext for askama templates
 ```
 
 Each page's struct is a plain `#[derive(Template)]` holding a `Page` and
@@ -300,7 +299,7 @@ commit whose run passed) and sets one flag per domain:
 
 | Domain   | Paths | Job |
 | -------- | ----- | --- |
-| `rust`   | `crates/askama_gettext/`, and in `crates/blit/` the `src/`, `templates/`, `content/`, `fonts/`, `locales/`, `assets/` and `Cargo.toml`, which the server tests load; `Cargo.*`, `justfile`, `mise.toml` | Rust |
+| `rust`   | in `crates/blit/`, the `src/`, `templates/`, `content/`, `fonts/`, `locales/`, `assets/` and `Cargo.toml`, which the server tests load; `Cargo.*`, `justfile`, `mise.toml` | Rust |
 | `site`   | the above and the rest of `crates/` | Site |
 | `docker` | `Dockerfile`, `justfile`, `mise.toml` on a pull request; on main, also anything in `site` | Container image |
 | `deps`   | `Cargo.*`, `crates/*/Cargo.toml`, `deny.toml`, `justfile`, `mise.toml` | Audit |

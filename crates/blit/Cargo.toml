@@ -5,8 +5,7 @@ edition = "2024"
 
 [dependencies]
 askama.workspace = true
-askama_parser.workspace = true
-askama_gettext = { path = "../askama_gettext" }
+askama_gettext.workspace = true
 sando = { workspace = true, features = ["assets", "listener"] }
 anyhow = "1"
 axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }

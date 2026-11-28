@@ -8,6 +8,4 @@ resolver = "3"
 # to the same release.
 sando = { git = "https://github.com/radiosilence/sando", tag = "v0.1.0", default-features = false }
 askama = "0.16"
-# Askama's own template parser, so extraction recognises no syntax of its own and
-# inherits whatever the renderer understands.
-askama_parser = "0.16"
+askama_gettext = "0.1"

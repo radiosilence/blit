@@ -1,0 +1,1 @@
+- **askama_gettext comes from crates.io.** It moved to [radiosilence/askama-gettext](https://github.com/radiosilence/askama-gettext) and is published there; blit takes `Syntax` from it instead of depending on `askama_parser` itself.
