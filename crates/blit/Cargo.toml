@@ -7,6 +7,7 @@ edition = "2024"
 askama.workspace = true
 askama_parser.workspace = true
 askama_gettext = { path = "../askama_gettext" }
+sando.workspace = true
 anyhow = "1"
 axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }
 sha2 = "0.11"
@@ -22,3 +23,6 @@ typst-layout = "0.15"
 typst-html = "0.15"
 typst-pdf = "0.15"
 walkdir = "2"
+
+[build-dependencies]
+sando = { workspace = true, features = ["build"] }

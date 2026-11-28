@@ -29,9 +29,10 @@ This costs pre-2025 browsers: without `command` support the button does nothing.
 Two lines of feature-detected script would buy that back if it ever matters.
 
 Locale names are endonyms — the picker reads "日本語 / 日本" rather than "ja-JP".
-They come from ICU, resolved once into `crates/blit/src/config.rs` rather than at build
-time, because ICU4X exposes display names only in `icu_experimental` and this is data
-that changes about as often as a language renames itself.
+They come from CLDR at build time: [sando](https://github.com/radiosilence/sando)'s
+build script derives each locale's endonym, place and direction from ICU4X, and
+`Sando.toml` overrides the two locales CLDR's compiled data has no names for
+(Tibetan and Divehi).
 
 ## Stack
 
@@ -75,7 +76,9 @@ The server reads `BLIT_ADDR` (default `127.0.0.1:3000`) and `RUST_LOG` (default
 `blit=info,warn`), and answers `/healthz`.
 
 ```
+Sando.toml            the origin, the locales and their overrides, the fuzzy policy
 crates/blit/
+  build.rs            writes Sando.toml as constants (sando::build::configure)
   src/
     app.rs            App: catalogues, assets and the CV, loaded once; render(locale, route)
     routes.rs         the route table and the URL scheme
@@ -86,7 +89,7 @@ crates/blit/
     prerender.rs      what the crawl cannot find by itself: entries over the locales, fixed files
     bin/blit-prerender.rs  the crawl into dist/
     bin/blit-i18n.rs  extraction into the catalogues
-    assets.rs  config.rs  cv.rs
+    assets.rs  config.rs (Sando.toml's constants)  cv.rs
   templates/          layout.html, pages/, and cv.typ, the CV's Typst styling
   styles/app.css      Tailwind's input
   assets/             icons, the font, the logo, robots.txt and the manifest
@@ -133,8 +136,9 @@ while the site selects them another. So the expression is parsed and evaluated
 against CLDR for every count up to a thousand, and the build names the smallest one
 they differ on.
 
-Adding a locale is a line in `crates/blit/src/config.rs` and `just i18n-sync`, which writes
-the catalogue. The `Plural-Forms` header it needs is found rather than looked up:
+Adding a locale is a line in `[i18n].locales` in `Sando.toml` and `just i18n-sync`, which
+writes the catalogue. The build fails while a listed locale has no catalogue, or a
+catalogue's locale is not listed. The `Plural-Forms` header it needs is found rather than looked up:
 known gettext expressions are offered to CLDR one at a time and the first it confirms
 is kept, so what's written has been checked against the same source that decides
 which form renders. A language none of them fits is an error rather than a guess.
@@ -152,12 +156,12 @@ string they already have. What finds nowhere to go is deleted. Both are named in
 output, because between them they're everything extraction does to a translator's
 work and `just dev` runs it on every save.
 
-Which leaves `fuzzy` meaning only what a translator meant by it, so `FUZZY` in
-`crates/blit/src/config.rs` decides what to do with one. This site skips them, as `msgfmt`
+Which leaves `fuzzy` meaning only what a translator meant by it, so `[i18n].fuzzy` in
+`Sando.toml` decides what to do with one. This site skips them, as `msgfmt`
 does: the merge's own rewordings are the common source of the flag, and serving one
 renders a translation of a sentence that no longer exists. Here a msgid is the English
 rather than a key like `nav.close`, so skipping costs only what an untranslated string
-already costs. `Fuzzy::Serve` shows a drifted translation anyway, on the argument that
+already costs. `fuzzy = "serve"` shows a drifted translation anyway, on the argument that
 most of a sentence in your own language beats all of one in someone else's.
 
 ## Assets
