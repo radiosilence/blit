@@ -48,7 +48,7 @@ impl<'a> Page<'a> {
                 code: other.code.to_owned(),
                 href: url(other.code, route.slug),
                 name: other.name.to_owned(),
-                place: other.place.to_owned(),
+                place: other.place.unwrap_or_default().to_owned(),
                 current: other.code == locale.code,
             })
             .collect();
@@ -63,7 +63,7 @@ impl<'a> Page<'a> {
         Self {
             app,
             locale: locale.code,
-            dir: if locale.rtl { "rtl" } else { "ltr" },
+            dir: locale.direction.as_str(),
             canonical_url: format!("{ORIGIN}{canonical}"),
             alternates: route.translated,
             urls: Urls {

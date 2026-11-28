@@ -92,12 +92,12 @@ jobs:
             relevant=$(printf '%s\n' "$files" | awk '!/\.md$/ || /^crates\/blit\/content\//')
             # What cargo compiles, Askama's templates included, what its tests
             # load and typeset, and the recipes and toolchain that check it.
-            touches '^crates/(askama_gettext|blit/(src|templates|content|fonts|locales|assets|Cargo\.toml))|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || rust=false
+            touches '^crates/(askama_gettext|blit/(src|templates|content|fonts|locales|assets|Cargo\.toml))|^crates/blit/build\.rs$|^Sando\.toml$|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || rust=false
             # What the advisory audit reads, and the recipe and tool that run it.
             # Advisories that land without a change are caught by audit.yml.
             touches '^Cargo\.(toml|lock)$|^crates/[^/]+/Cargo\.toml$|^deny\.toml$|^justfile$|^mise\.toml$|^\.github/' || deps=false
             # Everything `just build` reads to write dist/.
-            touches '^crates/|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || site=false
+            touches '^crates/|^Sando\.toml$|^Cargo\.(toml|lock)$|^justfile$|^mise\.toml$|^\.github/' || site=false
             # The image is dist/ on nano-web. A pull request builds it only when
             # the recipe changed (the Dockerfile, or the recipes and tools that
             # run it), since the site job already proves dist/ builds; main

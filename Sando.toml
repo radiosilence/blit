@@ -1,0 +1,70 @@
+[site]
+# Where the site is served, for the URLs that leave it: canonical links and the
+# Open Graph image a link preview fetches.
+origin = "https://blit.cc"
+
+[app]
+package = "blit"
+bin = "blit"
+
+[i18n]
+source = "en-GB"
+prefix = "except-source"
+catalogues = "crates/blit/locales/{locale}/messages.po"
+# `msgfmt` drops a fuzzy translation, and so does this site. Most arrive from
+# the merge itself, which carries an old translation onto an English string
+# that has changed: serving one renders a translation of a sentence that no
+# longer exists, which is how `cv-2026.08` shipped as `cv-2025.01` in every
+# locale. An untranslated string falls back to the English in the template,
+# since the msgid is the English rather than a key.
+fuzzy = "skip"
+# In the order the language menu lists them.
+locales = [
+    "en-GB",
+    "ar-EG",
+    "ar-PS",
+    "bn-BD",
+    "bo-CN",
+    "de-DE",
+    "dv-MV",
+    "el-GR",
+    "fr-FR",
+    "gu-IN",
+    "hi-IN",
+    "hy-AM",
+    "it-IT",
+    "ja-JP",
+    "ka-GE",
+    "km-KH",
+    "kn-IN",
+    "ko-KR",
+    "lo-LA",
+    "ml-IN",
+    "mn-MN",
+    "my-MM",
+    "ne-NP",
+    "nl-BE",
+    "nl-NL",
+    "or-IN",
+    "pa-IN",
+    "pl-PL",
+    "si-LK",
+    "ta-IN",
+    "te-IN",
+    "th-TH",
+    "uk-UA",
+    "vi-VN",
+    "zh-CN",
+    "zh-TW",
+]
+
+# CLDR's compiled data has no Tibetan names; these are its endonyms.
+[i18n.overrides."bo-CN"]
+name = "བོད་སྐད་"
+place = "རྒྱ་ནག"
+
+# Nor Divehi. The names stay in English, as blit has always shown them; its
+# direction still comes from CLDR.
+[i18n.overrides."dv-MV"]
+name = "Divehi"
+place = "Maldives"
